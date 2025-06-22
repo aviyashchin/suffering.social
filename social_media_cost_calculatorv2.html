@@ -18,63 +18,29 @@
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
-    <style>
-      .info-tooltip.modern-tooltip-card {
-        z-index: 50 !important;
-        max-width: 20rem;
-        min-width: 16rem;
-        overflow: auto;
-        pointer-events: auto;
-        position: absolute;
-        left: 50%;
-        top: 2.5rem;
-        transform: translateX(-50%);
-        box-shadow: 0 8px 32px 0 rgba(60,60,90,0.18);
-        background: #fff;
-        color: #222;
-        border-radius: 1rem;
-        border: 1px solid #e5e7eb;
-      }
-      .dark .info-tooltip.modern-tooltip-card {
-        background: #18181b;
-        color: #f3f4f6;
-        border: 1px solid #374151;
-      }
-      .info-button { position: relative; }
-      .tippy-box[data-theme~='card'] {
-        @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl p-4 w-80 text-left;
-        max-width: 20rem;
-        min-width: 16rem;
-        font-size: 1rem;
-      }
-      .tippy-box[data-theme~='card'] .tippy-content {
-        padding: 0;
-      }
-    </style>
+    <link rel="stylesheet" href="assets/calculator.css">
+    <script src="assets/calculator.js" defer></script>
 </head>
-<body class="bg-gradient-to-br from-indigo-400 to-purple-500 dark:from-gray-900 dark:to-gray-800 min-h-screen pt-32 md:pt-36 text-gray-900 dark:text-gray-100">
+<body class="bg-gradient-to-br from-indigo-400 to-purple-500 min-h-screen pt-32 md:pt-36 text-gray-900">
     <!-- 1. Remove the current floating total bar and top bar -->
     <!-- 2. Add a new fixed, full-width, dark top bar styled like a national debt clock -->
     <div id="national-debt-clock-bar" class="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-gray-900 to-gray-800 shadow-lg flex flex-col items-center justify-center py-4 px-2 md:px-0">
       <div class="flex flex-col md:flex-row items-center justify-between gap-6 w-full max-w-6xl">
         <div class="flex flex-col items-center md:items-start flex-1">
           <div class="text-xs md:text-sm text-gray-300 uppercase tracking-widest mb-1">Total Social Media Cost (Since 2009)</div>
-          <div class="text-4xl md:text-5xl font-mono font-bold text-red-400 drop-shadow-lg flex items-baseline gap-2" id="national-debt-clock-total"><span class="text-3xl md:text-4xl">$</span><span id="national-debt-clock-total-amount">2,090,000,000,000</span></div>
+          <div class="text-4xl md:text-5xl font-mono font-bold text-red-400 drop-shadow-lg flex items-baseline gap-2" id="national-debt-clock-total"><span class="text-3xl md:text-4xl">$</span><span id="national-debt-clock-total-amount">2,039,660,000,000</span></div>
           <div class="text-base md:text-lg text-gray-200 mt-1">and counting…</div>
           <div id="lifetime-counters" class="mt-3 text-xs md:text-sm text-gray-200 flex flex-wrap gap-4">
             <span class="flex items-center gap-1">🧠 <span id="lifetime-depression">0</span> developed major depression</span>
             <span class="flex items-center gap-1">☠️ <span id="lifetime-suicide">0</span> died by suicide</span>
             <span class="flex items-center gap-1">💸 <span id="lifetime-value">$0</span> in value destroyed</span>
-          </div>
         </div>
+    </div>
         <div class="flex flex-col items-center md:items-end gap-2">
           <div class="flex items-center gap-2">
             <div class="text-xs text-gray-300 mb-1">Per Second</div>
             <div class="text-2xl font-mono font-bold text-red-300 flex items-baseline gap-1" id="national-debt-clock-per-second"><span class="text-xl">+$</span><span id="national-debt-clock-per-second-amount">63,578</span></div>
-          </div>
-          <button id="dark-mode-toggle" class="ml-2 bg-gray-700 hover:bg-gray-900 text-white rounded-full w-9 h-9 flex items-center justify-center text-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-colors duration-200" aria-label="Toggle dark mode">
-            <span id="dark-mode-icon">🌙</span>
-          </button>
+    </div>
         </div>
       </div>
     </div>
@@ -82,55 +48,52 @@
     <!-- 3. Move the help button to a floating circle in the bottom right -->
     <button id="help-btn" class="fixed bottom-6 right-6 bg-red-500 hover:bg-red-600 text-white rounded-full w-14 h-14 text-3xl flex items-center justify-center shadow-lg z-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-300" aria-label="Help">?</button>
 
+    <!-- Subconscious.ai Branding -->
+    <div class="fixed bottom-6 left-6 z-50">
+        <div class="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-3 border border-gray-200">
+            <div class="text-xs text-gray-600 mb-1">A <a href="http://www.subconscious.ai" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium transition-colors">Subconscious.ai</a> project</div>
+            <div class="text-xs text-gray-500">
+                Join our <a href="https://discord.gg/3bgj4ZhABz" target="_blank" class="text-purple-600 hover:text-purple-800 font-medium transition-colors">Discord</a> for more research
+            </div>
+        </div>
+    </div>
+
     <!-- 4. Reduce top margin/padding on main content so the clock is the first thing users see -->
     <!-- Remove the old top bar and floating total bar -->
     <!-- 5. Polish for mobile and desktop -->
     <!-- (Handled by Tailwind responsive classes above) -->
 
     <!-- 1. Floating help popover/modal -->
-    <div id="help-popover" class="hidden fixed bottom-24 right-8 z-50 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 max-w-xs w-80 p-6 animate-fade-in">
+    <div id="help-popover" class="hidden fixed bottom-24 right-8 z-50 bg-white text-gray-900 rounded-xl shadow-2xl border border-gray-200 max-w-xs w-80 p-6 animate-fade-in">
       <div class="flex justify-between items-center mb-2">
         <h2 class="text-lg font-bold">How to Use This Calculator</h2>
-        <button id="help-popover-close" class="text-2xl text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none">&times;</button>
-      </div>
+        <button id="help-popover-close" class="text-2xl text-gray-400 hover:text-gray-700 focus:outline-none">&times;</button>
+        </div>
       <div class="text-base mb-2">Adjust the sliders, observe the real-time cost updates, and see how each factor contributes to total social impact.</div>
-      <div class="text-base">Use <span class="font-mono bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">Reset</span> for default settings. All calculations update instantly.</div>
+      <div class="text-base">Use <span class="font-mono bg-gray-100 px-2 py-1 rounded">Reset</span> for default settings. All calculations update instantly.</div>
     </div>
-    <style>
-    @keyframes fade-in { from { opacity: 0; transform: translateY(16px);} to { opacity: 1; transform: none; } }
-    .animate-fade-in { animation: fade-in 0.25s cubic-bezier(.4,0,.2,1); }
-    </style>
-    <script>
-    // Help popover logic
-    const helpBtn = document.getElementById('help-btn');
-    const helpPopover = document.getElementById('help-popover');
-    const helpPopoverClose = document.getElementById('help-popover-close');
-    helpBtn.addEventListener('click', () => {
-      helpPopover.classList.remove('hidden');
-    });
-    helpPopoverClose.addEventListener('click', () => {
-      helpPopover.classList.add('hidden');
-    });
-    document.addEventListener('click', (e) => {
-      if (!helpPopover.contains(e.target) && e.target !== helpBtn) {
-        helpPopover.classList.add('hidden');
-      }
-    });
-    </script>
+
 
     <!-- 2. Reduce whitespace and tighten analogy/narrative section -->
-    <div class="max-w-2xl mx-auto mt-6 mb-4 px-4 py-4 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-2xl shadow border border-gray-200 dark:border-gray-700 flex items-center gap-4">
+    <div class="max-w-2xl mx-auto mt-6 mb-4 px-4 py-4 bg-white text-gray-900 rounded-2xl shadow border border-gray-200 flex items-center gap-4">
       <span class="text-3xl">🌲</span>
       <div>
         <b>If a tree falls in the forest and doesn't boost GDP, does it matter?</b><br>
         Now imagine that tree is <b>your child's mental health</b>.
       </div>
-    </div>
+                </div>
 
     <div class="container max-w-7xl mx-auto px-4">
+        <!-- Toggle button for left column -->
+        <div class="flex justify-end mb-4">
+            <button id="toggle-left-column" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <span id="toggle-text">Hide Calculator</span> 📊
+            </button>
+        </div>
+        
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-            <div class="col-span-2 bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden mb-8 lg:mb-0">
-                <div class="bg-gradient-to-r from-red-400 to-orange-500 dark:from-red-700 dark:to-orange-800 text-white px-8 py-8 text-center">
+            <div id="left-column" class="col-span-2 bg-white rounded-2xl shadow-xl overflow-hidden mb-8 lg:mb-0 transition-all duration-300">
+                <div class="bg-gradient-to-r from-red-400 to-orange-500 text-white px-8 py-8 text-center">
                     <h2 class="text-2xl font-semibold mb-2">Interactive Cost Calculator</h2>
                     <p class="text-base mb-4">Simple formulas showing cumulative costs since 2009</p>
                     <button id="reset-button" class="reset-button bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded mb-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-300" aria-label="Reset to Default Values">Reset to Default Values</button>
@@ -162,9 +125,9 @@
                     </div>
 
                     <!-- Caveats/Limitations Notice -->
-                    <div class="parameter-group" style="background: #fff3cd; border-left: 5px solid #e67e22; color: #7f5f00; margin-bottom: 35px;">
+                    <div class="parameter-group bg-yellow-50 text-gray-900 border-l-4 border-yellow-600 rounded-xl mb-8 p-5">
                         <strong>⚠️ Important Caveats & Research Context</strong>
-                        <ul style="margin-top: 10px; font-size: 0.97em;">
+                        <ul class="mt-3 ml-5 list-disc text-base">
                             <li><b>Attribution evidence:</b> Based on quasi-experimental studies (Braghieri et al. 2022) and systematic reviews</li>
                             <li><b>Population estimates:</b> Derived from CDC WONDER database and peer-reviewed studies (Twenge et al. 2018)</li>
                             <li><b>QALY calculations:</b> Follow WHO Global Burden of Disease methodology</li>
@@ -172,108 +135,105 @@
                             <li><b>Economic burden baseline:</b> Built on validated $210.5B burden (2010) with 45% healthcare, 50% workplace costs</li>
                             <li><b>Disability impact:</b> Documented 400M disability days/year in US for ages 15-44</li>
                         </ul>
-                        <div style="margin-top: 8px; font-size: 0.93em;">
+                        <div class="mt-2 text-base">
                             <b>Research context:</b> Findings draw on collaborative reviews from multiple research institutions and meta-analyses. See tooltips for detailed citations.
                         </div>
                     </div>
                     <!-- Mortality Costs -->
-                    <div class="parameter-group bg-gray-50 dark:bg-gray-800 p-6 rounded-xl border-l-4 border-red-600 mb-8">
-                      <h3 class="text-red-700 dark:text-red-400 mb-4 text-lg font-semibold flex items-center gap-2">
+                    <div class="parameter-group bg-gray-50 p-6 rounded-xl border-l-4 border-red-600 mb-8">
+                      <h3 class="text-red-700 mb-4 text-lg font-semibold flex items-center gap-2">
                         <button class="info-button bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">i</button>
-                        💀 Mortality Costs <span class="ml-2 text-base">☠️ Death</span>
-                      </h3>
+                        ☠️ Death
+                        </h3>
                       <div class="slider-container mb-6">
                         <div class="slider-label flex justify-between mb-2 font-medium">
                           <span class="flex items-center gap-2">
-                            <button class="info-button bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">i</button>
                             Value of Statistical Life (VSL)
                           </span>
-                          <span class="slider-value text-red-600 dark:text-red-400 font-bold flex items-center gap-2" id="vsl-value">$13.7M</span>
-                        </div>
+                          <span class="slider-value text-red-600 font-bold flex items-center gap-2" id="vsl-value">$13.7M</span>
+                          <button class="info-button bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">i</button>
+                            </div>
                         <div class="flex items-center gap-2">
-                          <input type="range" min="8" max="14" value="13.7" step="0.1" class="slider w-full h-2 rounded bg-gray-200 dark:bg-gray-700 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-indigo-400" id="vsl-slider" aria-label="Value of Statistical Life" />
-                          <input type="number" id="vsl-input" min="8" max="14" step="0.1" value="13.7" class="w-20 ml-2 px-2 py-1 rounded border border-gray-300 dark:bg-gray-800 dark:text-gray-100" aria-label="VSL Numeric Input" />
+                          <input type="range" min="8" max="20" value="13.7" step="0.1" class="slider w-full h-2 rounded bg-gray-200 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-indigo-400" id="vsl-slider" aria-label="Value of Statistical Life" />
+                          <input type="number" id="vsl-input" min="8" max="20" step="0.1" value="13.7" class="w-20 ml-2 px-2 py-1 rounded border border-gray-300" aria-label="VSL Numeric Input" />
                         </div>
-                      </div>
+                                        </div>
                       <div class="slider-container mb-6">
                         <div class="slider-label flex justify-between mb-2 font-medium">
                           <span class="flex items-center gap-2">
-                            <button class="info-button bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">i</button>
                             Excess Suicides Since 2009 (P)
                           </span>
-                          <span class="slider-value text-red-600 dark:text-red-400 font-bold flex items-center gap-2" id="suicides-value">110K</span>
-                        </div>
+                          <span class="slider-value text-red-600 font-bold flex items-center gap-2" id="suicides-value">110K</span>
+                          <button class="info-button bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">i</button>
+                            </div>
                         <div class="flex items-center gap-2">
-                          <input type="range" min="100000" max="120000" value="110000" step="1000" class="slider w-full h-2 rounded bg-gray-200 dark:bg-gray-700 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-indigo-400" id="suicides-slider" aria-label="Excess Suicides Since 2009" />
-                          <input type="number" id="suicides-input" min="100000" max="120000" step="1000" value="110000" class="w-24 ml-2 px-2 py-1 rounded border border-gray-300 dark:bg-gray-800 dark:text-gray-100" aria-label="Suicides Numeric Input" />
+                          <input type="range" min="100000" max="300000" value="110000" step="1000" class="slider w-full h-2 rounded bg-gray-200 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-indigo-400" id="suicides-slider" aria-label="Excess Suicides Since 2009" />
+                          <input type="number" id="suicides-input" min="100000" max="300000" step="1000" value="110000" class="w-24 ml-2 px-2 py-1 rounded border border-gray-300" aria-label="Suicides Numeric Input" />
                         </div>
-                      </div>
+                                        </div>
                       <div class="slider-container mb-6">
                         <div class="slider-label flex justify-between mb-2 font-medium">
                           <span class="flex items-center gap-2">
-                            <button class="info-button bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">i</button>
                             % Attributable to Social Media (Q)
                           </span>
-                          <span class="slider-value text-red-600 dark:text-red-400 font-bold flex items-center gap-2" id="attribution-value">18%</span>
-                        </div>
+                          <span class="slider-value text-red-600 font-bold flex items-center gap-2" id="attribution-value">18%</span>
+                          <button class="info-button bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">i</button>
+                            </div>
                         <div class="flex items-center gap-2">
-                          <input type="range" min="10" max="20" value="18" step="1" class="slider w-full h-2 rounded bg-gray-200 dark:bg-gray-700 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-indigo-400" id="attribution-slider" aria-label="Percentage Attributable to Social Media" />
-                          <input type="number" id="attribution-input" min="10" max="20" step="1" value="18" class="w-20 ml-2 px-2 py-1 rounded border border-gray-300 dark:bg-gray-800 dark:text-gray-100" aria-label="Attribution Numeric Input" />
+                          <input type="range" min="5" max="30" value="18" step="1" class="slider w-full h-2 rounded bg-gray-200 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-indigo-400" id="attribution-slider" aria-label="Percentage Attributable to Social Media" />
+                          <input type="number" id="attribution-input" min="5" max="30" step="1" value="18" class="w-20 ml-2 px-2 py-1 rounded border border-gray-300" aria-label="Attribution Numeric Input" />
                         </div>
                       </div>
                       <div class="formula-display bg-indigo-50 border border-indigo-300 rounded px-4 py-2 mt-2 font-mono text-sm text-gray-700">
-                          <strong>Formula:</strong> P × Q × VSL<br>
-                          <strong>Why this formula?</strong> We multiply the number of deaths by what society is willing to pay to prevent each death.<br>
+                            <strong>Formula:</strong> P × Q × VSL<br>
+                            <strong>Why this formula?</strong> We multiply the number of deaths by what society is willing to pay to prevent each death.<br>
                           <strong>Result:</strong> <span id="mortality-formula-result">110,000 × 18% × $13.7M = $226.1B</span>
-                      </div>
+                        </div>
                     </div>
                     <!-- Mental Health QALY Losses -->
-                    <div class="parameter-group bg-gray-50 dark:bg-gray-800 p-6 rounded-xl border-l-4 border-purple-500 mb-8">
-                        <h3 class="text-purple-700 dark:text-purple-400 mb-4 text-lg font-semibold flex items-center gap-2">
+                    <div class="parameter-group bg-gray-50 p-6 rounded-xl border-l-4 border-purple-500 mb-8">
+                        <h3 class="text-purple-700 mb-4 text-lg font-semibold flex items-center gap-2">
                             <button class="info-button bg-purple-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">i</button>
-                            🧠 Mental Health QALY Losses <span class="ml-2 text-base">😞 Disability</span>
+                            😞 Disability
                         </h3>
                         <div class="slider-container mb-6">
                             <div class="slider-label flex justify-between mb-2 font-medium">
                                 <span class="flex items-center gap-2">
-                                    <button class="info-button bg-purple-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">i</button>
                                     People with SM-Induced Depression (P)
                                 </span>
-                                <span class="slider-value text-purple-600 dark:text-purple-400 font-bold flex items-center gap-2" id="depression-value">4M</span>
-                                <button class="info-button bg-purple-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs ml-2">i</button>
+                                <span class="slider-value text-purple-600 font-bold flex items-center gap-2" id="depression-value">4M</span>
+                                <button class="info-button bg-purple-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">i</button>
                             </div>
                             <div class="flex items-center gap-2">
-                              <input type="range" min="3000000" max="5000000" value="4000000" step="100000" class="slider w-full h-2 rounded bg-gray-200 dark:bg-gray-700 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-purple-400" id="depression-slider" aria-label="People with Social Media-Induced Depression" />
-                              <input type="number" id="depression-input" min="3000000" max="5000000" step="100000" value="4000000" class="w-28 ml-2 px-2 py-1 rounded border border-gray-300 dark:bg-gray-800 dark:text-gray-100" aria-label="Depression Numeric Input" />
-                            </div>
+                              <input type="range" min="3000000" max="15000000" value="4000000" step="100000" class="slider w-full h-2 rounded bg-gray-200 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-purple-400" id="depression-slider" aria-label="People with Social Media-Induced Depression" />
+                              <input type="number" id="depression-input" min="3000000" max="15000000" step="100000" value="4000000" class="w-28 ml-2 px-2 py-1 rounded border border-gray-300" aria-label="Depression Numeric Input" />
                         </div>
+                                        </div>
                         <div class="slider-container mb-6">
                             <div class="slider-label flex justify-between mb-2 font-medium">
                                 <span class="flex items-center gap-2">
-                                    <button class="info-button bg-purple-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">i</button>
                                     Years Lived with Disability (Q)
                                 </span>
-                                <span class="slider-value text-purple-600 dark:text-purple-400 font-bold flex items-center gap-2" id="yld-value">6.0 years</span>
+                                <span class="slider-value text-purple-600 font-bold flex items-center gap-2" id="yld-value">6.0 years</span>
+                                <button class="info-button bg-purple-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">i</button>
                             </div>
                             <div class="flex items-center gap-2">
-                              <input type="range" min="4" max="8" value="6" step="0.1" class="slider w-full h-2 rounded bg-gray-200 dark:bg-gray-700 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-purple-400" id="yld-slider" aria-label="Years Lived with Disability" />
-                              <input type="number" id="yld-input" min="4" max="8" step="0.1" value="6" class="w-20 ml-2 px-2 py-1 rounded border border-gray-300 dark:bg-gray-800 dark:text-gray-100" aria-label="YLD Numeric Input" />
-                            </div>
+                              <input type="range" min="4" max="8" value="6" step="0.1" class="slider w-full h-2 rounded bg-gray-200 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-purple-400" id="yld-slider" aria-label="Years Lived with Disability" />
+                              <input type="number" id="yld-input" min="4" max="8" step="0.1" value="6" class="w-20 ml-2 px-2 py-1 rounded border border-gray-300" aria-label="YLD Numeric Input" />
                         </div>
+                                        </div>
                         <div class="slider-container mb-6">
                             <div class="slider-label flex justify-between mb-2 font-medium">
                                 <span class="flex items-center gap-2">
-                                    <span class="flex items-center gap-2">
-                                        Quality of Life Reduction (R)
-                                    </span>
-                                    <span class="slider-value text-purple-600 dark:text-purple-400 font-bold flex items-center gap-2" id="qol-value">35%</span>
-                                    <button class="info-button bg-purple-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs ml-2">i</button>
+                                    Quality of Life Reduction (R)
                                 </span>
+                                <span class="slider-value text-purple-600 font-bold flex items-center gap-2" id="qol-value">35%</span>
+                                <button class="info-button bg-purple-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">i</button>
                             </div>
                             <div class="flex items-center gap-2">
-                              <input type="range" min="30" max="40" value="35" step="1" class="slider w-full h-2 rounded bg-gray-200 dark:bg-gray-700 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-purple-400" id="qol-slider" aria-label="Quality of Life Reduction" />
-                              <input type="number" id="qol-input" min="30" max="40" step="1" value="35" class="w-20 ml-2 px-2 py-1 rounded border border-gray-300 dark:bg-gray-800 dark:text-gray-100" aria-label="QOL Numeric Input" />
-                            </div>
+                              <input type="range" min="30" max="40" value="35" step="1" class="slider w-full h-2 rounded bg-gray-200 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-purple-400" id="qol-slider" aria-label="Quality of Life Reduction" />
+                              <input type="number" id="qol-input" min="30" max="40" step="1" value="35" class="w-20 ml-2 px-2 py-1 rounded border border-gray-300" aria-label="QOL Numeric Input" />
+                        </div>
                         </div>
                         <div class="formula-display bg-purple-50 border border-purple-300 rounded px-4 py-2 mt-2 font-mono text-sm text-gray-700">
                             <strong>Formula:</strong> P × Q × R × (VSL ÷ 75 years)<br>
@@ -282,49 +242,49 @@
                         </div>
                     </div>
                     <!-- Healthcare & Productivity Losses -->
-                    <div class="parameter-group bg-gray-50 dark:bg-gray-800 p-6 rounded-xl border-l-4 border-orange-500 mb-8">
-                        <h3 class="text-orange-700 dark:text-orange-300 mb-4 text-lg font-semibold flex items-center gap-2">
+                    <div class="parameter-group bg-gray-50 p-6 rounded-xl border-l-4 border-orange-500 mb-8">
+                        <h3 class="text-orange-700 mb-4 text-lg font-semibold flex items-center gap-2">
                             <button class="info-button bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">i</button>
-                            🏥 Healthcare & Productivity Losses <span class="ml-2 text-base">💸 Lost Productivity</span>
+                            💸 Lost Productivity
                         </h3>
                         <div class="slider-container mb-6">
                             <div class="slider-label flex justify-between mb-2 font-medium">
                                 <span class="flex items-center gap-2">
-                                    <button class="info-button bg-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">i</button>
                                     Annual Healthcare Costs
                                 </span>
-                                <span class="slider-value text-orange-500 dark:text-orange-300 font-bold flex items-center gap-2" id="healthcare-value">$7,000</span>
+                                <span class="slider-value text-orange-500 font-bold flex items-center gap-2" id="healthcare-value">$7,000</span>
+                                <button class="info-button bg-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">i</button>
                             </div>
                             <div class="flex items-center gap-2">
-                              <input type="range" min="6500" max="8000" value="7000" step="100" class="slider w-full h-2 rounded bg-gray-200 dark:bg-gray-700 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-blue-400" id="healthcare-slider" aria-label="Annual Healthcare Costs per Person" />
-                              <input type="number" id="healthcare-input" min="6500" max="8000" step="100" value="7000" class="w-24 ml-2 px-2 py-1 rounded border border-gray-300 dark:bg-gray-800 dark:text-gray-100" aria-label="Healthcare Numeric Input" />
-                            </div>
+                              <input type="range" min="6500" max="20000" value="7000" step="100" class="slider w-full h-2 rounded bg-gray-200 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-blue-400" id="healthcare-slider" aria-label="Annual Healthcare Costs per Person" />
+                              <input type="number" id="healthcare-input" min="6500" max="20000" step="100" value="7000" class="w-24 ml-2 px-2 py-1 rounded border border-gray-300" aria-label="Healthcare Numeric Input" />
                         </div>
+                                        </div>
                         <div class="slider-container mb-6">
                             <div class="slider-label flex justify-between mb-2 font-medium">
                                 <span class="flex items-center gap-2">
-                                    <button class="info-button bg-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">i</button>
                                     Annual Productivity Loss per Person (Q)
                                 </span>
-                                <span class="slider-value text-orange-500 dark:text-orange-300 font-bold flex items-center gap-2" id="productivity-value">$6,000</span>
+                                <span class="slider-value text-orange-500 font-bold flex items-center gap-2" id="productivity-value">$6,000</span>
+                                <button class="info-button bg-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">i</button>
                             </div>
                             <div class="flex items-center gap-2">
-                              <input type="range" min="6000" max="8000" value="6000" step="100" class="slider w-full h-2 rounded bg-gray-200 dark:bg-gray-700 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-blue-400" id="productivity-slider" aria-label="Annual Productivity Loss per Person" />
-                              <input type="number" id="productivity-input" min="6000" max="8000" step="100" value="6000" class="w-24 ml-2 px-2 py-1 rounded border border-gray-300 dark:bg-gray-800 dark:text-gray-100" aria-label="Productivity Numeric Input" />
-                            </div>
+                              <input type="range" min="6000" max="10000" value="6000" step="100" class="slider w-full h-2 rounded bg-gray-200 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-blue-400" id="productivity-slider" aria-label="Annual Productivity Loss per Person" />
+                              <input type="number" id="productivity-input" min="6000" max="10000" step="100" value="6000" class="w-24 ml-2 px-2 py-1 rounded border border-gray-300" aria-label="Productivity Numeric Input" />
                         </div>
+                                        </div>
                         <div class="slider-container mb-6">
                             <div class="slider-label flex justify-between mb-2 font-medium">
                                 <span class="flex items-center gap-2">
-                                    <button class="info-button bg-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">i</button>
                                     Treatment Duration in Years (R)
                                 </span>
-                                <span class="slider-value text-orange-500 dark:text-orange-300 font-bold flex items-center gap-2" id="duration-value">4.5 years</span>
+                                <span class="slider-value text-orange-500 font-bold flex items-center gap-2" id="duration-value">4.5 years</span>
+                                <button class="info-button bg-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">i</button>
                             </div>
                             <div class="flex items-center gap-2">
-                              <input type="range" min="3" max="6" value="4.5" step="0.1" class="slider w-full h-2 rounded bg-gray-200 dark:bg-gray-700 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-blue-400" id="duration-slider" aria-label="Treatment Duration in Years" />
-                              <input type="number" id="duration-input" min="3" max="6" step="0.1" value="4.5" class="w-20 ml-2 px-2 py-1 rounded border border-gray-300 dark:bg-gray-800 dark:text-gray-100" aria-label="Duration Numeric Input" />
-                            </div>
+                              <input type="range" min="3" max="6" value="4.5" step="0.1" class="slider w-full h-2 rounded bg-gray-200 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-blue-400" id="duration-slider" aria-label="Treatment Duration in Years" />
+                              <input type="number" id="duration-input" min="3" max="6" step="0.1" value="4.5" class="w-20 ml-2 px-2 py-1 rounded border border-gray-300" aria-label="Duration Numeric Input" />
+                        </div>
                         </div>
                         <div class="formula-display bg-blue-50 border border-blue-300 rounded px-4 py-2 mt-2 font-mono text-sm text-gray-700">
                             <strong>Formula:</strong> Depression People × (P + Q) × R<br>
@@ -342,7 +302,7 @@
                 </div>
             </div>
 
-            <div class="visualization-card bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 sticky top-8 h-fit">
+            <div class="visualization-card bg-white rounded-2xl shadow-xl p-8 sticky top-8 h-fit">
                 <div class="total-display text-center p-8 bg-gradient-to-r from-gray-800 to-gray-700 text-white rounded-xl mb-8">
                     <div class="total-value text-4xl font-bold text-red-400 mb-2" id="total-cost">$2.09 Trillion</div>
                     <p class="text-lg">Total Economic Cost to Society</p>
@@ -363,84 +323,61 @@
                     <button id="causal-popout-btn" class="ml-2 px-3 py-1 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">Pop Out</button>
                   </h3>
                   <div class="mermaid bg-white rounded-lg p-4" id="causal-diagram">
-                    graph TD
-                    A[Social Media Adoption 2009-2012] --> B[Addictive Design Features]
-                    A --> C[Displacement of Non-Screen Activities]
-                    B --> D[Excessive Usage 5+ hrs/day]
-                    C --> E[Reduced In-Person Interaction]
-                    C --> F[Reduced Sleep]
-                    C --> G[Reduced Physical Activity]
-                    D --> H[Sleep Deprivation]
-                    D --> I[Social Comparison]
-                    D --> J[Cyberbullying Exposure]
-                    D --> K[Negative Emotion Contagion]
-                    E --> L[Social Isolation]
-                    F --> H
-                    H --> M[Depression & Anxiety]
-                    I --> M
-                    J --> M
-                    K --> M
-                    L --> M
-                    G --> N[Physical Health Decline]
-                    N --> M
-                    M --> O[Suicide Risk]
-                    M --> P[Healthcare Utilization]
-                    M --> Q[Productivity Loss]
-                    O --> R[$750B Mortality Costs]
-                    P --> S[$862B Healthcare Costs]
-                    Q --> S
-                    M --> T[$480B QALY Losses]
-                    R --> U[$2.1T Total Economic Impact]
-                    S --> U
-                    T --> U
-
-                    style A fill:#ff6b6b
-                    style U fill:#e74c3c,color:#fff
-                    style R fill:#e74c3c,color:#fff
-                    style S fill:#3498db,color:#fff
-                    style T fill:#9b59b6,color:#fff
-                    style H fill:#f39c12
-                    style I fill:#f39c12
-                    style J fill:#f39c12
-                    style K fill:#f39c12
-                  </div>
+                        graph TD
+                        A[Social Media Adoption 2009-2012] --> B[Addictive Design Features]
+                        A --> C[Displacement of Non-Screen Activities]
+                        B --> D[Excessive Usage 5+ hrs/day]
+                        C --> E[Reduced In-Person Interaction]
+                        C --> F[Reduced Sleep]
+                        C --> G[Reduced Physical Activity]
+                        D --> H[Sleep Deprivation]
+                        D --> I[Social Comparison]
+                        D --> J[Cyberbullying Exposure]
+                        D --> K[Negative Emotion Contagion]
+                        E --> L[Social Isolation]
+                        F --> H
+                        H --> M[Depression & Anxiety]
+                        I --> M
+                        J --> M
+                        K --> M
+                        L --> M
+                        G --> N[Physical Health Decline]
+                        N --> M
+                        M --> O[Suicide Risk]
+                        M --> P[Healthcare Utilization]
+                        M --> Q[Productivity Loss]
+                        O --> R[$750B Mortality Costs]
+                        P --> S[$862B Healthcare Costs]
+                        Q --> S
+                        M --> T[$480B QALY Losses]
+                        R --> U[$2.1T Total Economic Impact]
+                        S --> U
+                        T --> U
+                        
+                        style A fill:#ff6b6b
+                        style U fill:#e74c3c,color:#fff
+                        style R fill:#e74c3c,color:#fff
+                        style S fill:#3498db,color:#fff
+                        style T fill:#9b59b6,color:#fff
+                        style H fill:#f39c12
+                        style I fill:#f39c12
+                        style J fill:#f39c12
+                        style K fill:#f39c12
+                    </div>
                 </div>
                 <!-- Modal for Causal Pathways -->
                 <div id="causal-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 hidden">
-                  <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-8 max-w-3xl w-full relative">
-                    <button id="causal-modal-close" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none">&times;</button>
-                    <h3 class="text-gray-800 dark:text-gray-100 mb-4 text-lg font-semibold text-center">🔗 Causal Pathways (Research-Based)</h3>
-                    <div class="mermaid bg-white dark:bg-gray-900 rounded-lg p-4" id="causal-diagram-modal"></div>
+                  <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-6xl w-full mx-4 relative">
+                    <button id="causal-modal-close" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-gray-700 focus:outline-none">&times;</button>
+                    <h3 class="text-gray-800 mb-4 text-lg font-semibold text-center">🔗 Causal Pathways (Research-Based)</h3>
+                    <div class="mermaid bg-white rounded-lg p-6 overflow-auto" id="causal-diagram-modal" style="min-height: 600px; max-height: 80vh;"></div>
                   </div>
                 </div>
-                <script>
-                // Causal Pathways pop-out logic
-                const popoutBtn = document.getElementById('causal-popout-btn');
-                const modal = document.getElementById('causal-modal');
-                const modalClose = document.getElementById('causal-modal-close');
-                const diagram = document.getElementById('causal-diagram');
-                const modalDiagram = document.getElementById('causal-diagram-modal');
-                if (popoutBtn && modal && modalClose && diagram && modalDiagram) {
-                  popoutBtn.addEventListener('click', () => {
-                    modal.classList.remove('hidden');
-                    modalDiagram.innerHTML = diagram.innerHTML;
-                    if (window.mermaid) mermaid.init(undefined, modalDiagram);
-                  });
-                  modalClose.addEventListener('click', () => {
-                    modal.classList.add('hidden');
-                    // Optionally clear modalDiagram.innerHTML = '';
-                  });
-                  modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                      modal.classList.add('hidden');
-                    }
-                  });
-                }
-                </script>
 
-                <div class="chart-container mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl">
-                    <h3 class="text-red-700 dark:text-red-400 mb-4 text-lg font-semibold text-center">📈 Cumulative Costs Since Social Media Era (2009-2024)</h3>
-                    <div class="timeline-info bg-blue-100 dark:bg-blue-900 rounded p-3 mb-4 text-sm">
+
+                <div class="chart-container mb-8 p-6 bg-gray-50 rounded-xl">
+                    <h3 class="text-red-700 mb-4 text-lg font-semibold text-center">📈 Cumulative Costs Since Social Media Era (2009-2024)</h3>
+                    <div class="timeline-info bg-blue-100 rounded p-3 mb-4 text-sm">
                         <strong>Key Timeline:</strong> 2009-2012 marked the transition to smartphone-based social media (iPhone 2007, Instagram 2010, widespread adoption by 2012)
                     </div>
                     <div class="chart-wrapper relative h-96 mb-4">
@@ -448,34 +385,29 @@
                     </div>
                 </div>
 
-                <div class="chart-container mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl">
-                    <h3 class="text-orange-700 dark:text-orange-300 mb-4 text-lg font-semibold text-center">📊 Cost Composition</h3>
+                <div class="chart-container mb-8 p-6 bg-gray-50 rounded-xl">
+                    <h3 class="text-orange-700 mb-4 text-lg font-semibold text-center">📊 Cost Composition</h3>
                     <div class="cost-breakdown-chart relative h-64 mb-4">
                         <canvas id="pieChart" width="400" height="250" aria-label="Cost Composition Pie Chart" role="img"></canvas>
-                        <div class="flex flex-wrap justify-center items-center gap-6 mt-4 w-full">
-                            <span class="flex items-center gap-2 text-red-700 dark:text-red-400"><span class="text-2xl">☠️</span> <span>Death</span></span>
-                            <span class="flex items-center gap-2 text-purple-700 dark:text-purple-400"><span class="text-2xl">😞</span> <span>Disability</span></span>
-                            <span class="flex items-center gap-2 text-orange-700 dark:text-orange-300"><span class="text-2xl">💸</span> <span>Lost Productivity</span></span>
-                        </div>
                     </div>
                 </div>
 
                 <div class="formula-summary bg-gray-50 rounded-xl p-6 mb-8">
-                    <h3 class="text-gray-800 mb-6 text-lg font-semibold text-center">💰 <span class="text-red-700 dark:text-red-400">Cost</span> <span class="text-purple-700 dark:text-purple-400">Breakdown</span></h3>
+                    <h3 class="text-gray-800 mb-6 text-lg font-semibold text-center">💰 <span class="text-red-700">Cost</span> <span class="text-purple-700">Breakdown</span></h3>
                     <div class="formula-item bg-white rounded-lg p-4 mb-4 border-l-4 border-red-600">
-                        <div class="formula-title font-bold text-red-700 dark:text-red-400 mb-2">☠️ 1. Mortality Costs</div>
-                        <div class="formula-equation font-mono bg-red-50 p-2 rounded mb-2 text-red-700 dark:text-red-400" id="mortality-display-formula">300K × 25% × $10.0M = $750.0B</div>
-                        <div class="formula-result font-bold text-red-700 dark:text-red-400 text-lg" id="mortality-result">$750.0B</div>
+                        <div class="formula-title font-bold text-red-700 mb-2">☠️ 1. Death</div>
+                        <div class="formula-equation font-mono bg-red-50 p-2 rounded mb-2 text-red-700" id="mortality-display-formula">300K × 25% × $10.0M = $750.0B</div>
+                        <div class="formula-result font-bold text-red-700 text-lg" id="mortality-result">$750.0B</div>
                     </div>
                     <div class="formula-item bg-white rounded-lg p-4 mb-4 border-l-4 border-purple-500">
-                        <div class="formula-title font-bold text-purple-700 dark:text-purple-400 mb-2">😞 2. Mental Health QALYs</div>
-                        <div class="formula-equation font-mono bg-purple-50 p-2 rounded mb-2 text-purple-700 dark:text-purple-400" id="mental-display-formula">15M × 8.0yr × 30% × $133K = $480.0B</div>
-                        <div class="formula-result font-bold text-purple-700 dark:text-purple-400 text-lg" id="mental-result">$480.0B</div>
+                        <div class="formula-title font-bold text-purple-700 mb-2">😞 2. Disability</div>
+                        <div class="formula-equation font-mono bg-purple-50 p-2 rounded mb-2 text-purple-700" id="mental-display-formula">15M × 8.0yr × 30% × $133K = $480.0B</div>
+                        <div class="formula-result font-bold text-purple-700 text-lg" id="mental-result">$480.0B</div>
                     </div>
                     <div class="formula-item bg-white rounded-lg p-4 mb-4 border-l-4 border-orange-500">
-                        <div class="formula-title font-bold text-orange-700 dark:text-orange-300 mb-2">💸 3. Healthcare & Productivity</div>
-                        <div class="formula-equation font-mono bg-orange-50 p-2 rounded mb-2 text-orange-700 dark:text-orange-300" id="healthcare-display-formula">15M × $11.5K × 5.0yr = $862.5B</div>
-                        <div class="formula-result font-bold text-orange-700 dark:text-orange-300 text-lg" id="healthcare-result">$862.5B</div>
+                        <div class="formula-title font-bold text-orange-700 mb-2">💸 3. Lost Productivity</div>
+                        <div class="formula-equation font-mono bg-orange-50 p-2 rounded mb-2 text-orange-700" id="healthcare-display-formula">15M × $11.5K × 5.0yr = $862.5B</div>
+                        <div class="formula-result font-bold text-orange-700 text-lg" id="healthcare-result">$862.5B</div>
                     </div>
                 </div>
             </div>
@@ -513,854 +445,99 @@
 
     <!-- Tooltip templates for all info buttons -->
     <template id="tooltip-mortality">
-      <div class="font-bold text-lg mb-2 text-gray-800 dark:text-gray-100 flex items-center">☠️ Mortality Costs</div>
-      <div class="mb-2 text-sm text-gray-700 dark:text-gray-200">Excess Suicides Since 2009 (P):</div>
+      <div class="font-bold text-lg mb-2 text-gray-800 flex items-center">☠️ Mortality Costs</div>
+      <div class="mb-2 text-sm text-gray-700">Excess Suicides Since 2009 (P):</div>
       <ul class="mb-2 pl-4 list-disc text-sm">
         <li>CDC WONDER and Twenge et al. (2018) show a marked rise in teen suicide rates after social media adoption.<br>
-          <a href="https://www.cdc.gov/suicide/facts/index.html" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank" rel="noopener">CDC Suicide Facts</a> |
-          <a href="https://jonathanhaidt.com/reviews" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank" rel="noopener">Twenge et al. (2018)</a>
+          <a href="https://www.cdc.gov/suicide/facts/index.html" class="text-indigo-600 underline hover:text-indigo-800" target="_blank" rel="noopener">CDC Suicide Facts</a> |
+          <a href="https://jonathanhaidt.com/reviews" class="text-indigo-600 underline hover:text-indigo-800" target="_blank" rel="noopener">Twenge et al. (2018)</a>
         </li>
         <li>Braghieri, Levy & Makarin (2022) found Facebook's rollout increased suicide rates; internal Facebook research (WSJ) links Instagram to teen mental health harm.<br>
-          <a href="https://econpapers.repec.org/RePEc:aea:aecrev:v:112:y:2022:i:11:p:3660-93" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank" rel="noopener">Braghieri et al. (2022)</a> |
-          <a href="https://law.yale.edu/isp/events/facebook-files" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank" rel="noopener">Facebook Files (WSJ)</a>
+          <a href="https://econpapers.repec.org/RePEc:aea:aecrev:v:112:y:2022:i:11:p:3660-93" class="text-indigo-600 underline hover:text-indigo-800" target="_blank" rel="noopener">Braghieri et al. (2022)</a> |
+          <a href="https://law.yale.edu/isp/events/facebook-files" class="text-indigo-600 underline hover:text-indigo-800" target="_blank" rel="noopener">Facebook Files (WSJ)</a>
         </li>
         <li>Value of Statistical Life (VSL): US DOT 2024: $13.7M; EPA: $11.2M; Banzhaf (2022, meta-analysis): $8M.<br>
-          <a href="https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-on-valuation-of-a-statistical-life-in-economic-analysis" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank" rel="noopener">DOT 2024 VSL</a> |
-          <a href="https://doi.org/10.1017/bca.2022.9" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank" rel="noopener">Banzhaf (2022)</a>
+          <a href="https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-on-valuation-of-a-statistical-life-in-economic-analysis" class="text-indigo-600 underline hover:text-indigo-800" target="_blank" rel="noopener">DOT 2024 VSL</a> |
+          <a href="https://doi.org/10.1017/bca.2022.9" class="text-indigo-600 underline hover:text-indigo-800" target="_blank" rel="noopener">Banzhaf (2022)</a>
         </li>
       </ul>
-      <div class="mt-2 text-xs text-gray-500 dark:text-gray-400">All references are peer-reviewed or official sources.</div>
+      <div class="mt-2 text-xs text-gray-500">All references are peer-reviewed or official sources.</div>
     </template>
     <template id="tooltip-mortality-vsl">
-      <div class="font-bold text-lg mb-2 text-gray-800 dark:text-gray-100">Value of Statistical Life (VSL)</div>
+      <div class="font-bold text-lg mb-2 text-gray-800">Value of Statistical Life (VSL)</div>
       <div class="text-sm mb-2">US DOT's 2024 guidance for policy cost-benefit analysis: $13.7M.<br>
-        <a href="https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-on-valuation-of-a-statistical-life-in-economic-analysis" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank">DOT 2024 VSL</a>
+        <a href="https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-on-valuation-of-a-statistical-life-in-economic-analysis" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">DOT 2024 VSL</a>
       </div>
     </template>
     <template id="tooltip-mortality-suicides">
-      <div class="font-bold text-lg mb-2 text-gray-800 dark:text-gray-100">Excess Suicides Since 2009 (P)</div>
+      <div class="font-bold text-lg mb-2 text-gray-800">Excess Suicides Since 2009 (P)</div>
       <div class="text-sm mb-2">CDC data and Twenge et al. (2018) show a sharp rise in youth suicides after 2010, coinciding with social media adoption.<br>
-        <a href="https://www.cdc.gov/suicide/facts/index.html" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank">CDC Suicide Facts</a> |
-        <a href="https://jonathanhaidt.com/reviews" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank">Twenge et al. (2018)</a>
+        <a href="https://www.cdc.gov/suicide/facts/index.html" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">CDC Suicide Facts</a> |
+        <a href="https://jonathanhaidt.com/reviews" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">Twenge et al. (2018)</a>
       </div>
     </template>
     <template id="tooltip-mortality-attribution">
-      <div class="font-bold text-lg mb-2 text-gray-800 dark:text-gray-100">% Attributable to Social Media (Q)</div>
+      <div class="font-bold text-lg mb-2 text-gray-800">% Attributable to Social Media (Q)</div>
       <div class="text-sm mb-2">Quasi-experimental studies (Braghieri et al. 2022) and Facebook's own research (WSJ) suggest a significant causal link.<br>
-        <a href="https://econpapers.repec.org/RePEc:aea:aecrev:v:112:y:2022:i:11:p:3660-93" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank">Braghieri et al. (2022)</a> |
-        <a href="https://law.yale.edu/isp/events/facebook-files" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank">Facebook Files (WSJ)</a>
+        <a href="https://econpapers.repec.org/RePEc:aea:aecrev:v:112:y:2022:i:11:p:3660-93" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">Braghieri et al. (2022)</a> |
+        <a href="https://law.yale.edu/isp/events/facebook-files" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">Facebook Files (WSJ)</a>
       </div>
     </template>
     <template id="tooltip-qaly">
-      <div class="font-bold text-lg mb-2 text-gray-800 dark:text-gray-100 flex items-center">🧠 Mental Health QALY Losses</div>
-      <div class="mb-2 text-sm text-gray-700 dark:text-gray-200">Systematic reviews and meta-analyses show a strong association between social media use and depression.<br>
-        <a href="https://www.pnas.org/doi/pdf/10.1073/pnas.1815663116" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank">PNAS 2019</a> |
-        <a href="https://www.nimh.nih.gov/health/statistics/major-depression" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank">NIMH Depression Stats</a>
+      <div class="font-bold text-lg mb-2 text-gray-800 flex items-center">🧠 Mental Health QALY Losses</div>
+      <div class="mb-2 text-sm text-gray-700">Systematic reviews and meta-analyses show a strong association between social media use and depression.<br>
+        <a href="https://www.pnas.org/doi/pdf/10.1073/pnas.1815663116" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">PNAS 2019</a> |
+        <a href="https://www.nimh.nih.gov/health/statistics/major-depression" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">NIMH Depression Stats</a>
       </div>
     </template>
     <template id="tooltip-qaly-people">
-      <div class="font-bold text-lg mb-2 text-gray-800 dark:text-gray-100">People with SM-Induced Depression (P)</div>
+      <div class="font-bold text-lg mb-2 text-gray-800">People with SM-Induced Depression (P)</div>
       <div class="text-sm mb-2">PNAS (2019): Each additional hour of social media use was associated with a 0.23-point increase in depressive symptoms.<br>
         <b>Formula:</b> P = Estimated number of people with depression attributable to social media since 2009<br>
-        <a href="https://www.pnas.org/doi/pdf/10.1073/pnas.1815663116" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank">PNAS 2019</a>
+        <a href="https://www.pnas.org/doi/pdf/10.1073/pnas.1815663116" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">PNAS 2019</a>
       </div>
     </template>
     <template id="tooltip-qaly-yld">
-      <div class="font-bold text-lg mb-2 text-gray-800 dark:text-gray-100">Years Lived with Disability (Q)</div>
+      <div class="font-bold text-lg mb-2 text-gray-800">Years Lived with Disability (Q)</div>
       <div class="text-sm mb-2">WHO and Hogrefe Intl Journal provide DALY/YLD metrics for depression.<br>
-        <a href="https://www.who.int/healthinfo/global_burden_disease/metrics_daly/en/" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank">WHO GBD</a> |
-        <a href="https://econtent.hogrefe.com/doi/10.1027/1864-1105/a000227" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank">Hogrefe Intl Journal</a>
+        <a href="https://www.who.int/healthinfo/global_burden_disease/metrics_daly/en/" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">WHO GBD</a> |
+        <a href="https://econtent.hogrefe.com/doi/10.1027/1864-1105/a000227" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">Hogrefe Intl Journal</a>
       </div>
     </template>
     <template id="tooltip-qaly-qol">
-      <div class="font-bold text-lg mb-2 text-gray-800 dark:text-gray-100">Quality of Life Reduction (R)</div>
+      <div class="font-bold text-lg mb-2 text-gray-800">Quality of Life Reduction (R)</div>
       <div class="text-sm mb-2">WHO studies show depression reduces quality of life by 30-40%.<br>
         <b>Formula:</b> QALY = P × Q × R × (VSL ÷ 75 years)<br>
-        <a href="https://www.who.int/healthinfo/global_burden_disease/metrics_daly/en/" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank">WHO GBD</a>
+        <a href="https://www.who.int/healthinfo/global_burden_disease/metrics_daly/en/" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">WHO GBD</a>
       </div>
     </template>
     <template id="tooltip-healthcare">
-      <div class="font-bold text-lg mb-2 text-gray-800 dark:text-gray-100 flex items-center">🏥 Healthcare & Productivity Losses</div>
-      <div class="mb-2 text-sm text-gray-700 dark:text-gray-200">Greenberg et al. (2023) and JID (2017) estimate $6,500-$8,000/yr for depression treatment.<br>
-        <a href="https://www.jmcp.org/doi/10.18553/jmcp.2022.28.11-a.s1" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank">Greenberg et al. (2023)</a> |
-        <a href="https://www.jidonline.org/article/S0022-202X(17)31217-4/pdf" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank">JID 2017</a>
+      <div class="font-bold text-lg mb-2 text-gray-800 flex items-center">🏥 Healthcare & Productivity Losses</div>
+      <div class="mb-2 text-sm text-gray-700">Greenberg et al. (2023) and JID (2017) estimate $6,500-$8,000/yr for depression treatment.<br>
+        <a href="https://www.jmcp.org/doi/10.18553/jmcp.2022.28.11-a.s1" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">Greenberg et al. (2023)</a> |
+        <a href="https://www.jidonline.org/article/S0022-202X(17)31217-4/pdf" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">JID 2017</a>
       </div>
     </template>
     <template id="tooltip-healthcare-costs">
-      <div class="font-bold text-lg mb-2 text-gray-800 dark:text-gray-100">Annual Healthcare Costs per Person (P)</div>
+      <div class="font-bold text-lg mb-2 text-gray-800">Annual Healthcare Costs per Person (P)</div>
       <div class="text-sm mb-2">Greenberg et al. (2023) and JID (2017) estimate $6,500-$8,000/yr for depression treatment.<br>
-        <a href="https://www.jmcp.org/doi/10.18553/jmcp.2022.28.11-a.s1" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank">Greenberg et al. (2023)</a> |
-        <a href="https://www.jidonline.org/article/S0022-202X(17)31217-4/pdf" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank">JID 2017</a>
+        <a href="https://www.jmcp.org/doi/10.18553/jmcp.2022.28.11-a.s1" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">Greenberg et al. (2023)</a> |
+        <a href="https://www.jidonline.org/article/S0022-202X(17)31217-4/pdf" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">JID 2017</a>
       </div>
     </template>
     <template id="tooltip-healthcare-productivity">
-      <div class="font-bold text-lg mb-2 text-gray-800 dark:text-gray-100">Annual Productivity Loss per Person (Q)</div>
+      <div class="font-bold text-lg mb-2 text-gray-800">Annual Productivity Loss per Person (Q)</div>
       <div class="text-sm mb-2">Workplace costs are 50-61% of total depression burden (Springer 2021).<br>
-        <a href="https://link.springer.com/content/pdf/10.1007/s40273-021-01019-4.pdf" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank">Springer 2021</a>
+        <a href="https://link.springer.com/content/pdf/10.1007/s40273-021-01019-4.pdf" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">Springer 2021</a>
       </div>
     </template>
     <template id="tooltip-healthcare-duration">
-      <div class="font-bold text-lg mb-2 text-gray-800 dark:text-gray-100">Treatment Duration in Years (R)</div>
+      <div class="font-bold text-lg mb-2 text-gray-800">Treatment Duration in Years (R)</div>
       <div class="text-sm mb-2">Chronic depression often lasts 4-6 years; see AJPM (2024) for preventive cost savings.<br>
-        <a href="https://www.ajpmonline.org/article/S0749-3797(24)00022-9/pdf" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800" target="_blank">AJPM 2024</a>
+        <a href="https://www.ajpmonline.org/article/S0749-3797(24)00022-9/pdf" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">AJPM 2024</a>
       </div>
     </template>
 
-    <script>
-        // --- DARK MODE TOGGLE LOGIC ---
-        function setDarkMode(enabled) {
-            const root = document.documentElement;
-            if (enabled) {
-                root.classList.add('dark');
-                localStorage.setItem('darkMode', 'true');
-                document.getElementById('dark-mode-icon').textContent = '☀️';
-            } else {
-                root.classList.remove('dark');
-                localStorage.setItem('darkMode', 'false');
-                document.getElementById('dark-mode-icon').textContent = '🌙';
-            }
-        }
-        function initDarkMode() {
-            const darkModeToggle = document.getElementById('dark-mode-toggle');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const saved = localStorage.getItem('darkMode');
-            let enabled = saved === null ? prefersDark : saved === 'true';
-            setDarkMode(enabled);
-            darkModeToggle.setAttribute('aria-pressed', enabled);
-            darkModeToggle.addEventListener('click', () => {
-                enabled = !document.documentElement.classList.contains('dark');
-                setDarkMode(enabled);
-                darkModeToggle.setAttribute('aria-pressed', enabled);
-            });
-        }
 
-        // Initialize Mermaid
-        mermaid.initialize({ 
-            startOnLoad: true,
-            theme: 'default',
-            themeVariables: {
-                primaryColor: '#667eea',
-                primaryTextColor: '#2c3e50',
-                primaryBorderColor: '#667eea',
-                lineColor: '#667eea'
-            }
-        });
-
-        // Initialize all sliders and calculations
-        const sliders = {
-            vsl: document.getElementById('vsl-slider'),
-            suicides: document.getElementById('suicides-slider'),
-            attribution: document.getElementById('attribution-slider'),
-            depression: document.getElementById('depression-slider'),
-            yld: document.getElementById('yld-slider'),
-            qol: document.getElementById('qol-slider'),
-            healthcare: document.getElementById('healthcare-slider'),
-            productivity: document.getElementById('productivity-slider'),
-            duration: document.getElementById('duration-slider')
-        };
-
-        // Add corresponding numeric inputs
-        const sliderInputs = {
-            vsl: document.getElementById('vsl-input'),
-            suicides: document.getElementById('suicides-input'),
-            attribution: document.getElementById('attribution-input'),
-            depression: document.getElementById('depression-input'),
-            yld: document.getElementById('yld-input'),
-            qol: document.getElementById('qol-input'),
-            healthcare: document.getElementById('healthcare-input'),
-            productivity: document.getElementById('productivity-input'),
-            duration: document.getElementById('duration-input')
-        };
-
-        const values = {
-            vsl: document.getElementById('vsl-value'),
-            suicides: document.getElementById('suicides-value'),
-            attribution: document.getElementById('attribution-value'),
-            depression: document.getElementById('depression-value'),
-            yld: document.getElementById('yld-value'),
-            qol: document.getElementById('qol-value'),
-            healthcare: document.getElementById('healthcare-value'),
-            productivity: document.getElementById('productivity-value'),
-            duration: document.getElementById('duration-value')
-        };
-
-        const formulaResults = {
-            mortality: document.getElementById('mortality-formula-result'),
-            mental: document.getElementById('mental-formula-result'),
-            healthcare: document.getElementById('healthcare-formula-result')
-        };
-
-        const displayFormulas = {
-            mortality: document.getElementById('mortality-display-formula'),
-            mental: document.getElementById('mental-display-formula'),
-            healthcare: document.getElementById('healthcare-display-formula')
-        };
-
-        const results = {
-            mortality: document.getElementById('mortality-result'),
-            mental: document.getElementById('mental-result'),
-            healthcare: document.getElementById('healthcare-result'),
-            total: document.getElementById('total-cost'),
-            gdpPercentage: document.getElementById('gdp-percentage'),
-            finalEquation: document.getElementById('final-equation')
-        };
-
-        // Clock elements
-        const runningTotal = document.getElementById('running-total');
-        const costPerSecond = document.getElementById('cost-per-second');
-        let clockStartTime = Date.now();
-        let currentTotalCost = 0;
-
-        // Floating total bar elements
-        let floatingTotalValue = document.getElementById('floating-total-value');
-
-        // Chart variables
-        let pieChart;
-        let timelineChart;
-
-        function formatNumber(num) {
-            if (num >= 1e12) return (num / 1e12).toFixed(1) + 'T';
-            if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
-            if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
-            if (num >= 1e3) return (num / 1e3).toFixed(0) + 'K';
-            return num.toFixed(0);
-        }
-
-        function formatCurrency(num) {
-            return '$' + formatNumber(num);
-        }
-
-        function formatLargeNumber(num) {
-            return new Intl.NumberFormat().format(Math.round(num));
-        }
-
-        function generateTimelineData() {
-            try {
-                const years = [];
-                const mortalityData = [];
-                const mentalData = [];
-                const healthcareData = [];
-                const totalData = [];
-
-                const vsl = parseFloat(sliders.vsl.value) * 1e6;
-                const totalSuicides = parseInt(sliders.suicides.value);
-                const attributionRate = parseFloat(sliders.attribution.value) / 100;
-                const depressionPeople = parseInt(sliders.depression.value);
-                const yldYears = parseFloat(sliders.yld.value);
-                const qolReduction = parseFloat(sliders.qol.value) / 100;
-                const healthcareCostPerYear = parseInt(sliders.healthcare.value);
-                const productivityLossPerYear = parseInt(sliders.productivity.value);
-                const treatmentDuration = parseFloat(sliders.duration.value);
-
-                // Calculate per-year costs
-                const yearsElapsed = 2024 - 2009;
-                const suicidesPerYear = totalSuicides / yearsElapsed;
-                const depressionPerYear = depressionPeople / yearsElapsed;
-
-                for (let year = 2009; year <= 2024; year++) {
-                    years.push(year.toString());
-                    
-                    const yearsSoFar = year - 2009 + 1;
-                    
-                    // Cumulative mortality costs
-                    const cumulativeSuicides = suicidesPerYear * yearsSoFar * attributionRate;
-                    const mortalityCost = cumulativeSuicides * vsl;
-                    
-                    // Cumulative mental health costs
-                    const cumulativeDepression = depressionPerYear * yearsSoFar;
-                    const qalyLoss = cumulativeDepression * yldYears * qolReduction;
-                    const mentalHealthCost = qalyLoss * (vsl / 75);
-                    
-                    // Cumulative healthcare costs
-                    const healthcareCost = cumulativeDepression * (healthcareCostPerYear + productivityLossPerYear) * treatmentDuration;
-                    
-                    mortalityData.push(mortalityCost / 1e9);
-                    mentalData.push(mentalHealthCost / 1e9);
-                    healthcareData.push(healthcareCost / 1e9);
-                    totalData.push((mortalityCost + mentalHealthCost + healthcareCost) / 1e9);
-                }
-
-                return { years, mortalityData, mentalData, healthcareData, totalData };
-            } catch (error) {
-                console.error('Error generating timeline data:', error);
-                return { years: [], mortalityData: [], mentalData: [], healthcareData: [], totalData: [] };
-            }
-        }
-
-        function initCharts() {
-            // Pie Chart
-            const pieCtx = document.getElementById('pieChart').getContext('2d');
-            pieChart = new Chart(pieCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Mortality Costs', 'Mental Health QALYs', 'Healthcare & Productivity'],
-                    datasets: [{
-                        data: [750, 480, 862],
-                        backgroundColor: [
-                            '#e74c3c', // Death (red)
-                            '#9b59b6', // Disability (purple)
-                            '#f59e42'  // Lost Productivity (orange)
-                        ],
-                        borderWidth: 2,
-                        borderColor: '#fff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 10,
-                                font: {
-                                    size: 11
-                                }
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const value = context.parsed;
-                                    const percent = ((value / total) * 100).toFixed(1);
-                                    return `${context.label}: ${value.toFixed(1)}B (${percent}%)`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Timeline Chart
-            const timelineCtx = document.getElementById('timelineChart').getContext('2d');
-            const timelineData = generateTimelineData();
-            timelineChart = new Chart(timelineCtx, {
-                type: 'line',
-                data: {
-                    labels: timelineData.years,
-                    datasets: [
-                        {
-                            label: 'Total Cumulative Cost',
-                            data: timelineData.totalData,
-                            borderColor: '#e74c3c',
-                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                            fill: true,
-                            tension: 0.4,
-                            borderWidth: 3,
-                            borderDash: []
-                        },
-                        {
-                            label: 'Mortality Costs',
-                            data: timelineData.mortalityData,
-                            borderColor: '#e74c3c',
-                            backgroundColor: 'rgba(231, 76, 60, 0.05)',
-                            fill: false,
-                            tension: 0.4,
-                            borderWidth: 2,
-                            borderDash: [8, 4]
-                        },
-                        {
-                            label: 'Mental Health QALYs',
-                            data: timelineData.mentalData,
-                            borderColor: '#9b59b6',
-                            backgroundColor: 'rgba(155, 89, 182, 0.05)',
-                            fill: false,
-                            tension: 0.4,
-                            borderWidth: 2,
-                            borderDash: [8, 4]
-                        },
-                        {
-                            label: 'Healthcare & Productivity',
-                            data: timelineData.healthcareData,
-                            borderColor: '#3498db',
-                            backgroundColor: 'rgba(52, 152, 219, 0.05)',
-                            fill: false,
-                            tension: 0.4,
-                            borderWidth: 2,
-                            borderDash: [8, 4]
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                font: {
-                                    size: 11
-                                },
-                                usePointStyle: true,
-                                padding: 15
-                            }
-                        },
-                        title: {
-                            display: true,
-                            text: 'Cumulative Economic Impact (Billions USD)',
-                            font: {
-                                size: 14
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Year',
-                                font: {
-                                    size: 12
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(0,0,0,0.1)'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Cumulative Cost (Billions $)',
-                                font: {
-                                    size: 12
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(0,0,0,0.1)'
-                            },
-                            beginAtZero: true
-                        }
-                    },
-                    elements: {
-                        point: {
-                            radius: 4,
-                            hoverRadius: 6
-                        }
-                    }
-                }
-            });
-        }
-
-        function updateDisplay() {
-            // Update slider display values
-            values.vsl.textContent = `$${parseFloat(sliders.vsl.value).toFixed(1)}M`;
-            values.suicides.textContent = formatNumber(parseInt(sliders.suicides.value));
-            values.attribution.textContent = `${sliders.attribution.value}%`;
-            values.depression.textContent = formatNumber(parseInt(sliders.depression.value));
-            values.yld.textContent = `${parseFloat(sliders.yld.value).toFixed(1)} years`;
-            values.qol.textContent = `${sliders.qol.value}%`;
-            values.healthcare.textContent = `$${formatNumber(parseInt(sliders.healthcare.value))}`;
-            values.productivity.textContent = `$${formatNumber(parseInt(sliders.productivity.value))}`;
-            values.duration.textContent = `${parseFloat(sliders.duration.value).toFixed(1)} years`;
-            updateDynamicProfile();
-            updateLifetimeCounters();
-        }
-
-        function calculateCosts() {
-            try {
-                console.log('calculateCosts called');
-                const vsl = parseFloat(sliders.vsl.value) * 1e6;
-                const totalSuicides = parseInt(sliders.suicides.value);
-                const attributionRate = parseFloat(sliders.attribution.value) / 100;
-                const depressionPeople = parseInt(sliders.depression.value);
-                const yldYears = parseFloat(sliders.yld.value);
-                const qolReduction = parseFloat(sliders.qol.value) / 100;
-                const healthcareCostPerYear = parseInt(sliders.healthcare.value);
-                const productivityLossPerYear = parseInt(sliders.productivity.value);
-                const treatmentDuration = parseFloat(sliders.duration.value);
-                console.log('Slider values:', {vsl, totalSuicides, attributionRate, depressionPeople, yldYears, qolReduction, healthcareCostPerYear, productivityLossPerYear, treatmentDuration});
-                // Calculate individual costs using P × Q × R formulas
-                const attributableSuicides = totalSuicides * attributionRate;
-                const mortalityCost = attributableSuicides * vsl;
-                // Updated VSL per year for QALY
-                const vslPerYear = vsl / 75;
-                const qalyLoss = depressionPeople * yldYears * qolReduction;
-                const mentalHealthCost = qalyLoss * vslPerYear;
-                const totalHealthcareProductivity = depressionPeople * (healthcareCostPerYear + productivityLossPerYear) * treatmentDuration;
-                const totalCost = mortalityCost + mentalHealthCost + totalHealthcareProductivity;
-                currentTotalCost = totalCost;
-                // Animate formula displays
-                animateCountUp(formulaResults.mortality, mortalityCost, { prefix: '$', decimals: 0, formatter: formatCurrency });
-                animateCountUp(formulaResults.mental, mentalHealthCost, { prefix: '$', decimals: 0, formatter: formatCurrency });
-                animateCountUp(formulaResults.healthcare, totalHealthcareProductivity, { prefix: '$', decimals: 0, formatter: formatCurrency });
-                // Animate summary displays
-                animateCountUp(results.mortality, mortalityCost, { prefix: '$', decimals: 0, formatter: formatCurrency });
-                animateCountUp(results.mental, mentalHealthCost, { prefix: '$', decimals: 0, formatter: formatCurrency });
-                animateCountUp(results.healthcare, totalHealthcareProductivity, { prefix: '$', decimals: 0, formatter: formatCurrency });
-                animateCountUp(results.total, totalCost, { prefix: '$', decimals: 0, formatter: formatCurrency });
-                // Update final equation
-                results.finalEquation.textContent = `Total Cost = ${formatCurrency(mortalityCost)} + ${formatCurrency(mentalHealthCost)} + ${formatCurrency(totalHealthcareProductivity)} = ${formatCurrency(totalCost)}`;
-                // GDP percentage
-                const gdpPercentage = (totalCost / 24e12) * 100;
-                results.gdpPercentage.textContent = `${gdpPercentage.toFixed(1)}%`;
-                // Animate cost per second for the clock
-                const secondsInYear = 365.25 * 24 * 3600; // Account for leap years
-                const costPerSecondValue = totalCost / secondsInYear;
-                animateCountUp(costPerSecond, costPerSecondValue, { prefix: '', decimals: 0, formatter: formatLargeNumber });
-                // Add color coding to formula displays
-                formulaResults.mortality.style.color = '#e74c3c';
-                formulaResults.mental.style.color = '#9b59b6';
-                formulaResults.healthcare.style.color = '#3498db';
-                // Update charts
-                console.log('Calling debouncedUpdateCharts with:', mortalityCost, mentalHealthCost, totalHealthcareProductivity);
-                debouncedUpdateCharts(mortalityCost, mentalHealthCost, totalHealthcareProductivity);
-            } catch (error) {
-                console.warn('Calculation failed, using fallback', error);
-                // Fallback logic
-            }
-        }
-
-        function updateCharts(mortalityCost, mentalHealthCost, healthcareCost) {
-            try {
-                console.log('updateCharts called', {mortalityCost, mentalHealthCost, healthcareCost});
-                // Update pie chart if it exists
-                if (pieChart && pieChart.data && pieChart.data.datasets && pieChart.data.datasets[0]) {
-                    pieChart.data.datasets[0].data = [
-                        mortalityCost / 1e9,
-                        mentalHealthCost / 1e9,
-                        healthcareCost / 1e9
-                    ];
-                    console.log('Pie chart data set to:', pieChart.data.datasets[0].data);
-                    pieChart.update('normal');
-                }
-                // Update timeline chart if it exists
-                if (timelineChart && timelineChart.data && timelineChart.data.datasets) {
-                    const timelineData = generateTimelineData();
-                    if (timelineData) {
-                        timelineChart.data.labels = timelineData.years;
-                        if (timelineChart.data.datasets[0]) {
-                            timelineChart.data.datasets[0].data = timelineData.totalData;
-                        }
-                        if (timelineChart.data.datasets[1]) {
-                            timelineChart.data.datasets[1].data = timelineData.mortalityData;
-                        }
-                        if (timelineChart.data.datasets[2]) {
-                            timelineChart.data.datasets[2].data = timelineData.mentalData;
-                        }
-                        if (timelineChart.data.datasets[3]) {
-                            timelineChart.data.datasets[3].data = timelineData.healthcareData;
-                        }
-                        
-                        timelineChart.update('normal');
-                    }
-                }
-            } catch (error) {
-                console.warn('Error updating charts:', error);
-            }
-        }
-
-        function updateDynamicDisplays() {
-            const now = Date.now();
-            const secondsElapsed = (now - clockStartTime) / 1000;
-            const secondsInYear = 365.25 * 24 * 3600;
-            const costPerSecondValue = currentTotalCost / secondsInYear;
-            const accumulatedCost = costPerSecondValue * secondsElapsed;
-            const runningTotalAmount = document.getElementById('running-total-amount');
-            if (runningTotalAmount) animateCountUp(runningTotalAmount, accumulatedCost, { decimals: 0, formatter: (v) => v.toLocaleString('en-US', { maximumFractionDigits: 0 }) });
-            const costPerSecondAmount = document.getElementById('cost-per-second-amount');
-            if (costPerSecondAmount) animateCountUp(costPerSecondAmount, costPerSecondValue, { decimals: 0, formatter: formatLargeNumber });
-        }
-
-        function updateLifetimeCounters() {
-            // Use the current slider values for lifetime totals
-            const depressionPeople = parseInt(sliders.depression.value);
-            const totalSuicides = Math.round(parseInt(sliders.suicides.value) * parseFloat(sliders.attribution.value) / 100);
-            const vsl = parseFloat(sliders.vsl.value) * 1e6;
-            const attributableSuicides = parseInt(sliders.suicides.value) * parseFloat(sliders.attribution.value) / 100;
-            const mortalityCost = attributableSuicides * vsl;
-
-            const yldYears = parseFloat(sliders.yld.value);
-            const qolReduction = parseFloat(sliders.qol.value) / 100;
-            const vslPerYear = vsl / 75;
-            const qalyLoss = depressionPeople * yldYears * qolReduction;
-            const mentalHealthCost = qalyLoss * vslPerYear;
-
-            const healthcareCostPerYear = parseInt(sliders.healthcare.value);
-            const productivityLossPerYear = parseInt(sliders.productivity.value);
-            const treatmentDuration = parseFloat(sliders.duration.value);
-            const totalHealthcareProductivity = depressionPeople * (healthcareCostPerYear + productivityLossPerYear) * treatmentDuration;
-
-            const totalCost = mortalityCost + mentalHealthCost + totalHealthcareProductivity;
-
-            document.getElementById('lifetime-depression').textContent = formatLargeNumber(depressionPeople);
-            document.getElementById('lifetime-suicide').textContent = formatLargeNumber(totalSuicides);
-            document.getElementById('lifetime-value').textContent = '$' + formatLargeNumber(totalCost / 1e6) + 'M';
-        }
-
-        function saveSettings() {
-            const settings = {};
-            Object.entries(sliders).forEach(([key, slider]) => {
-                settings[key] = slider.value;
-            });
-            try {
-                localStorage.setItem('calculatorSettings', JSON.stringify(settings));
-            } catch (error) {
-                console.warn('Failed to save settings:', error);
-            }
-        }
-
-        function loadSettings() {
-            try {
-                const settings = JSON.parse(localStorage.getItem('calculatorSettings'));
-                if (settings) {
-                    Object.entries(settings).forEach(([key, value]) => {
-                        if (sliders[key]) {
-                            sliders[key].value = value;
-                        }
-                    });
-                    updateDisplay();
-                    calculateCosts();
-                }
-            } catch (error) {
-                console.warn('Failed to load settings:', error);
-            }
-        }
-
-        function resetToDefaults() {
-            const defaults = {
-                vsl: 13.7,
-                suicides: 110000,
-                attribution: 15,
-                depression: 4000000,
-                yld: 6,
-                qol: 35,
-                healthcare: 7000,
-                productivity: 6000,
-                duration: 4.5
-            };
-
-            Object.entries(defaults).forEach(([key, value]) => {
-                if (sliders[key]) {
-                    sliders[key].value = value;
-                }
-            });
-
-            updateDisplay();
-            calculateCosts();
-            saveSettings();
-        }
-
-        const debouncedUpdateCharts = debounce((mortalityCost, mentalHealthCost, healthcareCost) => {
-            updateCharts(mortalityCost, mentalHealthCost, healthcareCost);
-        }, 100);
-
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        // Dynamic Profile Summary Helper
-        function updateDynamicProfile() {
-            // Get current values
-            const depressionPeople = parseInt(sliders.depression.value);
-            const totalSuicides = parseInt(sliders.suicides.value) * parseFloat(sliders.attribution.value) / 100;
-
-            // Person-equivalent metaphors
-            const pittsburghPop = 300000;
-            const classrooms = Math.round(depressionPeople / 25);
-            const towns = Math.round(depressionPeople / 10000);
-
-            // Compose text
-            let html = '';
-            html += `<b>"This many kids…"</b> <br>`;
-            html += `<span style="font-size:1.2em;font-weight:bold;">${formatLargeNumber(depressionPeople)}</span> children/teens with major depression <span class='text-xs'>(since 2009)</span><br>`;
-            html += `That's like <b>${formatLargeNumber(Math.round(depressionPeople/pittsburghPop))}</b> Pittsburghs.<br>`;
-            html += `Or <b>${formatLargeNumber(classrooms)}</b> classrooms, <b>${formatLargeNumber(towns)}</b> towns.<br>`;
-            html += `<br><b>"This many deaths…"</b><br>`;
-            html += `<span style="font-size:1.2em;font-weight:bold;">${formatLargeNumber(totalSuicides)}</span> lives lost <span class='text-xs'>(since 2009)</span> — enough to fill <b>${formatLargeNumber(Math.round(totalSuicides/150))}</b> high schools.`;
-
-            document.getElementById('dynamic-profile').innerHTML = html;
-        }
-
-        function initEventListeners() {
-            Object.values(sliders).forEach(slider => {
-                slider.addEventListener('input', () => {
-                    updateDisplay();
-                    calculateCosts();
-                    saveSettings();
-                });
-            });
-
-            document.getElementById('reset-button').addEventListener('click', resetToDefaults);
-
-            document.getElementById('help-btn').addEventListener('click', () => {
-                document.getElementById('help-popover').classList.remove('hidden');
-            });
-            document.getElementById('help-popover-close').addEventListener('click', () => {
-                document.getElementById('help-popover').classList.add('hidden');
-            });
-
-            // Remove legacy tooltip accessibility code
-            // (No longer needed, Tippy.js handles tooltips)
-        }
-
-        // Sync slider and input values both ways
-        function initSliderInputSync() {
-            Object.keys(sliders).forEach(key => {
-                const slider = sliders[key];
-                const input = sliderInputs[key];
-                if (!slider || !input) return;
-
-                // When slider changes, update input
-                slider.addEventListener('input', () => {
-                    input.value = slider.value;
-                    updateDisplay();
-                    calculateCosts();
-                    saveSettings();
-                });
-
-                // When input changes, update slider
-                input.addEventListener('input', () => {
-                    // Clamp value to min/max
-                    let min = parseFloat(slider.min);
-                    let max = parseFloat(slider.max);
-                    let step = parseFloat(slider.step);
-                    let val = parseFloat(input.value);
-                    if (isNaN(val)) val = min;
-                    val = Math.max(min, Math.min(max, val));
-                    // Snap to step
-                    if (step < 1) {
-                        val = Math.round(val / step) * step;
-                    } else {
-                        val = Math.round(val / step) * step;
-                    }
-                    slider.value = val;
-                    input.value = val;
-                    updateDisplay();
-                    calculateCosts();
-                    saveSettings();
-                });
-            });
-        }
-
-        function initializeApp() {
-            try {
-                initDarkMode();
-                updateDisplay();
-                calculateCosts();
-                setTimeout(() => {
-                    try {
-                        initCharts();
-                    } catch (chartError) {
-                        console.warn('Charts could not be initialized, continuing without charts:', chartError);
-                    }
-                }, 100);
-                initEventListeners();
-                initSliderInputSync();
-                updateDynamicProfile();
-            } catch (error) {
-                console.error('Error initializing app:', error);
-                try {
-                    updateDisplay();
-                    calculateCosts();
-                } catch (basicError) {
-                    console.error('Critical error in basic functionality:', basicError);
-                }
-            }
-        }
-
-        setInterval(updateDynamicDisplays, 100);
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                initializeApp();
-                loadSettings();
-            });
-        } else {
-            initializeApp();
-            loadSettings();
-        }
-
-        // --- COUNT-UP ANIMATION FOR NUMBERS ---
-        function animateCountUp(element, toValue, options = {}) {
-            if (!element) return;
-            const { duration = 900, prefix = '', suffix = '', decimals = 0, formatter = null } = options;
-            const fromValue = parseFloat(element.getAttribute('data-prev') || '0');
-            const start = performance.now();
-            const diff = toValue - fromValue;
-            function format(val) {
-                if (formatter) return formatter(val);
-                return prefix + val.toLocaleString(undefined, { maximumFractionDigits: decimals }) + suffix;
-            }
-            function step(now) {
-                const elapsed = now - start;
-                const progress = Math.min(elapsed / duration, 1);
-                const current = fromValue + diff * progress;
-                element.textContent = format(current);
-                if (progress < 1) {
-                    requestAnimationFrame(step);
-                } else {
-                    element.textContent = format(toValue);
-                    element.setAttribute('data-prev', toValue);
-                }
-            }
-            requestAnimationFrame(step);
-        }
-
-        // In the JS, initialize Tippy.js for all .info-button elements
-        document.addEventListener('DOMContentLoaded', function() {
-          // Map info buttons to their template IDs in order
-          const tooltipTemplates = [
-            'tooltip-mortality',
-            'tooltip-mortality-vsl',
-            'tooltip-mortality-suicides',
-            'tooltip-mortality-attribution',
-            'tooltip-qaly',
-            'tooltip-qaly-people', // for Depression People (P)
-            'tooltip-qaly-yld',
-            'tooltip-qaly-qol',    // for Quality of Life Reduction (R)
-            'tooltip-healthcare',
-            'tooltip-healthcare-costs',
-            'tooltip-healthcare-productivity',
-            'tooltip-healthcare-duration',
-          ];
-          const infoButtons = document.querySelectorAll('.info-button');
-          infoButtons.forEach((btn, i) => {
-            const templateId = tooltipTemplates[i];
-            const template = document.getElementById(templateId);
-            if (template) {
-              tippy(btn, {
-                content: template.innerHTML,
-                allowHTML: true,
-                interactive: true,
-                theme: 'card',
-                placement: 'bottom',
-                trigger: 'click',
-                maxWidth: 320,
-                onShow(instance) {
-                  // Close all other tippys
-                  infoButtons.forEach(b => {
-                    if (b !== btn && b._tippy) b._tippy.hide();
-                  });
-                },
-              });
-            }
-          });
-        });
-
-        // 6. Update JS to animate the new clock
-        function updateNationalDebtClock() {
-          const now = Date.now();
-          const secondsElapsed = (now - clockStartTime) / 1000;
-          const secondsInYear = 365.25 * 24 * 3600;
-          const costPerSecondValue = currentTotalCost / secondsInYear;
-          const accumulatedCost = costPerSecondValue * secondsElapsed;
-          const total = currentTotalCost + accumulatedCost;
-          animateCountUp(document.getElementById('national-debt-clock-total-amount'), total, { decimals: 0, formatter: (v) => v.toLocaleString('en-US', { maximumFractionDigits: 0 }) });
-          animateCountUp(document.getElementById('national-debt-clock-per-second-amount'), costPerSecondValue, { decimals: 0, formatter: formatLargeNumber });
-        }
-        setInterval(updateNationalDebtClock, 100);
-    </script>
 </body>
 </html>

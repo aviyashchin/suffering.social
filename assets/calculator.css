@@ -1,0 +1,717 @@
+/* CSS moved from HTML. See main file for styles. */ 
+
+/* Social Media Cost Calculator - Custom Styles */
+
+/* Tooltip styles for Tippy.js */
+.info-tooltip.modern-tooltip-card {
+  z-index: 50 !important;
+  max-width: 20rem;
+  min-width: 16rem;
+  overflow: auto;
+  pointer-events: auto;
+  position: absolute;
+  left: 50%;
+  top: 2.5rem;
+  transform: translateX(-50%);
+  box-shadow: 0 8px 32px 0 rgba(60,60,90,0.18);
+  background: #fff;
+  color: #222;
+  border-radius: 1rem;
+  border: 1px solid #e5e7eb;
+}
+
+.dark .info-tooltip.modern-tooltip-card {
+  background: #18181b;
+  color: #f3f4f6;
+  border: 1px solid #374151;
+}
+
+.info-button { 
+  position: relative; 
+}
+
+.tippy-box[data-theme~='card'] {
+  background: white;
+  color: #1f2937;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  width: 20rem;
+  text-align: left;
+  max-width: 20rem;
+  min-width: 16rem;
+  font-size: 1rem;
+}
+
+.dark .tippy-box[data-theme~='card'] {
+  background: #1f2937;
+  color: #f3f4f6;
+  border: 1px solid #374151;
+}
+
+.tippy-box[data-theme~='card'] .tippy-content {
+  padding: 0;
+}
+
+/* Animations */
+@keyframes fade-in { 
+  from { 
+    opacity: 0; 
+    transform: translateY(16px);
+  } 
+  to { 
+    opacity: 1; 
+    transform: none; 
+  } 
+}
+
+.animate-fade-in { 
+  animation: fade-in 0.25s cubic-bezier(.4,0,.2,1); 
+}
+
+/* Slider customizations */
+.slider {
+  appearance: none;
+  background: linear-gradient(to right, #3b82f6, #1d4ed8);
+  outline: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #ffffff;
+  border: 2px solid #3b82f6;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #ffffff;
+  border: 2px solid #3b82f6;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode slider adjustments */
+.dark .slider {
+  background: linear-gradient(to right, #4f46e5, #3730a3);
+}
+
+.dark .slider::-webkit-slider-thumb {
+  background: #1f2937;
+  border-color: #6366f1;
+}
+
+.dark .slider::-moz-range-thumb {
+  background: #1f2937;
+  border-color: #6366f1;
+}
+
+/* Chart container improvements */
+.chart-wrapper {
+  position: relative;
+  height: 24rem;
+}
+
+.cost-breakdown-chart {
+  position: relative;
+  height: 16rem;
+}
+
+/* Cost composition legend fixes */
+.cost-breakdown-chart .flex {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 0.5rem;
+}
+
+.cost-breakdown-chart .flex span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+/* Chart container styling */
+.chart-container {
+  overflow: hidden;
+}
+
+.chart-container canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .tippy-box[data-theme~='card'] {
+    width: 16rem;
+    max-width: 16rem;
+    font-size: 0.875rem;
+  }
+  
+  .chart-wrapper {
+    height: 20rem;
+  }
+  
+  .cost-breakdown-chart {
+    height: 14rem;
+  }
+}
+
+/* Parameter group styling */
+.parameter-group {
+  transition: all 0.2s ease-in-out;
+}
+
+.parameter-group:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dark .parameter-group:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Formula display styling */
+.formula-display {
+  transition: all 0.2s ease-in-out;
+}
+
+.formula-display:hover {
+  transform: scale(1.02);
+}
+
+/* Button hover effects */
+.info-button {
+  transition: all 0.2s ease-in-out;
+}
+
+.info-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Clock display improvements */
+.clock-display {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.025em;
+}
+
+/* Prevent jitter in slider value displays */
+.slider-value {
+  font-family: 'Courier New', monospace;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  min-width: 8ch;
+  text-align: right;
+  display: inline-block;
+}
+
+/* Fix clock jitter with fixed-width containers */
+#running-total-amount,
+#cost-per-second-amount,
+#national-debt-clock-total-amount,
+#national-debt-clock-per-second-amount {
+  display: inline-block;
+  min-width: 15ch;
+  text-align: right;
+  font-family: 'Courier New', monospace;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Ensure consistent spacing for clock elements */
+.clock-display,
+.cost-clock,
+#national-debt-clock-bar .text-4xl,
+#national-debt-clock-bar .text-2xl {
+  font-family: 'Courier New', monospace;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* National debt clock styling */
+#national-debt-clock-bar {
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Help popover styling */
+#help-popover {
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Modal styling for causal diagram */
+#causal-modal {
+  backdrop-filter: blur(4px);
+}
+
+/* Mermaid diagram styling */
+.mermaid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Mermaid popout modal improvements */
+#causal-modal .mermaid {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+#causal-modal .mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+#causal-modal .mermaid .node {
+  font-size: 12px;
+}
+
+#causal-modal .mermaid .label {
+  font-size: 11px;
+}
+
+/* Dark mode Mermaid adjustments */
+.dark #causal-modal .mermaid {
+  color: #f3f4f6;
+}
+
+.dark #causal-modal .mermaid .node {
+  fill: #374151;
+  stroke: #6b7280;
+}
+
+.dark #causal-modal .mermaid .label {
+  fill: #f3f4f6;
+}
+
+/* Accessibility improvements */
+.focus\:ring-2:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  #national-debt-clock-bar,
+  #help-btn,
+  #help-popover,
+  #causal-modal {
+    display: none !important;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .slider {
+    border: 2px solid currentColor;
+  }
+  
+  .info-button {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Collapsible left column */
+#left-column.collapsed {
+  transform: translateX(-100%);
+  opacity: 0;
+  width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#left-column.collapsed + .visualization-card {
+  grid-column: 1 / -1;
+  max-width: 4xl;
+  margin: 0 auto;
+}
+
+/* Toggle button styling */
+#toggle-left-column {
+  position: sticky;
+  top: 100px;
+  z-index: 40;
+}
+
+/* Responsive behavior for collapsed state */
+@media (max-width: 1024px) {
+  #left-column.collapsed {
+    display: none;
+  }
+  
+  #left-column.collapsed + .visualization-card {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Comprehensive dark mode support */
+.dark body {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  color: #f3f4f6;
+}
+
+.dark .bg-white {
+  background-color: #1f2937;
+}
+
+.dark .text-gray-900 {
+  color: #f3f4f6;
+}
+
+.dark .border-gray-200 {
+  border-color: #374151;
+}
+
+.dark .bg-gray-50 {
+  background-color: #374151;
+}
+
+.dark .bg-gray-800 {
+  background-color: #1f2937;
+}
+
+/* Dark mode chart improvements */
+.dark .chart-container {
+  background-color: #374151;
+}
+
+.dark .formula-summary {
+  background-color: #374151;
+}
+
+.dark .formula-item {
+  background-color: #1f2937;
+}
+
+/* Dark mode slider improvements */
+.dark .slider {
+  background: linear-gradient(to right, #4f46e5, #3730a3);
+}
+
+.dark .slider::-webkit-slider-thumb {
+  background: #1f2937;
+  border-color: #6366f1;
+}
+
+.dark .slider::-moz-range-thumb {
+  background: #1f2937;
+  border-color: #6366f1;
+}
+
+/* Dark mode input improvements */
+.dark input[type="number"] {
+  background-color: #374151;
+  border-color: #4b5563;
+  color: #f3f4f6;
+}
+
+.dark input[type="number"]:focus {
+  border-color: #6366f1;
+  ring-color: #6366f1;
+}
+
+/* Slider label layout improvements */
+.slider-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.slider-label span:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.slider-value {
+  white-space: nowrap;
+  margin-left: auto;
+  margin-right: 0.5rem;
+}
+
+.info-button {
+  flex-shrink: 0;
+  margin-left: 0.25rem;
+}
+
+/* Ensure proper spacing in slider containers */
+.slider-container {
+  margin-bottom: 1.5rem;
+}
+
+.slider-container:last-child {
+  margin-bottom: 0;
+}
+
+/* Subtle interactive hover effects */
+.info-button {
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.info-button:hover {
+  background-color: #3b82f6;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+/* Subtle slider hover effects */
+input[type="range"] {
+  transition: all 0.2s ease-in-out;
+}
+
+input[type="range"]:hover::-webkit-slider-thumb {
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+}
+
+input[type="range"]:hover::-moz-range-thumb {
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+}
+
+/* Subtle button hover effects */
+button {
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Reset button specific hover */
+#reset-button:hover {
+  background-color: #dc2626;
+}
+
+/* Toggle button hover */
+#toggle-left-column:hover {
+  background-color: #374151;
+}
+
+/* Help button hover */
+#help-btn:hover {
+  background-color: #3b82f6;
+}
+
+/* Causal pathways button hover */
+#causal-popout-btn:hover {
+  background-color: #8b5cf6;
+}
+
+/* Subtle input field hover effects */
+input[type="number"] {
+  transition: all 0.2s ease-in-out;
+}
+
+input[type="number"]:hover {
+  border-color: #3b82f6;
+}
+
+input[type="number"]:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+/* Subtle chart container hover */
+.chart-container {
+  transition: all 0.2s ease-in-out;
+}
+
+.chart-container:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Subtle cost composition legend hover */
+.cost-legend-item {
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.cost-legend-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+/* Modal close button hover */
+.modal-close:hover {
+  background-color: #ef4444;
+}
+
+/* Subtle tooltip hover effect */
+.tippy-box {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Subtle national debt clock hover */
+#national-debt-clock-bar:hover {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Subtle left column hover */
+#left-column:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Subtle parameter group hover */
+.parameter-group {
+  transition: all 0.2s ease-in-out;
+}
+
+.parameter-group:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Subtle slider track hover */
+input[type="range"]:hover::-webkit-slider-track {
+  background: linear-gradient(to right, #e5e7eb, #d1d5db);
+}
+
+input[type="range"]:hover::-moz-range-track {
+  background: linear-gradient(to right, #e5e7eb, #d1d5db);
+}
+
+/* Subtle value display hover */
+.parameter-group:hover .slider-value {
+  color: #3b82f6;
+}
+
+/* Subtle label hover */
+.parameter-group:hover label {
+  color: #3b82f6;
+}
+
+/* Subtle section header hover */
+.section-header {
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.section-header:hover {
+  color: #3b82f6;
+}
+
+/* Subtle mermaid diagram hover */
+#causal-diagram {
+  transition: all 0.2s ease-in-out;
+}
+
+#causal-diagram:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Subtle modal content hover */
+.modal-content {
+  transition: all 0.2s ease-in-out;
+}
+
+.modal-content:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Disable transitions for performance-critical elements */
+#national-debt-clock-total-amount,
+#national-debt-clock-per-second-amount,
+.running-total-amount,
+.cost-per-second-amount {
+  transition: none;
+}
+
+/* Pulse animation for important elements */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.pulse-on-hover:hover {
+  animation: pulse 1s infinite;
+}
+
+/* Glow effect for active elements */
+.glow-on-hover:hover {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+}
+
+/* Bounce effect for buttons */
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -8px, 0);
+  }
+  70% {
+    transform: translate3d(0, -4px, 0);
+  }
+  90% {
+    transform: translate3d(0, -2px, 0);
+  }
+}
+
+.bounce-on-hover:hover {
+  animation: bounce 0.6s ease-in-out;
+}
+
+/* Shake effect for reset button */
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-2px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(2px);
+  }
+}
+
+.shake-on-hover:hover {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* Apply specific animations to elements */
+#reset-button {
+  animation: shake-on-hover;
+}
+
+.info-button {
+  animation: pulse-on-hover;
+}
+
+#help-btn, #causal-popout-btn {
+  animation: bounce-on-hover;
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  transition: all 0.2s ease-in-out;
+} 
