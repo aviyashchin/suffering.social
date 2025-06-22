@@ -621,27 +621,32 @@ function generateTimelineData() {
  * Set up all event listeners
  */
 function initEventHandlers() {
-  // Slider and input event listeners
-  const parameterIds = ['vsl', 'suicides', 'attribution', 'depression', 'yld', 'qol', 'healthcare', 'productivity', 'duration'];
-  
-  parameterIds.forEach(id => {
-    const slider = document.getElementById(`${id}-slider`);
-    const input = document.getElementById(`${id}-input`);
-    
+  // Link sliders to their numeric inputs and value displays
+  const sliders = [
+    { slider: 'vsl-slider', value: 'vsl-value', format: val => `$${parseFloat(val).toFixed(1)}M` },
+    { slider: 'suicides-slider', value: 'suicides-value', format: val => `${(val / 1000).toFixed(0)}K` },
+    { slider: 'attribution-slider', value: 'attribution-value', format: val => `${val}%` },
+    { slider: 'depression-slider', value: 'depression-value', format: val => `${(val / 1000000).toFixed(1)}M`.replace('.0', 'M')},
+    { slider: 'yld-slider', value: 'yld-value', format: val => `${parseFloat(val).toFixed(1)} years` },
+    { slider: 'qol-slider', value: 'qol-value', format: val => `${val}%` },
+    { slider: 'healthcare-slider', value: 'healthcare-value', format: val => `$${parseInt(val).toLocaleString()}` },
+    { slider: 'productivity-slider', value: 'productivity-value', format: val => `$${parseInt(val).toLocaleString()}` },
+    { slider: 'duration-slider', value: 'duration-value', format: val => `${parseFloat(val).toFixed(1)} years` }
+  ];
+
+  sliders.forEach(({ slider: sliderId, value: valueId, format }) => {
+    const slider = document.getElementById(sliderId);
+    const valueDisplay = document.getElementById(valueId);
+
     if (slider) {
-      slider.addEventListener('input', (e) => {
-        state[id] = parseFloat(e.target.value);
-        if (input) input.value = e.target.value;
+      // Update value display and recalculate when slider changes
+      slider.addEventListener('input', () => {
+        valueDisplay.textContent = format(slider.value);
         calculateCosts();
       });
-    }
-    
-    if (input) {
-      input.addEventListener('input', (e) => {
-        state[id] = parseFloat(e.target.value);
-        if (slider) slider.value = e.target.value;
-        calculateCosts();
-      });
+
+      // Initial display update
+      valueDisplay.textContent = format(slider.value);
     }
   });
   
@@ -649,19 +654,7 @@ function initEventHandlers() {
   const resetButton = document.getElementById('reset-button');
   if (resetButton) {
     resetButton.addEventListener('click', () => {
-      // Reset state to defaults
-      Object.assign(state, {
-        vsl: 13.7,
-        suicides: 110000,
-        attribution: 18,
-        depression: 4000000,
-        yld: 6,
-        qol: 35,
-        healthcare: 7000,
-        productivity: 6000,
-        duration: 4.5,
-      });
-      UIManager.updateSliders();
+      resetToDefaults();
       calculateCosts();
     });
   }
@@ -703,6 +696,17 @@ function initEventHandlers() {
       if (e.target === causalModal) {
         causalModal.classList.add('hidden');
       }
+    });
+  }
+
+  const shareButton = document.getElementById('share-button');
+  if (shareButton) {
+    shareButton.addEventListener('click', () => {
+      const totalCost = document.getElementById('total-cost').textContent;
+      const gdpPercentage = document.getElementById('gdp-percentage').textContent;
+      const text = `🤯 I just calculated the hidden social cost of social media, and it's over ${totalCost}. That's ${gdpPercentage} of US GDP. See the full breakdown and calculate your own estimate. #SocialMediaCost #MentalHealth`;
+      const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`;
+      window.open(url, '_blank');
     });
   }
 }
@@ -797,6 +801,30 @@ function initApp() {
   } catch (error) {
     console.error('Error initializing app:', error);
   }
+}
+
+function resetToDefaults() {
+  const defaults = {
+    'vsl-slider': 13.7,
+    'suicides-slider': 110000,
+    'attribution-slider': 18,
+    'depression-slider': 5000000,
+    'yld-slider': 6,
+    'qol-slider': 35,
+    'healthcare-slider': 7000,
+    'productivity-slider': 6000,
+    'duration-slider': 4.5
+  };
+
+  for (const sliderId in defaults) {
+    const slider = document.getElementById(sliderId);
+    if (slider) {
+      slider.value = defaults[sliderId];
+      // Manually trigger the input event to update everything
+      slider.dispatchEvent(new Event('input'));
+    }
+  }
+  currentTotalCost = 0; // Reset current total cost on reset
 }
 
 document.addEventListener('DOMContentLoaded', initApp); 
