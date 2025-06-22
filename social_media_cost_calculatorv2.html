@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="assets/calculator.css">
     <script src="assets/calculator.js" defer></script>
 </head>
-<body class="bg-gradient-to-br from-indigo-400 to-purple-500 min-h-screen pt-32 md:pt-36 text-gray-900">
+<body class="min-h-screen pt-32 md:pt-36 text-gray-900">
     <!-- 1. Remove the current floating total bar and top bar -->
     <!-- 2. Add a new fixed, full-width, dark top bar styled like a national debt clock -->
     <div id="national-debt-clock-bar" class="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-gray-900 to-gray-800 shadow-lg flex flex-col items-center justify-center py-4 px-2 md:px-0">
@@ -33,14 +33,7 @@
           <div id="lifetime-counters" class="mt-3 text-xs md:text-sm text-gray-200 flex flex-wrap gap-4">
             <span class="flex items-center gap-1">🧠 <span id="lifetime-depression">0</span> developed major depression</span>
             <span class="flex items-center gap-1">☠️ <span id="lifetime-suicide">0</span> died by suicide</span>
-            <span class="flex items-center gap-1">💸 <span id="lifetime-value">$0</span> in value destroyed</span>
-        </div>
-    </div>
-        <div class="flex flex-col items-center md:items-end gap-2">
-          <div class="flex items-center gap-2">
-            <div class="text-xs text-gray-300 mb-1">Per Second</div>
-            <div class="text-2xl font-mono font-bold text-red-300 flex items-baseline gap-1" id="national-debt-clock-per-second"><span class="text-xl">+$</span><span id="national-debt-clock-per-second-amount">63,578</span></div>
-    </div>
+          </div>
         </div>
       </div>
     </div>
@@ -73,78 +66,26 @@
       <div class="text-base">Use <span class="font-mono bg-gray-100 px-2 py-1 rounded">Reset</span> for default settings. All calculations update instantly.</div>
     </div>
 
-
-    <!-- 2. Reduce whitespace and tighten analogy/narrative section -->
-    <div class="max-w-2xl mx-auto mt-6 mb-4 px-4 py-4 bg-white text-gray-900 rounded-2xl shadow border border-gray-200 flex items-center gap-4">
-      <span class="text-3xl">🌲</span>
-      <div>
-        <b>If a tree falls in the forest and doesn't boost GDP, does it matter?</b><br>
-        Now imagine that tree is <b>your child's mental health</b>.
-      </div>
-                </div>
-
-    <div class="container max-w-7xl mx-auto px-4">
-        <!-- Toggle button for left column -->
-        <div class="flex justify-end mb-4">
-            <button id="toggle-left-column" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                <span id="toggle-text">Hide Calculator</span> 📊
-            </button>
-        </div>
-        
+    <div class="container max-w-7xl mx-auto px-4 mt-16">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-            <div id="left-column" class="col-span-2 bg-white rounded-2xl shadow-xl overflow-hidden mb-8 lg:mb-0 transition-all duration-300">
+            <!-- Main Calculator Column -->
+            <div id="left-column" class="col-span-2 bg-white enhanced-card shadow-xl overflow-hidden mb-8 lg:mb-0 transition-all duration-300">
                 <div class="bg-gradient-to-r from-red-400 to-orange-500 text-white px-8 py-8 text-center">
                     <h2 class="text-2xl font-semibold mb-2">Interactive Cost Calculator</h2>
                     <p class="text-base mb-4">Simple formulas showing cumulative costs since 2009</p>
                     <button id="reset-button" class="reset-button bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded mb-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-300" aria-label="Reset to Default Values">Reset to Default Values</button>
                 </div>
                 <div class="calculator-body px-8 py-10">
-                    <!-- Narrative Example -->
-                    <div class="bg-white text-gray-900 rounded-xl shadow p-5 mb-6 border border-gray-200">
-                        <span class="text-2xl">🧒</span>
-                        <b>Case Study:</b> Imagine a 15-year-old girl. She spends 6 hours a day on Instagram. She begins hating her body, withdrawing from friends, and by 18 she has attempted suicide. Multiply that by hundreds of thousands.
-                    </div>
-
-                    <!-- Dynamic Profile Summary -->
-                    <div id="dynamic-profile" class="bg-white text-gray-900 rounded-xl shadow p-5 mb-6 border border-blue-200 font-medium text-base">
-                        <!-- JS will fill this -->
-                    </div>
-
-                    <!-- Add Research Context Box after the dynamic profile -->
-                    <div class="parameter-group bg-blue-50 text-gray-900 border-l-4 border-blue-700 rounded-xl mb-8 p-5">
-                        <strong>📚 Research Foundation</strong>
-                        <div class="mt-3 text-base">
-                            <p>Our calculations draw from peer-reviewed research showing:</p>
-                            <ul class="mt-2 ml-5 list-disc">
-                                <li>Each hour of social media use → <b>0.23-point increase</b> in depressive symptoms (PNAS, 2019)</li>
-                                <li>Economic burden of depression rose to <b>$326B</b> (2020 USD)</li>
-                                <li>Workplace costs account for 61%, suicide-related costs ~4%</li>
-                                <li>Incremental societal burden reached <b>$333.7B</b> total</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Caveats/Limitations Notice -->
-                    <div class="parameter-group bg-yellow-50 text-gray-900 border-l-4 border-yellow-600 rounded-xl mb-8 p-5">
-                        <strong>⚠️ Important Caveats & Research Context</strong>
-                        <ul class="mt-3 ml-5 list-disc text-base">
-                            <li><b>Attribution evidence:</b> Based on quasi-experimental studies (Braghieri et al. 2022) and systematic reviews</li>
-                            <li><b>Population estimates:</b> Derived from CDC WONDER database and peer-reviewed studies (Twenge et al. 2018)</li>
-                            <li><b>QALY calculations:</b> Follow WHO Global Burden of Disease methodology</li>
-                            <li><b>Economic costs:</b> Based on Greenberg et al. (2021) healthcare cost analysis</li>
-                            <li><b>Economic burden baseline:</b> Built on validated $210.5B burden (2010) with 45% healthcare, 50% workplace costs</li>
-                            <li><b>Disability impact:</b> Documented 400M disability days/year in US for ages 15-44</li>
-                        </ul>
-                        <div class="mt-2 text-base">
-                            <b>Research context:</b> Findings draw on collaborative reviews from multiple research institutions and meta-analyses. See tooltips for detailed citations.
-                        </div>
-                    </div>
                     <!-- Mortality Costs -->
                     <div class="parameter-group bg-gray-50 p-6 rounded-xl border-l-4 border-red-600 mb-8">
                       <h3 class="text-red-700 mb-4 text-lg font-semibold flex items-center gap-2">
                         <button class="info-button bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">i</button>
                         ☠️ Death
                         </h3>
+                        <div class="bg-blue-50 text-blue-900 rounded-xl p-5 mb-6 border border-blue-200">
+                            <p class="font-medium">"This many deaths…"</p>
+                            <p class="mt-2 text-lg"><strong class="font-bold">19,800</strong> lives lost (since 2009) — enough to fill 132 high schools. <a href="https://docs.google.com/document/d/1diMvsMeRphUH7E6D1d_J7R6WbDdgnzFHDHPx9HXzR5o/edit?tab=t.0" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">Source</a></p>
+                        </div>
                       <div class="slider-container mb-6">
                         <div class="slider-label flex justify-between mb-2 font-medium">
                           <span class="flex items-center gap-2">
@@ -196,6 +137,17 @@
                             <button class="info-button bg-purple-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">i</button>
                             😞 Disability
                         </h3>
+                        <div class="bg-blue-50 text-blue-900 rounded-xl p-5 mb-6 border border-blue-200">
+                            <p class="font-medium">"This many kids…"</p>
+                            <div class="mt-2 flex items-start gap-3">
+                                <span class="text-2xl mt-1">🧒</span>
+                                <div>
+                                    <b>Case Study:</b> Imagine a 15-year-old girl. She spends 6 hours a day on Instagram. She begins hating her body, withdrawing from friends, and by 18 she has attempted suicide. Multiply that by hundreds of thousands.
+                                </div>
+                            </div>
+                            <p class="mt-4 text-lg"><strong class="font-bold">5,000,000</strong> children/teens with major depression (since 2009) <a href="https://www.nimh.nih.gov/health/statistics/major-depression" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">Source</a></p>
+                            <p class="mt-1 text-sm text-gray-600">That's like 13 Pittsburghs. Or 160,000 classrooms, 400 towns.</p>
+                        </div>
                         <div class="slider-container mb-6">
                             <div class="slider-label flex justify-between mb-2 font-medium">
                                 <span class="flex items-center gap-2">
@@ -205,8 +157,8 @@
                                 <button class="info-button bg-purple-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">i</button>
                             </div>
                             <div class="flex items-center gap-2">
-                              <input type="range" min="3000000" max="15000000" value="4000000" step="100000" class="slider w-full h-2 rounded bg-gray-200 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-purple-400" id="depression-slider" aria-label="People with Social Media-Induced Depression" />
-                              <input type="number" id="depression-input" min="3000000" max="15000000" step="100000" value="4000000" class="w-28 ml-2 px-2 py-1 rounded border border-gray-300" aria-label="Depression Numeric Input" />
+                              <input type="range" min="3000000" max="15000000" value="5000000" step="100000" class="slider w-full h-2 rounded bg-gray-200 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-purple-400" id="depression-slider" aria-label="People with Social Media-Induced Depression" />
+                              <input type="number" id="depression-input" min="3000000" max="15000000" step="100000" value="5000000" class="w-28 ml-2 px-2 py-1 rounded border border-gray-300" aria-label="Depression Numeric Input" />
                         </div>
                                         </div>
                         <div class="slider-container mb-6">
@@ -247,6 +199,15 @@
                             <button class="info-button bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">i</button>
                             💸 Lost Productivity
                         </h3>
+                        <div class="bg-blue-50 text-blue-900 rounded-xl p-5 mb-6 border border-blue-200">
+                            <div class="flex items-start gap-3">
+                                <span class="text-2xl mt-1">🌲</span>
+                                <div>
+                                    <b>If a tree falls in the forest and doesn't boost GDP, does it matter?</b><br>
+                                    Now imagine that tree is <b>your child's mental health.</b> Social Media companies privatize the gains. The only things socialized are losses.
+                                </div>
+                            </div>
+                        </div>
                         <div class="slider-container mb-6">
                             <div class="slider-label flex justify-between mb-2 font-medium">
                                 <span class="flex items-center gap-2">
@@ -299,10 +260,63 @@
                             Try adjusting the <b>VSL</b>, <b>attribution %</b>, and <b>affected population</b> sliders to see the full range of plausible outcomes.
                         </div>
                     </div>
+
+                    <!-- Coming Soon: Free Play Calculator -->
+                    <div class="parameter-group bg-gray-50 p-6 rounded-xl border-l-4 border-green-600 mb-8 opacity-75">
+                        <h3 class="text-green-700 mb-4 text-lg font-semibold flex items-center gap-2">
+                            <span class="text-2xl">🌳</span>
+                            🚧 Coming Soon: Free Play Calculator
+                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">BETA</span>
+                        </h3>
+                        <div class="bg-green-50 text-green-900 rounded-xl p-5 mb-6 border border-green-200">
+                            <div class="flex items-start gap-3">
+                                <span class="text-2xl mt-1">🧒</span>
+                                <div>
+                                    <b>Anxiety caused by Lack of Free Play:</b> "We may observe an increased neuroticism or psychopathology in society if children are hindered from partaking in age adequate risky play." 
+                                    <a href="https://docs.google.com/document/d/1-JhlVG829LVOJVViPkmciBulGUyXr0h0zA4XkjpQ7Ws/edit?tab=t.0" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">Source</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center py-8">
+                            <div class="text-4xl mb-4">🔨</div>
+                            <h4 class="text-lg font-semibold text-gray-700 mb-2">Calculator Under Development</h4>
+                            <p class="text-gray-600 mb-4">We're building a comprehensive calculator to quantify the economic impact of reduced free play opportunities and increased screen time on children's development.</p>
+                            <div class="bg-gray-100 rounded-lg p-4 text-sm text-gray-600">
+                                <strong>Planned metrics:</strong> Reduced creativity, increased anxiety, decreased problem-solving skills, and long-term economic consequences of inhibited development.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coming Soon: Political Dysfunction Calculator -->
+                    <div class="parameter-group bg-gray-50 p-6 rounded-xl border-l-4 border-orange-600 mb-8 opacity-75">
+                        <h3 class="text-orange-700 mb-4 text-lg font-semibold flex items-center gap-2">
+                            <span class="text-2xl">🏛️</span>
+                            🚧 Coming Soon: Political Dysfunction Calculator
+                            <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full font-medium">BETA</span>
+                        </h3>
+                        <div class="bg-orange-50 text-orange-900 rounded-xl p-5 mb-6 border border-orange-200">
+                            <div class="flex items-start gap-3">
+                                <span class="text-2xl mt-1">📰</span>
+                                <div>
+                                    <b>Political Dysfunction:</b> "Among the most widely discussed causes of recent political dysfunction is social media, which transformed social connections, mass movements, news consumption, and avenues for electoral interference, manipulation, and misinformation." 
+                                    <a href="https://docs.google.com/document/d/1vVAtMCQnz8WVxtSNQev_e1cGmY9rnY96ecYuAj6C548/edit?tab=t.0" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">Source</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center py-8">
+                            <div class="text-4xl mb-4">🔨</div>
+                            <h4 class="text-lg font-semibold text-gray-700 mb-2">Calculator Under Development</h4>
+                            <p class="text-gray-600 mb-4">We're developing a comprehensive calculator to measure the economic costs of social media's impact on political polarization, misinformation, and democratic processes.</p>
+                            <div class="bg-gray-100 rounded-lg p-4 text-sm text-gray-600">
+                                <strong>Planned metrics:</strong> Polarization costs, misinformation economic impact, reduced trust in institutions, and the economic consequences of political gridlock.
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="visualization-card bg-white rounded-2xl shadow-xl p-8 sticky top-8 h-fit">
+            <!-- RHS Column: Visualizations and Results -->
+            <div class="bg-white enhanced-card shadow-xl p-8 mb-8 lg:mb-0">
                 <div class="total-display text-center p-8 bg-gradient-to-r from-gray-800 to-gray-700 text-white rounded-xl mb-8">
                     <div class="total-value text-4xl font-bold text-red-400 mb-2" id="total-cost">$2.09 Trillion</div>
                     <p class="text-lg">Total Economic Cost to Society</p>
@@ -314,7 +328,6 @@
                 <div class="cost-clock bg-gradient-to-r from-gray-800 to-gray-700 text-white rounded-xl p-8 mb-8 text-center">
                     <div class="clock-display text-3xl font-bold text-red-400 mb-2 font-mono flex items-baseline gap-2 justify-center" id="running-total" style="min-width: 15ch; text-align: right; padding-left: 1ch;"><span class="text-2xl">$</span><span id="running-total-amount">0</span></div>
                     <div class="clock-label text-base opacity-90 mb-2">Total Cost Since You Opened This Page</div>
-                    <div class="per-second text-lg text-red-400 font-bold flex items-baseline gap-1">+<span class="text-lg">$</span><span id="cost-per-second-amount">63,578</span> per second</div>
                 </div>
 
                 <div class="dag-container bg-blue-50 rounded-xl p-6 mb-8">
@@ -365,51 +378,87 @@
                         style K fill:#f39c12
                     </div>
                 </div>
-                <!-- Modal for Causal Pathways -->
-                <div id="causal-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 hidden">
-                  <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-6xl w-full mx-4 relative">
-                    <button id="causal-modal-close" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-gray-700 focus:outline-none">&times;</button>
-                    <h3 class="text-gray-800 mb-4 text-lg font-semibold text-center">🔗 Causal Pathways (Research-Based)</h3>
-                    <div class="mermaid bg-white rounded-lg p-6 overflow-auto" id="causal-diagram-modal" style="min-height: 600px; max-height: 80vh;"></div>
-                  </div>
-                </div>
 
-
-                <div class="chart-container mb-8 p-6 bg-gray-50 rounded-xl">
-                    <h3 class="text-red-700 mb-4 text-lg font-semibold text-center">📈 Cumulative Costs Since Social Media Era (2009-2024)</h3>
-                    <div class="timeline-info bg-blue-100 rounded p-3 mb-4 text-sm">
-                        <strong>Key Timeline:</strong> 2009-2012 marked the transition to smartphone-based social media (iPhone 2007, Instagram 2010, widespread adoption by 2012)
+                <!-- Sticky content below Causal Pathways -->
+                <div class="sticky top-32">
+                    <div class="chart-container mb-8 p-6 bg-gray-50 rounded-xl">
+                        <h3 class="text-red-700 mb-4 text-lg font-semibold text-center">📈 Cumulative Costs Since Social Media Era (2009-2024)</h3>
+                        <div class="timeline-info bg-blue-100 rounded p-3 mb-4 text-sm">
+                            <strong>Key Timeline:</strong> 2009-2012 marked the transition to smartphone-based social media (iPhone 2007, Instagram 2010, widespread adoption by 2012)
+                        </div>
+                        <div class="chart-wrapper relative h-96 mb-4">
+                            <canvas id="timelineChart" width="700" height="350" aria-label="Cumulative Cost Timeline Chart" role="img"></canvas>
+                        </div>
                     </div>
-                    <div class="chart-wrapper relative h-96 mb-4">
-                        <canvas id="timelineChart" width="700" height="350" aria-label="Cumulative Cost Timeline Chart" role="img"></canvas>
+
+                    <div class="chart-container mb-8 p-6 bg-gray-50 rounded-xl">
+                        <h3 class="text-orange-700 mb-4 text-lg font-semibold text-center">📊 Cost Composition</h3>
+                        <div class="cost-breakdown-chart relative h-64 mb-4">
+                            <canvas id="pieChart" width="400" height="250" aria-label="Cost Composition Pie Chart" role="img"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="formula-summary bg-gray-50 rounded-xl p-6 mb-8">
+                        <h3 class="text-gray-800 mb-6 text-lg font-semibold text-center">💰 <span class="text-red-700">Cost</span> <span class="text-purple-700">Breakdown</span></h3>
+                        <div class="formula-item bg-white rounded-lg p-4 mb-4 border-l-4 border-red-600">
+                            <div class="formula-title font-bold text-red-700 mb-2">☠️ 1. Death</div>
+                            <div class="formula-equation font-mono bg-red-50 p-2 rounded mb-2 text-red-700" id="mortality-display-formula">300K × 25% × $10.0M = $750.0B</div>
+                            <div class="formula-result font-bold text-red-700 text-lg" id="mortality-result">$750.0B</div>
+                        </div>
+                        <div class="formula-item bg-white rounded-lg p-4 mb-4 border-l-4 border-purple-500">
+                            <div class="formula-title font-bold text-purple-700 mb-2">😞 2. Disability</div>
+                            <div class="formula-equation font-mono bg-purple-50 p-2 rounded mb-2 text-purple-700" id="mental-display-formula">15M × 8.0yr × 30% × $133K = $480.0B</div>
+                            <div class="formula-result font-bold text-purple-700 text-lg" id="mental-result">$480.0B</div>
+                        </div>
+                        <div class="formula-item bg-white rounded-lg p-4 mb-4 border-l-4 border-orange-500">
+                            <div class="formula-title font-bold text-orange-700 mb-2">💸 3. Lost Productivity</div>
+                            <div class="formula-equation font-mono bg-orange-50 p-2 rounded mb-2 text-orange-700" id="healthcare-display-formula">15M × $11.5K × 5.0yr = $862.5B</div>
+                            <div class="formula-result font-bold text-orange-700 text-lg" id="healthcare-result">$862.5B</div>
+                        </div>
+                    </div>
+
+                    <!-- Research Foundation moved to bottom of RHS -->
+                    <div class="parameter-group bg-blue-50 text-gray-900 border-l-4 border-blue-700 rounded-xl mb-8 p-5">
+                        <strong>📚 Research Foundation</strong>
+                        <div class="mt-3 text-base">
+                            <p>Our calculations draw from peer-reviewed research showing:</p>
+                            <ul class="mt-2 ml-5 list-disc">
+                                <li>Each hour of social media use → <b>0.23-point increase</b> in depressive symptoms (<a href="https://www.pnas.org/doi/pdf/10.1073/pnas.1815663116" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">PNAS, 2019</a>)</li>
+                                <li>Economic burden of depression rose to <b>$326B</b> (2020 USD) (<a href="https://link.springer.com/content/pdf/10.1007/s40273-021-01019-4.pdf" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">Springer 2021</a>)</li>
+                                <li>Workplace costs account for 61%, suicide-related costs ~4% (<a href="https://link.springer.com/content/pdf/10.1007/s40273-021-01019-4.pdf" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">Springer 2021</a>)</li>
+                                <li>Incremental societal burden reached <b>$333.7B</b> total (<a href="https://www.psychiatrist.com/jcp/economic-burden-adults-major-depressive-disorder-united/" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">Greenberg et al. 2021</a>)</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="chart-container mb-8 p-6 bg-gray-50 rounded-xl">
-                    <h3 class="text-orange-700 mb-4 text-lg font-semibold text-center">📊 Cost Composition</h3>
-                    <div class="cost-breakdown-chart relative h-64 mb-4">
-                        <canvas id="pieChart" width="400" height="250" aria-label="Cost Composition Pie Chart" role="img"></canvas>
-                    </div>
-                </div>
+        <!-- Important Caveats moved to bottom of page -->
+        <div class="parameter-group bg-yellow-50 text-gray-900 border-l-4 border-yellow-600 rounded-xl mb-8 p-5 mt-12">
+            <strong>⚠️ Important Caveats & Research Context</strong>
+            <ul class="mt-3 ml-5 list-disc text-base">
+                <li><b>Attribution evidence:</b> Based on quasi-experimental studies (<a href="https://econpapers.repec.org/RePEc:aea:aecrev:v:112:y:2022:i:11:p:3660-93" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">Braghieri et al. 2022</a>) and systematic reviews</li>
+                <li><b>Population estimates:</b> Derived from <a href="https://wonder.cdc.gov/" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">CDC WONDER database</a> and peer-reviewed studies (<a href="https://www.pnas.org/doi/pdf/10.1073/pnas.1815663116" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">Twenge et al. 2018</a>)</li>
+                <li><b>QALY calculations:</b> Follow <a href="https://www.who.int/healthinfo/global_burden_disease/metrics_daly/en/" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">WHO Global Burden of Disease methodology</a></li>
+                <li><b>Economic costs:</b> Based on <a href="https://www.psychiatrist.com/jcp/economic-burden-adults-major-depressive-disorder-united/" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">Greenberg et al. (2021)</a> healthcare cost analysis</li>
+                <li><b>Economic burden baseline:</b> Built on validated <a href="https://link.springer.com/content/pdf/10.1007/s40273-021-01019-4.pdf" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">$326B burden (2020)</a> with 61% workplace, 4% suicide-related costs</li>
+                <li><b>Disability impact:</b> Documented <a href="https://digitalcommons.law.umaryland.edu/cgi/viewcontent.cgi?article=2301&context=fac_pubs" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">400M disability days/year</a> in US for ages 15-44 via NHIS surveys</li>
+                <li><b>Dose-response relationship:</b> <a href="https://www.pnas.org/doi/pdf/10.1073/pnas.1815663116" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">PNAS 2019</a> shows each hour of social media → 0.23-point increase in depressive symptoms</li>
+                <li><b>Incremental societal burden:</b> <a href="https://www.psychiatrist.com/jcp/economic-burden-adults-major-depressive-disorder-united/" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">$333.7B total</a> including mortality ($9.6B) and disability ($4.6B) costs</li>
+                <li><b>Additional research:</b> <a href="https://www.jidonline.org/article/S0022-202X(17)31217-4/pdf" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">JID 2017</a>, <a href="https://www.ajpmonline.org/article/S0749-3797(24)00022-9/pdf" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">AJPM 2024</a>, <a href="https://pubs.aeaweb.org/doi/pdfplus/10.1257/aer.20190658" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">AER 2019</a>, <a href="https://econtent.hogrefe.com/doi/10.1027/1864-1105/a000227" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">Hogrefe 2019</a>, <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4103145" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">SSRN 2022</a>, <a href="https://www.liebertpub.com/doi/epub/10.1089/cyber.2021.29232.editorial" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">Cyberpsychology 2021</a></li>
+            </ul>
+            <div class="mt-2 text-base">
+                <b>Research context:</b> Findings draw on collaborative reviews from multiple research institutions and meta-analyses. See tooltips for detailed citations.
+            </div>
+        </div>
 
-                <div class="formula-summary bg-gray-50 rounded-xl p-6 mb-8">
-                    <h3 class="text-gray-800 mb-6 text-lg font-semibold text-center">💰 <span class="text-red-700">Cost</span> <span class="text-purple-700">Breakdown</span></h3>
-                    <div class="formula-item bg-white rounded-lg p-4 mb-4 border-l-4 border-red-600">
-                        <div class="formula-title font-bold text-red-700 mb-2">☠️ 1. Death</div>
-                        <div class="formula-equation font-mono bg-red-50 p-2 rounded mb-2 text-red-700" id="mortality-display-formula">300K × 25% × $10.0M = $750.0B</div>
-                        <div class="formula-result font-bold text-red-700 text-lg" id="mortality-result">$750.0B</div>
-                    </div>
-                    <div class="formula-item bg-white rounded-lg p-4 mb-4 border-l-4 border-purple-500">
-                        <div class="formula-title font-bold text-purple-700 mb-2">😞 2. Disability</div>
-                        <div class="formula-equation font-mono bg-purple-50 p-2 rounded mb-2 text-purple-700" id="mental-display-formula">15M × 8.0yr × 30% × $133K = $480.0B</div>
-                        <div class="formula-result font-bold text-purple-700 text-lg" id="mental-result">$480.0B</div>
-                    </div>
-                    <div class="formula-item bg-white rounded-lg p-4 mb-4 border-l-4 border-orange-500">
-                        <div class="formula-title font-bold text-orange-700 mb-2">💸 3. Lost Productivity</div>
-                        <div class="formula-equation font-mono bg-orange-50 p-2 rounded mb-2 text-orange-700" id="healthcare-display-formula">15M × $11.5K × 5.0yr = $862.5B</div>
-                        <div class="formula-result font-bold text-orange-700 text-lg" id="healthcare-result">$862.5B</div>
-                    </div>
-                </div>
+        <!-- Modal for Causal Pathways -->
+        <div id="causal-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 hidden">
+          <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-6xl w-full mx-4 relative">
+            <button id="causal-modal-close" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-gray-700 focus:outline-none">&times;</button>
+            <h3 class="text-gray-800 mb-4 text-lg font-semibold text-center">🔗 Causal Pathways (Research-Based)</h3>
+            <div class="mermaid bg-white rounded-lg p-6 overflow-auto" id="causal-diagram-modal" style="min-height: 600px; max-height: 80vh;"></div>
             </div>
         </div>
 
@@ -450,7 +499,7 @@
       <ul class="mb-2 pl-4 list-disc text-sm">
         <li>CDC WONDER and Twenge et al. (2018) show a marked rise in teen suicide rates after social media adoption.<br>
           <a href="https://www.cdc.gov/suicide/facts/index.html" class="text-indigo-600 underline hover:text-indigo-800" target="_blank" rel="noopener">CDC Suicide Facts</a> |
-          <a href="https://jonathanhaidt.com/reviews" class="text-indigo-600 underline hover:text-indigo-800" target="_blank" rel="noopener">Twenge et al. (2018)</a>
+          <a href="https://www.pnas.org/doi/pdf/10.1073/pnas.1815663116" class="text-indigo-600 underline hover:text-indigo-800" target="_blank" rel="noopener">Twenge et al. (2018)</a>
         </li>
         <li>Braghieri, Levy & Makarin (2022) found Facebook's rollout increased suicide rates; internal Facebook research (WSJ) links Instagram to teen mental health harm.<br>
           <a href="https://econpapers.repec.org/RePEc:aea:aecrev:v:112:y:2022:i:11:p:3660-93" class="text-indigo-600 underline hover:text-indigo-800" target="_blank" rel="noopener">Braghieri et al. (2022)</a> |
@@ -473,7 +522,7 @@
       <div class="font-bold text-lg mb-2 text-gray-800">Excess Suicides Since 2009 (P)</div>
       <div class="text-sm mb-2">CDC data and Twenge et al. (2018) show a sharp rise in youth suicides after 2010, coinciding with social media adoption.<br>
         <a href="https://www.cdc.gov/suicide/facts/index.html" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">CDC Suicide Facts</a> |
-        <a href="https://jonathanhaidt.com/reviews" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">Twenge et al. (2018)</a>
+        <a href="https://www.pnas.org/doi/pdf/10.1073/pnas.1815663116" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">Twenge et al. (2018)</a>
       </div>
     </template>
     <template id="tooltip-mortality-attribution">
@@ -513,15 +562,15 @@
     </template>
     <template id="tooltip-healthcare">
       <div class="font-bold text-lg mb-2 text-gray-800 flex items-center">🏥 Healthcare & Productivity Losses</div>
-      <div class="mb-2 text-sm text-gray-700">Greenberg et al. (2023) and JID (2017) estimate $6,500-$8,000/yr for depression treatment.<br>
-        <a href="https://www.jmcp.org/doi/10.18553/jmcp.2022.28.11-a.s1" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">Greenberg et al. (2023)</a> |
+      <div class="mb-2 text-sm text-gray-700">Greenberg et al. (2021) and JID (2017) estimate $6,500-$8,000/yr for depression treatment.<br>
+        <a href="https://www.psychiatrist.com/jcp/economic-burden-adults-major-depressive-disorder-united/" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">Greenberg et al. (2021)</a> |
         <a href="https://www.jidonline.org/article/S0022-202X(17)31217-4/pdf" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">JID 2017</a>
       </div>
     </template>
     <template id="tooltip-healthcare-costs">
       <div class="font-bold text-lg mb-2 text-gray-800">Annual Healthcare Costs per Person (P)</div>
-      <div class="text-sm mb-2">Greenberg et al. (2023) and JID (2017) estimate $6,500-$8,000/yr for depression treatment.<br>
-        <a href="https://www.jmcp.org/doi/10.18553/jmcp.2022.28.11-a.s1" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">Greenberg et al. (2023)</a> |
+      <div class="text-sm mb-2">Greenberg et al. (2021) and JID (2017) estimate $6,500-$8,000/yr for depression treatment.<br>
+        <a href="https://www.psychiatrist.com/jcp/economic-burden-adults-major-depressive-disorder-united/" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">Greenberg et al. (2021)</a> |
         <a href="https://www.jidonline.org/article/S0022-202X(17)31217-4/pdf" class="text-indigo-600 underline hover:text-indigo-800" target="_blank">JID 2017</a>
       </div>
     </template>

@@ -151,26 +151,6 @@ const UIManager = {
   },
 
   /**
-   * Update dynamic profile summary
-   */
-  updateProfile: () => {
-    const depressionPeople = state.depression;
-    const totalSuicides = Math.round(state.suicides * state.attribution / 100);
-    const pittsburghPop = 300000;
-    const classrooms = Math.round(depressionPeople / 25);
-    const towns = Math.round(depressionPeople / 10000);
-    let html = '';
-    html += `<b>"This many kids…"</b> <br>`;
-    html += `<span style="font-size:1.2em;font-weight:bold;">${depressionPeople.toLocaleString()}</span> children/teens with major depression <span class='text-xs'>(since 2009)</span><br>`;
-    html += `That's like <b>${Math.round(depressionPeople/pittsburghPop).toLocaleString()}</b> Pittsburghs.<br>`;
-    html += `Or <b>${classrooms.toLocaleString()}</b> classrooms, <b>${towns.toLocaleString()}</b> towns.<br>`;
-    html += `<br><b>"This many deaths…"</b><br>`;
-    html += `<span style="font-size:1.2em;font-weight:bold;">${totalSuicides.toLocaleString()}</span> lives lost <span class='text-xs'>(since 2009)</span> — enough to fill <b>${Math.round(totalSuicides/150).toLocaleString()}</b> high schools.`;
-    const profile = document.getElementById('dynamic-profile');
-    if (profile) profile.innerHTML = html;
-  },
-
-  /**
    * Update lifetime counters
    */
   updateLifetimeCounters: () => {
@@ -418,6 +398,10 @@ const ChartManager = {
 // Global variables for animation and timing
 let clockStartTime = Date.now();
 let currentTotalCost = 0;
+let clockInterval;
+let debtClockInterval;
+let currentAttributableSuicides = 0;
+let currentAttributableDepression = 0;
 
 /**
  * Utility functions
@@ -485,6 +469,19 @@ const Utils = {
 function calculateCosts() {
   console.log('calculateCosts called, currentTotalCost before:', currentTotalCost);
   
+  // Update state from DOM elements
+  const parameterIds = ['vsl', 'suicides', 'attribution', 'depression', 'yld', 'qol', 'healthcare', 'productivity', 'duration'];
+  parameterIds.forEach(id => {
+    const slider = document.getElementById(`${id}-slider`);
+    if (slider) {
+      state[id] = parseFloat(slider.value);
+    }
+  });
+
+  // Calculate attributable numbers
+  currentAttributableSuicides = state.suicides * (state.attribution / 100);
+  currentAttributableDepression = state.depression;
+
   // Calculate all costs
   state.mortalityCost = Calculator.mortalityCost(state.vsl, state.suicides, state.attribution);
   state.mentalHealthCost = Calculator.mentalHealthCost(state.depression, state.yld, state.qol, state.vsl);
@@ -499,7 +496,17 @@ function calculateCosts() {
   
   // Update UI
   UIManager.updateResults();
-  UIManager.updateProfile();
+
+  const deathNarrativeEl = document.getElementById('death-narrative-number');
+  if (deathNarrativeEl) {
+      deathNarrativeEl.textContent = Math.round(currentAttributableSuicides).toLocaleString('en-US');
+  }
+
+  const disabilityNarrativeEl = document.getElementById('disability-narrative-number');
+  if (disabilityNarrativeEl) {
+      disabilityNarrativeEl.textContent = Math.round(currentAttributableDepression).toLocaleString('en-US');
+  }
+  
   UIManager.updateLifetimeCounters();
   debouncedUpdateCharts();
 }
@@ -659,24 +666,6 @@ function initEventHandlers() {
     });
   }
   
-  // Left column toggle
-  const toggleLeftColumn = document.getElementById('toggle-left-column');
-  const leftColumn = document.getElementById('left-column');
-  const toggleText = document.getElementById('toggle-text');
-  
-  if (toggleLeftColumn && leftColumn && toggleText) {
-    toggleLeftColumn.addEventListener('click', () => {
-      const isCollapsed = leftColumn.classList.contains('collapsed');
-      if (isCollapsed) {
-        leftColumn.classList.remove('collapsed');
-        toggleText.textContent = 'Hide Calculator';
-      } else {
-        leftColumn.classList.add('collapsed');
-        toggleText.textContent = 'Show Calculator';
-      }
-    });
-  }
-  
   // Help popover logic
   const helpBtn = document.getElementById('help-btn');
   const helpPopover = document.getElementById('help-popover');
@@ -684,41 +673,35 @@ function initEventHandlers() {
   
   if (helpBtn && helpPopover && helpPopoverClose) {
     helpBtn.addEventListener('click', () => {
-      helpPopover.classList.remove('hidden');
+      helpPopover.classList.toggle('hidden');
     });
-    
+
     helpPopoverClose.addEventListener('click', () => {
       helpPopover.classList.add('hidden');
-    });
-    
-    document.addEventListener('click', (e) => {
-      if (!helpPopover.contains(e.target) && e.target !== helpBtn) {
-        helpPopover.classList.add('hidden');
-      }
     });
   }
   
   // Causal Pathways pop-out logic
-  const popoutBtn = document.getElementById('causal-popout-btn');
-  const modal = document.getElementById('causal-modal');
+  const causalPopoutBtn = document.getElementById('causal-popout-btn');
+  const causalModal = document.getElementById('causal-modal');
   const modalClose = document.getElementById('causal-modal-close');
   const diagram = document.getElementById('causal-diagram');
   const modalDiagram = document.getElementById('causal-diagram-modal');
   
-  if (popoutBtn && modal && modalClose && diagram && modalDiagram) {
-    popoutBtn.addEventListener('click', () => {
-      modal.classList.remove('hidden');
+  if (causalPopoutBtn && causalModal && modalClose && diagram && modalDiagram) {
+    causalPopoutBtn.addEventListener('click', () => {
+      causalModal.classList.remove('hidden');
       modalDiagram.innerHTML = diagram.innerHTML;
       if (window.mermaid) mermaid.init(undefined, modalDiagram);
     });
     
     modalClose.addEventListener('click', () => {
-      modal.classList.add('hidden');
+      causalModal.classList.add('hidden');
     });
     
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        modal.classList.add('hidden');
+    causalModal.addEventListener('click', (e) => {
+      if (e.target === causalModal) {
+        causalModal.classList.add('hidden');
       }
     });
   }
