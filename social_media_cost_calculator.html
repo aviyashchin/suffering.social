@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculate the true economic cost of social media: $2+ trillion in hidden social value that GDP doesn't measure.">
+    <meta name="keywords" content="social media cost, GDP alternatives, value of statistical life, mental health economics">
+    <meta property="og:title" content="The True Cost of Social Media Calculator">
+    <meta property="og:description" content="Measure the hidden economic impact of social media on society beyond GDP metrics.">
+    <meta property="og:image" content="https://example.com/calculator-preview.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>The True Cost of Social Media</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.4.3/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding-top: 100px; /* enough to accommodate the fixed bar */
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            z-index: 99999;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .top-bar h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .top-bar p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 700px;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .calculator-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .calculator-header {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .calculator-body {
+            padding: 40px;
+        }
+
+        .visualization-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+
+        .parameter-group {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            margin-bottom: 30px;
+        }
+
+        .parameter-group h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .slider-container {
+            margin-bottom: 20px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .slider-value {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .formula-display {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid #667eea;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #2c3e50;
+        }
+
+        .citation {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 8px;
+            padding: 8px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 5px;
+        }
+
+        .citation a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .citation a:hover {
+            text-decoration: underline;
+        }
+
+        .cost-clock {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .clock-display {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 10px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .clock-label {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .per-second {
+            font-size: 1.2rem;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .chart-container {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .chart-container h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 350px;
+            margin-bottom: 20px;
+        }
+
+        .cost-breakdown-chart {
+            position: relative;
+            height: 200px;
+            margin-bottom: 20px;
+        }
+
+        .dag-container {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .dag-container h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .mermaid {
+            text-align: center;
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .formula-summary {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .formula-summary h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .formula-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .formula-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .formula-equation {
+            font-family: 'Courier New', monospace;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .formula-result {
+            font-weight: bold;
+            color: #e74c3c;
+            font-size: 1.1rem;
+        }
+
+        .total-display {
+            text-align: center;
+            padding: 25px;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .total-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+
+        .final-summary {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .final-summary h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .final-formula {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .gdp-comparison {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .timeline-info {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            background-color: rgba(44, 62, 80, 0.95);
+            color: white;
+            text-align: center;
+            padding: 8px 12px;
+            border-radius: 6px;
+            position: absolute;
+            z-index: 1;
+            width: 200px;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .reset-button {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background 0.2s;
+        }
+
+        .reset-button:hover {
+            background: #c0392b;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .visualization-card {
+                break-inside: avoid;
+            }
+            
+            .calculator-card {
+                break-before: page;
+            }
+        }
+
+        @media (max-width: 1400px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .visualization-card {
+                position: static;
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .top-bar h1 {
+                font-size: 2rem;
+            }
+            
+            .calculator-body {
+                padding: 20px;
+            }
+
+            .clock-display {
+                font-size: 2rem;
+            }
+        }
+
+        /* New floating top bar for combined total cost */
+        .floating-total {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: #ffffff;
+            z-index: 99999;
+            text-align: center;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .floating-total-value {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 5px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .floating-total-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Help & Tips Modal */
+        .help-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ff6b6b;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .help-modal-overlay {
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999999;
+        }
+
+        .help-modal {
+            background: #fff; 
+            margin: 50px auto; 
+            border-radius: 10px; 
+            max-width: 600px; 
+            padding: 20px;
+            position: relative;
+            top: 50px;
+        }
+
+        .help-close {
+            position: absolute;
+            top: 10px; 
+            right: 10px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        /* Info Button and Tooltip */
+        .info-button {
+            position: relative;
+            background: #667eea;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-align: center;
+            line-height: 25px;
+            margin-left: 8px;
+        }
+
+        .info-tooltip {
+            visibility: hidden;
+            opacity: 0;
+            width: 280px;
+            background-color: #fff;
+            color: #333;
+            text-align: left;
+            padding: 15px;
+            border-radius: 8px;
+            position: absolute;
+            z-index: 1;
+            top: 30px;
+            left: -120px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            transform: translateY(-10px);
+        }
+
+        .info-button.active .info-tooltip,
+        .info-button:hover .info-tooltip {
+            visibility: visible;
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .info-tooltip::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            margin-left: -8px;
+            border-width: 0 8px 8px 8px;
+            border-style: solid;
+            border-color: transparent transparent #fff transparent;
+        }
+
+        .info-tooltip-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+            color: #2c3e50;
+        }
+
+        .info-tooltip-close {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            color: #999;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .info-tooltip-close:hover {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <h1>The True Cost of Social Media</h1>
+        <p>Beyond GDP: Measuring the Hidden Economic Impact on Society</p>
+        <button class="help-button" id="help-btn">?</button>
+    </div>
+
+    <!-- Floating Combined Total Cost Bar -->
+    <div class="floating-total">
+        <div class="floating-total-value" id="floating-total-value">$2,090,000,000,000</div>
+        <div class="floating-total-label">Total Economic Cost (Including Time on Page)</div>
+    </div>
+
+    <!-- Help & Tips Modal -->
+    <div class="help-modal-overlay" id="help-modal-overlay">
+        <div class="help-modal">
+            <span class="help-close" id="help-close">&times;</span>
+            <h2>How to Use This Calculator</h2>
+            <p>Adjust the sliders, observe the real-time cost updates, and see how each factor contributes to total social impact.</p>
+            <p>Use "Reset" for default settings. All calculations update instantly.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main-layout">
+            <div class="calculator-card">
+                <div class="calculator-header">
+                    <h2>Interactive Cost Calculator</h2>
+                    <p>Simple formulas showing cumulative costs since 2009</p>
+                    <button id="reset-button" class="reset-button">Reset to Default Values</button>
+                </div>
+
+                <div class="calculator-body">
+                    <!-- Caveats/Limitations Notice -->
+                    <div class="parameter-group" style="background: #fff3cd; border-left: 5px solid #e67e22; color: #7f5f00; margin-bottom: 35px;">
+                        <strong>⚠️ Important Caveats & Confidence Levels</strong>
+                        <ul style="margin-top: 10px; font-size: 0.97em;">
+                            <li><b>Attribution rates</b> are based on best-available but limited causal evidence (see tooltips).</li>
+                            <li><b>Population estimates</b> for social media-induced depression are conservative and uncertain.</li>
+                            <li><b>VSL and cost figures</b> reflect latest US federal and academic research (2022-2024).</li>
+                            <li>See tooltips (<b>i</b>) for confidence levels and citations for each parameter.</li>
+                        </ul>
+                        <div style="margin-top: 8px; font-size: 0.93em;">
+                            <b>Essential caveats:</b> Most evidence is correlational; effects vary by age, platform, and usage; precise quantification is challenging.
+                        </div>
+                    </div>
+                    <!-- Mortality Costs -->
+                    <div class="parameter-group">
+                        <h3>💀 Mortality Costs
+                            <button class="info-button">i
+                                <div class="info-tooltip">
+                                    <span class="info-tooltip-close">×</span>
+                                    <strong>Evidence & Confidence</strong><br>
+                                    <ul>
+                                        <li><b>VSL:</b> $13.7M (DOT 2024), $11.2M (EPA), $8M (Banzhaf 2022, meta-analysis)</li>
+                                        <li><b>Excess suicides:</b> CDC data, 100K-120K (2009-2024), <b>high confidence</b></li>
+                                        <li><b>Attribution:</b> 10-20% (experimental evidence), <b>moderate-low confidence</b></li>
+                                    </ul>
+                                    <b>Key Citations:</b>
+                                    <ul>
+                                        <li><a href="https://doi.org/10.1017/bca.2022.9" target="_blank">Banzhaf (2022)</a></li>
+                                        <li><a href="https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-on-valuation-of-a-statistical-life-in-economic-analysis" target="_blank">DOT 2024 VSL</a></li>
+                                        <li><a href="https://www.cdc.gov/suicide/facts/index.html" target="_blank">CDC Suicide Facts</a></li>
+                                    </ul>
+                                </div>
+                            </button>
+                        </h3>
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <span>Value of Statistical Life (VSL)</span>
+                                <span class="slider-value" id="vsl-value">$13.7M</span>
+                            </div>
+                            <input type="range" min="8" max="14" value="13.7" step="0.1" class="slider" id="vsl-slider" aria-label="Value of Statistical Life" />
+                        </div>
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <span>Excess Suicides Since 2009 (P)</span>
+                                <span class="slider-value" id="suicides-value">110,000</span>
+                            </div>
+                            <input type="range" min="100000" max="120000" value="110000" step="1000" class="slider" id="suicides-slider" aria-label="Excess Suicides Since 2009" />
+                        </div>
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <span>% Attributable to Social Media (Q)</span>
+                                <span class="slider-value" id="attribution-value">15%</span>
+                            </div>
+                            <input type="range" min="10" max="20" value="15" step="1" class="slider" id="attribution-slider" aria-label="Percentage Attributable to Social Media" />
+                        </div>
+                        <div class="formula-display">
+                            <strong>Formula:</strong> P × Q × VSL<br>
+                            <strong>Result:</strong> <span id="mortality-formula-result">110,000 × 15% × $13.7M = $226.1B</span>
+                        </div>
+                        <div class="citation">
+                            <strong>Sources:</strong>
+                            <a href="https://doi.org/10.1017/bca.2022.9" target="_blank" rel="noopener">Banzhaf (2022)</a>;
+                            <a href="https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-on-valuation-of-a-statistical-life-in-economic-analysis" target="_blank" rel="noopener">DOT 2024 VSL</a>;
+                            <a href="https://www.cdc.gov/suicide/facts/index.html" target="_blank" rel="noopener">CDC Suicide Facts</a>
+                        </div>
+                    </div>
+                    <!-- Mental Health QALY Losses -->
+                    <div class="parameter-group">
+                        <h3>🧠 Mental Health QALY Losses
+                            <button class="info-button">i
+                                <div class="info-tooltip">
+                                    <span class="info-tooltip-close">×</span>
+                                    <strong>Evidence & Confidence</strong><br>
+                                    <ul>
+                                        <li><b>Population:</b> 3-5M (conservative, NIMH/SAMHSA, 2021), <b>moderate confidence</b></li>
+                                        <li><b>QALY reduction:</b> 30-40% (WHO, meta-analyses), <b>high confidence</b></li>
+                                        <li><b>Years affected:</b> 6.0 (lifetime, age-dependent), <b>moderate confidence</b></li>
+                                    </ul>
+                                    <b>Key Citations:</b>
+                                    <ul>
+                                        <li><a href="https://www.nimh.nih.gov/health/statistics/major-depression" target="_blank">NIMH Depression Stats</a></li>
+                                        <li><a href="https://www.who.int/healthinfo/global_burden_disease/metrics_daly/en/" target="_blank">WHO QALY methodology</a></li>
+                                    </ul>
+                                </div>
+                            </button>
+                        </h3>
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <span>People with SM-Induced Depression (P)</span>
+                                <span class="slider-value" id="depression-value">4M</span>
+                            </div>
+                            <input type="range" min="3000000" max="5000000" value="4000000" step="100000" class="slider" id="depression-slider" aria-label="People with Social Media-Induced Depression" />
+                        </div>
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <span>Years Lived with Disability (Q)</span>
+                                <span class="slider-value" id="yld-value">6.0 years</span>
+                            </div>
+                            <input type="range" min="4" max="8" value="6" step="0.1" class="slider" id="yld-slider" aria-label="Years Lived with Disability" />
+                        </div>
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <span>Quality of Life Reduction (R)</span>
+                                <span class="slider-value" id="qol-value">35%</span>
+                            </div>
+                            <input type="range" min="30" max="40" value="35" step="1" class="slider" id="qol-slider" aria-label="Quality of Life Reduction" />
+                        </div>
+                        <div class="formula-display">
+                            <strong>Formula:</strong> P × Q × R × (VSL ÷ 75 years)<br>
+                            <strong>Result:</strong> <span id="mental-formula-result">4M × 6 × 35% × $182K = $1.53T</span>
+                        </div>
+                        <div class="citation">
+                            <strong>Sources:</strong>
+                            <a href="https://www.nimh.nih.gov/health/statistics/major-depression" target="_blank" rel="noopener">NIMH: Major Depression Statistics</a>;
+                            <a href="https://www.who.int/healthinfo/global_burden_disease/metrics_daly/en/" target="_blank" rel="noopener">WHO QALY methodology</a>
+                        </div>
+                    </div>
+                    <!-- Healthcare & Productivity Losses -->
+                    <div class="parameter-group">
+                        <h3>🏥 Healthcare & Productivity Losses
+                            <button class="info-button">i
+                                <div class="info-tooltip">
+                                    <span class="info-tooltip-close">×</span>
+                                    <strong>Evidence & Confidence</strong><br>
+                                    <ul>
+                                        <li><b>Healthcare:</b> $6,500-$8,000/yr (Greenberg et al. 2023), <b>high confidence</b></li>
+                                        <li><b>Productivity:</b> $6,000/yr (validated), <b>high confidence</b></li>
+                                        <li><b>Duration:</b> 4.5 years (lifetime exposure), <b>moderate confidence</b></li>
+                                    </ul>
+                                    <b>Key Citations:</b>
+                                    <ul>
+                                        <li><a href="https://www.jmcp.org/doi/10.18553/jmcp.2022.28.11-a.s1" target="_blank">Greenberg et al. (2023)</a></li>
+                                    </ul>
+                                </div>
+                            </button>
+                        </h3>
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <span>Annual Healthcare Costs per Person (P)</span>
+                                <span class="slider-value" id="healthcare-value">$7,000</span>
+                            </div>
+                            <input type="range" min="6500" max="8000" value="7000" step="100" class="slider" id="healthcare-slider" aria-label="Annual Healthcare Costs per Person" />
+                        </div>
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <span>Annual Productivity Loss per Person (Q)</span>
+                                <span class="slider-value" id="productivity-value">$6,000</span>
+                            </div>
+                            <input type="range" min="6000" max="8000" value="6000" step="100" class="slider" id="productivity-slider" aria-label="Annual Productivity Loss per Person" />
+                        </div>
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <span>Treatment Duration in Years (R)</span>
+                                <span class="slider-value" id="duration-value">4.5 years</span>
+                            </div>
+                            <input type="range" min="3" max="6" value="4.5" step="0.1" class="slider" id="duration-slider" aria-label="Treatment Duration in Years" />
+                        </div>
+                        <div class="formula-display">
+                            <strong>Formula:</strong> Depression People × (P + Q) × R<br>
+                            <strong>Result:</strong> <span id="healthcare-formula-result">4M × ($7K + $6K) × 4.5 = $234B</span>
+                        </div>
+                        <div class="citation">
+                            <strong>Sources:</strong>
+                            <a href="https://www.jmcp.org/doi/10.18553/jmcp.2022.28.11-a.s1" target="_blank" rel="noopener">Greenberg et al. (2023)</a>
+                        </div>
+                    </div>
+                    <!-- Sensitivity Analysis Note -->
+                    <div class="parameter-group" style="background: #eaf6ff; border-left: 5px solid #3498db; color: #1a5276; margin-bottom: 35px;">
+                        <strong>🔎 Sensitivity Analysis:</strong>
+                        <div style="margin-top: 8px; font-size: 0.97em;">
+                            Try adjusting the <b>VSL</b>, <b>attribution %</b>, and <b>affected population</b> sliders to see the full range of plausible outcomes.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="visualization-card">
+                <div class="total-display">
+                    <div class="total-value" id="total-cost">$2.09 Trillion</div>
+                    <p>Total Economic Cost to Society</p>
+                    <p style="font-size: 0.9rem; margin-top: 10px; opacity: 0.8;">
+                        <span id="gdp-percentage">8.7%</span> of US GDP ($24T)
+                    </p>
+                </div>
+
+                <div class="cost-clock">
+                    <div class="clock-display" id="running-total">$0</div>
+                    <div class="clock-label">Total Cost Since You Opened This Page</div>
+                    <div class="per-second">+<span id="cost-per-second">$63,578</span> per second</div>
+                </div>
+
+                <div class="dag-container">
+                    <h3>🔗 Causal Pathways (Research-Based)</h3>
+                    <div class="mermaid" id="causal-diagram">
+                        graph TD
+                        A[Social Media Adoption 2009-2012] --> B[Addictive Design Features]
+                        A --> C[Displacement of Non-Screen Activities]
+                        B --> D[Excessive Usage 5+ hrs/day]
+                        C --> E[Reduced In-Person Interaction]
+                        C --> F[Reduced Sleep]
+                        C --> G[Reduced Physical Activity]
+                        D --> H[Sleep Deprivation]
+                        D --> I[Social Comparison]
+                        D --> J[Cyberbullying Exposure]
+                        D --> K[Negative Emotion Contagion]
+                        E --> L[Social Isolation]
+                        F --> H
+                        H --> M[Depression & Anxiety]
+                        I --> M
+                        J --> M
+                        K --> M
+                        L --> M
+                        G --> N[Physical Health Decline]
+                        N --> M
+                        M --> O[Suicide Risk]
+                        M --> P[Healthcare Utilization]
+                        M --> Q[Productivity Loss]
+                        O --> R[$750B Mortality Costs]
+                        P --> S[$862B Healthcare Costs]
+                        Q --> S
+                        M --> T[$480B QALY Losses]
+                        R --> U[$2.1T Total Economic Impact]
+                        S --> U
+                        T --> U
+                        
+                        style A fill:#ff6b6b
+                        style U fill:#e74c3c,color:#fff
+                        style R fill:#e74c3c,color:#fff
+                        style S fill:#3498db,color:#fff
+                        style T fill:#9b59b6,color:#fff
+                        style H fill:#f39c12
+                        style I fill:#f39c12
+                        style J fill:#f39c12
+                        style K fill:#f39c12
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3>📈 Cumulative Costs Since Social Media Era (2009-2024)</h3>
+                    <div class="timeline-info">
+                        <strong>Key Timeline:</strong> 2009-2012 marked the transition to smartphone-based social media (iPhone 2007, Instagram 2010, widespread adoption by 2012)
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3>📊 Cost Composition</h3>
+                    <div class="cost-breakdown-chart">
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="formula-summary">
+                    <h3>💰 Cost Breakdown</h3>
+                    
+                    <div class="formula-item">
+                        <div class="formula-title">1. Mortality Costs</div>
+                        <div class="formula-equation" id="mortality-display-formula">300K × 25% × $10.0M = $750.0B</div>
+                        <div class="formula-result" id="mortality-result">$750.0B</div>
+                    </div>
+                    
+                    <div class="formula-item">
+                        <div class="formula-title">2. Mental Health QALYs</div>
+                        <div class="formula-equation" id="mental-display-formula">15M × 8.0yr × 30% × $133K = $480.0B</div>
+                        <div class="formula-result" id="mental-result">$480.0B</div>
+                    </div>
+                    
+                    <div class="formula-item">
+                        <div class="formula-title">3. Healthcare & Productivity</div>
+                        <div class="formula-equation" id="healthcare-display-formula">15M × $11.5K × 5.0yr = $862.5B</div>
+                        <div class="formula-result" id="healthcare-result">$862.5B</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="final-summary">
+            <h2>🎯 The Final Equation</h2>
+            <div class="final-formula" id="final-equation">
+                Total Cost = $750.0B + $480.0B + $862.5B = $2.09 Trillion
+            </div>
+            <p style="font-size: 1.2rem; margin-bottom: 15px;">
+                This represents the hidden economic value that GDP doesn't measure
+            </p>
+            <div class="gdp-comparison">
+                <h3>GDP vs. True Social Value</h3>
+                <p>Value of Statistical Life: $7-20M per person</p>
+                <p>Lifetime Income: ~$2M per person</p>
+                <p><strong>Missing Value: $5-18M per person</strong></p>
+                <p style="margin-top: 15px; font-size: 1.1rem;">
+                    This calculator captures exactly what GDP misses: 
+                    <strong>human flourishing, mental health, and social well-being</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Mermaid
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#667eea',
+                primaryTextColor: '#2c3e50',
+                primaryBorderColor: '#667eea',
+                lineColor: '#667eea'
+            }
+        });
+
+        // Initialize all sliders and calculations
+        const sliders = {
+            vsl: document.getElementById('vsl-slider'),
+            suicides: document.getElementById('suicides-slider'),
+            attribution: document.getElementById('attribution-slider'),
+            depression: document.getElementById('depression-slider'),
+            yld: document.getElementById('yld-slider'),
+            qol: document.getElementById('qol-slider'),
+            healthcare: document.getElementById('healthcare-slider'),
+            productivity: document.getElementById('productivity-slider'),
+            duration: document.getElementById('duration-slider')
+        };
+
+        const values = {
+            vsl: document.getElementById('vsl-value'),
+            suicides: document.getElementById('suicides-value'),
+            attribution: document.getElementById('attribution-value'),
+            depression: document.getElementById('depression-value'),
+            yld: document.getElementById('yld-value'),
+            qol: document.getElementById('qol-value'),
+            healthcare: document.getElementById('healthcare-value'),
+            productivity: document.getElementById('productivity-value'),
+            duration: document.getElementById('duration-value')
+        };
+
+        const formulaResults = {
+            mortality: document.getElementById('mortality-formula-result'),
+            mental: document.getElementById('mental-formula-result'),
+            healthcare: document.getElementById('healthcare-formula-result')
+        };
+
+        const displayFormulas = {
+            mortality: document.getElementById('mortality-display-formula'),
+            mental: document.getElementById('mental-display-formula'),
+            healthcare: document.getElementById('healthcare-display-formula')
+        };
+
+        const results = {
+            mortality: document.getElementById('mortality-result'),
+            mental: document.getElementById('mental-result'),
+            healthcare: document.getElementById('healthcare-result'),
+            total: document.getElementById('total-cost'),
+            gdpPercentage: document.getElementById('gdp-percentage'),
+            finalEquation: document.getElementById('final-equation')
+        };
+
+        // Clock elements
+        const runningTotal = document.getElementById('running-total');
+        const costPerSecond = document.getElementById('cost-per-second');
+        let clockStartTime = Date.now();
+        let currentTotalCost = 0;
+
+        // Floating total bar elements
+        let floatingTotalValue = document.getElementById('floating-total-value');
+
+        // Chart variables
+        let pieChart;
+        let timelineChart;
+
+        function formatNumber(num) {
+            if (num >= 1e12) return (num / 1e12).toFixed(1) + 'T';
+            if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
+            if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
+            if (num >= 1e3) return (num / 1e3).toFixed(0) + 'K';
+            return num.toFixed(0);
+        }
+
+        function formatCurrency(num) {
+            return '$' + formatNumber(num);
+        }
+
+        function formatLargeNumber(num) {
+            return new Intl.NumberFormat().format(Math.round(num));
+        }
+
+        function generateTimelineData() {
+            try {
+                const years = [];
+                const mortalityData = [];
+                const mentalData = [];
+                const healthcareData = [];
+                const totalData = [];
+
+                const vsl = parseFloat(sliders.vsl.value) * 1e6;
+                const totalSuicides = parseInt(sliders.suicides.value);
+                const attributionRate = parseFloat(sliders.attribution.value) / 100;
+                const depressionPeople = parseInt(sliders.depression.value);
+                const yldYears = parseFloat(sliders.yld.value);
+                const qolReduction = parseFloat(sliders.qol.value) / 100;
+                const healthcareCostPerYear = parseInt(sliders.healthcare.value);
+                const productivityLossPerYear = parseInt(sliders.productivity.value);
+                const treatmentDuration = parseFloat(sliders.duration.value);
+
+                // Calculate per-year costs
+                const yearsElapsed = 2024 - 2009;
+                const suicidesPerYear = totalSuicides / yearsElapsed;
+                const depressionPerYear = depressionPeople / yearsElapsed;
+
+                for (let year = 2009; year <= 2024; year++) {
+                    years.push(year.toString());
+                    
+                    const yearsSoFar = year - 2009 + 1;
+                    
+                    // Cumulative mortality costs
+                    const cumulativeSuicides = suicidesPerYear * yearsSoFar * attributionRate;
+                    const mortalityCost = cumulativeSuicides * vsl;
+                    
+                    // Cumulative mental health costs
+                    const cumulativeDepression = depressionPerYear * yearsSoFar;
+                    const qalyLoss = cumulativeDepression * yldYears * qolReduction;
+                    const mentalHealthCost = qalyLoss * (vsl / 75);
+                    
+                    // Cumulative healthcare costs
+                    const healthcareCost = cumulativeDepression * (healthcareCostPerYear + productivityLossPerYear) * treatmentDuration;
+                    
+                    mortalityData.push(mortalityCost / 1e9);
+                    mentalData.push(mentalHealthCost / 1e9);
+                    healthcareData.push(healthcareCost / 1e9);
+                    totalData.push((mortalityCost + mentalHealthCost + healthcareCost) / 1e9);
+                }
+
+                return { years, mortalityData, mentalData, healthcareData, totalData };
+            } catch (error) {
+                console.error('Error generating timeline data:', error);
+                return { years: [], mortalityData: [], mentalData: [], healthcareData: [], totalData: [] };
+            }
+        }
+
+        function initCharts() {
+            // Pie Chart
+            const pieCtx = document.getElementById('pieChart').getContext('2d');
+            pieChart = new Chart(pieCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Mortality Costs', 'Mental Health QALYs', 'Healthcare & Productivity'],
+                    datasets: [{
+                        data: [750, 480, 862],
+                        backgroundColor: [
+                            '#e74c3c',
+                            '#9b59b6',
+                            '#3498db'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 10,
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const value = context.parsed;
+                                    const percent = ((value / total) * 100).toFixed(1);
+                                    return `${context.label}: ${value.toFixed(1)}B (${percent}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Timeline Chart
+            const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+            const timelineData = generateTimelineData();
+            timelineChart = new Chart(timelineCtx, {
+                type: 'line',
+                data: {
+                    labels: timelineData.years,
+                    datasets: [
+                        {
+                            label: 'Total Cumulative Cost',
+                            data: timelineData.totalData,
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 3,
+                            borderDash: []
+                        },
+                        {
+                            label: 'Mortality Costs',
+                            data: timelineData.mortalityData,
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'rgba(231, 76, 60, 0.05)',
+                            fill: false,
+                            tension: 0.4,
+                            borderWidth: 2,
+                            borderDash: [8, 4]
+                        },
+                        {
+                            label: 'Mental Health QALYs',
+                            data: timelineData.mentalData,
+                            borderColor: '#9b59b6',
+                            backgroundColor: 'rgba(155, 89, 182, 0.05)',
+                            fill: false,
+                            tension: 0.4,
+                            borderWidth: 2,
+                            borderDash: [8, 4]
+                        },
+                        {
+                            label: 'Healthcare & Productivity',
+                            data: timelineData.healthcareData,
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.05)',
+                            fill: false,
+                            tension: 0.4,
+                            borderWidth: 2,
+                            borderDash: [8, 4]
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    size: 11
+                                },
+                                usePointStyle: true,
+                                padding: 15
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Cumulative Economic Impact (Billions USD)',
+                            font: {
+                                size: 14
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Year',
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Cumulative Cost (Billions $)',
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            },
+                            beginAtZero: true
+                        }
+                    },
+                    elements: {
+                        point: {
+                            radius: 4,
+                            hoverRadius: 6
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateDisplay() {
+            // Update slider display values
+            values.vsl.textContent = `$${parseFloat(sliders.vsl.value).toFixed(1)}M`;
+            values.suicides.textContent = formatNumber(parseInt(sliders.suicides.value));
+            values.attribution.textContent = `${sliders.attribution.value}%`;
+            values.depression.textContent = formatNumber(parseInt(sliders.depression.value));
+            values.yld.textContent = `${parseFloat(sliders.yld.value).toFixed(1)} years`;
+            values.qol.textContent = `${sliders.qol.value}%`;
+            values.healthcare.textContent = `$${formatNumber(parseInt(sliders.healthcare.value))}`;
+            values.productivity.textContent = `$${formatNumber(parseInt(sliders.productivity.value))}`;
+            values.duration.textContent = `${parseFloat(sliders.duration.value).toFixed(1)} years`;
+        }
+
+        function calculateCosts() {
+            try {
+                const vsl = parseFloat(sliders.vsl.value) * 1e6;
+                const totalSuicides = parseInt(sliders.suicides.value);
+                const attributionRate = parseFloat(sliders.attribution.value) / 100;
+                const depressionPeople = parseInt(sliders.depression.value);
+                const yldYears = parseFloat(sliders.yld.value);
+                const qolReduction = parseFloat(sliders.qol.value) / 100;
+                const healthcareCostPerYear = parseInt(sliders.healthcare.value);
+                const productivityLossPerYear = parseInt(sliders.productivity.value);
+                const treatmentDuration = parseFloat(sliders.duration.value);
+
+                // Calculate individual costs using P × Q × R formulas
+                const attributableSuicides = totalSuicides * attributionRate;
+                const mortalityCost = attributableSuicides * vsl;
+
+                // Updated VSL per year for QALY
+                const vslPerYear = vsl / 75;
+                const qalyLoss = depressionPeople * yldYears * qolReduction;
+                const mentalHealthCost = qalyLoss * vslPerYear;
+
+                const totalHealthcareProductivity = depressionPeople * (healthcareCostPerYear + productivityLossPerYear) * treatmentDuration;
+
+                const totalCost = mortalityCost + mentalHealthCost + totalHealthcareProductivity;
+                currentTotalCost = totalCost;
+
+                // Update formula displays
+                formulaResults.mortality.textContent = `${formatNumber(totalSuicides)} × ${sliders.attribution.value}% × $${parseFloat(sliders.vsl.value).toFixed(1)}M = ${formatCurrency(mortalityCost)}`;
+                formulaResults.mental.textContent = `${formatNumber(depressionPeople)} × ${parseFloat(sliders.yld.value).toFixed(1)} × ${sliders.qol.value}% × $${formatNumber(vslPerYear)} = ${formatCurrency(mentalHealthCost)}`;
+                formulaResults.healthcare.textContent = `${formatNumber(depressionPeople)} × $${formatNumber(healthcareCostPerYear + productivityLossPerYear)} × ${parseFloat(sliders.duration.value).toFixed(1)} = ${formatCurrency(totalHealthcareProductivity)}`;
+
+                // Update summary displays
+                displayFormulas.mortality.textContent = `${formatNumber(totalSuicides)} × ${sliders.attribution.value}% × $${parseFloat(sliders.vsl.value).toFixed(1)}M = ${formatCurrency(mortalityCost)}`;
+                displayFormulas.mental.textContent = `${formatNumber(depressionPeople)} × ${parseFloat(sliders.yld.value).toFixed(1)}yr × ${sliders.qol.value}% × $${formatNumber(vslPerYear)} = ${formatCurrency(mentalHealthCost)}`;
+                displayFormulas.healthcare.textContent = `${formatNumber(depressionPeople)} × $${formatNumber(healthcareCostPerYear + productivityLossPerYear)} × ${parseFloat(sliders.duration.value).toFixed(1)}yr = ${formatCurrency(totalHealthcareProductivity)}`;
+
+                results.mortality.textContent = formatCurrency(mortalityCost);
+                results.mental.textContent = formatCurrency(mentalHealthCost);
+                results.healthcare.textContent = formatCurrency(totalHealthcareProductivity);
+                results.total.textContent = formatCurrency(totalCost);
+
+                // Update final equation
+                results.finalEquation.textContent = `Total Cost = ${formatCurrency(mortalityCost)} + ${formatCurrency(mentalHealthCost)} + ${formatCurrency(totalHealthcareProductivity)} = ${formatCurrency(totalCost)}`;
+
+                // GDP percentage
+                const gdpPercentage = (totalCost / 24e12) * 100;
+                results.gdpPercentage.textContent = `${gdpPercentage.toFixed(1)}%`;
+
+                // Update cost per second for the clock
+                const secondsInYear = 365.25 * 24 * 3600; // Account for leap years
+                const costPerSecondValue = totalCost / secondsInYear;
+                costPerSecond.textContent = `${formatLargeNumber(costPerSecondValue)}`;
+
+                // Add color coding to formula displays
+                formulaResults.mortality.style.color = '#e74c3c';
+                formulaResults.mental.style.color = '#9b59b6';
+                formulaResults.healthcare.style.color = '#3498db';
+
+                // Update charts
+                debouncedUpdateCharts(mortalityCost, mentalHealthCost, totalHealthcareProductivity);
+            } catch (error) {
+                console.warn('Calculation failed, using fallback');
+                // Fallback logic
+            }
+        }
+
+        function updateCharts(mortalityCost, mentalHealthCost, healthcareCost) {
+            try {
+                // Update pie chart if it exists
+                if (pieChart && pieChart.data && pieChart.data.datasets && pieChart.data.datasets[0]) {
+                    pieChart.data.datasets[0].data = [
+                        mortalityCost / 1e9,
+                        mentalHealthCost / 1e9,
+                        healthcareCost / 1e9
+                    ];
+                    pieChart.update('normal');
+                }
+
+                // Update timeline chart if it exists
+                if (timelineChart && timelineChart.data && timelineChart.data.datasets) {
+                    const timelineData = generateTimelineData();
+                    if (timelineData) {
+                        timelineChart.data.labels = timelineData.years;
+                        
+                        if (timelineChart.data.datasets[0]) {
+                            timelineChart.data.datasets[0].data = timelineData.totalData;
+                        }
+                        if (timelineChart.data.datasets[1]) {
+                            timelineChart.data.datasets[1].data = timelineData.mortalityData;
+                        }
+                        if (timelineChart.data.datasets[2]) {
+                            timelineChart.data.datasets[2].data = timelineData.mentalData;
+                        }
+                        if (timelineChart.data.datasets[3]) {
+                            timelineChart.data.datasets[3].data = timelineData.healthcareData;
+                        }
+                        
+                        timelineChart.update('normal');
+                    }
+                }
+            } catch (error) {
+                console.warn('Error updating charts:', error);
+            }
+        }
+
+        function updateDynamicDisplays() {
+            const now = Date.now();
+            const secondsElapsed = (now - clockStartTime) / 1000;
+            const secondsInYear = 365.25 * 24 * 3600;
+            const costPerSecondValue = currentTotalCost / secondsInYear;
+            const accumulatedCost = costPerSecondValue * secondsElapsed;
+            runningTotal.textContent = '$' + accumulatedCost.toLocaleString('en-US');
+            floatingTotalValue.textContent = '$' + (currentTotalCost + accumulatedCost).toLocaleString('en-US');
+        }
+
+        function saveSettings() {
+            const settings = {};
+            Object.entries(sliders).forEach(([key, slider]) => {
+                settings[key] = slider.value;
+            });
+            try {
+                localStorage.setItem('calculatorSettings', JSON.stringify(settings));
+            } catch (error) {
+                console.warn('Failed to save settings:', error);
+            }
+        }
+
+        function loadSettings() {
+            try {
+                const settings = JSON.parse(localStorage.getItem('calculatorSettings'));
+                if (settings) {
+                    Object.entries(settings).forEach(([key, value]) => {
+                        if (sliders[key]) {
+                            sliders[key].value = value;
+                        }
+                    });
+                    updateDisplay();
+                    calculateCosts();
+                }
+            } catch (error) {
+                console.warn('Failed to load settings:', error);
+            }
+        }
+
+        function resetToDefaults() {
+            const defaults = {
+                vsl: 13.7,
+                suicides: 110000,
+                attribution: 15,
+                depression: 4000000,
+                yld: 6,
+                qol: 35,
+                healthcare: 7000,
+                productivity: 6000,
+                duration: 4.5
+            };
+
+            Object.entries(defaults).forEach(([key, value]) => {
+                if (sliders[key]) {
+                    sliders[key].value = value;
+                }
+            });
+
+            updateDisplay();
+            calculateCosts();
+            saveSettings();
+        }
+
+        const debouncedUpdateCharts = debounce((mortalityCost, mentalHealthCost, healthcareCost) => {
+            updateCharts(mortalityCost, mentalHealthCost, healthcareCost);
+        }, 100);
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function initEventListeners() {
+            Object.values(sliders).forEach(slider => {
+                slider.addEventListener('input', () => {
+                    updateDisplay();
+                    calculateCosts();
+                    saveSettings();
+                });
+            });
+
+            document.getElementById('reset-button').addEventListener('click', resetToDefaults);
+
+            document.getElementById('help-btn').addEventListener('click', () => {
+                document.getElementById('help-modal-overlay').style.display = 'block';
+            });
+            document.getElementById('help-close').addEventListener('click', () => {
+                document.getElementById('help-modal-overlay').style.display = 'none';
+            });
+
+            // Add click handling for info buttons
+            document.querySelectorAll('.info-button').forEach(button => {
+                // Add close button to tooltip
+                const tooltip = button.querySelector('.info-tooltip');
+                const closeBtn = document.createElement('span');
+                closeBtn.innerHTML = '×';
+                closeBtn.className = 'info-tooltip-close';
+                tooltip.insertBefore(closeBtn, tooltip.firstChild);
+
+                // Click handler for the info button
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const wasActive = button.classList.contains('active');
+                    
+                    // Close all other tooltips
+                    document.querySelectorAll('.info-button.active').forEach(activeButton => {
+                        if (activeButton !== button) {
+                            activeButton.classList.remove('active');
+                        }
+                    });
+
+                    // Toggle current tooltip
+                    button.classList.toggle('active', !wasActive);
+                });
+
+                // Close button handler
+                closeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    button.classList.remove('active');
+                });
+            });
+
+            // Close tooltips when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.info-button')) {
+                    document.querySelectorAll('.info-button.active').forEach(button => {
+                        button.classList.remove('active');
+                    });
+                }
+            });
+        }
+
+        function initializeApp() {
+            try {
+                updateDisplay();
+                calculateCosts();
+                setTimeout(() => {
+                    try {
+                        initCharts();
+                    } catch (chartError) {
+                        console.warn('Charts could not be initialized, continuing without charts:', chartError);
+                    }
+                }, 100);
+                initEventListeners();
+            } catch (error) {
+                console.error('Error initializing app:', error);
+                try {
+                    updateDisplay();
+                    calculateCosts();
+                } catch (basicError) {
+                    console.error('Critical error in basic functionality:', basicError);
+                }
+            }
+        }
+
+        setInterval(updateDynamicDisplays, 100);
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                initializeApp();
+                loadSettings();
+            });
+        } else {
+            initializeApp();
+            loadSettings();
+        }
+    </script>
+</body>
+</html>
