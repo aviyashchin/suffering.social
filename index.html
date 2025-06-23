@@ -2,37 +2,134 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="🚨 SHOCKING: Social media's hidden cost is $2.5 TRILLION. This calculator shows what we could have built instead. See how much YOUR state is affected.">
-    <meta name="keywords" content="social media cost, mental health crisis, tech accountability, social media harm, depression statistics, suicide rates">
-    <meta property="og:title" content="🚨 Social Media's $2.5 TRILLION Hidden Cost (Interactive Calculator)">
-    <meta property="og:description" content="This could have solved homelessness, funded college for everyone, or eliminated world hunger. Instead, we got depression and anxiety. Calculate the real cost to YOUR community.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    
+    <!-- Performance & Loading -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+    
+    <!-- SEO Meta Tags -->
+    <title>Social Media Cost Calculator: $2.5T Hidden Economic Impact | Interactive Tool</title>
+    <meta name="description" content="Calculate social media's $2.5 trillion economic cost to society. Interactive calculator shows mental health impact, deaths, productivity losses. Compare to historical tragedies like 9/11, Vietnam War.">
+    <meta name="keywords" content="social media cost calculator, mental health crisis economics, tech accountability tool, social media harm statistics, depression economic impact, suicide rates calculator, QALY social media, VSL calculator">
+    <meta name="author" content="Subconscious.ai">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://www.suffering.social/social_media_cost_calculatorv2.html">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.suffering.social/social_media_cost_calculatorv2.html">
+    <meta property="og:title" content="🚨 Social Media's $2.5T Hidden Cost Calculator">
+    <meta property="og:description" content="Interactive calculator reveals social media's true economic cost: $2.5 trillion in mental health damage. Compare to 9/11, Vietnam War. See your state's impact.">
     <meta property="og:image" content="https://www.suffering.social/assets/social-media-cost-preview.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Suffering.Social">
+    
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://www.suffering.social/social_media_cost_calculatorv2.html">
+    <meta name="twitter:title" content="🚨 Social Media's $2.5T Hidden Cost Calculator">
+    <meta name="twitter:description" content="Interactive tool reveals social media's $2.5 trillion economic impact. Calculate mental health costs, compare to historical tragedies.">
+    <meta name="twitter:image" content="https://www.suffering.social/assets/social-media-cost-preview.png">
+    <meta name="twitter:creator" content="@subconsciousai">
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Social Media Cost Calculator",
+      "description": "Interactive calculator showing social media's $2.5 trillion economic impact on society through mental health costs, deaths, and productivity losses",
+      "url": "https://www.suffering.social/social_media_cost_calculatorv2.html",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "creator": {
+        "@type": "Organization",
+        "name": "Subconscious.ai"
+      }
+    }
+    </script>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    
+    <!-- Critical CSS (inline for performance) -->
+    <style>
+        /* Critical above-the-fold styles */
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .loading { opacity: 0; transition: opacity 0.3s ease; }
+        .loaded { opacity: 1; }
+        #national-debt-clock-bar { background: linear-gradient(to right, #1f2937, #374151); }
+        
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .enhanced-card { box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+            .parameter-group { margin-bottom: 1rem; padding: 1rem; }
+            .slider { height: 8px; }
+            .mermaid { font-size: 12px; }
+            .chart-wrapper { height: 250px !important; }
+        }
+        
+        /* Reduce animations on mobile for performance */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { 
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        /* Touch-friendly button sizes */
+        @media (max-width: 768px) {
+            button, .slider, input, select { min-height: 44px; }
+            .info-button { width: 32px; height: 32px; }
+        }
+    </style>
+    
+    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>🚨 Social Media's $2.5 TRILLION Hidden Cost (You Won't Believe What We Could Have Built Instead)</title>
-    <link rel="icon" type="image/png" href="favicon.png">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.4.3/mermaid.min.js"></script>
-    <!-- Add Tippy.js for modern tooltips -->
-    <script src="https://unpkg.com/@popperjs/core@2"></script>
-    <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.min.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
+    
+    <!-- Load external libraries with defer for reliable loading -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.4.3/mermaid.min.js" defer></script>
+    <script src="https://unpkg.com/@popperjs/core@2" defer></script>
+    <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.min.js" defer></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    
+    <!-- Local assets -->
     <link rel="stylesheet" href="assets/calculator.css">
     <script src="assets/calculator.js" defer></script>
 </head>
-<body class="min-h-screen pt-32 md:pt-36 text-gray-900">
+<body class="min-h-screen pt-24 sm:pt-32 md:pt-36 text-gray-900 loading" onload="document.body.classList.replace('loading', 'loaded')">
     <!-- 1. Remove the current floating total bar and top bar -->
     <!-- 2. Add a new fixed, full-width, dark top bar styled like a national debt clock -->
-    <div id="national-debt-clock-bar" class="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-gray-900 to-gray-800 shadow-lg flex flex-col items-center justify-center py-4 px-2 md:px-0">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-6 w-full max-w-6xl">
-        <div class="flex flex-col items-center md:items-start flex-1">
-          <div class="text-xs md:text-sm text-gray-300 uppercase tracking-widest mb-1">Total Social Media Cost (Since 2009)</div>
-          <div class="text-4xl md:text-5xl font-mono font-bold text-red-400 drop-shadow-lg flex items-baseline gap-2" id="national-debt-clock-total"><span class="text-3xl md:text-4xl">$</span><span id="national-debt-clock-total-amount">2,481,760,000,000</span></div>
-          <div class="text-base md:text-lg text-gray-200 mt-1">and counting…</div>
-          <div id="lifetime-counters" class="mt-3 text-xs md:text-sm text-gray-200 flex flex-wrap gap-4">
-            <span class="flex items-center gap-1">🧠 <span id="lifetime-depression">0</span> developed major depression</span>
-            <span class="flex items-center gap-1">☠️ <span id="lifetime-suicide">0</span> died by suicide</span>
+    <div id="national-debt-clock-bar" class="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-gray-900 to-gray-800 shadow-lg flex flex-col items-center justify-center py-2 sm:py-4 px-2 sm:px-4">
+      <div class="flex flex-col items-center justify-center gap-2 sm:gap-4 w-full max-w-6xl">
+        <div class="flex flex-col items-center text-center">
+          <div class="text-xs sm:text-sm text-gray-300 uppercase tracking-wide sm:tracking-widest mb-1">Total Social Media Cost (Since 2009)</div>
+          <div class="text-2xl sm:text-4xl md:text-5xl font-mono font-bold text-red-400 drop-shadow-lg flex items-baseline gap-1 sm:gap-2" id="national-debt-clock-total">
+            <span class="text-xl sm:text-3xl md:text-4xl">$</span>
+            <span id="national-debt-clock-total-amount" class="break-all">2,481,760,000,000</span>
+          </div>
+          <div class="text-sm sm:text-base md:text-lg text-gray-200 mt-1">and counting…</div>
+          <div id="lifetime-counters" class="mt-2 sm:mt-3 text-xs sm:text-sm text-gray-200 flex flex-wrap justify-center gap-2 sm:gap-4">
+            <span class="flex items-center gap-1 text-center">🧠 <span id="lifetime-depression">0</span> <span class="hidden xs:inline">developed major</span> depression</span>
+            <span class="flex items-center gap-1 text-center">☠️ <span id="lifetime-suicide">0</span> died by suicide</span>
           </div>
         </div>
       </div>
@@ -66,8 +163,8 @@
       <div class="text-base">Use <span class="font-mono bg-gray-100 px-2 py-1 rounded">Reset</span> for default settings. All calculations update instantly.</div>
     </div>
 
-    <div class="container max-w-7xl mx-auto px-4 mt-16">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+    <div class="container max-w-7xl mx-auto px-2 sm:px-4 mt-4 sm:mt-8 lg:mt-16">
+        <div class="flex flex-col lg:grid lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-8 items-start">
             <!-- Main Calculator Column -->
             <div id="left-column" class="col-span-2 bg-white enhanced-card shadow-xl overflow-hidden mb-8 lg:mb-0 transition-all duration-300">
                 <div class="bg-gradient-to-r from-red-400 to-orange-500 text-white px-8 py-8 text-center">
@@ -90,16 +187,28 @@
                         </button>
                     </div>
                 </div>
-                <div class="calculator-body px-8 py-10">
+                <div class="calculator-body px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
                     <!-- Mortality Costs -->
-                    <div class="parameter-group bg-gray-50 p-6 rounded-xl border-l-4 border-red-600 mb-8">
+                    <div class="parameter-group bg-gray-50 p-4 sm:p-6 rounded-xl border-l-4 border-red-600 mb-6 sm:mb-8">
                       <h3 class="text-red-700 mb-4 text-lg font-semibold flex items-center gap-2">
                         <button class="info-button bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">i</button>
                         ☠️ Death
                         </h3>
                         <div class="bg-blue-50 text-blue-900 rounded-xl p-5 mb-6 border border-blue-200">
                             <p class="font-medium">"This many deaths…"</p>
-                            <p class="mt-2 text-lg"><strong class="font-bold">19,800</strong> lives lost (since 2009) — enough to fill 132 high schools. <a href="https://docs.google.com/document/d/1diMvsMeRphUH7E6D1d_J7R6WbDdgnzFHDHPx9HXzR5o/edit?tab=t.0" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">Source</a></p>
+                            <div class="mt-3 grid grid-cols-2 gap-2 sm:gap-4 text-sm">
+                                <div class="bg-white p-2 sm:p-3 rounded-lg border">
+                                    <div class="text-lg sm:text-2xl font-bold text-red-600">49,000+</div>
+                                    <div class="text-xs text-gray-600">Deaths by suicide in the U.S. (2023)</div>
+                                    <div class="text-xs text-red-500 mt-1 hidden sm:block">That's one death every 11 minutes</div>
+                                </div>
+                                <div class="bg-white p-2 sm:p-3 rounded-lg border">
+                                    <div class="text-lg sm:text-2xl font-bold text-orange-600">37%</div>
+                                    <div class="text-xs text-gray-600">Increase in suicide rates (2000-2022)</div>
+                                    <div class="text-xs text-orange-500 mt-1 hidden sm:block">2nd leading cause of death for ages 10-34</div>
+                                </div>
+                            </div>
+                            <p class="mt-3 text-xs text-gray-600">Source: <a href="https://www.cdc.gov/suicide/facts/index.html" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">CDC National Vital Statistics System, 2023</a></p>
                         </div>
                       <div class="slider-container mb-6">
                         <div class="slider-label flex justify-between mb-2 font-medium">
@@ -157,8 +266,19 @@
                                     <b>Case Study:</b> Imagine a 15-year-old girl. She spends 6 hours a day on Instagram. She begins hating her body, withdrawing from friends, and by 18 she has attempted suicide. Multiply that by hundreds of thousands.
                                 </div>
                             </div>
-                            <p class="mt-4 text-lg"><strong class="font-bold">5,000,000</strong> children/teens with major depression (since 2009) <a href="https://www.nimh.nih.gov/health/statistics/major-depression" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">Source</a></p>
-                            <p class="mt-1 text-sm text-gray-600">That's like 13 Pittsburghs. Or 160,000 classrooms, 400 towns.</p>
+                            <div class="mt-4 grid grid-cols-2 gap-2 sm:gap-4 text-sm">
+                                <div class="bg-white p-2 sm:p-3 rounded-lg border">
+                                    <div class="text-lg sm:text-2xl font-bold text-purple-600">15.8%</div>
+                                    <div class="text-xs text-gray-600">Teens with major depression (2019)</div>
+                                    <div class="text-xs text-purple-500 mt-1 hidden sm:block">Up from 8.1% in 2009 - a 95% increase</div>
+                                </div>
+                                <div class="bg-white p-2 sm:p-3 rounded-lg border">
+                                    <div class="text-lg sm:text-2xl font-bold text-blue-600">5.2M</div>
+                                    <div class="text-xs text-gray-600">U.S. teens experienced major depressive episode (2024)</div>
+                                    <div class="text-xs text-blue-500 mt-1 hidden sm:block">56.1% received no mental health treatment</div>
+                                </div>
+                            </div>
+                            <p class="mt-3 text-xs text-gray-600">Source: <a href="https://www.mhanational.org/mental-health-america-youth-data" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">Mental Health America, 2024</a> | <a href="https://www.samhsa.gov/data/report/2021-nsduh-annual-national-report" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">NSDUH, 2021</a></p>
                         </div>
                         <div class="slider-container mb-6">
                             <div class="slider-label flex justify-between mb-2 font-medium">
@@ -209,13 +329,25 @@
                             💸 Lost Productivity
                         </h3>
                         <div class="bg-blue-50 text-blue-900 rounded-xl p-5 mb-6 border border-blue-200">
-                            <div class="flex items-start gap-3">
-                                <span class="text-2xl mt-1">🌲</span>
+                            <div class="flex items-start gap-3 mb-4">
+                                <span class="text-2xl mt-1">💰</span>
                                 <div>
-                                    <b>If a tree falls in the forest and doesn't boost GDP, does it matter?</b><br>
-                                    Now imagine that tree is <b>your child's mental health.</b> Social Media companies privatize the gains. The only things socialized are losses.
+                                    <b>The Hidden Economic Toll:</b> Mental illness costs the U.S. economy more than most countries' entire GDP. Social media companies privatize the gains while society bears the losses.
                                 </div>
                             </div>
+                            <div class="grid grid-cols-2 gap-2 sm:gap-4 text-sm">
+                                <div class="bg-white p-2 sm:p-3 rounded-lg border">
+                                    <div class="text-lg sm:text-2xl font-bold text-green-600">$282B</div>
+                                    <div class="text-xs text-gray-600">Annual cost of mental illness to U.S. economy</div>
+                                    <div class="text-xs text-green-500 mt-1 hidden sm:block">1.7% of total U.S. consumption</div>
+                                </div>
+                                <div class="bg-white p-2 sm:p-3 rounded-lg border">
+                                    <div class="text-lg sm:text-2xl font-bold text-orange-600">$47.6B</div>
+                                    <div class="text-xs text-gray-600">Annual cost of mental health-related lost productivity</div>
+                                    <div class="text-xs text-orange-500 mt-1 hidden sm:block">Workers miss 12 days annually vs. 2.5 days for others</div>
+                                </div>
+                            </div>
+                            <p class="mt-3 text-xs text-gray-600">Source: <a href="https://www.yalemedicine.org/news/mental-health-economic-cost" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">Yale University Study, 2024</a> | <a href="https://www.gallup.com/workplace/506048/mental-health-workplace-cost-poor-mental-health-workers.aspx" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">Gallup, 2023</a></p>
                         </div>
                         <div class="slider-container mb-6">
                             <div class="slider-label flex justify-between mb-2 font-medium">
@@ -334,28 +466,68 @@
                         Share Your Results
                     </button>
                     <div class="personalization-section mt-6 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
-                        <h4 class="font-semibold text-blue-800 mb-3">📍 Make This Personal</h4>
+                        <h4 class="font-semibold text-blue-800 mb-3">🏘️ Calculate Your Community's Hidden Cost</h4>
+                        <p class="text-sm text-blue-700 mb-4">See the estimated impact on your local area based on population size.</p>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
-                            <select id="location-select" class="p-2 border rounded text-gray-900">
-                                <option value="">Your Location</option>
+                            <input type="number" id="community-population" placeholder="Community Population (e.g., 50000)" value="50000" class="p-2 border rounded text-gray-900" min="1000" max="10000000">
+                            <select id="state-select" class="p-2 border rounded text-gray-900">
+                                <option value="national">National Average</option>
+                                <option value="alabama">Alabama</option>
+                                <option value="alaska">Alaska</option>
+                                <option value="arizona">Arizona</option>
+                                <option value="arkansas">Arkansas</option>
                                 <option value="california">California</option>
-                                <option value="texas">Texas</option>
-                                <option value="new-york">New York</option>
+                                <option value="colorado">Colorado</option>
+                                <option value="connecticut">Connecticut</option>
+                                <option value="delaware">Delaware</option>
                                 <option value="florida">Florida</option>
-                                <option value="other">Other State</option>
-                            </select>
-                            <select id="age-group-select" class="p-2 border rounded text-gray-900">
-                                <option value="">Your Age Group</option>
-                                <option value="parent">Parent (25-45)</option>
-                                <option value="teen">Teen (13-19)</option>
-                                <option value="young-adult">Young Adult (20-30)</option>
-                                <option value="concerned-citizen">Concerned Citizen</option>
+                                <option value="georgia">Georgia</option>
+                                <option value="hawaii">Hawaii</option>
+                                <option value="idaho">Idaho</option>
+                                <option value="illinois">Illinois</option>
+                                <option value="indiana">Indiana</option>
+                                <option value="iowa">Iowa</option>
+                                <option value="kansas">Kansas</option>
+                                <option value="kentucky">Kentucky</option>
+                                <option value="louisiana">Louisiana</option>
+                                <option value="maine">Maine</option>
+                                <option value="maryland">Maryland</option>
+                                <option value="massachusetts">Massachusetts</option>
+                                <option value="michigan">Michigan</option>
+                                <option value="minnesota">Minnesota</option>
+                                <option value="mississippi">Mississippi</option>
+                                <option value="missouri">Missouri</option>
+                                <option value="montana">Montana</option>
+                                <option value="nebraska">Nebraska</option>
+                                <option value="nevada">Nevada</option>
+                                <option value="new-hampshire">New Hampshire</option>
+                                <option value="new-jersey">New Jersey</option>
+                                <option value="new-mexico">New Mexico</option>
+                                <option value="new-york">New York</option>
+                                <option value="north-carolina">North Carolina</option>
+                                <option value="north-dakota">North Dakota</option>
+                                <option value="ohio">Ohio</option>
+                                <option value="oklahoma">Oklahoma</option>
+                                <option value="oregon">Oregon</option>
+                                <option value="pennsylvania">Pennsylvania</option>
+                                <option value="rhode-island">Rhode Island</option>
+                                <option value="south-carolina">South Carolina</option>
+                                <option value="south-dakota">South Dakota</option>
+                                <option value="tennessee">Tennessee</option>
+                                <option value="texas">Texas</option>
+                                <option value="utah">Utah</option>
+                                <option value="vermont">Vermont</option>
+                                <option value="virginia">Virginia</option>
+                                <option value="washington">Washington</option>
+                                <option value="west-virginia">West Virginia</option>
+                                <option value="wisconsin">Wisconsin</option>
+                                <option value="wyoming">Wyoming</option>
                             </select>
                         </div>
-                        <button id="generate-personal-snippet" class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-                            🎯 Generate My Personal Impact Story
+                        <button id="calculate-community-impact" class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                            📊 Calculate Community Impact
                         </button>
-                        <div id="personal-snippet" class="hidden mt-4 p-4 bg-white rounded border-l-4 border-green-500 text-gray-900">
+                        <div id="community-impact-results" class="hidden mt-4 p-4 bg-white rounded border-l-4 border-green-500 text-gray-900">
                             <!-- Generated content will appear here -->
                         </div>
                     </div>
@@ -462,6 +634,53 @@
                                 <li>Workplace costs account for 61%, suicide-related costs ~4% (<a href="https://link.springer.com/content/pdf/10.1007/s40273-021-01019-4.pdf" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">Springer 2021</a>)</li>
                                 <li>Incremental societal burden reached <b>$333.7B</b> total (<a href="https://www.psychiatrist.com/jcp/economic-burden-adults-major-depressive-disorder-united/" target="_blank" class="text-indigo-600 underline hover:text-indigo-800">Greenberg et al. 2021</a>)</li>
                             </ul>
+                        </div>
+                    </div>
+
+                    <!-- Share These Facts Section -->
+                    <div class="parameter-group bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl mb-8 p-6">
+                        <div class="text-center">
+                            <h3 class="text-xl font-semibold mb-3 text-white">📢 Share These Facts</h3>
+                            <p class="text-blue-100 mb-6">Help spread awareness about social media's hidden costs</p>
+                            
+                            <div class="grid grid-cols-1 gap-3">
+                                <button id="share-twitter" class="bg-sky-500 hover:bg-sky-600 text-white hover:text-white py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 font-medium">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                                    </svg>
+                                    Share on Twitter
+                                </button>
+                                
+                                <button id="share-linkedin" class="bg-blue-600 hover:bg-blue-700 text-white hover:text-white py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 font-medium">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                    </svg>
+                                    Share on LinkedIn
+                                </button>
+                                
+                                <button id="share-facebook" class="bg-blue-800 hover:bg-blue-900 text-white hover:text-white py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 font-medium">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                    </svg>
+                                    Share on Facebook
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- There's a Better Way Section -->
+                    <div class="parameter-group bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-xl mb-8 p-6">
+                        <div class="text-center">
+                            <h3 class="text-xl font-semibold mb-3 text-white">🌟 There's a Better Way</h3>
+                            <p class="text-green-100 mb-6">Learn how Subconscious.ai is building technology that enhances well-being instead of exploiting attention.</p>
+                            
+                            <a href="http://www.subconscious.ai" target="_blank" class="inline-block bg-white text-green-600 hover:bg-gray-100 hover:text-green-700 py-3 px-6 rounded-lg transition-colors font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-transform">
+                                🚀 Discover Subconscious.ai
+                            </a>
+                            
+                            <div class="mt-4 text-sm text-green-100">
+                                Join the movement for ethical technology
+                            </div>
                         </div>
                     </div>
                 </div>

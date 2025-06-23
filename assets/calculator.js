@@ -156,96 +156,101 @@
         }
 
         _initMermaid() {
-            // Initialize Mermaid with proper configuration
-            if (typeof mermaid !== 'undefined') {
-                console.log('Initializing Mermaid...');
-                
-                mermaid.initialize({
-                    startOnLoad: false, // We'll manually trigger
-                    theme: 'default',
-                    flowchart: {
-                        useMaxWidth: true,
-                        htmlLabels: true
-                    },
-                    securityLevel: 'loose'
-                });
-                
-                // Store original graph definitions before rendering
-                const graphDefinitions = new Map();
-                
-                // Force render of existing mermaid diagrams
-                setTimeout(() => {
-                    try {
-                        const diagrams = document.querySelectorAll('.mermaid');
-                        console.log('Found', diagrams.length, 'mermaid diagrams');
-                        
-                        diagrams.forEach((diagram, index) => {
-                            const id = diagram.id || `mermaid-${index}`;
-                            diagram.id = id;
-                            console.log('Rendering diagram:', id);
-                            
-                            // Store the original graph definition
-                            const graphDefinition = diagram.textContent.trim();
-                            graphDefinitions.set(id, graphDefinition);
-                            
-                            // Clear and render
-                            diagram.innerHTML = '';
-                            
-                            mermaid.render(id + '-svg', graphDefinition, (svgCode) => {
-                                diagram.innerHTML = svgCode;
-                            });
-                        });
-                        
-                        // Store graph definitions globally for modal access
-                        window.mermaidGraphDefinitions = graphDefinitions;
-                        
-                    } catch (error) {
-                        console.error('Mermaid initialization error:', error);
-                    }
-                }, 500);
-                
-                // Add observer to re-render modal diagram when modal opens
-                const modal = document.getElementById('causal-modal');
-                if (modal) {
-                    const observer = new MutationObserver((mutations) => {
-                        mutations.forEach((mutation) => {
-                            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                                if (!modal.classList.contains('hidden')) {
-                                    // Modal opened - re-render the modal diagram
-                                    setTimeout(() => {
-                                        const modalDiagram = document.getElementById('causal-diagram-modal');
-                                        if (modalDiagram && window.mermaidGraphDefinitions) {
-                                            try {
-                                                console.log('Rendering modal diagram...');
-                                                
-                                                // Use stored graph definition or get from main diagram
-                                                let graphDefinition = window.mermaidGraphDefinitions.get('causal-diagram-modal');
-                                                if (!graphDefinition) {
-                                                    graphDefinition = window.mermaidGraphDefinitions.get('causal-diagram');
-                                                }
-                                                
-                                                if (graphDefinition) {
-                                                    modalDiagram.innerHTML = '';
-                                                    
-                                                    mermaid.render('modal-svg-' + Date.now(), graphDefinition, (svgCode) => {
-                                                        modalDiagram.innerHTML = svgCode;
-                                                    });
-                                                } else {
-                                                    console.warn('No graph definition found for modal');
-                                                }
-                                            } catch (error) {
-                                                console.error('Modal mermaid render error:', error);
-                                            }
-                                        }
-                                    }, 200);
-                                }
-                            }
-                        });
+            // Wait for Mermaid library to load, then initialize
+            const initMermaidWhenReady = () => {
+                if (typeof mermaid !== 'undefined') {
+                    console.log('Initializing Mermaid...');
+                    
+                    mermaid.initialize({
+                        startOnLoad: false, // We'll manually trigger
+                        theme: 'default',
+                        flowchart: {
+                            useMaxWidth: true,
+                            htmlLabels: true
+                        },
+                        securityLevel: 'loose'
                     });
-                    observer.observe(modal, { attributes: true });
+                    
+                    // Store original graph definitions before rendering
+                    const graphDefinitions = new Map();
+                    
+                    // Force render of existing mermaid diagrams
+                    setTimeout(() => {
+                        try {
+                            const diagrams = document.querySelectorAll('.mermaid');
+                            console.log('Found', diagrams.length, 'mermaid diagrams');
+                            
+                            diagrams.forEach((diagram, index) => {
+                                const id = diagram.id || `mermaid-${index}`;
+                                diagram.id = id;
+                                console.log('Rendering diagram:', id);
+                                
+                                // Store the original graph definition
+                                const graphDefinition = diagram.textContent.trim();
+                                graphDefinitions.set(id, graphDefinition);
+                                
+                                // Clear and render
+                                diagram.innerHTML = '';
+                                
+                                mermaid.render(id + '-svg', graphDefinition, (svgCode) => {
+                                    diagram.innerHTML = svgCode;
+                                });
+                            });
+                            
+                            // Store graph definitions globally for modal access
+                            window.mermaidGraphDefinitions = graphDefinitions;
+                            
+                        } catch (error) {
+                            console.error('Mermaid initialization error:', error);
+                        }
+                    }, 100);
+                } else {
+                    // Try again in 100ms if Mermaid isn't loaded yet
+                    setTimeout(initMermaidWhenReady, 100);
                 }
-            } else {
-                console.warn('Mermaid library not loaded');
+            };
+            
+            initMermaidWhenReady();
+            
+            // Add observer to re-render modal diagram when modal opens
+            const modal = document.getElementById('causal-modal');
+            if (modal) {
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                            if (!modal.classList.contains('hidden')) {
+                                // Modal opened - re-render the modal diagram
+                                setTimeout(() => {
+                                    const modalDiagram = document.getElementById('causal-diagram-modal');
+                                    if (modalDiagram && window.mermaidGraphDefinitions) {
+                                        try {
+                                            console.log('Rendering modal diagram...');
+                                            
+                                            // Use stored graph definition or get from main diagram
+                                            let graphDefinition = window.mermaidGraphDefinitions.get('causal-diagram-modal');
+                                            if (!graphDefinition) {
+                                                graphDefinition = window.mermaidGraphDefinitions.get('causal-diagram');
+                                            }
+                                            
+                                            if (graphDefinition) {
+                                                modalDiagram.innerHTML = '';
+                                                
+                                                mermaid.render('modal-svg-' + Date.now(), graphDefinition, (svgCode) => {
+                                                    modalDiagram.innerHTML = svgCode;
+                                                });
+                                            } else {
+                                                console.warn('No graph definition found for modal');
+                                            }
+                                        } catch (error) {
+                                            console.error('Modal mermaid render error:', error);
+                                        }
+                                    }
+                                }, 200);
+                            }
+                        }
+                    });
+                });
+                observer.observe(modal, { attributes: true });
             }
         }
 
@@ -914,208 +919,177 @@
             this.initScenarios();
             this.initViralComparisons();
             this.initSocialProof();
+            this.initSocialSharing();
         },
 
         initPersonalization() {
-            const generateBtn = document.getElementById('generate-personal-snippet');
-            if (generateBtn) {
-                generateBtn.addEventListener('click', () => {
-                    const location = document.getElementById('location-select').value;
-                    const ageGroup = document.getElementById('age-group-select').value;
+            const calculateBtn = document.getElementById('calculate-community-impact');
+            if (calculateBtn) {
+                calculateBtn.addEventListener('click', () => {
+                    const population = document.getElementById('community-population').value;
+                    const state = document.getElementById('state-select').value;
                     
-                    if (location && ageGroup) {
-                        // Get current calculator state
-                        const costCalculator = window.costCalculatorInstance;
-                        const state = costCalculator ? costCalculator.getState() : null;
-                        
-                        const snippet = this.generatePersonalSnippet(location, ageGroup, state);
-                        this.showPersonalSnippet(snippet);
+                    if (population && population >= 1000) {
+                        const results = this.calculateCommunityImpact(parseInt(population), state);
+                        this.showCommunityResults(results);
                     } else {
-                        alert('Please select both your location and age group!');
+                        alert('Please enter a community population of at least 1,000 people!');
                     }
                 });
             }
         },
 
-        generatePersonalSnippet(location, ageGroup, state) {
-            // Default state if not provided
-            if (!state) {
-                state = {
-                    suicides: 110000,
-                    depression: 5000000,
-                    results: { totalCost: 2.48e12 }
-                };
-            }
-
-            const locationData = {
-                'california': { name: 'California', population: 39.5, affected: 850000 },
-                'texas': { name: 'Texas', population: 30.0, affected: 650000 },
-                'new-york': { name: 'New York', population: 19.8, affected: 430000 },
-                'florida': { name: 'Florida', population: 22.6, affected: 490000 },
-                'other': { name: 'your state', population: 6.0, affected: 130000 }
+        calculateCommunityImpact(population, selectedState) {
+            // National baseline statistics (2024)
+            const nationalStats = {
+                population: 335000000, // US population
+                teenDepression: 5200000, // 5.2M teens with major depression
+                teenDepressionRate: 0.158, // 15.8% of teens
+                annualEconomicCost: 282000000000, // $282B annual cost
+                suicideRate: 49000 / 335000000, // 49,000 deaths per 335M people
+                youthAgeRange: 0.25 // Approximate % of population that are teens/young adults
             };
 
-            const ageGroupData = {
-                'parent': { 
-                    perspective: 'As a parent', 
-                    concern: 'your children face a 1 in 8 chance of developing social media-induced depression',
-                    action: 'Every notification could be rewiring their developing brain for anxiety and despair'
-                },
-                'teen': { 
-                    perspective: 'As a teenager', 
-                    concern: 'you\'re living through the largest mental health crisis in recorded history',
-                    action: 'Your generation is the first guinea pigs of the social media experiment'
-                },
-                'young-adult': { 
-                    perspective: 'As a young adult', 
-                    concern: 'your peak years are being stolen by algorithmic manipulation designed to maximize engagement',
-                    action: 'You\'re paying the price for Big Tech\'s profits with your mental health'
-                },
-                'concerned-citizen': { 
-                    perspective: 'As a concerned citizen', 
-                    concern: 'our society is hemorrhaging human potential at an unprecedented scale',
-                    action: 'We\'re witnessing the largest uncontrolled psychological experiment in human history'
-                }
-            };
+                         // State-specific multipliers (some states have higher rates)
+             const stateMultipliers = {
+                 'national': 1.0,
+                 'alaska': 1.8, // Highest suicide rate
+                 'montana': 1.6,
+                 'wyoming': 1.5,
+                 'new-mexico': 1.4,
+                 'utah': 1.3,
+                 'nevada': 1.3,
+                 'colorado': 1.2,
+                 'oregon': 1.2,
+                 'idaho': 1.2,
+                 'oklahoma': 1.2,
+                 'arizona': 1.1,
+                 'west-virginia': 1.1,
+                 'tennessee': 1.1,
+                 'kansas': 1.1,
+                 'arkansas': 1.1,
+                 'alabama': 1.0,
+                 'california': 0.9,
+                 'texas': 0.9,
+                 'florida': 0.9,
+                 'new-york': 0.8,
+                 'massachusetts': 0.8,
+                 'connecticut': 0.7,
+                 'new-jersey': 0.7,
+                 'hawaii': 0.8,
+                 'maryland': 0.8,
+                 'rhode-island': 0.8,
+                 'delaware': 0.9,
+                 'georgia': 1.0,
+                 'illinois': 0.9,
+                 'indiana': 1.0,
+                 'iowa': 1.1,
+                 'kentucky': 1.1,
+                 'louisiana': 1.0,
+                 'maine': 1.2,
+                 'michigan': 1.0,
+                 'minnesota': 0.9,
+                 'mississippi': 1.0,
+                 'missouri': 1.1,
+                 'nebraska': 1.1,
+                 'new-hampshire': 1.2,
+                 'north-carolina': 1.0,
+                 'north-dakota': 1.3,
+                 'ohio': 1.0,
+                 'pennsylvania': 0.9,
+                 'south-carolina': 1.0,
+                 'south-dakota': 1.3,
+                 'vermont': 1.2,
+                 'virginia': 0.9,
+                 'washington': 1.1,
+                 'wisconsin': 1.0
+             };
 
-            // Historical tragedy comparisons for human impact
-            const tragedyComparisons = [
-                {
-                    name: '9/11 attacks',
-                    deaths: 2977,
-                    multiplier: Math.round(state.suicides / 2977),
-                    context: 'transformed American society and launched the War on Terror'
-                },
-                {
-                    name: 'entire Vietnam War',
-                    deaths: 58220,
-                    multiplier: Math.round(state.suicides / 58220),
-                    context: 'divided a generation and changed American foreign policy forever'
-                },
-                {
-                    name: 'Pearl Harbor attack',
-                    deaths: 2400,
-                    multiplier: Math.round(state.suicides / 2400),
-                    context: 'brought America into World War II'
-                },
-                {
-                    name: 'Korean War',
-                    deaths: 36574,
-                    multiplier: Math.round(state.suicides / 36574),
-                    context: 'the "Forgotten War" that shaped the Cold War era'
-                },
-                {
-                    name: 'Iraq War',
-                    deaths: 4431,
-                    multiplier: Math.round(state.suicides / 4431),
-                    context: 'defined the post-9/11 era'
-                }
-            ];
+            const stateMultiplier = stateMultipliers[selectedState] || 1.0;
+            const stateName = selectedState === 'national' ? 'National Average' : 
+                selectedState.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 
-            // Spiritual/suffering comparisons for depression numbers
-            const sufferingComparisons = [
-                {
-                    name: 'Holocaust survivors',
-                    number: 200000,
-                    multiplier: Math.round(state.depression / 200000),
-                    context: 'who carried lifelong trauma from humanity\'s darkest chapter'
-                },
-                {
-                    name: 'Hiroshima and Nagasaki survivors',
-                    number: 650000,
-                    multiplier: Math.round(state.depression / 650000),
-                    context: 'who lived with radiation sickness and psychological scars'
-                },
-                {
-                    name: 'Great Depression unemployed (peak)',
-                    number: 15000000,
-                    multiplier: Math.round(state.depression / 15000000),
-                    context: 'who faced economic despair that reshaped American society'
-                },
-                {
-                    name: 'Rwanda genocide survivors',
-                    number: 300000,
-                    multiplier: Math.round(state.depression / 300000),
-                    context: 'who witnessed unimaginable horror and loss'
-                },
-                {
-                    name: 'Gulf War veterans with PTSD',
-                    number: 175000,
-                    multiplier: Math.round(state.depression / 175000),
-                    context: 'who returned home carrying invisible wounds of war'
-                },
-                {
-                    name: 'survivors of the 2004 Indian Ocean tsunami',
-                    number: 230000,
-                    multiplier: Math.round(state.depression / 230000),
-                    context: 'who lost everything in one of nature\'s most devastating disasters'
-                },
-                {
-                    name: 'Chernobyl disaster evacuees',
-                    number: 116000,
-                    multiplier: Math.round(state.depression / 116000),
-                    context: 'who were permanently displaced from their homes'
-                }
-            ];
-
-            const loc = locationData[location] || locationData['other'];
-            const age = ageGroupData[ageGroup] || ageGroupData['concerned-citizen'];
+            // Calculate community-specific impacts
+            const youthPopulation = Math.round(population * nationalStats.youthAgeRange);
+            const estimatedDepressionCases = Math.round(youthPopulation * nationalStats.teenDepressionRate * stateMultiplier);
+            const estimatedSuicides = Math.round(population * nationalStats.suicideRate * stateMultiplier);
             
-            const totalCost = this.formatLargeNumber(state.results.totalCost);
-            const depressionCount = this.formatLargeNumber(state.depression);
-            const suicideCount = this.formatLargeNumber(state.suicides);
+            // Economic impact proportional to population
+            const annualEconomicImpact = Math.round((population / nationalStats.population) * nationalStats.annualEconomicCost * stateMultiplier);
+            
+            // Since 2009 cumulative (15 years)
+            const cumulativeEconomicImpact = annualEconomicImpact * 15;
 
-            // Select random comparisons
-            const tragedyComp = tragedyComparisons[Math.floor(Math.random() * tragedyComparisons.length)];
-            const sufferingComp = sufferingComparisons[Math.floor(Math.random() * sufferingComparisons.length)];
-
-            const snippet = {
-                text: `${age.perspective}, ${age.concern}.
-
-💀 **Scale of Loss**: ${suicideCount} excess deaths equals ${tragedyComp.multiplier}x the ${tragedyComp.name} (${this.formatLargeNumber(tragedyComp.deaths)} deaths) — the tragedy that ${tragedyComp.context}.
-
-😞 **Scale of Suffering**: ${depressionCount} people with clinical depression equals ${sufferingComp.multiplier}x the ${sufferingComp.name} (${this.formatLargeNumber(sufferingComp.number)} people) — ${sufferingComp.context}.
-
-In ${loc.name} alone, approximately ${this.formatLargeNumber(loc.affected)} people have been affected. ${age.action}.
-
-The $${totalCost} economic cost could have built a memorial to human flourishing instead of a monument to algorithmic manipulation.`,
-                shareText: `🚨 Social media deaths (${suicideCount}) = ${tragedyComp.multiplier}x ${tragedyComp.name}. Depression cases (${depressionCount}) = ${sufferingComp.multiplier}x ${sufferingComp.name}. In ${loc.name}: ${this.formatLargeNumber(loc.affected)} affected. $${totalCost} cost. We're living through a hidden tragedy. #SocialMediaCost #MentalHealthCrisis #HumanCost`,
-                hashtags: ['SocialMediaCost', 'MentalHealthCrisis', 'TechAccountability', 'HumanCost', 'NeverForget', loc.name.replace(' ', '')]
+            return {
+                population,
+                stateName,
+                stateMultiplier,
+                youthPopulation,
+                estimatedDepressionCases,
+                estimatedSuicides,
+                annualEconomicImpact,
+                cumulativeEconomicImpact
             };
-
-            return snippet;
         },
 
-        showPersonalSnippet(snippet) {
-            const container = document.getElementById('personal-snippet');
+        showCommunityResults(results) {
+            const container = document.getElementById('community-impact-results');
             if (container) {
-                // Create buttons with proper event listeners instead of onclick
+                const shareText = `🏘️ My community of ${results.population.toLocaleString()} (${results.stateName}) faces ${results.estimatedDepressionCases} youth with depression & $${this.formatLargeNumber(results.annualEconomicImpact)} annual economic cost from social media. Calculate yours: suffering.social`;
+                
                 container.innerHTML = `
-                    <div class="font-semibold text-green-800 mb-2">📢 Your Personal Impact Story</div>
-                    <div class="text-gray-700 mb-4">${snippet.text}</div>
+                    <div class="font-semibold text-green-800 mb-3">📊 Estimated Impact on Your Community</div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        <div class="bg-blue-50 p-3 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-blue-600">${results.estimatedDepressionCases}</div>
+                            <div class="text-sm text-gray-600">Youth experiencing major depression</div>
+                            <div class="text-xs text-blue-500 mt-1">Out of ${results.youthPopulation.toLocaleString()} youth in your area</div>
+                        </div>
+                        <div class="bg-red-50 p-3 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-red-600">${results.estimatedSuicides}</div>
+                            <div class="text-sm text-gray-600">Estimated annual suicide risk</div>
+                            <div class="text-xs text-red-500 mt-1">Based on ${results.stateName} rates</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-green-50 p-4 rounded-lg mb-4">
+                        <div class="font-semibold text-green-800 mb-2">💰 Annual Economic Cost:</div>
+                        <div class="text-3xl font-bold text-green-600">$${this.formatLargeNumber(results.annualEconomicImpact)}</div>
+                        <div class="text-sm text-gray-600 mt-1">Based on $282 billion national cost proportioned to population</div>
+                        <div class="text-xs text-gray-500 mt-2">Cumulative since 2009: $${this.formatLargeNumber(results.cumulativeEconomicImpact)}</div>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-3 rounded-lg mb-4 text-sm text-gray-700">
+                        <strong>Context:</strong> Your community of ${results.population.toLocaleString()} people in ${results.stateName} 
+                        ${results.stateMultiplier > 1.0 ? `has ${((results.stateMultiplier - 1) * 100).toFixed(0)}% higher than average rates` : 
+                          results.stateMultiplier < 1.0 ? `has ${((1 - results.stateMultiplier) * 100).toFixed(0)}% lower than average rates` : 
+                          'has average national rates'} for mental health challenges.
+                    </div>
+                    
                     <div class="flex gap-2">
-                        <button id="copy-story-btn" class="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
-                            📋 Copy Story
+                        <button id="copy-community-btn" class="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
+                            📋 Copy Results
                         </button>
-                        <button id="tweet-story-btn" class="flex-1 px-3 py-2 bg-sky-500 text-white text-sm rounded hover:bg-sky-600">
-                            🐦 Tweet This
+                        <button id="tweet-community-btn" class="flex-1 px-3 py-2 bg-sky-500 text-white text-sm rounded hover:bg-sky-600">
+                            🐦 Share This
                         </button>
                     </div>
                 `;
                 
                 // Add event listeners
-                const copyBtn = container.querySelector('#copy-story-btn');
-                const tweetBtn = container.querySelector('#tweet-story-btn');
+                const copyBtn = container.querySelector('#copy-community-btn');
+                const tweetBtn = container.querySelector('#tweet-community-btn');
                 
                 if (copyBtn) {
                     copyBtn.addEventListener('click', () => {
-                        this.copyToClipboard(snippet.shareText, 'Personal story copied!');
+                        this.copyToClipboard(shareText, 'Community results copied!');
                     });
                 }
                 
                 if (tweetBtn) {
                     tweetBtn.addEventListener('click', () => {
-                        this.shareOnTwitter(snippet.shareText, snippet.hashtags.join(','));
+                        this.shareOnTwitter(shareText, 'SocialMediaCost,MentalHealthCrisis,CommunityImpact');
                     });
                 }
                 
@@ -1188,7 +1162,7 @@ The $${totalCost} economic cost could have built a memorial to human flourishing
         },
 
         shareComparison(emoji, text) {
-            const shareText = `🚨 Social media's $2.1T hidden cost could have:\n\n${emoji} ${text}\n\nInstead, we got depression and anxiety. Calculate the real cost: ${window.location.href}`;
+            const shareText = `🚨 Social media's $2.5T cost could have: ${emoji} ${text}. Instead, we got depression. Calculate: suffering.social`;
             this.shareOnTwitter(shareText, 'SocialMediaCost,TechAccountability,MentalHealth');
         },
 
@@ -1228,6 +1202,52 @@ The $${totalCost} economic cost could have built a memorial to human flourishing
             }
         },
 
+        initSocialSharing() {
+            // Get current calculator state for dynamic sharing
+            const getShareContent = () => {
+                const costCalculator = window.costCalculatorInstance;
+                const state = costCalculator ? costCalculator.getState() : null;
+                const totalCost = state ? this.formatLargeNumber(state.results.totalCost) : '2.5T';
+                
+                return {
+                    title: '🚨 Social Media\'s Hidden Economic Cost',
+                    description: `Social media costs society $${totalCost} in mental health damage. Calculate the impact: suffering.social`,
+                    url: 'https://www.suffering.social/social_media_cost_calculatorv2.html',
+                    hashtags: ['SocialMediaCost', 'MentalHealthCrisis', 'TechAccountability']
+                };
+            };
+
+            // Twitter sharing
+            const twitterBtn = document.getElementById('share-twitter');
+            if (twitterBtn) {
+                twitterBtn.addEventListener('click', () => {
+                    const content = getShareContent();
+                    const tweetText = `${content.title}: ${content.description}`;
+                    this.shareOnTwitter(tweetText, content.hashtags.join(','));
+                });
+            }
+
+            // LinkedIn sharing
+            const linkedinBtn = document.getElementById('share-linkedin');
+            if (linkedinBtn) {
+                linkedinBtn.addEventListener('click', () => {
+                    const content = getShareContent();
+                    const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(content.url)}&title=${encodeURIComponent(content.title)}&summary=${encodeURIComponent(content.description)}`;
+                    window.open(linkedinUrl, '_blank', 'width=600,height=400');
+                });
+            }
+
+            // Facebook sharing
+            const facebookBtn = document.getElementById('share-facebook');
+            if (facebookBtn) {
+                facebookBtn.addEventListener('click', () => {
+                    const content = getShareContent();
+                    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(content.url)}&quote=${encodeURIComponent(content.title + ': ' + content.description)}`;
+                    window.open(facebookUrl, '_blank', 'width=600,height=400');
+                });
+            }
+        },
+
         copyToClipboard(text, successMessage = 'Copied to clipboard!') {
             navigator.clipboard.writeText(text).then(() => {
                 this.showNotification(successMessage);
@@ -1235,7 +1255,17 @@ The $${totalCost} economic cost could have built a memorial to human flourishing
         },
 
         shareOnTwitter(text, hashtags = '') {
-            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&hashtags=${hashtags}`;
+            // Ensure tweet stays under 280 characters including hashtags
+            const hashtagText = hashtags ? ` #${hashtags.split(',').slice(0, 3).join(' #')}` : '';
+            const maxLength = 280 - hashtagText.length - 25; // Reserve space for URL shortening
+            
+            let finalText = text;
+            if (finalText.length > maxLength) {
+                finalText = finalText.substring(0, maxLength - 3) + '...';
+            }
+            
+            const tweetText = finalText + hashtagText;
+            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
             window.open(url, '_blank', 'width=550,height=420');
         },
 

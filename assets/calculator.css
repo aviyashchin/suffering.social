@@ -1392,16 +1392,123 @@ body {
   margin-top: 4rem;
 }
 
+/* Mobile Optimizations */
 @media (max-width: 768px) {
   .container.mt-16 {
-    margin-top: 2rem;
+    margin-top: 1rem;
+  }
+
+  .chart-wrapper {
+    height: 16rem;
+  }
+
+  .cost-breakdown-chart {
+    height: 12rem;
   }
   
+  /* Improve touch targets */
+  .info-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .slider {
+    height: 12px;
+  }
+  
+  .slider::-webkit-slider-thumb {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
+  }
+  
+  /* Optimize text sizes for mobile */
+  .formula-equation {
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+  
+  .slider-value {
+    font-size: 0.9rem;
+    min-width: 6ch;
+  }
+  
+  /* Improve mobile spacing */
+  .parameter-group {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .chart-container {
+    padding: 1rem;
+  }
+  
+  /* Mobile modal improvements */
+  #causal-modal .bg-white {
+    margin: 1rem;
+    max-height: 85vh;
+  }
+  
+  /* Mobile typography */
+  .tippy-box[data-theme~='card'] {
+    width: 14rem;
+    max-width: 14rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
   .chart-wrapper {
-    height: 18rem;
+    height: 14rem;
   }
   
   .cost-breakdown-chart {
-    height: 14rem;
+    height: 10rem;
+  }
+  
+  .parameter-group {
+    padding: 0.75rem;
+  }
+  
+  .formula-equation {
+    font-size: 0.75rem;
+    padding: 0.75rem;
+  }
+  
+  .slider-value {
+    font-size: 0.8rem;
+    min-width: 5ch;
+  }
+  
+  /* Ultra-compact mode for very small screens */
+  .tippy-box[data-theme~='card'] {
+    width: 12rem;
+    max-width: 12rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Performance optimizations */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .slider::-webkit-slider-thumb {
+    border-width: 2px;
+  }
+  
+  .info-button {
+    border-width: 2px;
   }
 } 
