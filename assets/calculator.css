@@ -54,6 +54,35 @@
   padding: 0;
 }
 
+/* Override Tippy.js light theme to ensure proper contrast */
+.tippy-box[data-theme~='light'] {
+  background-color: #ffffff !important;
+  color: #1f2937 !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1) !important;
+}
+
+.tippy-box[data-theme~='light'] .tippy-content {
+  color: #1f2937 !important;
+}
+
+.tippy-box[data-theme~='light'] .tippy-arrow {
+  color: #ffffff !important;
+}
+
+/* Ensure all tooltip text elements have proper contrast */
+.tippy-box[data-theme~='light'] * {
+  color: #1f2937 !important;
+}
+
+.tippy-box[data-theme~='light'] a {
+  color: #2563eb !important;
+}
+
+.tippy-box[data-theme~='light'] a:hover {
+  color: #1d4ed8 !important;
+}
+
 /* Animations */
 @keyframes fade-in { 
   from { 
