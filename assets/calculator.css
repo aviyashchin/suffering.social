@@ -2076,6 +2076,230 @@ select:focus {
     }
 }
 
+/* ===== VIRAL FEATURES STYLES ===== */
+
+/* Counter animations */
+@keyframes celebrate {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1) rotate(2deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+.updating {
+    color: var(--accent-main) !important;
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+    animation: pulse-glow 0.8s ease-out;
+}
+
+@keyframes pulse-glow {
+    0% { 
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    50% { 
+        transform: scale(1.02);
+        filter: brightness(1.2);
+    }
+    100% { 
+        transform: scale(1);
+        filter: brightness(1);
+    }
+}
+
+/* Authority badges */
+.authority-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    justify-content: center;
+    padding: var(--space-md);
+    background: var(--neutral-50);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.badge {
+    background: var(--primary-dark);
+    color: white;
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-md);
+    font-size: 0.75rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+/* Urgency banner */
+.urgency-banner {
+    background: linear-gradient(135deg, var(--accent-main), var(--accent-dark));
+    color: white;
+    padding: var(--space-md);
+    text-align: center;
+    font-weight: 600;
+    border-bottom: 2px solid var(--accent-dark);
+}
+
+.urgency-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.cost-ticker {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 1.1em;
+    color: #ffeb3b;
+    text-shadow: 0 0 5px rgba(255, 235, 59, 0.3);
+}
+
+/* Viral notifications */
+.viral-notifications {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 1000;
+    max-width: 300px;
+}
+
+.viral-notification {
+    background: var(--primary-dark);
+    color: white;
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-sm);
+    box-shadow: var(--shadow-lg);
+    transform: translateX(100%);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.viral-notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.viral-notification-success {
+    background: #10b981;
+}
+
+.viral-notification-shock {
+    background: var(--accent-main);
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Achievement unlocks */
+.achievement-unlock {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    padding: var(--space-xl);
+    z-index: 1001;
+    min-width: 300px;
+    opacity: 0;
+    scale: 0.8;
+    transition: all 0.3s ease;
+}
+
+.achievement-unlock.show {
+    opacity: 1;
+    scale: 1;
+}
+
+.achievement-content {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.achievement-icon {
+    font-size: 2rem;
+}
+
+.achievement-text {
+    flex: 1;
+}
+
+.achievement-name {
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: var(--space-xs);
+}
+
+.achievement-desc {
+    font-size: 0.875rem;
+    color: var(--neutral-600);
+}
+
+.achievement-points {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--secondary-main);
+    font-size: 1.2rem;
+}
+
+/* Activity feed */
+.activity-item {
+    padding: var(--space-sm);
+    border-radius: var(--radius-md);
+    background: var(--neutral-50);
+    margin-bottom: var(--space-xs);
+    font-size: 0.875rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.activity-item.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Enhanced slider feedback */
+.slider::-webkit-slider-thumb:active {
+    transform: scale(1.2);
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.4);
+}
+
+/* Mobile optimizations for viral features */
+@media (max-width: 768px) {
+    .viral-notifications {
+        right: 10px;
+        top: 80px;
+        max-width: 280px;
+    }
+    
+    .achievement-unlock {
+        margin: 0 20px;
+        min-width: auto;
+        max-width: calc(100vw - 40px);
+    }
+    
+    .authority-badges {
+        padding: var(--space-sm);
+    }
+    
+    .badge {
+        font-size: 0.7rem;
+        padding: 4px 8px;
+    }
+    
+    .urgency-banner {
+        padding: var(--space-sm);
+        font-size: 0.875rem;
+    }
+}
+
 /* ===== UTILITY CLASSES ===== */
 .text-center { text-align: center; }
 .text-left { text-align: left; }
@@ -2111,4 +2335,47 @@ select:focus {
 .p-sm { padding: var(--space-sm); }
 .p-md { padding: var(--space-md); }
 .p-lg { padding: var(--space-lg); }
-.p-xl { padding: var(--space-xl); } 
+.p-xl { padding: var(--space-xl); }
+
+/* Main Header Styles */
+.main-header {
+    text-align: center;
+    padding: 2rem 1rem;
+    background: linear-gradient(135deg, var(--primary-main), var(--primary-dark));
+    color: white;
+    margin-bottom: 2rem;
+}
+
+.main-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.025em;
+}
+
+.main-subtitle {
+    font-size: 1.25rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    opacity: 0.9;
+}
+
+.disclaimer-text {
+    font-size: 0.875rem;
+    opacity: 0.8;
+    font-weight: 300;
+}
+
+@media (max-width: 768px) {
+    .main-header {
+        padding: 1.5rem 1rem;
+    }
+    
+    .main-title {
+        font-size: 2rem;
+    }
+    
+    .main-subtitle {
+        font-size: 1.125rem;
+    }
+} 

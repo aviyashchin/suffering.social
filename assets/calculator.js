@@ -153,6 +153,12 @@
             
             // Initialize the lifetime counter (will be updated with correct rates by the update call above)
             LifetimeCounter.init();
+            
+            // Set current year dynamically
+            const currentYearEl = document.getElementById('current-year');
+            if (currentYearEl) {
+                currentYearEl.textContent = new Date().getFullYear();
+            }
         }
 
         _initMermaid() {
@@ -267,9 +273,6 @@
         }
 
         _initButtons() {
-            if (this.elements.resetButton) {
-                this.elements.resetButton.addEventListener('click', () => window.location.reload());
-            }
             if (this.elements.shareButton) {
                 this.elements.shareButton.addEventListener('click', () => {
                     const totalCost = this.elements.totalCost.textContent;
@@ -763,6 +766,12 @@
             
             // Update ticking counter rates with new calculated values
             LifetimeCounter.updateRates(state);
+            
+            // Dispatch event for viral features
+            const event = new CustomEvent('calculationUpdated', {
+                detail: { totalCost: state.results.totalCost }
+            });
+            document.dispatchEvent(event);
         }
     }
 
@@ -867,25 +876,34 @@
             }
         },
 
-        viralComparisons: [
-            { emoji: "🏠", text: "Built 21 million homes (solving the housing crisis)" },
-            { emoji: "🎓", text: "Funded college for every American under 25" },
-            { emoji: "🏥", text: "Provided free mental health therapy for every teen for 100 years" },
-            { emoji: "🚀", text: "Funded NASA for 105 years (we'd be on Mars by now)" },
-            { emoji: "🌍", text: "Eliminated world hunger for 7 years" },
-            { emoji: "⚡", text: "Built enough solar panels to power America for 15 years" },
-            { emoji: "🚇", text: "Built high-speed rail connecting every major US city" },
-            { emoji: "💊", text: "Funded cancer research for 420 years" },
-            { emoji: "🌊", text: "Cleaned up every ocean on Earth... twice" },
-            { emoji: "👨‍⚕️", text: "Hired 10 million additional teachers and therapists" },
-            { emoji: "🏛️", text: "Rebuilt every school in America... 5 times over" },
-            { emoji: "🎨", text: "Funded arts education in every school for 200 years" }
+        // Shared comparison library used by both viral comparisons and community calculator
+        comparisonLibrary: [
+            { emoji: "🏠", text: "Built 21 million homes (solving the housing crisis)", category: "housing" },
+            { emoji: "🎓", text: "Funded college for every American under 25", category: "education" },
+            { emoji: "🏥", text: "Provided free mental health therapy for every teen for 100 years", category: "healthcare" },
+            { emoji: "🚀", text: "Funded NASA for 105 years (we'd be on Mars by now)", category: "science" },
+            { emoji: "🌍", text: "Eliminated world hunger for 7 years", category: "humanitarian" },
+            { emoji: "⚡", text: "Built enough solar panels to power America for 15 years", category: "energy" },
+            { emoji: "🚇", text: "Built high-speed rail connecting every major US city", category: "infrastructure" },
+            { emoji: "💊", text: "Funded cancer research for 420 years", category: "healthcare" },
+            { emoji: "🌊", text: "Cleaned up every ocean on Earth... twice", category: "environment" },
+            { emoji: "👨‍⚕️", text: "Hired 10 million additional teachers and therapists", category: "education" },
+            { emoji: "🏛️", text: "Rebuilt every school in America... 5 times over", category: "education" },
+            { emoji: "🎨", text: "Funded arts education in every school for 200 years", category: "education" },
+            { emoji: "🌱", text: "Planted 500 billion trees (reversing climate change)", category: "environment" },
+            { emoji: "🚁", text: "Provided emergency medical helicopters to every rural community", category: "healthcare" },
+            { emoji: "💰", text: "Given every American family $7,500 in mental health support", category: "healthcare" },
+            { emoji: "🎪", text: "Built community centers in every neighborhood in America", category: "community" }
         ],
 
+        get viralComparisons() {
+            return this.comparisonLibrary;
+        },
+
         scenarios: {
-            conservative: {
-                vsl: 8.0, suicides: 100000, attribution: 10, depression: 3000000,
-                yld: 4.0, qol: 30, healthcare: 6500, productivity: 6000, duration: 3.0
+            reset: {
+                vsl: 13.7, suicides: 110000, attribution: 18, depression: 5000000,
+                yld: 6, qol: 35, healthcare: 7000, productivity: 6000, duration: 4.5
             },
             aggressive: {
                 vsl: 20.0, suicides: 300000, attribution: 30, depression: 15000000,
@@ -1131,16 +1149,31 @@
                     this.updateViralComparisons();
                 });
             }
+            
+            // Listen for calculation updates
+            document.addEventListener('calculationUpdated', (event) => {
+                this.updateViralComparisons(event.detail.totalCost);
+            });
+            
             // Initial load
             this.updateViralComparisons();
         },
 
-        updateViralComparisons() {
+        updateViralComparisons(totalCost = null) {
             const container = document.getElementById('viral-comparisons-grid');
             if (!container) return;
 
-            // Get 4 random comparisons
-            const selected = this.viralComparisons
+            // Get current total cost if not provided
+            if (!totalCost) {
+                const costCalculator = window.costCalculatorInstance;
+                totalCost = costCalculator ? costCalculator.getState().results.totalCost : 2.5e12;
+            }
+
+            // Generate dynamic comparisons based on current total cost
+            const dynamicComparisons = this.generateDynamicComparisons(totalCost);
+            
+            // Get 4 random comparisons from the dynamic list
+            const selected = dynamicComparisons
                 .sort(() => Math.random() - 0.5)
                 .slice(0, 4);
 
@@ -1161,8 +1194,38 @@
             });
         },
 
+        generateDynamicComparisons(totalCost) {
+            // Calculate dynamic multipliers based on total cost
+            const trillions = totalCost / 1e12;
+            const billions = totalCost / 1e9;
+            
+            return [
+                { emoji: "🏠", text: `Built ${Math.round(trillions * 8.4)} million homes (solving the housing crisis)` },
+                { emoji: "🎓", text: `Funded college for every American under 25 for ${Math.round(trillions * 4)} years` },
+                { emoji: "🏥", text: `Provided free mental health therapy for every teen for ${Math.round(trillions * 40)} years` },
+                { emoji: "🚀", text: `Funded NASA for ${Math.round(trillions * 42)} years (we'd be on Mars by now)` },
+                { emoji: "🌍", text: `Eliminated world hunger for ${Math.round(trillions * 2.8)} years` },
+                { emoji: "⚡", text: `Built enough solar panels to power America for ${Math.round(trillions * 6)} years` },
+                { emoji: "🚇", text: `Built high-speed rail connecting every major US city ${Math.round(trillions * 2)} times over` },
+                { emoji: "💊", text: `Funded cancer research for ${Math.round(trillions * 168)} years` },
+                { emoji: "🌊", text: `Cleaned up every ocean on Earth ${Math.round(trillions * 0.8)} times` },
+                { emoji: "👨‍⚕️", text: `Hired ${Math.round(trillions * 4)} million additional teachers and therapists` },
+                { emoji: "🏛️", text: `Rebuilt every school in America ${Math.round(trillions * 2)} times over` },
+                { emoji: "🎨", text: `Funded arts education in every school for ${Math.round(trillions * 80)} years` },
+                { emoji: "🌱", text: `Planted ${Math.round(trillions * 200)} billion trees (reversing climate change)` },
+                { emoji: "🚁", text: `Provided emergency medical helicopters to every rural community ${Math.round(trillions * 10)} times over` },
+                { emoji: "💰", text: `Given every American family $${Math.round(trillions * 3000)} in mental health support` },
+                { emoji: "🎪", text: `Built ${Math.round(trillions * 5)} community centers in every neighborhood in America` }
+            ];
+        },
+
         shareComparison(emoji, text) {
-            const shareText = `🚨 Social media's $2.5T cost could have: ${emoji} ${text}. Instead, we got depression. Calculate: suffering.social`;
+            // Get current total cost for dynamic sharing
+            const costCalculator = window.costCalculatorInstance;
+            const totalCost = costCalculator ? costCalculator.getState().results.totalCost : 2.5e12;
+            const formattedCost = this.formatLargeNumber(totalCost);
+            
+            const shareText = `🚨 Social media's $${formattedCost} cost could have: ${emoji} ${text}. Instead, we got depression. Calculate: suffering.social`;
             this.shareOnTwitter(shareText, 'SocialMediaCost,TechAccountability,MentalHealth');
         },
 
