@@ -127,7 +127,6 @@
                 timelineChart: document.getElementById('timelineChart'),
                 resetButton: document.getElementById('reset-button'),
                 shareButton: document.getElementById('share-button'),
-                causalPopoutBtn: document.getElementById('causal-popout-btn'),
                 causalModal: document.getElementById('causal-modal'),
                 causalModalClose: document.getElementById('causal-modal-close'),
             };
@@ -139,6 +138,7 @@
             this._initSliders(costCalculator);
             this._initButtons();
             this._initCharts();
+            this._initMermaid();
             
             // Add a small delay to ensure all external libraries are loaded
             setTimeout(() => {
@@ -153,6 +153,100 @@
             
             // Initialize the lifetime counter (will be updated with correct rates by the update call above)
             LifetimeCounter.init();
+        }
+
+        _initMermaid() {
+            // Initialize Mermaid with proper configuration
+            if (typeof mermaid !== 'undefined') {
+                console.log('Initializing Mermaid...');
+                
+                mermaid.initialize({
+                    startOnLoad: false, // We'll manually trigger
+                    theme: 'default',
+                    flowchart: {
+                        useMaxWidth: true,
+                        htmlLabels: true
+                    },
+                    securityLevel: 'loose'
+                });
+                
+                // Store original graph definitions before rendering
+                const graphDefinitions = new Map();
+                
+                // Force render of existing mermaid diagrams
+                setTimeout(() => {
+                    try {
+                        const diagrams = document.querySelectorAll('.mermaid');
+                        console.log('Found', diagrams.length, 'mermaid diagrams');
+                        
+                        diagrams.forEach((diagram, index) => {
+                            const id = diagram.id || `mermaid-${index}`;
+                            diagram.id = id;
+                            console.log('Rendering diagram:', id);
+                            
+                            // Store the original graph definition
+                            const graphDefinition = diagram.textContent.trim();
+                            graphDefinitions.set(id, graphDefinition);
+                            
+                            // Clear and render
+                            diagram.innerHTML = '';
+                            
+                            mermaid.render(id + '-svg', graphDefinition, (svgCode) => {
+                                diagram.innerHTML = svgCode;
+                            });
+                        });
+                        
+                        // Store graph definitions globally for modal access
+                        window.mermaidGraphDefinitions = graphDefinitions;
+                        
+                    } catch (error) {
+                        console.error('Mermaid initialization error:', error);
+                    }
+                }, 500);
+                
+                // Add observer to re-render modal diagram when modal opens
+                const modal = document.getElementById('causal-modal');
+                if (modal) {
+                    const observer = new MutationObserver((mutations) => {
+                        mutations.forEach((mutation) => {
+                            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                                if (!modal.classList.contains('hidden')) {
+                                    // Modal opened - re-render the modal diagram
+                                    setTimeout(() => {
+                                        const modalDiagram = document.getElementById('causal-diagram-modal');
+                                        if (modalDiagram && window.mermaidGraphDefinitions) {
+                                            try {
+                                                console.log('Rendering modal diagram...');
+                                                
+                                                // Use stored graph definition or get from main diagram
+                                                let graphDefinition = window.mermaidGraphDefinitions.get('causal-diagram-modal');
+                                                if (!graphDefinition) {
+                                                    graphDefinition = window.mermaidGraphDefinitions.get('causal-diagram');
+                                                }
+                                                
+                                                if (graphDefinition) {
+                                                    modalDiagram.innerHTML = '';
+                                                    
+                                                    mermaid.render('modal-svg-' + Date.now(), graphDefinition, (svgCode) => {
+                                                        modalDiagram.innerHTML = svgCode;
+                                                    });
+                                                } else {
+                                                    console.warn('No graph definition found for modal');
+                                                }
+                                            } catch (error) {
+                                                console.error('Modal mermaid render error:', error);
+                                            }
+                                        }
+                                    }, 200);
+                                }
+                            }
+                        });
+                    });
+                    observer.observe(modal, { attributes: true });
+                }
+            } else {
+                console.warn('Mermaid library not loaded');
+            }
         }
 
         _initSliders(costCalculator) {
@@ -180,11 +274,17 @@
                     window.open(twitterUrl, '_blank');
                 });
             }
-            if (this.elements.causalPopoutBtn) {
-                this.elements.causalPopoutBtn.addEventListener('click', () => this.elements.causalModal.classList.remove('hidden'));
-            }
             if (this.elements.causalModalClose) {
                 this.elements.causalModalClose.addEventListener('click', () => this.elements.causalModal.classList.add('hidden'));
+            }
+            
+            // Add click handler to modal background to close it
+            if (this.elements.causalModal) {
+                this.elements.causalModal.addEventListener('click', (e) => {
+                    if (e.target === this.elements.causalModal) {
+                        this.elements.causalModal.classList.add('hidden');
+                    }
+                });
             }
             
             // Initialize help button functionality
@@ -717,6 +817,9 @@
         const costCalculator = new CostCalculator();
         const uiManager = new UIManager();
         
+        // Make calculator globally accessible for viral features
+        window.costCalculatorInstance = costCalculator;
+        
         // Set up the circular reference
         costCalculator.setUIManager(uiManager);
         
@@ -821,7 +924,11 @@
                     const ageGroup = document.getElementById('age-group-select').value;
                     
                     if (location && ageGroup) {
-                        const snippet = this.generatePersonalSnippet(location, ageGroup);
+                        // Get current calculator state
+                        const costCalculator = window.costCalculatorInstance;
+                        const state = costCalculator ? costCalculator.getState() : null;
+                        
+                        const snippet = this.generatePersonalSnippet(location, ageGroup, state);
                         this.showPersonalSnippet(snippet);
                     } else {
                         alert('Please select both your location and age group!');
@@ -830,35 +937,188 @@
             }
         },
 
-        generatePersonalSnippet(location, ageGroup) {
-            const template = this.personalSnippets[ageGroup]?.[location] || 
-                           this.personalSnippets[ageGroup]?.other ||
-                           "This $2.1T cost affects us all. Share to spread awareness! 🚨";
-            
-            return {
-                text: template,
-                shareText: `🚨 SHOCKING: Social media's hidden cost to society is $2.1 TRILLION.\n\n${template}\n\nCalculate your own estimate: ${window.location.href}`,
-                hashtags: ['SocialMediaCost', 'MentalHealthMatters', 'TechAccountability']
+        generatePersonalSnippet(location, ageGroup, state) {
+            // Default state if not provided
+            if (!state) {
+                state = {
+                    suicides: 110000,
+                    depression: 5000000,
+                    results: { totalCost: 2.48e12 }
+                };
+            }
+
+            const locationData = {
+                'california': { name: 'California', population: 39.5, affected: 850000 },
+                'texas': { name: 'Texas', population: 30.0, affected: 650000 },
+                'new-york': { name: 'New York', population: 19.8, affected: 430000 },
+                'florida': { name: 'Florida', population: 22.6, affected: 490000 },
+                'other': { name: 'your state', population: 6.0, affected: 130000 }
             };
+
+            const ageGroupData = {
+                'parent': { 
+                    perspective: 'As a parent', 
+                    concern: 'your children face a 1 in 8 chance of developing social media-induced depression',
+                    action: 'Every notification could be rewiring their developing brain for anxiety and despair'
+                },
+                'teen': { 
+                    perspective: 'As a teenager', 
+                    concern: 'you\'re living through the largest mental health crisis in recorded history',
+                    action: 'Your generation is the first guinea pigs of the social media experiment'
+                },
+                'young-adult': { 
+                    perspective: 'As a young adult', 
+                    concern: 'your peak years are being stolen by algorithmic manipulation designed to maximize engagement',
+                    action: 'You\'re paying the price for Big Tech\'s profits with your mental health'
+                },
+                'concerned-citizen': { 
+                    perspective: 'As a concerned citizen', 
+                    concern: 'our society is hemorrhaging human potential at an unprecedented scale',
+                    action: 'We\'re witnessing the largest uncontrolled psychological experiment in human history'
+                }
+            };
+
+            // Historical tragedy comparisons for human impact
+            const tragedyComparisons = [
+                {
+                    name: '9/11 attacks',
+                    deaths: 2977,
+                    multiplier: Math.round(state.suicides / 2977),
+                    context: 'transformed American society and launched the War on Terror'
+                },
+                {
+                    name: 'entire Vietnam War',
+                    deaths: 58220,
+                    multiplier: Math.round(state.suicides / 58220),
+                    context: 'divided a generation and changed American foreign policy forever'
+                },
+                {
+                    name: 'Pearl Harbor attack',
+                    deaths: 2400,
+                    multiplier: Math.round(state.suicides / 2400),
+                    context: 'brought America into World War II'
+                },
+                {
+                    name: 'Korean War',
+                    deaths: 36574,
+                    multiplier: Math.round(state.suicides / 36574),
+                    context: 'the "Forgotten War" that shaped the Cold War era'
+                },
+                {
+                    name: 'Iraq War',
+                    deaths: 4431,
+                    multiplier: Math.round(state.suicides / 4431),
+                    context: 'defined the post-9/11 era'
+                }
+            ];
+
+            // Spiritual/suffering comparisons for depression numbers
+            const sufferingComparisons = [
+                {
+                    name: 'Holocaust survivors',
+                    number: 200000,
+                    multiplier: Math.round(state.depression / 200000),
+                    context: 'who carried lifelong trauma from humanity\'s darkest chapter'
+                },
+                {
+                    name: 'Hiroshima and Nagasaki survivors',
+                    number: 650000,
+                    multiplier: Math.round(state.depression / 650000),
+                    context: 'who lived with radiation sickness and psychological scars'
+                },
+                {
+                    name: 'Great Depression unemployed (peak)',
+                    number: 15000000,
+                    multiplier: Math.round(state.depression / 15000000),
+                    context: 'who faced economic despair that reshaped American society'
+                },
+                {
+                    name: 'Rwanda genocide survivors',
+                    number: 300000,
+                    multiplier: Math.round(state.depression / 300000),
+                    context: 'who witnessed unimaginable horror and loss'
+                },
+                {
+                    name: 'Gulf War veterans with PTSD',
+                    number: 175000,
+                    multiplier: Math.round(state.depression / 175000),
+                    context: 'who returned home carrying invisible wounds of war'
+                },
+                {
+                    name: 'survivors of the 2004 Indian Ocean tsunami',
+                    number: 230000,
+                    multiplier: Math.round(state.depression / 230000),
+                    context: 'who lost everything in one of nature\'s most devastating disasters'
+                },
+                {
+                    name: 'Chernobyl disaster evacuees',
+                    number: 116000,
+                    multiplier: Math.round(state.depression / 116000),
+                    context: 'who were permanently displaced from their homes'
+                }
+            ];
+
+            const loc = locationData[location] || locationData['other'];
+            const age = ageGroupData[ageGroup] || ageGroupData['concerned-citizen'];
+            
+            const totalCost = this.formatLargeNumber(state.results.totalCost);
+            const depressionCount = this.formatLargeNumber(state.depression);
+            const suicideCount = this.formatLargeNumber(state.suicides);
+
+            // Select random comparisons
+            const tragedyComp = tragedyComparisons[Math.floor(Math.random() * tragedyComparisons.length)];
+            const sufferingComp = sufferingComparisons[Math.floor(Math.random() * sufferingComparisons.length)];
+
+            const snippet = {
+                text: `${age.perspective}, ${age.concern}.
+
+💀 **Scale of Loss**: ${suicideCount} excess deaths equals ${tragedyComp.multiplier}x the ${tragedyComp.name} (${this.formatLargeNumber(tragedyComp.deaths)} deaths) — the tragedy that ${tragedyComp.context}.
+
+😞 **Scale of Suffering**: ${depressionCount} people with clinical depression equals ${sufferingComp.multiplier}x the ${sufferingComp.name} (${this.formatLargeNumber(sufferingComp.number)} people) — ${sufferingComp.context}.
+
+In ${loc.name} alone, approximately ${this.formatLargeNumber(loc.affected)} people have been affected. ${age.action}.
+
+The $${totalCost} economic cost could have built a memorial to human flourishing instead of a monument to algorithmic manipulation.`,
+                shareText: `🚨 Social media deaths (${suicideCount}) = ${tragedyComp.multiplier}x ${tragedyComp.name}. Depression cases (${depressionCount}) = ${sufferingComp.multiplier}x ${sufferingComp.name}. In ${loc.name}: ${this.formatLargeNumber(loc.affected)} affected. $${totalCost} cost. We're living through a hidden tragedy. #SocialMediaCost #MentalHealthCrisis #HumanCost`,
+                hashtags: ['SocialMediaCost', 'MentalHealthCrisis', 'TechAccountability', 'HumanCost', 'NeverForget', loc.name.replace(' ', '')]
+            };
+
+            return snippet;
         },
 
         showPersonalSnippet(snippet) {
             const container = document.getElementById('personal-snippet');
             if (container) {
+                // Create buttons with proper event listeners instead of onclick
                 container.innerHTML = `
                     <div class="font-semibold text-green-800 mb-2">📢 Your Personal Impact Story</div>
                     <div class="text-gray-700 mb-4">${snippet.text}</div>
                     <div class="flex gap-2">
-                        <button onclick="ViralFeatures.copyToClipboard('${snippet.shareText.replace(/'/g, "\\'")}', 'Personal story copied!')" 
-                                class="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
+                        <button id="copy-story-btn" class="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
                             📋 Copy Story
                         </button>
-                        <button onclick="ViralFeatures.shareOnTwitter('${snippet.shareText.replace(/'/g, "\\'")}', '${snippet.hashtags.join(',')}')" 
-                                class="flex-1 px-3 py-2 bg-sky-500 text-white text-sm rounded hover:bg-sky-600">
+                        <button id="tweet-story-btn" class="flex-1 px-3 py-2 bg-sky-500 text-white text-sm rounded hover:bg-sky-600">
                             🐦 Tweet This
                         </button>
                     </div>
                 `;
+                
+                // Add event listeners
+                const copyBtn = container.querySelector('#copy-story-btn');
+                const tweetBtn = container.querySelector('#tweet-story-btn');
+                
+                if (copyBtn) {
+                    copyBtn.addEventListener('click', () => {
+                        this.copyToClipboard(snippet.shareText, 'Personal story copied!');
+                    });
+                }
+                
+                if (tweetBtn) {
+                    tweetBtn.addEventListener('click', () => {
+                        this.shareOnTwitter(snippet.shareText, snippet.hashtags.join(','));
+                    });
+                }
+                
                 container.classList.remove('hidden');
             }
         },
@@ -910,13 +1170,21 @@
                 .sort(() => Math.random() - 0.5)
                 .slice(0, 4);
 
-            container.innerHTML = selected.map(comp => `
+            container.innerHTML = selected.map((comp, index) => `
                 <div class="comparison-card bg-white/20 backdrop-blur-sm rounded-lg p-4 text-center hover:bg-white/30 transition-colors cursor-pointer"
-                     onclick="ViralFeatures.shareComparison('${comp.emoji}', '${comp.text}')">
+                     data-comparison-index="${index}">
                     <div class="text-4xl mb-2">${comp.emoji}</div>
                     <div class="text-sm">${comp.text}</div>
                 </div>
             `).join('');
+            
+            // Add event listeners to comparison cards
+            container.querySelectorAll('.comparison-card').forEach((card, index) => {
+                card.addEventListener('click', () => {
+                    const comp = selected[index];
+                    this.shareComparison(comp.emoji, comp.text);
+                });
+            });
         },
 
         shareComparison(emoji, text) {
@@ -991,6 +1259,20 @@
                     document.body.removeChild(notification);
                 }, 300);
             }, 3000);
+        },
+
+        formatLargeNumber(value) {
+            if (value >= 1e12) {
+                return `${(value / 1e12).toFixed(1)}T`;
+            } else if (value >= 1e9) {
+                return `${(value / 1e9).toFixed(1)}B`;
+            } else if (value >= 1e6) {
+                return `${(value / 1e6).toFixed(1)}M`;
+            } else if (value >= 1e3) {
+                return `${(value / 1e3).toFixed(0)}K`;
+            } else {
+                return value.toLocaleString();
+            }
         }
     };
 
