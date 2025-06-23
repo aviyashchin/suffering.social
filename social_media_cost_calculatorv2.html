@@ -459,29 +459,21 @@
 
         <!-- GDP/Metaphor Comparison -->
         <div class="final-summary bg-gradient-to-r from-red-500 to-red-700 text-white rounded-2xl px-8 py-10 text-center mt-12">
-            <h2>🎯 The Final Equation</h2>
-            <div class="final-formula" id="final-equation">
+            <h2 class="text-3xl font-bold mb-4">🎯 The Final Equation</h2>
+            <div class="final-formula font-mono text-lg mb-4" id="final-equation">
                 Total Cost = $750.0B + $480.0B + $862.5B = $2.09 Trillion
             </div>
-            <p style="font-size: 1.2rem; margin-bottom: 15px;">
-                This represents the hidden economic value that GDP doesn't measure
+            <p class="text-base mb-8">
+                This represents the hidden economic value that GDP doesn't measure: 
+                <strong>human flourishing, mental health, and social well-being.</strong>
             </p>
-            <div class="gdp-comparison">
-                <h3>GDP vs. True Social Value</h3>
-                <p>Value of Statistical Life: $7-20M per person</p>
-                <p>Lifetime Income: ~$2M per person</p>
-                <p><strong>Missing Value: $5-18M per person</strong></p>
-                <p style="margin-top: 15px; font-size: 1.1rem;">
-                    This calculator captures exactly what GDP misses: 
-                    <strong>human flourishing, mental health, and social well-being</strong>
-                </p>
-                <div style="margin-top:18px;font-size:1.08rem;">
-                    <b>For comparison:</b>
-                    <ul style="margin-left:18px;">
-                        <li>More than the GDP of Norway ($579B)</li>
-                        <li>More than US annual cancer spending ($208B)</li>
-                        <li>Equal to 10 Apple Spaceship Campuses… every year</li>
-                    </ul>
+            
+            <div class="gdp-comparison bg-white/20 backdrop-blur-sm rounded-xl p-6">
+                <h3 class="text-2xl font-semibold mb-4">How Big is This Number?</h3>
+                <div id="dynamic-comparison-container" class="flex items-center justify-center text-xl">
+                    <!-- This content will be updated dynamically by JavaScript -->
+                    <span class="text-6xl mr-4"></span>
+                    <span></span>
                 </div>
             </div>
         </div>
