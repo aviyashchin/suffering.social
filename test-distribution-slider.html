@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distribution Slider Test</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f8fafc;
+        }
+        
+        .slider-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .slider-label {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .distribution-slider-wrapper {
+            position: relative;
+            height: 80px;
+            margin: 1rem 0;
+        }
+        
+        .distribution-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .slider-track {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+        }
+        
+        .slider-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            border-radius: 3px;
+            transition: width 0.2s ease;
+        }
+        
+        .slider-thumb {
+            position: absolute;
+            bottom: 4px;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border: 3px solid #3b82f6;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .slider-thumb.dragging {
+            transform: scale(1.2);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+        }
+        
+        .distribution-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+        
+        .value-display {
+            font-family: monospace;
+            font-weight: bold;
+            color: #1e40af;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 2rem;
+        }
+        
+        .explanation {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Distribution Slider Concept</h1>
+    <p class="subtitle">Visualizing probability distributions behind parameter adjustments</p>
+    
+    <div class="explanation">
+        <strong>Concept:</strong> Instead of adjusting fixed numbers, users are adjusting the median of probability distributions. 
+        The subtle curve in the background shows the uncertainty range around each parameter.
+    </div>
+
+    <div class="slider-container">
+        <div class="slider-label">
+            <span>Value of Statistical Life (VSL)</span>
+            <span class="value-display" id="vsl-value">$13.7M</span>
+        </div>
+        <div class="distribution-slider-wrapper">
+            <canvas class="distribution-canvas" id="vsl-canvas" width="600" height="60"></canvas>
+            <div class="slider-track">
+                <div class="slider-fill" id="vsl-fill"></div>
+                <div class="slider-thumb" id="vsl-thumb"></div>
+            </div>
+        </div>
+        <div class="distribution-info">
+            <strong>Distribution:</strong> Normal distribution centered at <span id="vsl-median">$13.7M</span> 
+            with 90% confidence interval: <span id="vsl-range">$10.8M - $16.6M</span>
+        </div>
+    </div>
+
+    <div class="slider-container">
+        <div class="slider-label">
+            <span>Attribution to Social Media (%)</span>
+            <span class="value-display" id="attribution-value">18%</span>
+        </div>
+        <div class="distribution-slider-wrapper">
+            <canvas class="distribution-canvas" id="attribution-canvas" width="600" height="60"></canvas>
+            <div class="slider-track">
+                <div class="slider-fill" id="attribution-fill"></div>
+                <div class="slider-thumb" id="attribution-thumb"></div>
+            </div>
+        </div>
+        <div class="distribution-info">
+            <strong>Distribution:</strong> Beta distribution centered at <span id="attribution-median">18%</span> 
+            with 90% confidence interval: <span id="attribution-range">12% - 24%</span>
+        </div>
+    </div>
+
+    <div class="slider-container">
+        <div class="slider-label">
+            <span>Americans with SM-Induced Depression</span>
+            <span class="value-display" id="depression-value">5.0M</span>
+        </div>
+        <div class="distribution-slider-wrapper">
+            <canvas class="distribution-canvas" id="depression-canvas" width="600" height="60"></canvas>
+            <div class="slider-track">
+                <div class="slider-fill" id="depression-fill"></div>
+                <div class="slider-thumb" id="depression-thumb"></div>
+            </div>
+        </div>
+        <div class="distribution-info">
+            <strong>Distribution:</strong> Log-normal distribution centered at <span id="depression-median">5.0M</span> 
+            with 90% confidence interval: <span id="depression-range">3.2M - 7.8M</span>
+        </div>
+    </div>
+
+    <script>
+        class DistributionSlider {
+            constructor(id, min, max, value, type = 'normal') {
+                this.id = id;
+                this.min = min;
+                this.max = max;
+                this.value = value;
+                this.type = type; // 'normal', 'beta', 'lognormal'
+                
+                this.canvas = document.getElementById(`${id}-canvas`);
+                this.ctx = this.canvas.getContext('2d');
+                this.thumb = document.getElementById(`${id}-thumb`);
+                this.fill = document.getElementById(`${id}-fill`);
+                this.valueDisplay = document.getElementById(`${id}-value`);
+                this.medianDisplay = document.getElementById(`${id}-median`);
+                this.rangeDisplay = document.getElementById(`${id}-range`);
+                
+                this.isDragging = false;
+                this.setupEventListeners();
+                this.updatePosition();
+                this.drawDistribution();
+            }
+            
+            setupEventListeners() {
+                this.thumb.addEventListener('mousedown', (e) => {
+                    this.isDragging = true;
+                    this.thumb.classList.add('dragging');
+                    e.preventDefault();
+                });
+                
+                document.addEventListener('mousemove', (e) => {
+                    if (this.isDragging) {
+                        this.updateFromMouse(e);
+                    }
+                });
+                
+                document.addEventListener('mouseup', () => {
+                    this.isDragging = false;
+                    this.thumb.classList.remove('dragging');
+                });
+                
+                // Touch events for mobile
+                this.thumb.addEventListener('touchstart', (e) => {
+                    this.isDragging = true;
+                    this.thumb.classList.add('dragging');
+                    e.preventDefault();
+                });
+                
+                document.addEventListener('touchmove', (e) => {
+                    if (this.isDragging) {
+                        this.updateFromTouch(e);
+                    }
+                });
+                
+                document.addEventListener('touchend', () => {
+                    this.isDragging = false;
+                    this.thumb.classList.remove('dragging');
+                });
+            }
+            
+            updateFromMouse(e) {
+                const rect = this.canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                this.updateFromX(x);
+            }
+            
+            updateFromTouch(e) {
+                const rect = this.canvas.getBoundingClientRect();
+                const x = e.touches[0].clientX - rect.left;
+                this.updateFromX(x);
+            }
+            
+            updateFromX(x) {
+                const percentage = Math.max(0, Math.min(1, x / this.canvas.offsetWidth));
+                this.value = this.min + (this.max - this.min) * percentage;
+                this.updatePosition();
+                this.drawDistribution();
+            }
+            
+            updatePosition() {
+                const percentage = (this.value - this.min) / (this.max - this.min);
+                
+                // Update thumb position
+                this.thumb.style.left = `calc(${percentage * 100}% - 9px)`;
+                
+                // Update fill
+                this.fill.style.width = `${percentage * 100}%`;
+                
+                // Update displays
+                this.updateDisplays();
+            }
+            
+            updateDisplays() {
+                let formattedValue, formattedMedian, formattedRange;
+                
+                if (this.id === 'vsl') {
+                    formattedValue = `$${this.value.toFixed(1)}M`;
+                    formattedMedian = formattedValue;
+                    const lower = (this.value * 0.8).toFixed(1);
+                    const upper = (this.value * 1.2).toFixed(1);
+                    formattedRange = `$${lower}M - $${upper}M`;
+                } else if (this.id === 'attribution') {
+                    formattedValue = `${this.value.toFixed(0)}%`;
+                    formattedMedian = formattedValue;
+                    const lower = Math.max(5, this.value - 6).toFixed(0);
+                    const upper = Math.min(30, this.value + 6).toFixed(0);
+                    formattedRange = `${lower}% - ${upper}%`;
+                } else if (this.id === 'depression') {
+                    formattedValue = `${(this.value / 1000000).toFixed(1)}M`;
+                    formattedMedian = formattedValue;
+                    const lower = ((this.value * 0.65) / 1000000).toFixed(1);
+                    const upper = ((this.value * 1.55) / 1000000).toFixed(1);
+                    formattedRange = `${lower}M - ${upper}M`;
+                }
+                
+                this.valueDisplay.textContent = formattedValue;
+                this.medianDisplay.textContent = formattedMedian;
+                this.rangeDisplay.textContent = formattedRange;
+            }
+            
+                         // Generate points for different distribution types
+             generateDistributionPoints() {
+                 const points = [];
+                 const width = this.canvas.width;
+                 const height = this.canvas.height;
+                 
+                 // Current slider position as percentage (0 to 1)
+                 const centerPercent = (this.value - this.min) / (this.max - this.min);
+                 const centerX = centerPercent * width;
+                 
+                 for (let x = 0; x < width; x += 1) {
+                     let y = 0;
+                     const xPercent = x / width; // 0 to 1 across the width
+                     
+                     if (this.type === 'normal') {
+                         // Normal distribution - symmetric around center
+                         const sigma = 0.15; // Standard deviation as percentage of width
+                         const exponent = -0.5 * Math.pow((xPercent - centerPercent) / sigma, 2);
+                         y = height * 0.7 * Math.exp(exponent);
+                         
+                     } else if (this.type === 'beta') {
+                         // Beta distribution - slightly right-skewed
+                         // Transform so the peak is at the slider position
+                         const alpha = 2.5;
+                         const beta = 2.0;
+                         
+                         // Stretch/shift the beta distribution to center around slider position
+                         const stretch = 0.8; // How wide the distribution is (0-1)
+                         const start = Math.max(0, centerPercent - stretch/2);
+                         const end = Math.min(1, centerPercent + stretch/2);
+                         
+                         if (xPercent >= start && xPercent <= end) {
+                             const normalizedX = (xPercent - start) / (end - start);
+                             if (normalizedX > 0 && normalizedX < 1) {
+                                 const betaValue = Math.pow(normalizedX, alpha - 1) * Math.pow(1 - normalizedX, beta - 1);
+                                 // Normalize by the beta function approximation
+                                 const normalization = Math.pow(0.6, alpha - 1) * Math.pow(0.4, beta - 1); // Peak value
+                                 y = height * 0.7 * (betaValue / normalization);
+                             }
+                         }
+                         
+                     } else if (this.type === 'lognormal') {
+                         // Log-normal distribution - right-skewed
+                         if (xPercent > 0.01) { // Avoid log(0)
+                             // Adjust mu so the mode is roughly at the slider position
+                             const sigma = 0.4;
+                             const targetMode = Math.max(0.05, centerPercent);
+                             const mu = Math.log(targetMode) + sigma * sigma;
+                             
+                             const logValue = Math.log(xPercent);
+                             const exponent = -0.5 * Math.pow((logValue - mu) / sigma, 2);
+                             y = height * 0.7 * Math.exp(exponent) / (xPercent * sigma * Math.sqrt(2 * Math.PI));
+                             
+                             // Normalize to prevent extremely large values
+                             y = Math.min(y, height * 0.8);
+                         }
+                     }
+                     
+                     // Ensure y is within bounds and flip vertically
+                     y = Math.max(0, Math.min(height * 0.8, y));
+                     points.push({ x, y: height - y });
+                 }
+                 
+                 return points;
+             }
+            
+                         drawDistribution() {
+                 const ctx = this.ctx;
+                 // Use display dimensions for drawing
+                 const rect = this.canvas.getBoundingClientRect();
+                 const width = rect.width;
+                 const height = rect.height;
+                 
+                 // Clear canvas
+                 ctx.clearRect(0, 0, width, height);
+                 
+                 // Generate distribution points
+                 const points = this.generateDistributionPoints();
+                 
+                 if (points.length === 0) return;
+                 
+                 // Create gradient
+                 const gradient = ctx.createLinearGradient(0, 0, 0, height);
+                 gradient.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
+                 gradient.addColorStop(1, 'rgba(59, 130, 246, 0.08)');
+                 
+                 // Draw filled area under curve
+                 ctx.fillStyle = gradient;
+                 ctx.beginPath();
+                 ctx.moveTo(0, height);
+                 
+                 points.forEach(point => {
+                     ctx.lineTo(point.x, point.y);
+                 });
+                 
+                 ctx.lineTo(width, height);
+                 ctx.closePath();
+                 ctx.fill();
+                 
+                 // Draw curve line
+                 ctx.strokeStyle = 'rgba(59, 130, 246, 0.8)';
+                 ctx.lineWidth = 1.5;
+                 ctx.beginPath();
+                 
+                 points.forEach((point, index) => {
+                     if (index === 0) {
+                         ctx.moveTo(point.x, point.y);
+                     } else {
+                         ctx.lineTo(point.x, point.y);
+                     }
+                 });
+                 
+                 ctx.stroke();
+                 
+                 // Draw median line
+                 const centerX = ((this.value - this.min) / (this.max - this.min)) * width;
+                 ctx.strokeStyle = 'rgba(29, 78, 216, 0.9)';
+                 ctx.lineWidth = 1.5;
+                 ctx.setLineDash([3, 3]);
+                 ctx.beginPath();
+                 ctx.moveTo(centerX, height * 0.15);
+                 ctx.lineTo(centerX, height * 0.85);
+                 ctx.stroke();
+                 ctx.setLineDash([]);
+             }
+        }
+        
+        // Initialize sliders
+        const vslSlider = new DistributionSlider('vsl', 8, 20, 13.7, 'normal');
+        const attributionSlider = new DistributionSlider('attribution', 5, 30, 18, 'beta');
+        const depressionSlider = new DistributionSlider('depression', 3000000, 15000000, 5000000, 'lognormal');
+        
+                 // Handle canvas resize
+         function resizeCanvases() {
+             [vslSlider, attributionSlider, depressionSlider].forEach(slider => {
+                 const rect = slider.canvas.getBoundingClientRect();
+                 const dpr = window.devicePixelRatio || 1;
+                 
+                 // Set actual canvas size in memory (scaled for high DPI)
+                 slider.canvas.width = rect.width * dpr;
+                 slider.canvas.height = rect.height * dpr;
+                 
+                 // Scale the drawing context so everything draws at the correct size
+                 slider.ctx.scale(dpr, dpr);
+                 
+                 // Set the display size (CSS pixels)
+                 slider.canvas.style.width = rect.width + 'px';
+                 slider.canvas.style.height = rect.height + 'px';
+                 
+                 slider.drawDistribution();
+             });
+         }
+         
+         // Initialize canvases properly
+         setTimeout(() => {
+             resizeCanvases();
+         }, 100);
+         
+         window.addEventListener('resize', resizeCanvases);
+    </script>
+</body>
+</html> 

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distribution Slider Library - Demo & Integration Guide</title>
+    
+    <!-- External Dependencies -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Our Library -->
+    <script src="assets/distribution-sliders.js"></script>
+    
+    <style>
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'SF Mono', Monaco, Consolas, monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        
+        .api-section {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .demo-container {
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            background: #f9fafb;
+        }
+        
+        .stats-display {
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">Distribution Slider Library</h1>
+            <p class="text-xl text-gray-600 mb-6">Professional, mathematically accurate distribution sliders for web applications</p>
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 inline-block">
+                <p class="text-blue-800 font-medium">Version 1.0.0 | Production Ready | MIT License</p>
+            </div>
+        </div>
+
+        <!-- Quick Start -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6">🚀 Quick Start</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">1. Include Dependencies</h3>
+                    <div class="code-block">
+&lt;script src="https://d3js.org/d3.v7.min.js"&gt;&lt;/script&gt;
+&lt;script src="assets/distribution-sliders.js"&gt;&lt;/script&gt;
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">2. Create a Slider</h3>
+                    <div class="code-block">
+const slider = new DistributionSlider({
+  containerId: 'my-container',
+  min: 0,
+  max: 100,
+  default: 50,
+  distributionType: 'normal',
+  onChange: (value) => console.log(value)
+});
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Demos -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6">📊 Live Demos</h2>
+            
+            <!-- Normal Distribution Demo -->
+            <div class="demo-container">
+                <h3 class="text-xl font-semibold mb-4">Normal Distribution - Value of Statistical Life</h3>
+                <div id="demo-normal" class="mb-4"></div>
+                <div id="output-normal" class="bg-white p-3 rounded border text-sm"></div>
+            </div>
+            
+            <!-- Beta Distribution Demo -->
+            <div class="demo-container">
+                <h3 class="text-xl font-semibold mb-4">Beta Distribution - Attribution Percentage</h3>
+                <div id="demo-beta" class="mb-4"></div>
+                <div id="output-beta" class="bg-white p-3 rounded border text-sm"></div>
+            </div>
+            
+            <!-- Log-Normal Distribution Demo -->
+            <div class="demo-container">
+                <h3 class="text-xl font-semibold mb-4">Log-Normal Distribution - Depression Cases</h3>
+                <div id="demo-lognormal" class="mb-4"></div>
+                <div id="output-lognormal" class="bg-white p-3 rounded border text-sm"></div>
+            </div>
+        </section>
+
+        <!-- Integration Examples -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6">🔧 Integration Examples</h2>
+            
+            <div class="api-section">
+                <h3 class="text-xl font-semibold mb-4">Basic Integration</h3>
+                <div class="code-block mb-4">
+// Create slider manager
+const sliderManager = new DistributionSliderManager();
+
+// Create sliders for your calculator
+const vslSlider = sliderManager.create({
+  containerId: 'vsl-slider-container',
+  sliderId: 'vsl',
+  min: 8,
+  max: 20,
+  default: 13.7,
+  distributionType: 'normal',
+  format: (v) => `$${v.toFixed(1)}M`,
+  theme: 'red',
+  onChange: updateCalculations
+});
+
+const attributionSlider = sliderManager.create({
+  containerId: 'attribution-slider-container',
+  sliderId: 'attribution',
+  min: 5,
+  max: 30,
+  default: 18,
+  distributionType: 'beta',
+  format: (v) => `${v.toFixed(0)}%`,
+  theme: 'purple',
+  onChange: updateCalculations
+});
+
+function updateCalculations() {
+  const values = sliderManager.getAllValues();
+  const totalCost = values.vsl * values.attribution * 0.01 * 110000;
+  console.log('Total Cost:', totalCost);
+}
+                </div>
+            </div>
+            
+            <div class="api-section">
+                <h3 class="text-xl font-semibold mb-4">Advanced Configuration</h3>
+                <div class="code-block mb-4">
+const advancedSlider = new DistributionSlider({
+  containerId: 'advanced-container',
+  min: 0,
+  max: 1000000,
+  default: 500000,
+  step: 1000,
+  distributionType: 'lognormal',
+  distributionParams: {
+    sigma: 0.5  // Custom log-normal spread
+  },
+  format: (v) => {
+    if (v >= 1000000) return `${(v/1000000).toFixed(1)}M`;
+    if (v >= 1000) return `${(v/1000).toFixed(0)}K`;
+    return v.toFixed(0);
+  },
+  showStats: true,
+  showConfidenceInterval: true,
+  theme: 'cyan',
+  width: 600,
+  height: 200,
+  onChange: (value, output) => {
+    console.log('Value:', value);
+    console.log('Stats:', output.stats);
+    console.log('95% CI:', output.stats.ci95);
+  },
+  onUpdate: (value) => {
+    // Called during drag for real-time updates
+    document.getElementById('live-display').textContent = value;
+  }
+});
+                </div>
+            </div>
+        </section>
+
+        <!-- API Reference -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6">📚 API Reference</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Constructor Options</h3>
+                    <div class="bg-white rounded-lg border p-4">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b">
+                                    <th class="text-left py-2">Option</th>
+                                    <th class="text-left py-2">Type</th>
+                                    <th class="text-left py-2">Required</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-xs">
+                                <tr class="border-b">
+                                    <td class="py-2 font-mono">containerId</td>
+                                    <td class="py-2">string</td>
+                                    <td class="py-2 text-red-600">Yes</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="py-2 font-mono">min</td>
+                                    <td class="py-2">number</td>
+                                    <td class="py-2 text-red-600">Yes</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="py-2 font-mono">max</td>
+                                    <td class="py-2">number</td>
+                                    <td class="py-2 text-red-600">Yes</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="py-2 font-mono">default</td>
+                                    <td class="py-2">number</td>
+                                    <td class="py-2 text-red-600">Yes</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="py-2 font-mono">distributionType</td>
+                                    <td class="py-2">'normal'|'beta'|'lognormal'</td>
+                                    <td class="py-2 text-gray-500">No</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="py-2 font-mono">format</td>
+                                    <td class="py-2">function</td>
+                                    <td class="py-2 text-gray-500">No</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="py-2 font-mono">onChange</td>
+                                    <td class="py-2">function</td>
+                                    <td class="py-2 text-gray-500">No</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="py-2 font-mono">theme</td>
+                                    <td class="py-2">'default'|'red'|'purple'|'cyan'</td>
+                                    <td class="py-2 text-gray-500">No</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Public Methods</h3>
+                    <div class="bg-white rounded-lg border p-4">
+                        <div class="space-y-3 text-sm">
+                            <div>
+                                <code class="bg-gray-100 px-2 py-1 rounded">getValue()</code>
+                                <p class="text-gray-600 mt-1">Returns current slider value</p>
+                            </div>
+                            <div>
+                                <code class="bg-gray-100 px-2 py-1 rounded">setValue(value, triggerChange)</code>
+                                <p class="text-gray-600 mt-1">Set value programmatically</p>
+                            </div>
+                            <div>
+                                <code class="bg-gray-100 px-2 py-1 rounded">reset()</code>
+                                <p class="text-gray-600 mt-1">Reset to default value</p>
+                            </div>
+                            <div>
+                                <code class="bg-gray-100 px-2 py-1 rounded">getStats()</code>
+                                <p class="text-gray-600 mt-1">Get distribution statistics</p>
+                            </div>
+                            <div>
+                                <code class="bg-gray-100 px-2 py-1 rounded">getOutput()</code>
+                                <p class="text-gray-600 mt-1">Get complete state and stats</p>
+                            </div>
+                            <div>
+                                <code class="bg-gray-100 px-2 py-1 rounded">updateConfig(newConfig)</code>
+                                <p class="text-gray-600 mt-1">Update configuration</p>
+                            </div>
+                            <div>
+                                <code class="bg-gray-100 px-2 py-1 rounded">destroy()</code>
+                                <p class="text-gray-600 mt-1">Clean up and remove</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Calculator Integration Guide -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6">🧮 Calculator Integration Guide</h2>
+            
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                <h3 class="text-xl font-semibold mb-4">Step-by-Step Integration</h3>
+                
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="font-semibold text-blue-800 mb-2">1. Add to your HTML</h4>
+                        <div class="code-block">
+&lt;!-- Add these containers where you want sliders --&gt;
+&lt;div id="vsl-slider-container"&gt;&lt;/div&gt;
+&lt;div id="attribution-slider-container"&gt;&lt;/div&gt;
+&lt;div id="depression-slider-container"&gt;&lt;/div&gt;
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold text-blue-800 mb-2">2. Replace existing sliders in your JavaScript</h4>
+                        <div class="code-block">
+// Initialize slider manager
+const distributionSliders = new DistributionSliderManager();
+
+// Create VSL slider (replaces your existing VSL slider)
+const vslSlider = distributionSliders.create({
+  containerId: 'vsl-slider-container',
+  sliderId: 'vsl',
+  min: 8,
+  max: 20,
+  default: 13.7,
+  distributionType: 'normal',
+  format: (v) => `$${v.toFixed(1)}M`,
+  theme: 'red',
+  onChange: updateCalculations
+});
+
+// Create Attribution slider (replaces your existing attribution slider)
+const attributionSlider = distributionSliders.create({
+  containerId: 'attribution-slider-container',
+  sliderId: 'attribution',
+  min: 5,
+  max: 30,
+  default: 18,
+  distributionType: 'beta',
+  distributionParams: { concentration: 8 },
+  format: (v) => `${v.toFixed(0)}%`,
+  theme: 'purple',
+  onChange: updateCalculations
+});
+
+// Create Depression cases slider
+const depressionSlider = distributionSliders.create({
+  containerId: 'depression-slider-container',
+  sliderId: 'depression',
+  min: 3000000,
+  max: 15000000,
+  default: 5000000,
+  distributionType: 'lognormal',
+  format: (v) => {
+    if (v >= 1000000) return `${(v/1000000).toFixed(1)}M`;
+    return `${(v/1000).toFixed(0)}K`;
+  },
+  theme: 'cyan',
+  onChange: updateCalculations
+});
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold text-blue-800 mb-2">3. Update your calculation function</h4>
+                        <div class="code-block">
+function updateCalculations() {
+  // Get all slider values
+  const values = distributionSliders.getAllValues();
+  
+  // Your existing calculation logic
+  const mortalityCost = values.vsl * 1000000 * (values.attribution / 100) * 110000;
+  const mentalHealthCost = values.depression * 6 * 0.35 * (values.vsl * 1000000 / 75);
+  const totalCost = mortalityCost + mentalHealthCost;
+  
+  // Update your displays
+  document.getElementById('total-cost').textContent = formatCurrency(totalCost);
+  
+  // Get detailed stats for uncertainty analysis
+  const vslStats = vslSlider.getStats();
+  const attributionStats = attributionSlider.getStats();
+  
+  console.log('VSL 95% CI:', vslStats.ci95);
+  console.log('Attribution 95% CI:', attributionStats.ci95);
+}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold text-blue-800 mb-2">4. Add scenario buttons</h4>
+                        <div class="code-block">
+// Add scenario support
+function setScenario(scenarioName) {
+  const scenarios = {
+    'research-consensus': {
+      vsl: 13.7,
+      attribution: 18,
+      depression: 5000000
+    },
+    'worst-case': {
+      vsl: 20,
+      attribution: 30,
+      depression: 12000000
+    },
+    'optimistic': {
+      vsl: 8,
+      attribution: 5,
+      depression: 3000000
+    }
+  };
+  
+  const scenario = scenarios[scenarioName];
+  if (scenario) {
+    distributionSliders.setAllValues(scenario);
+  }
+}
+
+// Wire up to your existing scenario buttons
+document.querySelectorAll('.scenario-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const scenario = btn.dataset.scenario;
+    if (scenario === 'reset') {
+      setScenario('research-consensus');
+    } else {
+      setScenario(scenario);
+    }
+  });
+});
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Manager Demo -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6">🎛️ Slider Manager Demo</h2>
+            
+            <div class="demo-container">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <button id="get-all-values" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        Get All Values
+                    </button>
+                    <button id="reset-all" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                        Reset All
+                    </button>
+                    <button id="set-scenario" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">
+                        Set Scenario
+                    </button>
+                </div>
+                
+                <div id="manager-output" class="bg-white p-4 rounded border font-mono text-sm"></div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 mt-16 py-8 border-t">
+            <p class="mb-2">Distribution Slider Library v1.0.0</p>
+            <p>Built with ❤️ by <a href="https://subconscious.ai" class="text-blue-600 hover:text-blue-800">Subconscious.ai</a></p>
+            <p class="mt-4 text-sm">Ready for production use in your social media cost calculator</p>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize demos
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create slider manager for demos
+            const demoManager = new DistributionSliderManager();
+            
+            // Normal Distribution Demo
+            const normalSlider = demoManager.create({
+                containerId: 'demo-normal',
+                sliderId: 'demo-normal-slider',
+                min: 8,
+                max: 20,
+                default: 13.7,
+                distributionType: 'normal',
+                format: (v) => `$${v.toFixed(1)}M`,
+                theme: 'red',
+                onChange: (value, output) => {
+                    document.getElementById('output-normal').innerHTML = `
+                        <strong>Current Value:</strong> ${output.formattedValue}<br>
+                        <strong>Mean:</strong> $${output.stats.mean.toFixed(1)}M<br>
+                        <strong>95% CI:</strong> [$${output.stats.ci95[0].toFixed(1)}M, $${output.stats.ci95[1].toFixed(1)}M]<br>
+                        <strong>Standard Deviation:</strong> $${output.stats.std.toFixed(1)}M
+                    `;
+                }
+            });
+            
+            // Beta Distribution Demo
+            const betaSlider = demoManager.create({
+                containerId: 'demo-beta',
+                sliderId: 'demo-beta-slider',
+                min: 5,
+                max: 30,
+                default: 18,
+                distributionType: 'beta',
+                distributionParams: { concentration: 8 },
+                format: (v) => `${v.toFixed(0)}%`,
+                theme: 'purple',
+                onChange: (value, output) => {
+                    document.getElementById('output-beta').innerHTML = `
+                        <strong>Current Value:</strong> ${output.formattedValue}<br>
+                        <strong>Mean:</strong> ${output.stats.mean.toFixed(1)}%<br>
+                        <strong>95% CI:</strong> [${output.stats.ci95[0].toFixed(1)}%, ${output.stats.ci95[1].toFixed(1)}%]<br>
+                        <strong>Mode:</strong> ${output.stats.mode.toFixed(1)}%
+                    `;
+                }
+            });
+            
+            // Log-Normal Distribution Demo
+            const lognormalSlider = demoManager.create({
+                containerId: 'demo-lognormal',
+                sliderId: 'demo-lognormal-slider',
+                min: 3000000,
+                max: 15000000,
+                default: 5000000,
+                distributionType: 'lognormal',
+                format: (v) => {
+                    if (v >= 1000000) return `${(v/1000000).toFixed(1)}M`;
+                    return `${(v/1000).toFixed(0)}K`;
+                },
+                theme: 'cyan',
+                onChange: (value, output) => {
+                    document.getElementById('output-lognormal').innerHTML = `
+                        <strong>Current Value:</strong> ${output.formattedValue}<br>
+                        <strong>Mean:</strong> ${(output.stats.mean/1000000).toFixed(1)}M<br>
+                        <strong>95% CI:</strong> [${(output.stats.ci95[0]/1000000).toFixed(1)}M, ${(output.stats.ci95[1]/1000000).toFixed(1)}M]<br>
+                        <strong>Median:</strong> ${(output.stats.median/1000000).toFixed(1)}M
+                    `;
+                }
+            });
+            
+            // Initialize outputs
+            normalSlider.config.onChange(normalSlider.getValue(), normalSlider.getOutput());
+            betaSlider.config.onChange(betaSlider.getValue(), betaSlider.getOutput());
+            lognormalSlider.config.onChange(lognormalSlider.getValue(), lognormalSlider.getOutput());
+            
+            // Manager demo buttons
+            document.getElementById('get-all-values').addEventListener('click', () => {
+                const values = demoManager.getAllValues();
+                const output = demoManager.getAllOutput();
+                document.getElementById('manager-output').innerHTML = `
+                    <strong>All Values:</strong><br>
+                    ${JSON.stringify(values, null, 2)}<br><br>
+                    <strong>Complete Output:</strong><br>
+                    ${JSON.stringify(output, null, 2)}
+                `;
+            });
+            
+            document.getElementById('reset-all').addEventListener('click', () => {
+                demoManager.resetAll();
+                document.getElementById('manager-output').innerHTML = 'All sliders reset to default values.';
+            });
+            
+            document.getElementById('set-scenario').addEventListener('click', () => {
+                demoManager.setAllValues({
+                    'demo-normal-slider': 15.0,
+                    'demo-beta-slider': 25,
+                    'demo-lognormal-slider': 8000000
+                });
+                document.getElementById('manager-output').innerHTML = 'Scenario applied: High-impact values set.';
+            });
+        });
+    </script>
+</body>
+</html> 

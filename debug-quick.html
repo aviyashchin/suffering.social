@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Distribution Slider Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        #test-container { 
+            width: 100%; 
+            height: 200px; 
+            border: 2px solid #333; 
+            margin: 20px 0; 
+            padding: 10px;
+            background: #f9f9f9;
+        }
+        .log { 
+            background: #f0f0f0; 
+            padding: 5px; 
+            margin: 5px 0; 
+            border-left: 3px solid #007cba;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .error { border-left-color: #d63638; background: #ffe6e6; }
+        .success { border-left-color: #00a32a; background: #e6ffe6; }
+    </style>
+</head>
+<body>
+    <h1>Quick Distribution Slider Test</h1>
+    
+    <div id="log-container"></div>
+    
+    <h2>Test Container</h2>
+    <div id="test-container">
+        <div style="text-align: center; padding: 50px; color: #666;">
+            Waiting for distribution slider...
+        </div>
+    </div>
+    
+    <script>
+        function log(message, type = 'info') {
+            const logContainer = document.getElementById('log-container');
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logContainer.appendChild(div);
+            console.log(message);
+        }
+        
+        async function testDistributionSlider() {
+            try {
+                log('Starting test...');
+                
+                // Load D3
+                log('Loading D3...');
+                const d3Script = document.createElement('script');
+                d3Script.src = 'https://d3js.org/d3.v7.min.js';
+                document.head.appendChild(d3Script);
+                
+                await new Promise((resolve, reject) => {
+                    d3Script.onload = resolve;
+                    d3Script.onerror = reject;
+                });
+                
+                log('D3 loaded successfully', 'success');
+                
+                // Load distribution sliders
+                log('Loading distribution sliders...');
+                const sliderScript = document.createElement('script');
+                sliderScript.src = 'assets/distribution-sliders.js';
+                document.head.appendChild(sliderScript);
+                
+                await new Promise((resolve, reject) => {
+                    sliderScript.onload = resolve;
+                    sliderScript.onerror = reject;
+                });
+                
+                log('Distribution sliders script loaded', 'success');
+                
+                // Wait for classes to be available
+                let attempts = 0;
+                while ((!window.DistributionSlider || !window.NormalDistribution) && attempts < 50) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    attempts++;
+                }
+                
+                if (!window.DistributionSlider) {
+                    throw new Error('DistributionSlider class not available after loading');
+                }
+                
+                log('Distribution classes available', 'success');
+                
+                // Test creating a distribution
+                log('Testing normal distribution...');
+                const normal = new NormalDistribution(0, 1);
+                const pdf = normal.pdf(0);
+                log(`Normal PDF(0) = ${pdf}`, pdf > 0 ? 'success' : 'error');
+                
+                // Create slider
+                log('Creating distribution slider...');
+                const slider = new DistributionSlider({
+                    containerId: 'test-container',
+                    min: 0,
+                    max: 100,
+                    default: 50,
+                    distributionType: 'normal',
+                    onChange: (value) => {
+                        log(`Slider value: ${value}`, 'success');
+                    }
+                });
+                
+                log('Distribution slider created successfully!', 'success');
+                
+            } catch (error) {
+                log(`Error: ${error.message}`, 'error');
+                console.error('Full error:', error);
+            }
+        }
+        
+        // Start test when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', testDistributionSlider);
+        } else {
+            testDistributionSlider();
+        }
+    </script>
+</body>
+</html> 

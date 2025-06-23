@@ -99,6 +99,127 @@
             button, .slider, input, select { min-height: 44px; }
             .info-button { width: 32px; height: 32px; }
         }
+        
+        /* Distribution slider styles */
+        .distribution-slider-container {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            min-height: 80px !important;
+            height: 100px !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: relative !important;
+            overflow: visible !important;
+            box-sizing: border-box !important;
+        }
+        
+        /* Ensure SVG content is visible */
+        .distribution-slider-container svg {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            width: 100% !important;
+            height: auto !important;
+        }
+        
+        /* Ensure all child elements are visible */
+        .distribution-slider-container * {
+            visibility: visible !important;
+        }
+        
+        /* Force container visibility regardless of parent styles */
+        .has-distribution-sliders .distribution-slider-container {
+            display: block !important;
+            height: 100px !important;
+            width: 100% !important;
+            background: #f8fafc !important;
+            border: 1px solid #e2e8f0 !important;
+            margin: 0.5rem 0 !important;
+            padding: 0.5rem !important;
+        }
+        
+        /* Keep both original and distribution sliders visible */
+        .has-distribution-sliders .parameter-group input[type="range"] {
+            display: block !important;
+        }
+        
+        .has-distribution-sliders .parameter-group .slider-label {
+            display: flex !important;
+        }
+        
+        .has-distribution-sliders .parameter-group .flex.items-center.gap-2 {
+            display: flex !important;
+        }
+        
+        /* Make sure distribution slider containers are always visible */
+        .distribution-slider-container {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        /* Ensure distribution slider containers override any hiding */
+        .has-distribution-sliders .distribution-slider-container {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        /* Uncertainty analysis */
+        .uncertainty-analysis {
+            background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
+            border: 1px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+                .enhanced-features {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        .has-distribution-sliders .enhanced-features {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        /* Force RHS column to always be visible */
+        .enhanced-card {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        /* Ensure grid layout is preserved */
+        .lg\\:grid {
+            display: grid !important;
+        }
+        
+        .lg\\:grid-cols-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        }
+        
+        /* Integration test results */
+        .test-summary.all-passed {
+            background: #dcfce7;
+            border: 1px solid #22c55e;
+            color: #15803d;
+        }
+        
+        .test-summary.has-failures {
+            background: #fef2f2;
+            border: 1px solid #ef4444;
+            color: #dc2626;
+        }
     </style>
     
     <!-- Load Tailwind CSS -->
@@ -115,6 +236,11 @@
     <link rel="stylesheet" href="assets/calculator.css">
     <script src="assets/calculator.js" defer></script>
     <script src="assets/viral-features.js" defer></script>
+    
+    <!-- Distribution Slider Integration -->
+    <script src="assets/distribution-slider-loader.js" defer></script>
+    <script src="assets/calculator-integration.js" defer></script>
+    <script src="assets/integration-tests.js" defer></script>
 
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
@@ -247,6 +373,8 @@
                         <div class="flex items-center gap-2">
                           <input type="range" min="8" max="20" value="13.7" step="0.1" class="slider w-full h-2 rounded bg-gray-200 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-indigo-400" id="vsl-slider" aria-label="Value of Statistical Life" />
                         </div>
+                        <!-- Distribution Slider Container -->
+                        <div id="vsl-slider-container" class="distribution-slider-container mt-4"></div>
                                         </div>
                       <div class="slider-container mb-6">
                         <div class="slider-label flex justify-between mb-2 font-medium">
@@ -259,6 +387,8 @@
                         <div class="flex items-center gap-2">
                           <input type="range" min="100000" max="300000" value="110000" step="1000" class="slider w-full h-2 rounded bg-gray-200 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-indigo-400" id="suicides-slider" aria-label="Excess Suicides Since 2009" />
                         </div>
+                        <!-- Distribution Slider Container -->
+                        <div id="suicides-slider-container" class="distribution-slider-container mt-4"></div>
                                         </div>
                       <div class="slider-container mb-6">
                         <div class="slider-label flex justify-between mb-2 font-medium">
@@ -271,6 +401,8 @@
                         <div class="flex items-center gap-2">
                           <input type="range" min="5" max="30" value="18" step="1" class="slider w-full h-2 rounded bg-gray-200 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-indigo-400" id="attribution-slider" aria-label="Percentage Attributable to Social Media" />
                         </div>
+                        <!-- Distribution Slider Container -->
+                        <div id="attribution-slider-container" class="distribution-slider-container mt-4"></div>
                       </div>
                       <div class="formula-display bg-indigo-50 border border-indigo-300 rounded px-4 py-2 mt-2 font-mono text-sm text-gray-700">
                             <strong>Formula:</strong> P × Q × VSL<br>
@@ -317,6 +449,8 @@
                             <div class="flex items-center gap-2">
                               <input type="range" min="3000000" max="15000000" value="5000000" step="100000" class="slider w-full h-2 rounded bg-gray-200 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-purple-400" id="depression-slider" aria-label="People with Social Media-Induced Depression" />
                         </div>
+                        <!-- Distribution Slider Container -->
+                        <div id="depression-slider-container" class="distribution-slider-container mt-4"></div>
                                         </div>
                         <div class="slider-container mb-6">
                             <div class="slider-label flex justify-between mb-2 font-medium">
@@ -329,6 +463,8 @@
                             <div class="flex items-center gap-2">
                               <input type="range" min="4" max="8" value="6" step="0.1" class="slider w-full h-2 rounded bg-gray-200 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-purple-400" id="yld-slider" aria-label="Years Lived with Disability" />
                         </div>
+                        <!-- Distribution Slider Container -->
+                        <div id="yld-slider-container" class="distribution-slider-container mt-4"></div>
                                         </div>
                         <div class="slider-container mb-6">
                             <div class="slider-label flex justify-between mb-2 font-medium">
@@ -341,6 +477,8 @@
                             <div class="flex items-center gap-2">
                               <input type="range" min="30" max="40" value="35" step="1" class="slider w-full h-2 rounded bg-gray-200 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-purple-400" id="qol-slider" aria-label="Quality of Life Reduction" />
                         </div>
+                        <!-- Distribution Slider Container -->
+                        <div id="qol-slider-container" class="distribution-slider-container mt-4"></div>
                         </div>
                         <div class="formula-display bg-purple-50 border border-purple-300 rounded px-4 py-2 mt-2 font-mono text-sm text-gray-700">
                             <strong>Formula:</strong> P × Q × R × (VSL ÷ 75 years)<br>
@@ -386,6 +524,8 @@
                             <div class="flex items-center gap-2">
                               <input type="range" min="6500" max="20000" value="7000" step="100" class="slider w-full h-2 rounded bg-gray-200 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-blue-400" id="healthcare-slider" aria-label="Annual Healthcare Costs per Person" />
                         </div>
+                        <!-- Distribution Slider Container -->
+                        <div id="healthcare-slider-container" class="distribution-slider-container mt-4"></div>
                                         </div>
                         <div class="slider-container mb-6">
                             <div class="slider-label flex justify-between mb-2 font-medium">
@@ -398,6 +538,8 @@
                             <div class="flex items-center gap-2">
                               <input type="range" min="6000" max="10000" value="6000" step="100" class="slider w-full h-2 rounded bg-gray-200 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-blue-400" id="productivity-slider" aria-label="Annual Productivity Loss per Person" />
                         </div>
+                        <!-- Distribution Slider Container -->
+                        <div id="productivity-slider-container" class="distribution-slider-container mt-4"></div>
                                         </div>
                         <div class="slider-container mb-6">
                             <div class="slider-label flex justify-between mb-2 font-medium">
@@ -410,6 +552,8 @@
                             <div class="flex items-center gap-2">
                               <input type="range" min="3" max="6" value="4.5" step="0.1" class="slider w-full h-2 rounded bg-gray-200 appearance-none focus:outline-none transition-colors duration-200 focus:ring-2 focus:ring-blue-400" id="duration-slider" aria-label="Treatment Duration in Years" />
                         </div>
+                        <!-- Distribution Slider Container -->
+                        <div id="duration-slider-container" class="distribution-slider-container mt-4"></div>
                         </div>
                         <div class="formula-display bg-blue-50 border border-blue-300 rounded px-4 py-2 mt-2 font-mono text-sm text-gray-700">
                             <strong>Formula:</strong> Depressed Americans × (P + Q) × R<br>
@@ -563,6 +707,55 @@
                     <div class="clock-display text-3xl font-bold text-red-400 mb-2 font-mono flex items-baseline gap-2 justify-center" id="running-total" style="min-width: 15ch; text-align: right; padding-left: 1ch;"><span class="text-2xl">$</span><span id="running-total-amount">0</span></div>
                     <div class="clock-label text-base opacity-90 mb-2">Cost Generated Since You Opened This Page</div>
                     <div class="text-xs opacity-75">(at current annual rate)</div>
+                </div>
+
+                <!-- Enhanced Features Section -->
+                <div class="enhanced-features">
+                    <!-- Uncertainty Analysis -->
+                    <div id="uncertainty-analysis" class="uncertainty-analysis mb-8">
+                        <h3 class="text-lg font-semibold text-blue-800 mb-4 flex items-center gap-2">
+                            📊 Uncertainty Analysis
+                            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">ENHANCED</span>
+                        </h3>
+                        <div class="text-sm text-blue-700 mb-4">
+                            Distribution sliders provide confidence intervals showing the range of plausible outcomes based on research uncertainty.
+                        </div>
+                        <div id="uncertainty-range" class="bg-white rounded-lg p-4 border-l-4 border-blue-500">
+                            <div class="text-sm text-gray-600">
+                                Adjust sliders to see how uncertainty affects total cost estimates...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Integration Status -->
+                    <div id="integration-status" class="bg-green-50 border border-green-200 rounded-lg p-4 mb-8">
+                        <h4 class="font-semibold text-green-800 mb-2 flex items-center gap-2">
+                            ✨ Enhanced Calculator Active
+                        </h4>
+                        <div class="text-sm text-green-700">
+                            You're using distribution sliders with mathematical uncertainty visualization.
+                        </div>
+                        <div id="feature-list" class="mt-2 text-xs text-green-600">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Integration Test Results -->
+                    <div id="test-results" class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-8">
+                        <h4 class="font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                            🧪 System Status
+                        </h4>
+                        <div id="test-summary" class="test-summary text-sm p-3 rounded border-l-4">
+                            <div class="text-gray-600">
+                                Running integration tests...
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <button id="run-tests-btn" class="text-xs px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+                                🔄 Run Tests
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="dag-container bg-blue-50 rounded-xl p-6 mb-8">

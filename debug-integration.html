@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Integration</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .distribution-slider-container { 
+            margin: 1rem 0; 
+            padding: 1rem; 
+            background: #f8fafc; 
+            border-radius: 8px; 
+            border: 1px solid #e2e8f0; 
+            min-height: 180px; 
+        }
+        .distribution-slider-container:empty { display: none; }
+        #debug-log { background: #f0f0f0; padding: 10px; font-family: monospace; white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h1>Distribution Slider Integration Debug</h1>
+    
+    <div class="debug-section">
+        <h2>Test Slider</h2>
+        <div>
+            <label>VSL Slider: <span id="vsl-value">$13.7M</span></label>
+            <input type="range" min="8" max="20" value="13.7" step="0.1" id="vsl-slider" />
+        </div>
+        <div id="vsl-slider-container" class="distribution-slider-container"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>Debug Log</h2>
+        <div id="debug-log"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>Library Status</h2>
+        <div id="library-status"></div>
+    </div>
+
+    <!-- Load the integration scripts -->
+    <script src="assets/distribution-slider-loader.js" defer></script>
+    <script src="assets/calculator-integration.js" defer></script>
+    <script src="assets/integration-tests.js" defer></script>
+
+    <script>
+        // Capture console logs
+        const debugLog = document.getElementById('debug-log');
+        const originalLog = console.log;
+        const originalWarn = console.warn;
+        const originalError = console.error;
+        
+        function addToLog(type, ...args) {
+            const timestamp = new Date().toLocaleTimeString();
+            const message = `[${timestamp}] ${type}: ${args.join(' ')}\n`;
+            debugLog.textContent += message;
+            debugLog.scrollTop = debugLog.scrollHeight;
+        }
+        
+        console.log = (...args) => {
+            originalLog(...args);
+            addToLog('LOG', ...args);
+        };
+        
+        console.warn = (...args) => {
+            originalWarn(...args);
+            addToLog('WARN', ...args);
+        };
+        
+        console.error = (...args) => {
+            originalError(...args);
+            addToLog('ERROR', ...args);
+        };
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 Starting debug integration test...');
+            
+            // Wait a bit for scripts to load
+            setTimeout(async () => {
+                // Check library status
+                const statusEl = document.getElementById('library-status');
+                statusEl.innerHTML = `
+                    <p>D3: ${typeof window.d3} ${window.d3 ? '✅' : '❌'}</p>
+                    <p>DistributionSlider: ${typeof window.DistributionSlider} ${window.DistributionSlider ? '✅' : '❌'}</p>
+                    <p>DistributionSliderManager: ${typeof window.DistributionSliderManager} ${window.DistributionSliderManager ? '✅' : '❌'}</p>
+                    <p>calculatorIntegration: ${typeof window.calculatorIntegration} ${window.calculatorIntegration ? '✅' : '❌'}</p>
+                    <p>distributionSliderLoader: ${typeof window.distributionSliderLoader} ${window.distributionSliderLoader ? '✅' : '❌'}</p>
+                `;
+                
+                // Try to initialize
+                if (window.calculatorIntegration) {
+                    console.log('🔄 Initializing calculator integration...');
+                    try {
+                        await window.calculatorIntegration.initialize((sliderId, value, output) => {
+                            console.log(`🎛️ Slider ${sliderId} changed to ${value}`);
+                            // Update display
+                            const valueDisplay = document.getElementById('vsl-value');
+                            if (valueDisplay && sliderId === 'vsl-slider') {
+                                valueDisplay.textContent = `$${value.toFixed(1)}M`;
+                            }
+                        });
+                        console.log('✅ Integration initialized successfully');
+                        
+                        // Check features
+                        const features = window.calculatorIntegration.getFeatures();
+                        console.log('📋 Available features:', features);
+                        
+                    } catch (error) {
+                        console.error('❌ Integration failed:', error);
+                    }
+                } else {
+                    console.error('❌ calculatorIntegration not available');
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html> 
