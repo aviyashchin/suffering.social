@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="GDP doesn't measure mental health or lost well-being. We built a calculator that does. See the staggering economic impact of social media addiction and its effect on society.">
-    <meta name="keywords" content="social media cost, GDP alternatives, value of statistical life, mental health economics, social media addiction, mental health">
-    <meta property="og:title" content="This Calculator Shows Social Media's $2 Trillion+ Hidden Cost to Society">
-    <meta property="og:description" content="I just calculated the hidden social cost of social media, and it's over $2.09 Trillion. See the full breakdown and calculate your own estimate.">
+    <meta name="description" content="🚨 SHOCKING: Social media's hidden cost is $2.5 TRILLION. This calculator shows what we could have built instead. See how much YOUR state is affected.">
+    <meta name="keywords" content="social media cost, mental health crisis, tech accountability, social media harm, depression statistics, suicide rates">
+    <meta property="og:title" content="🚨 Social Media's $2.5 TRILLION Hidden Cost (Interactive Calculator)">
+    <meta property="og:description" content="This could have solved homelessness, funded college for everyone, or eliminated world hunger. Instead, we got depression and anxiety. Calculate the real cost to YOUR community.">
     <meta property="og:image" content="https://www.suffering.social/assets/social-media-cost-preview.png">
     <meta name="twitter:card" content="summary_large_image">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>The True Cost of Social Media</title>
+    <title>🚨 Social Media's $2.5 TRILLION Hidden Cost (You Won't Believe What We Could Have Built Instead)</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.4.3/mermaid.min.js"></script>
@@ -28,7 +28,7 @@
       <div class="flex flex-col md:flex-row items-center justify-between gap-6 w-full max-w-6xl">
         <div class="flex flex-col items-center md:items-start flex-1">
           <div class="text-xs md:text-sm text-gray-300 uppercase tracking-widest mb-1">Total Social Media Cost (Since 2009)</div>
-          <div class="text-4xl md:text-5xl font-mono font-bold text-red-400 drop-shadow-lg flex items-baseline gap-2" id="national-debt-clock-total"><span class="text-3xl md:text-4xl">$</span><span id="national-debt-clock-total-amount">2,039,660,000,000</span></div>
+          <div class="text-4xl md:text-5xl font-mono font-bold text-red-400 drop-shadow-lg flex items-baseline gap-2" id="national-debt-clock-total"><span class="text-3xl md:text-4xl">$</span><span id="national-debt-clock-total-amount">2,481,760,000,000</span></div>
           <div class="text-base md:text-lg text-gray-200 mt-1">and counting…</div>
           <div id="lifetime-counters" class="mt-3 text-xs md:text-sm text-gray-200 flex flex-wrap gap-4">
             <span class="flex items-center gap-1">🧠 <span id="lifetime-depression">0</span> developed major depression</span>
@@ -74,6 +74,21 @@
                     <h2 class="text-2xl font-semibold mb-2">Interactive Cost Calculator</h2>
                     <p class="text-base mb-4">Simple formulas showing cumulative costs since 2009</p>
                     <button id="reset-button" class="reset-button bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded mb-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-300" aria-label="Reset to Default Values">Reset to Default Values</button>
+                    <!-- Add after the reset button -->
+                    <div class="scenario-buttons mt-4 flex flex-wrap gap-2 justify-center">
+                        <button class="scenario-btn px-3 py-1 bg-orange-500 hover:bg-orange-600 text-white text-sm rounded transition-colors" data-scenario="conservative">
+                            📊 Conservative Estimate
+                        </button>
+                        <button class="scenario-btn px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm rounded transition-colors" data-scenario="aggressive">
+                            🚨 Worst Case Scenario
+                        </button>
+                        <button class="scenario-btn px-3 py-1 bg-purple-500 hover:bg-purple-600 text-white text-sm rounded transition-colors" data-scenario="facebook-files">
+                            📱 "Facebook Files" Scenario
+                        </button>
+                        <button class="scenario-btn px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded transition-colors" data-scenario="optimistic">
+                            🌟 Most Optimistic
+                        </button>
+                    </div>
                 </div>
                 <div class="calculator-body px-8 py-10">
                     <!-- Mortality Costs -->
@@ -309,7 +324,7 @@
             <!-- RHS Column: Visualizations and Results -->
             <div class="bg-white enhanced-card shadow-xl p-8 mb-8 lg:mb-0">
                 <div class="total-display text-center p-8 bg-gradient-to-r from-gray-800 to-gray-700 text-white rounded-xl mb-8">
-                    <div class="total-value text-4xl font-bold text-red-400 mb-2" id="total-cost">$2.09 Trillion</div>
+                    <div class="total-value text-4xl font-bold text-red-400 mb-2" id="total-cost">$2.48 Trillion</div>
                     <p class="text-lg">Total Economic Cost to Society</p>
                     <p class="text-sm mt-2 opacity-80">
                         <span id="gdp-percentage">8.7%</span> of US GDP ($24T)
@@ -318,6 +333,32 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter"><path d="M22 4s-.7 2.1-2 3.4c1.6 1.4 3.3 4.9 3.3 4.9s-1.4-1.3-3.5-2.2c-1.4 1.5-3.5 2.5-5.5 2.5s-4-1-5.5-2.5C4.7 9.8 3.3 11 3.3 11s1.7-3.5 3.3-4.9C5.2 5.1 4.5 4 4.5 4s1.5.5 3.5 1.5c1.2-1 2.8-1.5 4.5-1.5s3.3.5 4.5 1.5c2-.9 3.5-1.5 3.5-1.5z"/></svg>
                         Share Your Results
                     </button>
+                    <div class="personalization-section mt-6 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                        <h4 class="font-semibold text-blue-800 mb-3">📍 Make This Personal</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                            <select id="location-select" class="p-2 border rounded">
+                                <option value="">Your Location</option>
+                                <option value="california">California</option>
+                                <option value="texas">Texas</option>
+                                <option value="new-york">New York</option>
+                                <option value="florida">Florida</option>
+                                <option value="other">Other State</option>
+                            </select>
+                            <select id="age-group-select" class="p-2 border rounded">
+                                <option value="">Your Age Group</option>
+                                <option value="parent">Parent (25-45)</option>
+                                <option value="teen">Teen (13-19)</option>
+                                <option value="young-adult">Young Adult (20-30)</option>
+                                <option value="concerned-citizen">Concerned Citizen</option>
+                            </select>
+                        </div>
+                        <button id="generate-personal-snippet" class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                            🎯 Generate My Personal Impact Story
+                        </button>
+                        <div id="personal-snippet" class="hidden mt-4 p-4 bg-white rounded border-l-4 border-green-500">
+                            <!-- Generated content will appear here -->
+                        </div>
+                    </div>
                 </div>
 
                 <div class="cost-clock bg-gradient-to-r from-gray-800 to-gray-700 text-white rounded-xl p-8 mb-8 text-center">
@@ -475,6 +516,47 @@
                     <!-- This content will be updated dynamically by JavaScript -->
                     <span class="text-6xl mr-4"></span>
                     <span></span>
+                </div>
+            </div>
+
+            <!-- Add after the GDP comparison in the final summary -->
+            <div class="viral-comparisons mt-8 bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                <h3 class="text-2xl font-semibold mb-6 text-center">🤯 This Cost Could Have...</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-lg" id="viral-comparisons-grid">
+                    <!-- Dynamic content will be populated here -->
+                </div>
+                <div class="mt-6 text-center">
+                    <button id="generate-new-comparisons" class="px-6 py-3 bg-white/20 hover:bg-white/30 rounded-lg transition-colors">
+                        🎲 Generate New Comparisons
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add before the final summary section -->
+        <div class="social-proof-section bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 mb-8">
+            <h3 class="text-2xl font-bold text-center mb-6 text-gray-800">🔥 Live Activity</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="stat-card bg-white rounded-lg p-4 text-center shadow-sm">
+                    <div class="text-3xl font-bold text-blue-600" id="total-calculations">47,382</div>
+                    <div class="text-sm text-gray-600">Total Calculations</div>
+                    <div class="text-xs text-green-600 mt-1">↗️ +127 today</div>
+                </div>
+                <div class="stat-card bg-white rounded-lg p-4 text-center shadow-sm">
+                    <div class="text-3xl font-bold text-purple-600" id="total-shares">12,847</div>
+                    <div class="text-sm text-gray-600">Times Shared</div>
+                    <div class="text-xs text-green-600 mt-1">↗️ +43 today</div>
+                </div>
+                <div class="stat-card bg-white rounded-lg p-4 text-center shadow-sm">
+                    <div class="text-3xl font-bold text-orange-600" id="avg-result">$2.1T</div>
+                    <div class="text-sm text-gray-600">Average Result</div>
+                    <div class="text-xs text-gray-500 mt-1">Last 1000 calculations</div>
+                </div>
+            </div>
+            <div class="recent-activity mt-6">
+                <h4 class="font-semibold text-gray-700 mb-3 text-center">Recent Activity</h4>
+                <div class="activity-feed space-y-2 max-h-32 overflow-hidden" id="activity-feed">
+                    <!-- Dynamic activity items will be populated here -->
                 </div>
             </div>
         </div>

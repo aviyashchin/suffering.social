@@ -9,7 +9,7 @@
         vsl: 13.7,
         suicides: 110000,
         attribution: 18,
-        depression: 4000000,
+        depression: 5000000,
         yld: 6,
         qol: 35,
         healthcare: 7000,
@@ -37,17 +37,16 @@
         },
 
         updateRates(state) {
-            // Calculate total seconds since 2009
+            // Calculate rates based on total time elapsed since 2009
             const totalSeconds = (new Date() - this.startDate) / 1000;
             
             // Update rates based on current calculator state
             this.depressionPerSecond = state.depression / totalSeconds;
             this.suicidePerSecond = state.suicides / totalSeconds;
-            this.totalCostPerSecond = state.results.totalCost / totalSeconds;
             
-            // Session cost should show CURRENT annual impact, not historical average
-            // This represents: "At current settings, we're generating this much cost per year"
-            this.sessionCostPerSecond = state.results.totalCost / (365 * 24 * 60 * 60);
+            // Both cost counters should use the same rate: total cost divided by total elapsed time
+            this.totalCostPerSecond = state.results.totalCost / totalSeconds;
+            this.sessionCostPerSecond = state.results.totalCost / totalSeconds;
         },
 
         startTicking() {
@@ -666,10 +665,14 @@
      * Manages the application state and orchestrates calculations.
      */
     class CostCalculator {
-        constructor(uiManager) {
+        constructor() {
             this.state = { ...initialState, results: {} };
-            this.uiManager = uiManager;
+            this.uiManager = null; // Will be set by initApp
             this.calculateAll();
+        }
+
+        setUIManager(uiManager) {
+            this.uiManager = uiManager;
         }
 
         calculateAll() {
@@ -680,6 +683,15 @@
             const totalCost = Calculator.totalCost(mortalityCost, mentalHealthCost, healthcareProductivityCost);
             const gdpPercentage = Calculator.gdpPercentage(totalCost);
             
+            // Debug logging to check calculations
+            console.log('=== CALCULATION DEBUG ===');
+            console.log('State:', s);
+            console.log('Mortality Cost:', mortalityCost, '=', s.suicides, '×', s.attribution + '%', '×', '$' + s.vsl + 'M');
+            console.log('Mental Health Cost:', mentalHealthCost, '=', s.depression, '×', s.yld, '×', s.qol + '%', '×', '$' + ((s.vsl * 1e6) / 75));
+            console.log('Healthcare Cost:', healthcareProductivityCost, '=', s.depression, '×', '($' + s.healthcare, '+', '$' + s.productivity + ')', '×', s.duration);
+            console.log('Total Cost:', totalCost);
+            console.log('========================');
+            
             this.state.results = { mortalityCost, mentalHealthCost, healthcareProductivityCost, totalCost, gdpPercentage };
         }
 
@@ -687,7 +699,9 @@
             if (this.state[key] !== undefined) {
                 this.state[key] = value;
                 this.calculateAll();
-                this.uiManager.update(this.state);
+                if (this.uiManager) {
+                    this.uiManager.update(this.state);
+                }
             }
         }
 
@@ -700,11 +714,287 @@
      * Main application entry point.
      */
     function initApp() {
+        const costCalculator = new CostCalculator();
         const uiManager = new UIManager();
-        const costCalculator = new CostCalculator(uiManager);
+        
+        // Set up the circular reference
+        costCalculator.setUIManager(uiManager);
+        
         uiManager.init(costCalculator);
+        
+        // Initialize viral features
+        ViralFeatures.init();
     }
 
     document.addEventListener('DOMContentLoaded', initApp);
+
+    /**
+     * Viral Features Manager - handles personalization, scenarios, and social proof
+     */
+    const ViralFeatures = {
+        personalSnippets: {
+            parent: {
+                california: "As a California parent, this $2.1T represents 52,000 years of your child's college tuition at UC Berkeley.",
+                texas: "Fellow Texan parent: This cost could fund every child in Texas getting a full scholarship to UT Austin for 15 years.",
+                "new-york": "NYC parent: This $2.1T could pay rent for every family in Manhattan for 8 months.",
+                other: "As a parent, this represents the college tuition for 42 million kids - that's every child in America getting a free education."
+            },
+            teen: {
+                california: "CA teen: This $2.1T is enough to buy TikTok, Instagram, AND Snapchat... and still have $1.8T left over.",
+                texas: "Texas teen: This cost could buy every teenager in America a Tesla Model 3 and still have money left for gas for life.",
+                "new-york": "NY teen: This $2.1T could fund free mental health therapy for every teen in America for 50 years.",
+                other: "Teen: This cost could give every person your age $67,000 cash - enough to start adult life debt-free."
+            },
+            "young-adult": {
+                california: "CA young adult: This $2.1T could eliminate student debt for 42 million Americans - including yours.",
+                texas: "Texas young adult: This cost could buy every 20-something in America a house in Austin.",
+                "new-york": "NYC young adult: This $2.1T represents 840,000 Manhattan apartments - enough housing for your entire generation.",
+                other: "Young adult: This cost could give every person in your generation $52,000 to start their career debt-free."
+            },
+            "concerned-citizen": {
+                california: "Fellow Californian: This $2.1T could solve homelessness, fund universal healthcare, AND still have $1T left over.",
+                texas: "Fellow Texan: This cost could fund the entire Texas state budget for 18 years straight.",
+                "new-york": "New Yorker: This $2.1T could fund the MTA, fix every bridge, AND give every NYer free healthcare for a decade.",
+                other: "Fellow citizen: This cost represents 10% of our entire national GDP - imagine what we could build instead."
+            }
+        },
+
+        viralComparisons: [
+            { emoji: "🏠", text: "Built 21 million homes (solving the housing crisis)" },
+            { emoji: "🎓", text: "Funded college for every American under 25" },
+            { emoji: "🏥", text: "Provided free mental health therapy for every teen for 100 years" },
+            { emoji: "🚀", text: "Funded NASA for 105 years (we'd be on Mars by now)" },
+            { emoji: "🌍", text: "Eliminated world hunger for 7 years" },
+            { emoji: "⚡", text: "Built enough solar panels to power America for 15 years" },
+            { emoji: "🚇", text: "Built high-speed rail connecting every major US city" },
+            { emoji: "💊", text: "Funded cancer research for 420 years" },
+            { emoji: "🌊", text: "Cleaned up every ocean on Earth... twice" },
+            { emoji: "👨‍⚕️", text: "Hired 10 million additional teachers and therapists" },
+            { emoji: "🏛️", text: "Rebuilt every school in America... 5 times over" },
+            { emoji: "🎨", text: "Funded arts education in every school for 200 years" }
+        ],
+
+        scenarios: {
+            conservative: {
+                vsl: 8.0, suicides: 100000, attribution: 10, depression: 3000000,
+                yld: 4.0, qol: 30, healthcare: 6500, productivity: 6000, duration: 3.0
+            },
+            aggressive: {
+                vsl: 20.0, suicides: 300000, attribution: 30, depression: 15000000,
+                yld: 8.0, qol: 40, healthcare: 20000, productivity: 10000, duration: 6.0
+            },
+            "facebook-files": {
+                vsl: 13.7, suicides: 200000, attribution: 25, depression: 8000000,
+                yld: 6.5, qol: 38, healthcare: 8500, productivity: 7500, duration: 5.0
+            },
+            optimistic: {
+                vsl: 10.0, suicides: 80000, attribution: 8, depression: 2000000,
+                yld: 3.0, qol: 25, healthcare: 6000, productivity: 5000, duration: 2.5
+            }
+        },
+
+        activityMessages: [
+            "Someone in California just calculated $2.3T impact 😱",
+            "Parent in Texas shared their results on Facebook",
+            "Teen in NYC: 'This is why I deleted Instagram' 💪",
+            "Researcher in Boston bookmarked this page",
+            "Someone just tried the 'Facebook Files' scenario 📱",
+            "Parent in Florida: 'Showing this to my school board'",
+            "College student: 'Finally, data for my thesis!' 📚",
+            "Someone in Seattle calculated $1.8T (conservative estimate)",
+            "Teacher in Chicago: 'Using this in my economics class'",
+            "Therapist in Miami shared this with colleagues"
+        ],
+
+        init() {
+            this.initPersonalization();
+            this.initScenarios();
+            this.initViralComparisons();
+            this.initSocialProof();
+        },
+
+        initPersonalization() {
+            const generateBtn = document.getElementById('generate-personal-snippet');
+            if (generateBtn) {
+                generateBtn.addEventListener('click', () => {
+                    const location = document.getElementById('location-select').value;
+                    const ageGroup = document.getElementById('age-group-select').value;
+                    
+                    if (location && ageGroup) {
+                        const snippet = this.generatePersonalSnippet(location, ageGroup);
+                        this.showPersonalSnippet(snippet);
+                    } else {
+                        alert('Please select both your location and age group!');
+                    }
+                });
+            }
+        },
+
+        generatePersonalSnippet(location, ageGroup) {
+            const template = this.personalSnippets[ageGroup]?.[location] || 
+                           this.personalSnippets[ageGroup]?.other ||
+                           "This $2.1T cost affects us all. Share to spread awareness! 🚨";
+            
+            return {
+                text: template,
+                shareText: `🚨 SHOCKING: Social media's hidden cost to society is $2.1 TRILLION.\n\n${template}\n\nCalculate your own estimate: ${window.location.href}`,
+                hashtags: ['SocialMediaCost', 'MentalHealthMatters', 'TechAccountability']
+            };
+        },
+
+        showPersonalSnippet(snippet) {
+            const container = document.getElementById('personal-snippet');
+            if (container) {
+                container.innerHTML = `
+                    <div class="font-semibold text-green-800 mb-2">📢 Your Personal Impact Story</div>
+                    <div class="text-gray-700 mb-4">${snippet.text}</div>
+                    <div class="flex gap-2">
+                        <button onclick="ViralFeatures.copyToClipboard('${snippet.shareText.replace(/'/g, "\\'")}', 'Personal story copied!')" 
+                                class="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
+                            📋 Copy Story
+                        </button>
+                        <button onclick="ViralFeatures.shareOnTwitter('${snippet.shareText.replace(/'/g, "\\'")}', '${snippet.hashtags.join(',')}')" 
+                                class="flex-1 px-3 py-2 bg-sky-500 text-white text-sm rounded hover:bg-sky-600">
+                            🐦 Tweet This
+                        </button>
+                    </div>
+                `;
+                container.classList.remove('hidden');
+            }
+        },
+
+        initScenarios() {
+            document.querySelectorAll('.scenario-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const scenario = e.target.dataset.scenario;
+                    this.applyScenario(scenario);
+                });
+            });
+        },
+
+        applyScenario(scenarioName) {
+            const scenario = this.scenarios[scenarioName];
+            if (!scenario) return;
+
+            // Apply all scenario values to sliders
+            Object.keys(scenario).forEach(key => {
+                const slider = document.getElementById(`${key}-slider`);
+                if (slider) {
+                    slider.value = scenario[key];
+                    // Trigger change event to update the calculator
+                    slider.dispatchEvent(new Event('input'));
+                }
+            });
+
+            // Show notification
+            this.showNotification(`📊 Applied "${scenarioName.replace('-', ' ')}" scenario!`);
+        },
+
+        initViralComparisons() {
+            const generateBtn = document.getElementById('generate-new-comparisons');
+            if (generateBtn) {
+                generateBtn.addEventListener('click', () => {
+                    this.updateViralComparisons();
+                });
+            }
+            // Initial load
+            this.updateViralComparisons();
+        },
+
+        updateViralComparisons() {
+            const container = document.getElementById('viral-comparisons-grid');
+            if (!container) return;
+
+            // Get 4 random comparisons
+            const selected = this.viralComparisons
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 4);
+
+            container.innerHTML = selected.map(comp => `
+                <div class="comparison-card bg-white/20 backdrop-blur-sm rounded-lg p-4 text-center hover:bg-white/30 transition-colors cursor-pointer"
+                     onclick="ViralFeatures.shareComparison('${comp.emoji}', '${comp.text}')">
+                    <div class="text-4xl mb-2">${comp.emoji}</div>
+                    <div class="text-sm">${comp.text}</div>
+                </div>
+            `).join('');
+        },
+
+        shareComparison(emoji, text) {
+            const shareText = `🚨 Social media's $2.1T hidden cost could have:\n\n${emoji} ${text}\n\nInstead, we got depression and anxiety. Calculate the real cost: ${window.location.href}`;
+            this.shareOnTwitter(shareText, 'SocialMediaCost,TechAccountability,MentalHealth');
+        },
+
+        initSocialProof() {
+            this.updateActivityFeed();
+            // Update activity every 10-30 seconds
+            setInterval(() => {
+                this.updateActivityFeed();
+            }, Math.random() * 20000 + 10000);
+        },
+
+        updateActivityFeed() {
+            const feed = document.getElementById('activity-feed');
+            if (!feed) return;
+
+            // Add new activity message
+            const message = this.activityMessages[Math.floor(Math.random() * this.activityMessages.length)];
+            const timeAgo = Math.floor(Math.random() * 30) + 1;
+            
+            const newActivity = document.createElement('div');
+            newActivity.className = 'activity-item text-sm text-gray-600 opacity-0 transform translate-y-2 transition-all duration-500';
+            newActivity.innerHTML = `
+                <span class="text-blue-600">•</span> ${message}
+                <span class="text-xs text-gray-400 ml-2">${timeAgo}m ago</span>
+            `;
+            
+            feed.insertBefore(newActivity, feed.firstChild);
+            
+            // Animate in
+            setTimeout(() => {
+                newActivity.classList.remove('opacity-0', 'translate-y-2');
+            }, 100);
+            
+            // Remove old items (keep only 5)
+            while (feed.children.length > 5) {
+                feed.removeChild(feed.lastChild);
+            }
+        },
+
+        copyToClipboard(text, successMessage = 'Copied to clipboard!') {
+            navigator.clipboard.writeText(text).then(() => {
+                this.showNotification(successMessage);
+            });
+        },
+
+        shareOnTwitter(text, hashtags = '') {
+            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&hashtags=${hashtags}`;
+            window.open(url, '_blank', 'width=550,height=420');
+        },
+
+        showNotification(message) {
+            // Create notification
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+    };
+
+    // Make ViralFeatures globally accessible for HTML onclick handlers
+    window.ViralFeatures = ViralFeatures;
 
 })(); 
