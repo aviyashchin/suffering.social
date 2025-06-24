@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sticky Header Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding-top: 5rem;
+            font-family: system-ui, sans-serif;
+        }
+        
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5rem;
+            background: #1f2937;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .sticky-overlay {
+            position: fixed;
+            top: 5rem;
+            left: 0;
+            right: 0;
+            background: #3b82f6;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            z-index: 9999;
+            transform: translateY(-100%);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .sticky-overlay.show {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .trigger-header {
+            background: #10b981;
+            color: white;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .content {
+            height: 200vh;
+            background: linear-gradient(to bottom, #f3f4f6, #e5e7eb);
+            padding: 2rem;
+            margin: 1rem 0;
+        }
+        
+        .sidebar {
+            position: sticky;
+            top: 6rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        
+        .debug {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background: black;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            z-index: 10000;
+        }
+    </style>
+</head>
+<body>
+    <div class="fixed-header">
+        <h1>Fixed Header</h1>
+    </div>
+    
+    <div class="sticky-overlay" id="sticky-overlay">
+        <h2>🚀 STICKY OVERLAY ACTIVE!</h2>
+        <p>This should appear when you scroll past the trigger header below</p>
+    </div>
+    
+    <div class="container">
+        <h1>Scroll down to test sticky behavior</h1>
+        
+        <div class="trigger-header" id="trigger-header">
+            <h2>📍 TRIGGER HEADER</h2>
+            <p>When this scrolls out of view, the sticky overlay should appear</p>
+        </div>
+        
+        <div class="grid">
+            <div class="content">
+                <h2>Main Content</h2>
+                <p>Keep scrolling...</p>
+                <div style="height: 100vh; background: #fbbf24; border-radius: 8px; margin: 2rem 0; display: flex; align-items: center; justify-content: center;">
+                    <h3>Scroll Area</h3>
+                </div>
+                <div style="height: 100vh; background: #fb7185; border-radius: 8px; margin: 2rem 0; display: flex; align-items: center; justify-content: center;">
+                    <h3>More Content</h3>
+                </div>
+            </div>
+            
+            <div class="sidebar">
+                <h3>Sticky Sidebar</h3>
+                <p>This sidebar should stick when scrolling.</p>
+                <div style="height: 300px; background: #e5e7eb; border-radius: 4px; margin: 1rem 0;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="debug" id="debug">
+        <div>Intersection Ratio: <span id="ratio">0</span></div>
+        <div>Sticky Active: <span id="active">false</span></div>
+        <div>Header Visible: <span id="visible">true</span></div>
+    </div>
+    
+    <script>
+        const triggerHeader = document.getElementById('trigger-header');
+        const stickyOverlay = document.getElementById('sticky-overlay');
+        const debugRatio = document.getElementById('ratio');
+        const debugActive = document.getElementById('active');
+        const debugVisible = document.getElementById('visible');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const ratio = entry.intersectionRatio;
+                const isVisible = entry.isIntersecting && ratio > 0.1;
+                
+                debugRatio.textContent = ratio.toFixed(3);
+                debugVisible.textContent = isVisible;
+                
+                if (isVisible) {
+                    stickyOverlay.classList.remove('show');
+                    debugActive.textContent = 'false';
+                } else {
+                    stickyOverlay.classList.add('show');
+                    debugActive.textContent = 'true';
+                }
+            });
+        }, {
+            threshold: [0, 0.1, 0.3, 0.5, 0.7, 1],
+            rootMargin: '0px 0px 0px 0px'
+        });
+        
+        observer.observe(triggerHeader);
+    </script>
+</body>
+</html> 
