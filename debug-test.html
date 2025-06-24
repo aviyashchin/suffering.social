@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Test - Layout and Charts</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <style>
+        /* Test styles */
+        .debug-box {
+            border: 2px solid red;
+            background: rgba(255, 0, 0, 0.1);
+            min-height: 100px;
+        }
+        
+        .debug-chart {
+            width: 100%;
+            height: 200px;
+            border: 2px solid blue;
+            background: rgba(0, 0, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="p-4">
+    <h1 class="text-2xl font-bold mb-4">Debug Test Page</h1>
+    
+    <!-- Test 1: Basic Grid Layout -->
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Test 1: Grid Layout</h2>
+        <div class="flex flex-col lg:grid lg:grid-cols-3 lg:gap-8 min-h-[300px]">
+            <div class="debug-box lg:col-span-2">
+                <h3 class="text-lg p-4">Left Column (2/3 width on desktop)</h3>
+                <p class="p-4">This should take up 2 columns on large screens</p>
+            </div>
+            
+            <div class="debug-box lg:col-span-1">
+                <h3 class="text-lg p-4">Right Column (1/3 width on desktop)</h3>
+                <p class="p-4">This should take up 1 column on large screens</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Test 2: Chart.js -->
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Test 2: Chart.js Loading</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="debug-chart">
+                <canvas id="test-pie-chart"></canvas>
+            </div>
+            <div class="debug-chart">
+                <canvas id="test-line-chart"></canvas>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Test 3: Console Output -->
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Test 3: Console Output</h2>
+        <div id="console-output" class="bg-black text-green-400 p-4 rounded font-mono text-sm max-h-60 overflow-y-auto">
+            <div>Console output will appear here...</div>
+        </div>
+    </section>
+    
+    <script>
+        // Console capture for debugging
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        const consoleOutput = document.getElementById('console-output');
+        
+        function addToConsole(message, type = 'log') {
+            const div = document.createElement('div');
+            div.style.color = type === 'error' ? '#ff6b6b' : type === 'warn' ? '#ffd93d' : '#4ecdc4';
+            div.textContent = `[${type.toUpperCase()}] ${message}`;
+            consoleOutput.appendChild(div);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            addToConsole(args.join(' '), 'log');
+            originalLog.apply(console, args);
+        };
+        
+        console.error = function(...args) {
+            addToConsole(args.join(' '), 'error');
+            originalError.apply(console, args);
+        };
+        
+        console.warn = function(...args) {
+            addToConsole(args.join(' '), 'warn');
+            originalWarn.apply(console, args);
+        };
+        
+        // Test script
+        console.log('=== DEBUG TEST STARTING ===');
+        console.log('Page loaded at:', new Date().toISOString());
+        console.log('Window dimensions:', window.innerWidth + 'x' + window.innerHeight);
+        console.log('Chart.js available:', typeof Chart !== 'undefined');
+        
+        if (typeof Chart !== 'undefined') {
+            console.log('Chart.js version:', Chart.version);
+            
+            // Test pie chart
+            try {
+                const pieCanvas = document.getElementById('test-pie-chart');
+                if (pieCanvas) {
+                    console.log('Creating test pie chart...');
+                    new Chart(pieCanvas, {
+                        type: 'pie',
+                        data: {
+                            labels: ['Red', 'Blue', 'Yellow'],
+                            datasets: [{
+                                data: [300, 50, 100],
+                                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false
+                        }
+                    });
+                    console.log('Pie chart created successfully');
+                } else {
+                    console.error('Pie chart canvas not found');
+                }
+            } catch (error) {
+                console.error('Error creating pie chart:', error.message);
+            }
+            
+            // Test line chart
+            try {
+                const lineCanvas = document.getElementById('test-line-chart');
+                if (lineCanvas) {
+                    console.log('Creating test line chart...');
+                    new Chart(lineCanvas, {
+                        type: 'line',
+                        data: {
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                            datasets: [{
+                                label: 'Test Data',
+                                data: [12, 19, 3, 5, 2],
+                                borderColor: '#36A2EB',
+                                fill: false
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false
+                        }
+                    });
+                    console.log('Line chart created successfully');
+                } else {
+                    console.error('Line chart canvas not found');
+                }
+            } catch (error) {
+                console.error('Error creating line chart:', error.message);
+            }
+        } else {
+            console.error('Chart.js not available!');
+        }
+        
+        // Test responsive layout
+        window.addEventListener('resize', () => {
+            console.log('Window resized to:', window.innerWidth + 'x' + window.innerHeight);
+        });
+        
+        console.log('=== DEBUG TEST COMPLETE ===');
+    </script>
+</body>
+</html> 

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Impact Calculator | Economic Cost Analysis</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Research-based calculator estimating the economic and human costs of social media's impact on mental health, based on peer-reviewed studies and government data.">
+    <meta name="keywords" content="social media cost calculator, mental health crisis economics, tech accountability tool">
+    <meta name="author" content="Subconscious.ai">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="src/styles/base.css">
+    <link rel="stylesheet" href="src/styles/components.css">
+    
+    <!-- Tailwind CSS for layout -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- External Dependencies (load synchronously before our module) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <!-- Debug Script -->
+    <script>
+        console.log('=== INDEX.HTML DEBUG ===');
+        console.log('Page loading at:', new Date().toISOString());
+        console.log('Window size:', window.innerWidth + 'x' + window.innerHeight);
+        console.log('Chart.js loaded:', typeof Chart !== 'undefined');
+        if (typeof Chart !== 'undefined') {
+            console.log('Chart.js version:', Chart.version);
+        }
+        
+        // Log when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM ready');
+            console.log('Main container found:', !!document.querySelector('.container'));
+            console.log('Grid container found:', !!document.querySelector('.lg\\:grid'));
+            console.log('Calculator section found:', !!document.querySelector('.calculator-section'));
+            console.log('Results section found:', !!document.querySelector('.results-section'));
+            console.log('Chart canvases found:', {
+                pie: !!document.getElementById('pie-chart'),
+                timeline: !!document.getElementById('timeline-chart')
+            });
+        });
+    </script>
+    
+    <!-- Application Scripts (Simplified & Readable) -->
+    <script type="module" src="src/calculator-clean.js"></script>
+</head>
+
+<body>
+    <!-- Fixed Top Bar -->
+    <div id="top-bar" class="fixed-element fixed-top">
+        <div class="container flex flex-col items-center py-4">
+            <div class="text-center">
+                <div class="text-sm text-gray-300 mb-1">Total Social Media Cost (Est. Since 2009)</div>
+                <div class="text-4xl font-bold text-red-400" id="total-display">
+                    <span class="text-3xl">$</span>
+                    <span id="total-amount">2.48</span>
+                    <span class="text-3xl">T</span>
+                </div>
+                <div class="text-base text-gray-200 mt-1">and counting…</div>
+                <div id="counters" class="mt-3 text-sm text-gray-200 flex gap-4 justify-center">
+                    <span>🧠 <span id="depression-counter">0</span> cases of depression</span>
+                    <span>☠️ <span id="suicide-counter">0</span> deaths by suicide</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mt-8 pt-24">
+        <div class="flex flex-col lg:grid lg:grid-cols-3 lg:gap-8">
+            
+            <!-- Calculator Column -->
+            <div class="calculator-section bg-white shadow-xl rounded-xl p-8 lg:col-span-2">
+                
+                <!-- Header -->
+                <div class="calculator-header bg-gray-800 text-white p-6 rounded-lg mb-6">
+                    <h2 class="text-2xl font-semibold mb-2 text-center">Interactive Cost Calculator</h2>
+                    <p class="text-center mb-4">Research-based formulas showing cumulative costs since 2009</p>
+                    
+                                    <!-- Scenario Buttons (Pure Tailwind) -->
+                <div class="grid grid-cols-2 gap-3 max-w-md mx-auto">
+                    <button class="px-4 py-3 bg-white bg-opacity-10 text-white text-sm rounded-lg border border-white border-opacity-20 hover:bg-opacity-20 hover:border-opacity-30 transition-all duration-200 transform hover:-translate-y-0.5" data-scenario="reset">
+                        🔬 Research Consensus
+                    </button>
+                    <button class="px-4 py-3 bg-white bg-opacity-10 text-white text-sm rounded-lg border border-white border-opacity-20 hover:bg-opacity-20 hover:border-opacity-30 transition-all duration-200 transform hover:-translate-y-0.5" data-scenario="optimistic">
+                        🌟 Most Optimistic
+                    </button>
+                    <button class="px-4 py-3 bg-white bg-opacity-10 text-white text-sm rounded-lg border border-white border-opacity-20 hover:bg-opacity-20 hover:border-opacity-30 transition-all duration-200 transform hover:-translate-y-0.5" data-scenario="aggressive">
+                        🚨 Worst Case
+                    </button>
+                    <button class="px-4 py-3 bg-white bg-opacity-10 text-white text-sm rounded-lg border border-white border-opacity-20 hover:bg-opacity-20 hover:border-opacity-30 transition-all duration-200 transform hover:-translate-y-0.5" data-scenario="facebookFiles">
+                        📱 Facebook Files
+                    </button>
+                </div>
+                </div>
+
+                <!-- Parameter Groups (Simplified Structure) -->
+                
+                <!-- Mortality Costs -->
+                <div class="mb-8 p-6 bg-red-50 border-l-4 border-red-500 rounded-xl" data-group="mortality">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <button class="info-btn" data-tooltip="mortality">ℹ️</button>
+                        ☠️ Death
+                    </h3>
+                    
+                    <div class="parameter">
+                        <label class="parameter-label">
+                            <span>Value of Statistical Life (VSL)
+                                <button class="info-btn" data-parameter="vsl" aria-label="Information about VSL">ℹ️</button>
+                            </span>
+                            <span class="parameter-value" id="vsl-value">$13.7M</span>
+                        </label>
+                        <input type="range" id="vsl-slider" class="parameter-slider">
+                        <div class="distribution-chart-container" data-parameter="vsl">
+                            <canvas id="vsl-distribution" class="distribution-chart"></canvas>
+                            <div class="distribution-stats" id="vsl-stats">
+                                <!-- Will be populated by calculator -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="parameter">
+                        <label class="parameter-label">
+                            <span>Excess Suicides Since 2009
+                                <button class="info-btn" data-parameter="suicides" aria-label="Information about excess suicides">ℹ️</button>
+                            </span>
+                            <span class="parameter-value" id="suicides-value">110K</span>
+                        </label>
+                        <input type="range" id="suicides-slider" class="parameter-slider">
+                        <div class="distribution-chart-container" data-parameter="suicides">
+                            <canvas id="suicides-distribution" class="distribution-chart"></canvas>
+                            <div class="distribution-stats" id="suicides-stats">
+                                <!-- Will be populated by calculator -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="parameter">
+                        <label class="parameter-label">
+                            <span>% Attributable to Social Media
+                                <button class="info-btn" data-parameter="attribution" aria-label="Information about attribution percentage">ℹ️</button>
+                            </span>
+                            <span class="parameter-value" id="attribution-value">18%</span>
+                        </label>
+                        <input type="range" id="attribution-slider" class="parameter-slider">
+                        <div class="distribution-chart-container" data-parameter="attribution">
+                            <canvas id="attribution-distribution" class="distribution-chart"></canvas>
+                            <div class="distribution-stats" id="attribution-stats">
+                                <!-- Will be populated by calculator -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white border border-gray-200 rounded-lg p-4 mt-4 font-mono text-sm text-gray-700">
+                        <div><strong class="text-gray-900">Formula:</strong> <span id="mortality-formula">110K × 18% × $13.7M</span></div>
+                        <div class="mt-2"><strong class="text-gray-900">Result:</strong> <span id="mortality-result" class="text-red-600 font-bold">$271.3B</span></div>
+                    </div>
+                </div>
+
+                <!-- Mental Health Costs -->
+                <div class="mb-8 p-6 bg-purple-50 border-l-4 border-purple-500 rounded-xl" data-group="mental-health">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <button class="info-btn" data-tooltip="mental-health">ℹ️</button>
+                        😞 Disability
+                    </h3>
+                    
+                    <div class="parameter">
+                        <label class="parameter-label">
+                            <span>Americans with SM-Induced Depression
+                                <button class="info-btn" data-parameter="depression" aria-label="Information about depression estimates">ℹ️</button>
+                            </span>
+                            <span class="parameter-value" id="depression-value">5M</span>
+                        </label>
+                        <input type="range" id="depression-slider" class="parameter-slider">
+                        <div class="distribution-chart-container" data-parameter="depression">
+                            <canvas id="depression-distribution" class="distribution-chart"></canvas>
+                            <div class="distribution-stats" id="depression-stats">
+                                <!-- Will be populated by calculator -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="parameter">
+                        <label class="parameter-label">
+                            <span>Years Lived with Disability
+                                <button class="info-btn" data-parameter="yld" aria-label="Information about disability years">ℹ️</button>
+                            </span>
+                            <span class="parameter-value" id="yld-value">6.0 years</span>
+                        </label>
+                        <input type="range" id="yld-slider" class="parameter-slider">
+                        <div class="distribution-chart-container" data-parameter="yld">
+                            <canvas id="yld-distribution" class="distribution-chart"></canvas>
+                            <div class="distribution-stats" id="yld-stats">
+                                <!-- Will be populated by calculator -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="parameter">
+                        <label class="parameter-label">
+                            <span>Quality of Life Reduction
+                                <button class="info-btn" data-parameter="qol" aria-label="Information about quality of life impact">ℹ️</button>
+                            </span>
+                            <span class="parameter-value" id="qol-value">35%</span>
+                        </label>
+                        <input type="range" id="qol-slider" class="parameter-slider">
+                        <div class="distribution-chart-container" data-parameter="qol">
+                            <canvas id="qol-distribution" class="distribution-chart"></canvas>
+                            <div class="distribution-stats" id="qol-stats">
+                                <!-- Will be populated by calculator -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white border border-gray-200 rounded-lg p-4 mt-4 font-mono text-sm text-gray-700">
+                        <div><strong class="text-gray-900">Formula:</strong> <span id="mental-formula">5M × 6.0yr × 35% × $183K</span></div>
+                        <div class="mt-2"><strong class="text-gray-900">Result:</strong> <span id="mental-result" class="text-purple-600 font-bold">$1.92T</span></div>
+                    </div>
+                </div>
+
+                <!-- Healthcare & Productivity -->
+                <div class="mb-8 p-6 bg-green-50 border-l-4 border-green-500 rounded-xl" data-group="healthcare">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <button class="info-btn" data-tooltip="healthcare">ℹ️</button>
+                        💸 Lost Productivity
+                    </h3>
+                    
+                    <div class="parameter">
+                        <label class="parameter-label">
+                            <span>Annual Healthcare Costs
+                                <button class="info-btn" data-parameter="healthcare" aria-label="Information about healthcare costs">ℹ️</button>
+                            </span>
+                            <span class="parameter-value" id="healthcare-value">$7,000</span>
+                        </label>
+                        <input type="range" id="healthcare-slider" class="parameter-slider">
+                        <div class="distribution-chart-container" data-parameter="healthcare">
+                            <canvas id="healthcare-distribution" class="distribution-chart"></canvas>
+                            <div class="distribution-stats" id="healthcare-stats">
+                                <!-- Will be populated by calculator -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="parameter">
+                        <label class="parameter-label">
+                            <span>Annual Productivity Loss
+                                <button class="info-btn" data-parameter="productivity" aria-label="Information about productivity losses">ℹ️</button>
+                            </span>
+                            <span class="parameter-value" id="productivity-value">$6,000</span>
+                        </label>
+                        <input type="range" id="productivity-slider" class="parameter-slider">
+                        <div class="distribution-chart-container" data-parameter="productivity">
+                            <canvas id="productivity-distribution" class="distribution-chart"></canvas>
+                            <div class="distribution-stats" id="productivity-stats">
+                                <!-- Will be populated by calculator -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="parameter">
+                        <label class="parameter-label">
+                            <span>Treatment Duration
+                                <button class="info-btn" data-parameter="duration" aria-label="Information about treatment duration">ℹ️</button>
+                            </span>
+                            <span class="parameter-value" id="duration-value">4.5 years</span>
+                        </label>
+                        <input type="range" id="duration-slider" class="parameter-slider">
+                        <div class="distribution-chart-container" data-parameter="duration">
+                            <canvas id="duration-distribution" class="distribution-chart"></canvas>
+                            <div class="distribution-stats" id="duration-stats">
+                                <!-- Will be populated by calculator -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white border border-gray-200 rounded-lg p-4 mt-4 font-mono text-sm text-gray-700">
+                        <div><strong class="text-gray-900">Formula:</strong> <span id="healthcare-formula">5M × ($7K + $6K) × 4.5yr</span></div>
+                        <div class="mt-2"><strong class="text-gray-900">Result:</strong> <span id="healthcare-result" class="text-green-600 font-bold">$292.5B</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Column -->
+            <div class="results-section bg-white shadow-xl rounded-xl p-8 lg:col-span-1">
+                
+                <!-- Total Display -->
+                <div class="total-card bg-gray-800 text-white p-6 rounded-xl mb-6 text-center">
+                    <div class="text-3xl font-bold text-red-400 mb-2" id="total-result">$2.48 Trillion</div>
+                    <p class="text-lg mb-2">Total Economic Cost</p>
+                    <p class="text-sm opacity-90">
+                        <span id="gdp-percentage">2.4%</span> of US GDP
+                    </p>
+                </div>
+
+                <!-- Running Counter -->
+                <div class="counter-card bg-gray-800 text-white p-6 rounded-xl mb-6 text-center">
+                    <div class="text-2xl font-mono font-bold text-red-400 mb-2" id="running-counter">$0</div>
+                    <div class="text-sm opacity-90">Cost Since You Opened This Page</div>
+                </div>
+
+                <!-- Charts Container -->
+                <div class="charts-section">
+                    <div class="chart-container mb-6">
+                        <h4 class="text-lg font-semibold mb-3">📊 Cost Breakdown</h4>
+                        <div class="chart-wrapper" style="border: 1px solid #ddd; min-height: 220px; display: flex; align-items: center; justify-content: center; background: #f9f9f9;">
+                            <canvas id="pie-chart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container mb-6">
+                        <h4 class="text-lg font-semibold mb-3">📈 Timeline Since 2009</h4>
+                        <div class="chart-wrapper" style="border: 1px solid #ddd; min-height: 220px; display: flex; align-items: center; justify-content: center; background: #f9f9f9;">
+                            <canvas id="timeline-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Community Calculator -->
+                <div class="community-section bg-blue-50 p-4 rounded-lg mb-6">
+                    <h4 class="font-semibold text-blue-800 mb-3">🏘️ Your Community Impact</h4>
+                    <div class="grid gap-2 mb-3">
+                        <input type="number" id="community-population" placeholder="Population" value="100000" class="p-2 border rounded">
+                        <select id="state-select" class="p-2 border rounded">
+                            <option value="national">National Average</option>
+                        </select>
+                    </div>
+                    <button id="calculate-community" class="bg-blue-600 text-white px-4 py-2 rounded w-full">Calculate Impact</button>
+                    <div id="community-results" class="mt-3 hidden"></div>
+                </div>
+
+                <!-- Share Section (Pure Tailwind) -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-semibold mb-3 text-gray-800">📢 Share Results</h4>
+                    <div class="grid gap-2">
+                        <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 transform hover:-translate-y-0.5" data-platform="twitter">
+                            Share on Twitter
+                        </button>
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 transform hover:-translate-y-0.5" data-platform="linkedin">
+                            Share on LinkedIn
+                        </button>
+                        <button class="bg-blue-800 hover:bg-blue-900 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 transform hover:-translate-y-0.5" data-platform="facebook">
+                            Share on Facebook
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Research Section -->
+        <div class="research-section bg-blue-50 p-6 rounded-xl mt-8">
+            <h3 class="text-xl font-semibold mb-4">📚 Research Foundation</h3>
+            <p class="mb-4">Our calculations draw from peer-reviewed research showing social media's measurable impact on mental health and economic outcomes.</p>
+            <div class="research-links grid md:grid-cols-2 gap-4">
+                <a href="#" class="research-link p-3 bg-white rounded border">
+                    <strong>Braghieri et al. (2022)</strong><br>
+                    <span class="text-sm text-gray-600">Causal evidence from Facebook rollout</span>
+                </a>
+                <a href="#" class="research-link p-3 bg-white rounded border">
+                    <strong>Twenge et al. (2018)</strong><br>
+                    <span class="text-sm text-gray-600">Teen mental health trends analysis</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Fixed Elements -->
+    <button id="help-button" class="fixed-element fixed-bottom-right bg-red-500 text-white rounded-full w-14 h-14 text-2xl">?</button>
+    
+    <div id="branding" class="fixed-element fixed-bottom-left bg-white p-3 rounded-lg shadow-lg">
+        <div class="text-xs text-gray-600">
+            A <a href="https://subconscious.ai" target="_blank" class="text-blue-600">Subconscious.ai</a> project
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="fixed-center bg-white p-6 rounded-xl shadow-xl max-w-md hidden">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold">How to Use This Calculator</h3>
+            <button id="close-help" class="text-2xl text-gray-400">×</button>
+        </div>
+        <p class="mb-4">Adjust the sliders to see how different parameters affect the total economic cost. Use scenario buttons for preset values.</p>
+        <p class="text-sm text-gray-600">All calculations update in real-time and are based on peer-reviewed research.</p>
+    </div>
+
+    <!-- Tooltips -->
+    <div id="tooltip-container"></div>
+</body>
+</html>

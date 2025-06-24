@@ -1,0 +1,370 @@
+/**
+ * Performance CSS Optimizer
+ * Disables excessive animations and transitions for better performance
+ * Now includes default performance mode optimizations
+ */
+
+/* Default Performance Mode - Applied to body.performance-mode */
+.performance-mode {
+    /* Disable all animations and transitions by default */
+    animation-play-state: paused !important;
+}
+
+.performance-mode *,
+.performance-mode *::before,
+.performance-mode *::after {
+    animation: none !important;
+    /* Keep essential transitions for visibility */
+    transition: opacity 0.3s ease, visibility 0.3s ease !important;
+    transform: none !important;
+    will-change: auto !important;
+}
+
+/* Disable animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Optimize distribution slider animations */
+.performance-mode .distribution-slider-container *,
+.performance-mode .distribution-slider-container *::before,
+.performance-mode .distribution-slider-container *::after {
+    animation: none !important;
+    transition: none !important;
+}
+
+/* Disable hover effects in performance mode */
+.performance-mode button:hover,
+.performance-mode .btn:hover,
+.performance-mode a:hover {
+    transform: none !important;
+    box-shadow: none !important;
+    background-color: inherit !important;
+}
+
+/* But allow hover effects on info buttons for tooltips */
+.performance-mode .info-button:hover {
+    transform: none !important;
+    box-shadow: none !important;
+    background-color: rgba(59, 130, 246, 0.1) !important;
+    cursor: pointer !important;
+}
+
+/* Simplify shadows and gradients */
+.performance-mode .shadow-xl,
+.performance-mode .shadow-lg,
+.performance-mode .shadow-md {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+}
+
+.performance-mode .bg-gradient-to-r,
+.performance-mode .bg-gradient-to-l,
+.performance-mode .bg-gradient-to-t,
+.performance-mode .bg-gradient-to-b {
+    background: #374151 !important;
+}
+
+/* Disable Chart.js animations */
+.performance-mode canvas {
+    animation: none !important;
+}
+
+/* Disable Mermaid diagram animations */
+.performance-mode .mermaid * {
+    animation: none !important;
+    transition: none !important;
+}
+
+/* Optimize slider interactions */
+.performance-mode input[type="range"] {
+    transition: none !important;
+}
+
+.performance-mode input[type="range"]::-webkit-slider-thumb {
+    transition: none !important;
+}
+
+.performance-mode input[type="range"]::-moz-range-thumb {
+    transition: none !important;
+}
+
+/* Disable backdrop blur effects */
+.performance-mode .backdrop-blur-sm {
+    backdrop-filter: none !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Optimize text rendering */
+.performance-mode {
+    text-rendering: optimizeSpeed !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
+}
+
+/* Optimize hardware acceleration for performance mode */
+.performance-mode * {
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+}
+
+/* Disable expensive filters */
+.performance-mode .blur,
+.performance-mode .brightness,
+.performance-mode .contrast,
+.performance-mode .drop-shadow,
+.performance-mode .grayscale,
+.performance-mode .hue-rotate,
+.performance-mode .invert,
+.performance-mode .saturate,
+.performance-mode .sepia {
+    filter: none !important;
+    -webkit-filter: none !important;
+}
+
+/* Optimize modal and popover animations */
+.performance-mode .modal,
+.performance-mode .popover,
+.performance-mode .tooltip {
+    animation: none !important;
+    transition: none !important;
+}
+
+/* Disable smooth scrolling */
+.performance-mode {
+    scroll-behavior: auto !important;
+}
+
+/* Optimize button interactions */
+.performance-mode button,
+.performance-mode .btn {
+    transition: none !important;
+}
+
+.performance-mode button:active,
+.performance-mode .btn:active {
+    transform: none !important;
+}
+
+/* Disable loading animations */
+.performance-mode .loading,
+.performance-mode .spinner,
+.performance-mode .pulse {
+    animation: none !important;
+}
+
+/* Optimize form elements */
+.performance-mode input,
+.performance-mode select,
+.performance-mode textarea {
+    transition: none !important;
+}
+
+.performance-mode input:focus,
+.performance-mode select:focus,
+.performance-mode textarea:focus {
+    transition: none !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5) !important;
+}
+
+/* Performance monitoring display */
+.performance-mode #performance-toggle {
+    background: #22c55e !important;
+    color: white !important;
+}
+
+/* Optimize viral features */
+.performance-mode .viral-comparisons,
+.performance-mode .social-proof-section {
+    animation: none !important;
+    transition: none !important;
+}
+
+/* Disable chart animations specifically */
+.performance-mode .chart-container canvas {
+    animation: none !important;
+}
+
+/* Optimize timeline and pie charts */
+.performance-mode #timelineChart,
+.performance-mode #pieChart {
+    animation: none !important;
+}
+
+/* Disable Tailwind CSS transitions on performance-sensitive elements */
+.has-distribution-sliders .transition,
+.has-distribution-sliders .transition-all,
+.has-distribution-sliders .transition-colors,
+.has-distribution-sliders .transition-opacity,
+.has-distribution-sliders .transition-transform {
+    transition: none !important;
+}
+
+/* Optimize hover effects - only enable on desktop */
+@media (hover: hover) and (pointer: fine) {
+    .btn:hover,
+    .slider:hover,
+    .enhanced-card:hover {
+        transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+}
+
+/* Disable hover effects on touch devices */
+@media (hover: none) {
+    * {
+        transition: none !important;
+    }
+}
+
+/* Optimize Chart.js animations */
+.chartjs-render-monitor {
+    animation: none !important;
+}
+
+/* Disable excessive box-shadow transitions */
+*[class*="shadow"]:not(.btn):not(.enhanced-card) {
+    transition: none !important;
+}
+
+/* Disable animations on frequently updated elements */
+.lifetime-counter,
+.running-total,
+.national-debt-clock,
+#lifetime-depression,
+#lifetime-suicide,
+#national-debt-clock-total-amount,
+#running-total-amount {
+    animation: none !important;
+    transition: none !important;
+}
+
+/* Optimize tooltip animations */
+.tippy-box {
+    transition: opacity 0.2s ease !important;
+}
+
+/* Ensure tooltips work in performance mode */
+.performance-mode .tippy-box {
+    transition: opacity 0.2s ease !important;
+    animation: none !important;
+}
+
+/* Allow tooltip triggers to work in performance mode */
+.performance-mode .info-button {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+.performance-mode .info-button:hover {
+    background-color: rgba(59, 130, 246, 0.1) !important;
+    transition: background-color 0.2s ease !important;
+}
+
+/* Disable transform animations on performance-critical elements */
+.has-distribution-sliders *[class*="transform"],
+.has-distribution-sliders *[class*="scale"],
+.has-distribution-sliders *[class*="rotate"] {
+    transition: none !important;
+}
+
+/* Force hardware acceleration only where needed */
+.enhanced-card,
+.btn,
+.modal {
+    will-change: auto;
+    transform: translateZ(0);
+}
+
+/* Disable animations during page load */
+.loading * {
+    animation: none !important;
+    transition: none !important;
+}
+
+/* Re-enable essential animations after page load */
+.loaded .btn:hover {
+    transition: background-color 0.2s ease;
+}
+
+.loaded .enhanced-card:hover {
+    transition: box-shadow 0.2s ease;
+}
+
+/* Optimize modal animations */
+.modal {
+    transition: opacity 0.3s ease;
+}
+
+/* Disable animations on mobile for better performance */
+@media (max-width: 768px) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+    
+    /* Only allow essential interactions */
+    .btn:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+    }
+}
+
+/* Performance monitoring overlay optimization */
+#performance-metrics {
+    animation: none !important;
+    transition: opacity 0.2s ease !important;
+}
+
+/* CRITICAL: Ensure the national debt clock bar stays fixed in both modes - OVERRIDE ALL */
+#national-debt-clock-bar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    z-index: 9999 !important;
+    transform: none !important;
+    will-change: auto !important;
+}
+
+/* CRITICAL: Ensure the national debt clock bar stays fixed in performance mode - OVERRIDE ALL */
+.performance-mode #national-debt-clock-bar,
+body.performance-mode #national-debt-clock-bar,
+html.performance-mode #national-debt-clock-bar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    z-index: 9999 !important;
+    transform: none !important;
+    will-change: auto !important;
+}
+
+/* CRITICAL: Ensure bottom sticky elements work in performance mode - OVERRIDE ALL */
+.performance-mode #help-btn,
+body.performance-mode #help-btn,
+html.performance-mode #help-btn {
+    position: fixed !important;
+    bottom: 24px !important;
+    right: 24px !important;
+    z-index: 9998 !important;
+    transform: none !important;
+    will-change: auto !important;
+}
+
+.performance-mode .fixed.bottom-6.left-6,
+body.performance-mode .fixed.bottom-6.left-6,
+html.performance-mode .fixed.bottom-6.left-6 {
+    position: fixed !important;
+    bottom: 24px !important;
+    left: 24px !important;
+    z-index: 9997 !important;
+    transform: none !important;
+    will-change: auto !important;
+} 

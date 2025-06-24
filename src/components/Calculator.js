@@ -1,0 +1,424 @@
+/**
+ * Calculator Component - Core Economic Calculations
+ * 
+ * Performs all social media cost calculations based on research-backed formulas.
+ * Each calculation method is documented with inputs, outputs, and methodology.
+ * 
+ * @fileoverview Core calculation engine for social media economic impact
+ * @version 1.0.0
+ */
+
+import { DEFAULTS, CALCULATION, FORMULAS } from '../utils/constants.js';
+import { isValidNumber } from '../utils/formatters.js';
+
+/**
+ * Main Calculator class handling all economic impact calculations
+ */
+export class Calculator {
+  constructor() {
+    this.parameters = { ...DEFAULTS };
+    this.results = {
+      mortality: 0,
+      mentalHealth: 0,
+      healthcare: 0,
+      total: 0,
+      gdpPercentage: 0,
+      parameters: { ...this.parameters },
+      formulas: {},
+      timestamp: Date.now()
+    };
+  }
+
+  /**
+   * Update a single parameter and recalculate
+   * @param {string} parameterName - Name of parameter to update
+   * @param {number} value - New value for parameter
+   * @returns {Object} Updated calculation results
+   */
+  updateParameter(parameterName, value) {
+    if (!isValidNumber(value)) {
+      console.warn(`Invalid value for ${parameterName}:`, value);
+      return this.results;
+    }
+
+    this.parameters[parameterName] = value;
+    return this.calculateAll();
+  }
+
+  /**
+   * Update multiple parameters at once (used for scenarios)
+   * @param {Object} newParameters - Object with parameter names and values
+   * @returns {Object} Updated calculation results
+   */
+  updateParameters(newParameters) {
+    // Validate all parameters before updating
+    for (const [key, value] of Object.entries(newParameters)) {
+      if (!isValidNumber(value)) {
+        console.warn(`Invalid value for ${key}:`, value);
+        continue;
+      }
+      this.parameters[key] = value;
+    }
+
+    return this.calculateAll();
+  }
+
+  /**
+   * Perform all calculations and return complete results
+   * @returns {Object} Complete calculation results
+   */
+  calculateAll() {
+    try {
+      const mortality = this.calculateMortalityCosts();
+      const mentalHealth = this.calculateMentalHealthCosts();
+      const healthcare = this.calculateHealthcareCosts();
+      const total = mortality + mentalHealth + healthcare;
+
+      this.results = {
+        mortality,
+        mentalHealth,
+        healthcare,
+        total,
+        gdpPercentage: (total / CALCULATION.US_GDP) * 100,
+        parameters: { ...this.parameters },
+        formulas: this.getFormulaResults(mortality, mentalHealth, healthcare),
+        timestamp: Date.now()
+      };
+
+      return this.results;
+    } catch (error) {
+      console.error('Calculation error:', error);
+      return this.getErrorResults();
+    }
+  }
+
+  /**
+   * Calculate mortality costs using VSL methodology
+   * Formula: Excess Suicides × Attribution % × Value of Statistical Life
+   * 
+   * @returns {number} Total mortality costs in USD
+   */
+  calculateMortalityCosts() {
+    const { suicides, attribution, vsl } = this.parameters;
+    
+    // Validate inputs
+    if (!isValidNumber(suicides) || !isValidNumber(attribution) || !isValidNumber(vsl)) {
+      throw new Error('Invalid mortality calculation parameters');
+    }
+
+    // Convert attribution from percentage to decimal
+    const attributionDecimal = attribution / 100;
+    
+    // VSL is in millions, convert to actual dollars
+    const vslActual = vsl * 1000000;
+    
+    // Calculate total mortality cost
+    const mortalityCost = suicides * attributionDecimal * vslActual;
+    
+    // Validate result
+    if (!isValidNumber(mortalityCost) || mortalityCost < 0) {
+      throw new Error('Invalid mortality calculation result');
+    }
+
+    return mortalityCost;
+  }
+
+  /**
+   * Calculate mental health costs using QALY methodology
+   * Formula: People × Years × Quality Loss % × (VSL ÷ Life Expectancy)
+   * 
+   * @returns {number} Total mental health costs in USD
+   */
+  calculateMentalHealthCosts() {
+    const { depression, yld, qol, vsl } = this.parameters;
+    
+    // Validate inputs
+    if (!isValidNumber(depression) || !isValidNumber(yld) || 
+        !isValidNumber(qol) || !isValidNumber(vsl)) {
+      throw new Error('Invalid mental health calculation parameters');
+    }
+
+    // Convert QOL from percentage to decimal
+    const qolDecimal = qol / 100;
+    
+    // VSL is in millions, convert to actual dollars
+    const vslActual = vsl * 1000000;
+    
+    // Calculate annual value of a quality life year
+    const annualLifeValue = vslActual / CALCULATION.LIFE_EXPECTANCY;
+    
+    // Calculate total mental health cost
+    const mentalHealthCost = depression * yld * qolDecimal * annualLifeValue;
+    
+    // Validate result
+    if (!isValidNumber(mentalHealthCost) || mentalHealthCost < 0) {
+      throw new Error('Invalid mental health calculation result');
+    }
+
+    return mentalHealthCost;
+  }
+
+  /**
+   * Calculate healthcare and productivity costs
+   * Formula: Affected People × (Healthcare + Productivity) × Duration
+   * 
+   * @returns {number} Total healthcare and productivity costs in USD
+   */
+  calculateHealthcareCosts() {
+    const { depression, healthcare, productivity, duration } = this.parameters;
+    
+    // Validate inputs
+    if (!isValidNumber(depression) || !isValidNumber(healthcare) || 
+        !isValidNumber(productivity) || !isValidNumber(duration)) {
+      throw new Error('Invalid healthcare calculation parameters');
+    }
+
+    // Calculate combined annual cost per person
+    const annualCostPerPerson = healthcare + productivity;
+    
+    // Calculate total healthcare cost
+    const healthcareCost = depression * annualCostPerPerson * duration;
+    
+    // Validate result
+    if (!isValidNumber(healthcareCost) || healthcareCost < 0) {
+      throw new Error('Invalid healthcare calculation result');
+    }
+
+    return healthcareCost;
+  }
+
+  /**
+   * Calculate community impact based on population
+   * @param {number} population - Community population size
+   * @param {string} state - State or region (for future use)
+   * @returns {Object} Community-specific impact calculations
+   */
+  calculateCommunityImpact(population, state = 'national') {
+    if (!isValidNumber(population) || population <= 0) {
+      throw new Error('Invalid population size');
+    }
+
+    const nationalPopulation = 331000000; // US population approximation
+    const scalingFactor = population / nationalPopulation;
+
+    const communityImpact = {
+      totalCost: this.results.total * scalingFactor,
+      mortality: this.results.mortality * scalingFactor,
+      mentalHealth: this.results.mentalHealth * scalingFactor,
+      healthcare: this.results.healthcare * scalingFactor,
+      affectedPeople: Math.round(this.parameters.depression * scalingFactor),
+      excessDeaths: Math.round(this.parameters.suicides * (this.parameters.attribution / 100) * scalingFactor),
+      population,
+      state
+    };
+
+    return communityImpact;
+  }
+
+  /**
+   * Generate formula display strings with current values
+   * @param {number} mortality - Mortality cost result
+   * @param {number} mentalHealth - Mental health cost result  
+   * @param {number} healthcare - Healthcare cost result
+   * @returns {Object} Formatted formula strings for display
+   */
+  getFormulaResults(mortality, mentalHealth, healthcare) {
+    const { suicides, attribution, vsl, depression, yld, qol, healthcare: healthcareCost, productivity, duration } = this.parameters;
+    
+    return {
+      mortality: {
+        formula: `${this.formatNumber(suicides)} × ${attribution}% × $${vsl}M`,
+        result: this.formatCurrency(mortality || 0),
+        description: FORMULAS?.mortality?.description || 'Mortality cost calculation'
+      },
+      mentalHealth: {
+        formula: `${this.formatNumber(depression)} × ${yld}yr × ${qol}% × $${Math.round(vsl * 1000000 / CALCULATION.LIFE_EXPECTANCY / 1000)}K`,
+        result: this.formatCurrency(mentalHealth || 0),
+        description: FORMULAS?.mentalHealth?.description || 'Mental health cost calculation'
+      },
+      healthcare: {
+        formula: `${this.formatNumber(depression)} × ($${(healthcareCost || 0).toLocaleString()} + $${(productivity || 0).toLocaleString()}) × ${duration}yr`,
+        result: this.formatCurrency(healthcare || 0),
+        description: FORMULAS?.healthcare?.description || 'Healthcare cost calculation'
+      }
+    };
+  }
+
+  /**
+   * Calculate running costs for real-time counter
+   * @param {number} elapsedSeconds - Seconds since page load
+   * @returns {number} Cost accumulated since page load
+   */
+  calculateRunningCost(elapsedSeconds) {
+    if (!this.results.total || elapsedSeconds <= 0) return 0;
+    
+    const annualCost = this.results.total;
+    const secondsPerYear = 365.25 * 24 * 60 * 60;
+    const costPerSecond = annualCost / secondsPerYear;
+    
+    return costPerSecond * elapsedSeconds;
+  }
+
+  /**
+   * Calculate uncertainty range for sensitivity analysis
+   * @param {number} parameterVariation - Percentage variation (e.g., 0.1 for ±10%)
+   * @returns {Object} Min and max values for uncertainty range
+   */
+  calculateUncertaintyRange(parameterVariation = 0.15) {
+    const baseResults = this.results;
+    
+    // Calculate variation bounds
+    const minMultiplier = 1 - parameterVariation;
+    const maxMultiplier = 1 + parameterVariation;
+    
+    return {
+      min: baseResults.total * minMultiplier,
+      max: baseResults.total * maxMultiplier,
+      variation: parameterVariation * 100
+    };
+  }
+
+  /**
+   * Validate all current parameters
+   * @returns {Array} Array of validation errors (empty if all valid)
+   */
+  validateParameters() {
+    const errors = [];
+    
+    for (const [key, value] of Object.entries(this.parameters)) {
+      if (!isValidNumber(value)) {
+        errors.push(`Invalid value for ${key}: ${value}`);
+      }
+      
+      // Additional validation rules
+      if (key === 'attribution' && (value < 0 || value > 100)) {
+        errors.push(`Attribution percentage must be between 0-100%: ${value}%`);
+      }
+      
+      if (key === 'qol' && (value < 0 || value > 100)) {
+        errors.push(`Quality of life reduction must be between 0-100%: ${value}%`);
+      }
+      
+      if (['vsl', 'suicides', 'depression', 'healthcare', 'productivity', 'yld', 'duration'].includes(key) && value <= 0) {
+        errors.push(`${key} must be positive: ${value}`);
+      }
+    }
+    
+    return errors;
+  }
+
+  /**
+   * Get current parameter values
+   * @returns {Object} Current parameter values
+   */
+  getParameters() {
+    return { ...this.parameters };
+  }
+
+  /**
+   * Get current calculation results
+   * @returns {Object} Current calculation results
+   */
+  getResults() {
+    return { ...this.results };
+  }
+
+  /**
+   * Reset parameters to defaults
+   * @returns {Object} Reset calculation results
+   */
+  reset() {
+    this.parameters = { ...DEFAULTS };
+    return this.calculateAll();
+  }
+
+  // ============================================================================
+  // HELPER METHODS
+  // ============================================================================
+
+  /**
+   * Format large numbers for display
+   * @param {number} value - Number to format
+   * @returns {string} Formatted number string
+   */
+  formatNumber(value) {
+    if (!isValidNumber(value)) return '0';
+    
+    if (value >= 1e6) {
+      return `${(value / 1e6).toFixed(1)}M`;
+    } else if (value >= 1e3) {
+      return `${(value / 1e3).toFixed(0)}K`;
+    } else {
+      return value.toLocaleString();
+    }
+  }
+
+  /**
+   * Format currency values for display
+   * @param {number} value - Currency value to format
+   * @returns {string} Formatted currency string
+   */
+  formatCurrency(value) {
+    if (!isValidNumber(value)) return '$0';
+    
+    if (value >= 1e12) {
+      return `$${(value / 1e12).toFixed(1)}T`;
+    } else if (value >= 1e9) {
+      return `$${(value / 1e9).toFixed(1)}B`;
+    } else if (value >= 1e6) {
+      return `$${(value / 1e6).toFixed(1)}M`;
+    } else {
+      return `$${value.toLocaleString()}`;
+    }
+  }
+
+  /**
+   * Get error results structure
+   * @returns {Object} Error results with safe default values
+   */
+  getErrorResults() {
+    return {
+      mortality: 0,
+      mentalHealth: 0,
+      healthcare: 0,
+      total: 0,
+      gdpPercentage: 0,
+      parameters: { ...this.parameters },
+      formulas: {
+        mortality: { formula: 'Error', result: '$0', description: 'Calculation error' },
+        mentalHealth: { formula: 'Error', result: '$0', description: 'Calculation error' },
+        healthcare: { formula: 'Error', result: '$0', description: 'Calculation error' }
+      },
+      error: true,
+      timestamp: Date.now()
+    };
+  }
+}
+
+/**
+ * Create and return a new Calculator instance
+ * @returns {Calculator} New calculator instance with default parameters
+ */
+export function createCalculator() {
+  const calculator = new Calculator();
+  calculator.calculateAll(); // Initialize with default calculations
+  return calculator;
+}
+
+/**
+ * Utility function to validate calculation inputs
+ * @param {Object} parameters - Parameters to validate
+ * @returns {boolean} True if all parameters are valid
+ */
+export function validateCalculationInputs(parameters) {
+  for (const [key, value] of Object.entries(parameters)) {
+    if (!isValidNumber(value) || value < 0) {
+      console.warn(`Invalid parameter ${key}: ${value}`);
+      return false;
+    }
+  }
+  return true;
+}
+
+// Export the Calculator class as default
+export default Calculator; 

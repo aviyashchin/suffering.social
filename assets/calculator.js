@@ -89,7 +89,7 @@
                 if (sessionCostEl) {
                     sessionCostEl.textContent = Math.floor(sessionCost).toLocaleString();
                 }
-            }, 100); // Update every 100ms for smooth animation
+            }, document.body.classList.contains('performance-mode') ? 1000 : 100); // 1s in performance mode, 100ms otherwise
         },
 
         stop() {
@@ -323,6 +323,17 @@
         }
 
         _initCharts() {
+            // Performance mode chart options
+            const performanceMode = document.body.classList.contains('performance-mode');
+            const chartOptions = performanceMode ? {
+                animation: false,
+                animations: {
+                    colors: false,
+                    x: false,
+                    y: false
+                }
+            } : {};
+            
             // Initialize pie chart
             if (this.elements.pieChart) {
                 this.charts.pie = new Chart(this.elements.pieChart, {
@@ -337,6 +348,7 @@
                         }]
                     },
                     options: {
+                        ...chartOptions,
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
@@ -390,6 +402,7 @@
                         }]
                     },
                     options: {
+                        ...chartOptions,
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
@@ -430,7 +443,8 @@
         _initTooltips() {
             // Check if Tippy.js is loaded
             if (typeof tippy === 'undefined') {
-                console.error('Tippy.js not loaded! Tooltips will not work.');
+                console.error('Tippy.js not loaded! Falling back to click-based tooltips.');
+                this._initTooltipsFallback();
                 return;
             }
 
@@ -440,15 +454,16 @@
             const tooltipConfig = {
                 allowHTML: true,
                 interactive: true,
-                placement: 'top',
+                placement: 'auto',
                 theme: 'light',
                 arrow: true,
-                maxWidth: 400,
-                duration: [200, 150],
+                maxWidth: 450,
+                duration: [150, 100],
                 offset: [0, 10],
                 appendTo: () => document.body,
-                trigger: 'mouseenter focus', // Show on hover/focus
-                delay: [300, 0] // 300ms delay before showing, 0ms delay before hiding
+                trigger: 'mouseenter click', // Show on both hover and click
+                delay: [200, 0], // 200ms delay before showing, 0ms delay before hiding
+                hideOnClick: 'toggle' // Allow clicking to toggle
             };
 
             // Direct mapping of slider IDs to tooltip template IDs
@@ -545,44 +560,122 @@
         }
 
         _initTooltipsFallback() {
-            // Fallback: initialize all info buttons with their corresponding templates
+            // Fallback: create click-based tooltips without Tippy.js
             const infoButtons = document.querySelectorAll('.info-button');
-            console.log(`Found ${infoButtons.length} info buttons`);
+            console.log(`Fallback tooltips: Found ${infoButtons.length} info buttons`);
+            
+            // Create a tooltip container if it doesn't exist
+            let tooltipContainer = document.getElementById('fallback-tooltip');
+            if (!tooltipContainer) {
+                tooltipContainer = document.createElement('div');
+                tooltipContainer.id = 'fallback-tooltip';
+                tooltipContainer.className = 'fixed z-50 bg-white border border-gray-300 rounded-lg shadow-lg p-4 max-w-md hidden';
+                tooltipContainer.style.cssText = `
+                    max-width: 400px;
+                    background: white;
+                    border: 1px solid #d1d5db;
+                    border-radius: 8px;
+                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+                    padding: 16px;
+                    z-index: 9999;
+                    font-size: 14px;
+                    line-height: 1.5;
+                `;
+                document.body.appendChild(tooltipContainer);
+            }
             
             infoButtons.forEach((button, index) => {
-                // Try to find the closest parameter group and determine which template to use
-                const parameterGroup = button.closest('.parameter-group');
-                if (parameterGroup) {
-                    const groupIndex = Array.from(document.querySelectorAll('.parameter-group')).indexOf(parameterGroup);
-                    let templateId = '';
-                    
-                    if (groupIndex === 0) {
-                        // Mortality section
-                        templateId = 'tooltip-mortality';
-                    } else if (groupIndex === 1) {
-                        // Mental health section
-                        templateId = 'tooltip-qaly';
-                    } else if (groupIndex === 2) {
-                        // Healthcare section
-                        templateId = 'tooltip-healthcare';
+                let templateId = '';
+                
+                // Determine template based on the slider this button is associated with
+                const sliderContainer = button.closest('.slider-container');
+                if (sliderContainer) {
+                    const slider = sliderContainer.querySelector('input[type="range"]');
+                    if (slider) {
+                        const sliderId = slider.id;
+                        
+                        // Map slider IDs to template IDs
+                        const sliderTemplateMap = {
+                            'vsl-slider': 'tooltip-mortality-vsl',
+                            'suicides-slider': 'tooltip-mortality-suicides', 
+                            'attribution-slider': 'tooltip-mortality-attribution',
+                            'depression-slider': 'tooltip-qaly-people',
+                            'yld-slider': 'tooltip-qaly-yld',
+                            'qol-slider': 'tooltip-qaly-qol',
+                            'healthcare-slider': 'tooltip-healthcare-costs',
+                            'productivity-slider': 'tooltip-healthcare-productivity',
+                            'duration-slider': 'tooltip-healthcare-duration'
+                        };
+                        
+                        templateId = sliderTemplateMap[sliderId];
                     }
-                    
-                    const template = document.getElementById(templateId);
-                    if (template) {
-                        console.log(`Fallback: Initializing tooltip for button ${index} with template ${templateId}`);
-                        try {
-                            tippy(button, {
-                                allowHTML: true,
-                                interactive: true,
-                                placement: 'top',
-                                theme: 'light',
-                                arrow: true,
-                                maxWidth: 400,
-                                content: template.innerHTML
-                            });
-                        } catch (error) {
-                            console.error(`Error in fallback tooltip initialization:`, error);
+                } else {
+                    // Try to find the closest parameter group for section headers
+                    const parameterGroup = button.closest('.parameter-group');
+                    if (parameterGroup) {
+                        const groupIndex = Array.from(document.querySelectorAll('.parameter-group')).indexOf(parameterGroup);
+                        
+                        if (groupIndex === 0) {
+                            templateId = 'tooltip-mortality';
+                        } else if (groupIndex === 1) {
+                            templateId = 'tooltip-qaly';
+                        } else if (groupIndex === 2) {
+                            templateId = 'tooltip-healthcare';
                         }
+                    }
+                }
+                
+                const template = document.getElementById(templateId);
+                if (template) {
+                    console.log(`Fallback: Setting up click tooltip for button ${index} with template ${templateId}`);
+                    
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        // Position tooltip near the button
+                        const rect = button.getBoundingClientRect();
+                        tooltipContainer.innerHTML = template.innerHTML;
+                        tooltipContainer.classList.remove('hidden');
+                        
+                        // Position tooltip
+                        const tooltipRect = tooltipContainer.getBoundingClientRect();
+                        let left = rect.left + window.scrollX;
+                        let top = rect.bottom + window.scrollY + 10;
+                        
+                        // Adjust if tooltip goes off screen
+                        if (left + tooltipRect.width > window.innerWidth) {
+                            left = window.innerWidth - tooltipRect.width - 20;
+                        }
+                        if (top + tooltipRect.height > window.innerHeight + window.scrollY) {
+                            top = rect.top + window.scrollY - tooltipRect.height - 10;
+                        }
+                        
+                        tooltipContainer.style.left = left + 'px';
+                        tooltipContainer.style.top = top + 'px';
+                    });
+                    
+                    // Add visual feedback
+                    button.style.cursor = 'pointer';
+                    button.style.opacity = '0.8';
+                    button.addEventListener('mouseenter', () => {
+                        button.style.opacity = '1';
+                        button.style.background = 'rgba(59, 130, 246, 0.1)';
+                    });
+                    button.addEventListener('mouseleave', () => {
+                        button.style.opacity = '0.8';
+                        button.style.background = '';
+                    });
+                } else {
+                    console.warn(`Fallback: No template found for button ${index}, templateId: ${templateId}`);
+                }
+            });
+            
+            // Close tooltip when clicking outside
+            document.addEventListener('click', (e) => {
+                if (tooltipContainer && !tooltipContainer.classList.contains('hidden')) {
+                    if (!tooltipContainer.contains(e.target) && !e.target.classList.contains('info-button')) {
+                        tooltipContainer.classList.add('hidden');
                     }
                 }
             });
@@ -851,7 +944,7 @@
      */
     async function initDistributionSliderIntegration(costCalculator) {
         try {
-            console.log('🔄 Initializing distribution slider integration...');
+            // console.log('🔄 Initializing distribution slider integration...');
             console.log('D3 available:', !!window.d3);
             console.log('DistributionSlider available:', !!window.DistributionSlider);
             console.log('calculatorIntegration available:', !!window.calculatorIntegration);
@@ -868,7 +961,7 @@
                             // Initialize integration with our existing update function
                             await window.calculatorIntegration.initialize((sliderId, value, output) => {
                                 // This will be called when distribution sliders change
-                                console.log(`Distribution slider ${sliderId} changed to ${value}`);
+                                // console.log(`Distribution slider ${sliderId} changed to ${value}`);
                                 
                                 // Update our calculator state
                                 const key = sliderId.replace('-slider', '');
@@ -1000,15 +1093,15 @@
                 'duration-slider': 5.5
             },
             'optimistic': {
-                'vsl-slider': 8,
-                'attribution-slider': 5,
-                'suicides-slider': 100000,
-                'depression-slider': 3000000,
-                'yld-slider': 4.0,
-                'qol-slider': 30,
-                'healthcare-slider': 6500,
-                'productivity-slider': 6000,
-                'duration-slider': 3.0
+                'vsl-slider': 10.0,
+                'attribution-slider': 8,
+                'suicides-slider': 80000,
+                'depression-slider': 2000000,
+                'yld-slider': 3.0,
+                'qol-slider': 25,
+                'healthcare-slider': 6000,
+                'productivity-slider': 5000,
+                'duration-slider': 2.5
             }
         };
         
@@ -1063,9 +1156,9 @@
                 const currentTotal = currentMortality + currentMental + currentHealthcare;
 
                 // Estimate total range (simplified approach)
-                const mortalityRatio = (maxMortality - minMortality) / currentMortality;
-                const estimatedTotalRange = currentTotal * mortalityRatio;
-                const minTotal = currentTotal - estimatedTotalRange / 2;
+                const mortalityRatio = (maxMortality - minMortality) / Math.max(currentMortality, 1); // Prevent division by zero
+                const estimatedTotalRange = currentTotal * Math.min(mortalityRatio, 2); // Cap the ratio to prevent extreme ranges
+                const minTotal = Math.max(0, currentTotal - estimatedTotalRange / 2); // Ensure minimum is never negative
                 const maxTotal = currentTotal + estimatedTotalRange / 2;
 
                 // Update uncertainty display
@@ -1109,27 +1202,37 @@
      * Initialize test runner
      */
     function initTestRunner() {
-        // Run initial tests
-        // Auto-run integration tests disabled - they were interfering with slider display
-    // runIntegrationTests();
+        // Run initial tests after a delay to ensure everything is loaded
+        setTimeout(() => {
+            runIntegrationTests();
+        }, 3000);
         
         // Set up test button
         const testButton = document.getElementById('run-tests-btn');
         if (testButton) {
             testButton.addEventListener('click', runIntegrationTests);
         }
-        
-        // Don't run tests periodically - only on demand
     }
 
     /**
      * Run integration tests and update status
      */
     async function runIntegrationTests() {
-        console.log('🚫 Integration tests disabled - they interfere with distribution slider display');
-        console.log('ℹ️ Distribution sliders are working correctly, tests not needed for normal operation');
-        updateTestStatus('Integration tests disabled (sliders working correctly)', true);
-        return;
+        console.log('🧪 Running integration tests...');
+        
+        try {
+            // Check if integration tests are available
+            if (typeof window.integrationTests !== 'undefined') {
+                const results = await window.integrationTests.runAllTests();
+                updateTestStatus('Integration tests completed', true, results);
+            } else {
+                console.warn('Integration tests not available');
+                updateTestStatus('Integration tests not available', false);
+            }
+        } catch (error) {
+            console.error('Integration test error:', error);
+            updateTestStatus('Integration tests failed: ' + error.message, false);
+        }
     }
 
     /**
@@ -1144,20 +1247,31 @@
         
         let html = `<div class="font-medium">${message}</div>`;
         
-        if (results) {
-            // Add detailed results
-            const failedTests = Object.entries(results.results)
-                .filter(([_, result]) => !result.passed)
-                .map(([category, result]) => `${category}: ${result.message}`)
-                .join(', ');
+        if (results && results.results && typeof results.results === 'object') {
+            try {
+                // Add detailed results - safely check structure
+                const failedTests = Object.entries(results.results)
+                    .filter(([_, result]) => result && !result.passed)
+                    .map(([category, result]) => `${category}: ${result.message || 'Failed'}`)
+                    .join(', ');
+                    
+                if (failedTests) {
+                    html += `<div class="text-xs mt-1 opacity-75">Failures: ${failedTests}</div>`;
+                }
                 
-            if (failedTests) {
-                html += `<div class="text-xs mt-1 opacity-75">Failures: ${failedTests}</div>`;
+                // Add summary stats if available
+                const totalTests = Object.keys(results.results).length;
+                const passedTests = Object.values(results.results).filter(r => r && r.passed).length;
+                html += `<div class="text-xs mt-1 opacity-75">Tests: ${passedTests}/${totalTests} passed</div>`;
+                
+            } catch (error) {
+                console.warn('Error processing test results:', error);
+                html += `<div class="text-xs mt-1 opacity-75">Results format error</div>`;
             }
-            
-            // Add timestamp
-            html += `<div class="text-xs mt-1 opacity-50">Last checked: ${new Date().toLocaleTimeString()}</div>`;
         }
+        
+        // Always add timestamp
+        html += `<div class="text-xs mt-1 opacity-50">Last checked: ${new Date().toLocaleTimeString()}</div>`;
         
         testSummary.innerHTML = html;
     }
@@ -1225,8 +1339,8 @@
                 yld: 6, qol: 35, healthcare: 7000, productivity: 6000, duration: 4.5
             },
             aggressive: {
-                vsl: 20.0, suicides: 300000, attribution: 30, depression: 15000000,
-                yld: 8.0, qol: 40, healthcare: 20000, productivity: 10000, duration: 6.0
+                vsl: 20.0, suicides: 250000, attribution: 30, depression: 12000000,
+                yld: 8.0, qol: 40, healthcare: 15000, productivity: 9000, duration: 6.0
             },
             "facebook-files": {
                 vsl: 13.7, suicides: 200000, attribution: 25, depression: 8000000,

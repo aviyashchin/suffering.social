@@ -212,21 +212,21 @@ class CalculatorIntegration {
      * Create distribution sliders after library is loaded
      */
     async createDistributionSliders() {
-        console.log('🎯 Creating distribution sliders...');
+        // console.log('🎯 Creating distribution sliders...');
         
         try {
             this.distributionSliderManager = new DistributionSliderManager();
-            console.log('✅ Distribution slider manager created');
+            // console.log('✅ Distribution slider manager created');
             
             // Create containers if they don't exist
             await this.createSliderContainers();
-            console.log('✅ Slider containers created/verified');
+            // console.log('✅ Slider containers created/verified');
             
             // Wait a small moment for DOM to be fully rendered
             await new Promise(resolve => setTimeout(resolve, 100));
             
             // Pre-measure all slider widths before creating any distribution sliders
-            console.log('📏 Pre-measuring all slider widths...');
+            // console.log('📏 Pre-measuring all slider widths...');
             const sliderWidths = {};
             for (const [sliderId, config] of Object.entries(this.sliderConfigs)) {
                 const originalSlider = document.getElementById(sliderId);
@@ -236,7 +236,7 @@ class CalculatorIntegration {
                     const sliderRect = originalSlider.getBoundingClientRect();
                     if (sliderRect.width > 0) {
                         sliderWidth = sliderRect.width;
-                        console.log(`📏 Pre-measured ${sliderId} width: ${sliderWidth}px`);
+                        // console.log(`📏 Pre-measured ${sliderId} width: ${sliderWidth}px`);
                     } else {
                         // Try to get the slider container width
                         const sliderContainer = originalSlider.closest('.slider-container');
@@ -244,7 +244,7 @@ class CalculatorIntegration {
                             const containerRect = sliderContainer.getBoundingClientRect();
                             if (containerRect.width > 0) {
                                 sliderWidth = Math.max(200, containerRect.width - 40); // Account for padding
-                                console.log(`📏 Pre-measured ${sliderId} container width: ${sliderWidth}px`);
+                                // console.log(`📏 Pre-measured ${sliderId} container width: ${sliderWidth}px`);
                             }
                         }
                     }
@@ -253,13 +253,13 @@ class CalculatorIntegration {
             }
             
             // Initialize each slider with pre-measured width
-            console.log('🎛️ Initializing individual sliders with pre-measured widths...');
+            // console.log('🎛️ Initializing individual sliders with pre-measured widths...');
             let successCount = 0;
             let failCount = 0;
             
             for (const [sliderId, config] of Object.entries(this.sliderConfigs)) {
                 try {
-                    console.log(`🎯 Processing slider: ${sliderId}`);
+                    // console.log(`🎯 Processing slider: ${sliderId}`);
                     
                     const container = document.getElementById(config.containerId);
                     if (!container) {
@@ -270,17 +270,17 @@ class CalculatorIntegration {
                     
                     // Check container dimensions
                     const rect = container.getBoundingClientRect();
-                    console.log(`📐 Container ${config.containerId} dimensions: ${rect.width}x${rect.height}`);
+                    // console.log(`📐 Container ${config.containerId} dimensions: ${rect.width}x${rect.height}`);
                     
                     if (rect.width === 0 || rect.height === 0) {
-                        console.warn(`⚠️ Container ${config.containerId} has zero dimensions, making it visible...`);
+                        // console.warn(`⚠️ Container ${config.containerId} has zero dimensions, making it visible...`);
                         container.style.display = 'block';
                         container.style.minHeight = '100px';
                         container.style.width = '100%';
                     }
                     
                     // Force container visibility with JavaScript styling to override any CSS issues
-                    console.log(`🔧 Forcing visibility for ${config.containerId}...`);
+                    // console.log(`🔧 Forcing visibility for ${config.containerId}...`);
                     
                     // Force styling via JavaScript to override any CSS issues
                     container.style.display = 'block';
@@ -319,7 +319,7 @@ class CalculatorIntegration {
                         sliderId,
                         width: sliderWidth, // Set the distribution slider width to match original
                         onChange: (value, output) => {
-                            console.log(`🎛️ Slider ${sliderId} changed to ${value}`);
+                            // console.log(`🎛️ Slider ${sliderId} changed to ${value}`);
                             this.handleSliderChange(sliderId, value, output);
                         },
                         onUpdate: (value) => {
@@ -484,7 +484,7 @@ class CalculatorIntegration {
                 // Add event listener to original slider
                 originalSlider.addEventListener('input', (e) => {
                     const newValue = parseFloat(e.target.value);
-                    console.log(`🔗 Original slider ${sliderId} changed to ${newValue}, syncing distribution slider...`);
+                    // console.log(`🔗 Original slider ${sliderId} changed to ${newValue}, syncing distribution slider...`);
                     
                     // Update the distribution slider if it exists
                     if (this.useDistributionSliders && this.sliders.has(sliderId)) {
@@ -492,7 +492,7 @@ class CalculatorIntegration {
                         if (distributionSlider && distributionSlider.setValue) {
                             // Set value without triggering change event to avoid infinite loop
                             distributionSlider.setValue(newValue, false);
-                            console.log(`✅ Distribution slider ${sliderId} synced to ${newValue}`);
+                            // console.log(`✅ Distribution slider ${sliderId} synced to ${newValue}`);
                         }
                     }
                     
@@ -522,7 +522,7 @@ class CalculatorIntegration {
         if (this.useDistributionSliders) {
             const originalSlider = document.getElementById(sliderId);
             if (originalSlider && parseFloat(originalSlider.value) !== value) {
-                console.log(`🔗 Syncing original slider ${sliderId} to ${value}`);
+                // console.log(`🔗 Syncing original slider ${sliderId} to ${value}`);
                 originalSlider.value = value;
             }
         }

@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+    
+
+    <title>Social Media Impact Calculator | Economic Cost Analysis</title>
+    <meta name="description" content="Research-based calculator estimating the economic and human costs of social media's impact on mental health, based on peer-reviewed studies and government data.">
+    <meta name="keywords" content="social media cost calculator, mental health crisis economics, tech accountability tool, social media harm statistics, depression economic impact, suicide rates calculator, QALY social media, VSL calculator">
+    <meta name="author" content="Subconscious.ai">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://www.suffering.social/social_media_cost_calculatorv3.html">
+    
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://socialmediaimpact.org/">
+    <meta property="og:title" content="Social Media Impact Calculator | Economic Cost Analysis">
+    <meta property="og:description" content="Research-based calculator estimating the economic and human costs of social media's impact on mental health, based on peer-reviewed studies and government data.">
+    <meta property="og:image" content="https://socialmediaimpact.org/preview.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Suffering.Social">
+    
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://socialmediaimpact.org/">
+    <meta property="twitter:title" content="Social Media Impact Calculator | Economic Cost Analysis">
+    <meta property="twitter:description" content="Research-based calculator estimating the economic and human costs of social media's impact on mental health, based on peer-reviewed studies and government data.">
+    <meta property="twitter:image" content="https://socialmediaimpact.org/preview.png">
+    <meta name="twitter:creator" content="@subconsciousai">
+    
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Social Media Cost Calculator",
+      "description": "Interactive calculator showing social media's $2.5 trillion economic impact on society through mental health costs, deaths, and productivity losses",
+      "url": "https://www.suffering.social/social_media_cost_calculatorv3.html",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "creator": {
+        "@type": "Organization",
+        "name": "Subconscious.ai"
+      }
+    }
+    </script>
+    
+    <!-- Modern PWA Features -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <meta name="theme-color" content="#dc2626">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="preload" href="src/calculator-clean.js" as="script" crossorigin="anonymous">
+    
+    <!-- Load Tailwind CSS (with dev warning suppressed) -->
+    <script>
+        // Suppress Tailwind CDN production warning for development
+        const originalWarn = console.warn;
+        console.warn = function(...args) {
+            if (args[0] && args[0].includes && args[0].includes('cdn.tailwindcss.com should not be used in production')) {
+                return; // Suppress this specific warning
+            }
+            originalWarn.apply(console, args);
+        };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Load Styles -->
+    <link rel="stylesheet" href="src/styles/base.css">
+    <link rel="stylesheet" href="src/styles/components.css">
+    
+    <!-- Load external libraries -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.4.3/mermaid.min.js" defer></script>
+    <script src="https://unpkg.com/@popperjs/core@2" defer></script>
+    <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.min.js" defer></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    
+    <!-- D3.js Distribution Sliders -->
+    <script>
+        // Professional Mathematical Distribution Library for Calculator
+        class MathUtils {
+            static gamma(z) {
+                if (z < 0.5) return Math.PI / (Math.sin(Math.PI * z) * this.gamma(1 - z));
+                z -= 1;
+                const g = 7;
+                const coefficients = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+                let x = coefficients[0];
+                for (let i = 1; i < g + 2; i++) x += coefficients[i] / (z + i);
+                const t = z + g + 0.5;
+                return Math.sqrt(2 * Math.PI) * Math.pow(t, z + 0.5) * Math.exp(-t) * x;
+            }
+            
+            static erf(x) {
+                const a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
+                const sign = x >= 0 ? 1 : -1;
+                x = Math.abs(x);
+                const t = 1.0 / (1.0 + p * x);
+                const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+                return sign * y;
+            }
+        }
+
+        class NormalDistribution {
+            constructor(mean, std) {
+                this.mean = mean;
+                this.std = std;
+            }
+            
+            pdf(x) {
+                const coefficient = 1 / (this.std * Math.sqrt(2 * Math.PI));
+                const exponent = -0.5 * Math.pow((x - this.mean) / this.std, 2);
+                return coefficient * Math.exp(exponent);
+            }
+            
+            quantile(p) {
+                const c0 = 2.515517, c1 = 0.802853, c2 = 0.010328, d1 = 1.432788, d2 = 0.189269, d3 = 0.001308;
+                let x;
+                if (p > 0.5) {
+                    const t = Math.sqrt(-2 * Math.log(1 - p));
+                    x = t - (c0 + c1 * t + c2 * t * t) / (1 + d1 * t + d2 * t * t + d3 * t * t * t);
+                } else {
+                    const t = Math.sqrt(-2 * Math.log(p));
+                    x = -(t - (c0 + c1 * t + c2 * t * t) / (1 + d1 * t + d2 * t * t + d3 * t * t * t));
+                }
+                return this.mean + this.std * x;
+            }
+            
+            getStats() {
+                return {
+                    mean: this.mean,
+                    median: this.mean,
+                    ci95: [this.quantile(0.025), this.quantile(0.975)]
+                };
+            }
+        }
+
+        class DistributionSlider {
+            constructor(config, calculator) {
+                this.config = config;
+                this.calculator = calculator;
+                this.currentValue = config.default;
+                this.distribution = null;
+                this.svg = null;
+                this.scales = {};
+                this.handle = null;
+                
+                this.createDistribution();
+                this.render();
+            }
+            
+            createDistribution() {
+                const std = (this.config.max - this.config.min) * 0.15;
+                this.distribution = new NormalDistribution(this.currentValue, std);
+            }
+            
+            render() {
+                const container = d3.select(`#${this.config.containerId}`);
+                if (container.empty()) return;
+                
+                const containerRect = container.node().getBoundingClientRect();
+                const width = Math.max(280, containerRect.width - 20);
+                const height = 95;
+                const margin = { top: 15, right: 15, bottom: 25, left: 15 };
+                const innerWidth = width - margin.left - margin.right;
+                const innerHeight = height - margin.top - margin.bottom;
+                
+                container.selectAll("*").remove();
+                
+                this.svg = container.append("svg")
+                    .attr("width", width)
+                    .attr("height", height)
+                    .style("display", "block");
+                
+                const g = this.svg.append("g")
+                    .attr("transform", `translate(${margin.left},${margin.top})`);
+                
+                this.scales = {
+                    x: d3.scaleLinear().domain([this.config.min, this.config.max]).range([0, innerWidth]),
+                    y: d3.scaleLinear().domain([0, 1]).range([innerHeight - 25, 10])
+                };
+                
+                this.renderDistribution(g, innerWidth, innerHeight);
+                this.renderSlider(g, innerWidth, innerHeight);
+                this.updateStats();
+            }
+            
+            renderDistribution(g, width, height) {
+                const data = [];
+                for (let i = 0; i <= 100; i++) {
+                    const x = this.config.min + (this.config.max - this.config.min) * (i / 100);
+                    const y = this.distribution.pdf(x);
+                    data.push({ x, y });
+                }
+                
+                const maxY = Math.max(...data.map(d => d.y));
+                const normalizedData = data.map(d => ({ x: d.x, y: d.y / maxY }));
+                
+                const line = d3.line()
+                    .x(d => this.scales.x(d.x))
+                    .y(d => this.scales.y(d.y))
+                    .curve(d3.curveCardinal);
+                
+                const area = d3.area()
+                    .x(d => this.scales.x(d.x))
+                    .y0(this.scales.y(0))
+                    .y1(d => this.scales.y(d.y))
+                    .curve(d3.curveCardinal);
+                
+                const colors = this.getColors();
+                
+                g.selectAll('.distribution-fill, .distribution-path').remove();
+                
+                g.append("path")
+                    .datum(normalizedData)
+                    .attr("class", "distribution-fill")
+                    .attr("d", area)
+                    .style("fill", colors.fill)
+                    .style("opacity", 0.4);
+                
+                g.append("path")
+                    .datum(normalizedData)
+                    .attr("class", "distribution-path")
+                    .attr("d", line)
+                    .style("stroke", colors.stroke)
+                    .style("stroke-width", 2.5)
+                    .style("fill", "none");
+                
+                // Current value indicator
+                g.append("line")
+                    .attr("x1", this.scales.x(this.currentValue))
+                    .attr("x2", this.scales.x(this.currentValue))
+                    .attr("y1", this.scales.y(0))
+                    .attr("y2", this.scales.y(0.8))
+                    .style("stroke", colors.stroke)
+                    .style("stroke-width", 2)
+                    .style("stroke-dasharray", "4,2");
+            }
+            
+            renderSlider(g, width, height) {
+                const sliderY = height - 15;
+                const colors = this.getColors();
+                
+                // Track
+                g.append("line")
+                    .attr("class", "slider-track")
+                    .attr("x1", 0)
+                    .attr("x2", width)
+                    .attr("y1", sliderY)
+                    .attr("y2", sliderY)
+                    .style("stroke", "#cbd5e1")
+                    .style("stroke-width", 4)
+                    .style("stroke-linecap", "round");
+                
+                // Handle
+                this.handle = g.append("g")
+                    .attr("class", "slider-handle")
+                    .attr("transform", `translate(${this.scales.x(this.currentValue)}, ${sliderY})`)
+                    .style("cursor", "pointer");
+                
+                this.handle.append("circle")
+                    .attr("r", 10)
+                    .style("fill", colors.stroke)
+                    .style("stroke", "white")
+                    .style("stroke-width", 2.5)
+                    .style("filter", "drop-shadow(0 2px 4px rgba(0,0,0,0.2))");
+                
+                this.addInteraction(g, width, sliderY);
+            }
+            
+            addInteraction(g, width, sliderY) {
+                const self = this;
+                
+                const drag = d3.drag()
+                    .on("start", function(event) {
+                        event.sourceEvent.stopPropagation();
+                    })
+                    .on("drag", function(event) {
+                        const newX = Math.max(0, Math.min(width, event.x));
+                        const newValue = self.scales.x.invert(newX);
+                        const clampedValue = Math.max(self.config.min, Math.min(self.config.max, newValue));
+                        const snappedValue = Math.round(clampedValue / self.config.step) * self.config.step;
+                        
+                        self.updateValue(snappedValue);
+                    });
+                
+                this.handle.call(drag);
+                
+                // Click on track
+                g.append("rect")
+                    .attr("width", width)
+                    .attr("height", 20)
+                    .attr("y", sliderY - 10)
+                    .style("fill", "transparent")
+                    .style("cursor", "pointer")
+                    .on("click", function(event) {
+                        const [mouseX] = d3.pointer(event, this);
+                        const newValue = self.scales.x.invert(mouseX);
+                        const clampedValue = Math.max(self.config.min, Math.min(self.config.max, newValue));
+                        const snappedValue = Math.round(clampedValue / self.config.step) * self.config.step;
+                        
+                        self.updateValue(snappedValue);
+                    });
+            }
+            
+            updateValue(newValue) {
+                this.currentValue = newValue;
+                
+                // Update handle position
+                const sliderY = this.scales.y.range()[1] + 15;
+                this.handle.attr("transform", `translate(${this.scales.x(newValue)}, ${sliderY})`);
+                
+                // Update distribution
+                this.createDistribution();
+                
+                // Re-render distribution
+                const g = this.svg.select('g');
+                const containerRect = d3.select(`#${this.config.containerId}`).node().getBoundingClientRect();
+                const width = Math.max(280, containerRect.width - 50);
+                const height = 95;
+                this.renderDistribution(g, width - 30, height - 30);
+                
+                // Update parameter display
+                const valueDisplay = document.getElementById(`${this.config.parameter}-value`);
+                if (valueDisplay) {
+                    valueDisplay.textContent = this.formatValue(newValue);
+                }
+                
+                // Update stats
+                this.updateStats();
+                
+                // Notify calculator
+                if (this.calculator && this.calculator.updateParameter) {
+                    this.calculator.updateParameter(this.config.parameter, newValue);
+                }
+            }
+            
+            updateStats() {
+                const stats = this.distribution.getStats();
+                const statsHtml = `Mean: ${this.config.format(stats.mean)} | 95% CI: [${this.config.format(stats.ci95[0])}, ${this.config.format(stats.ci95[1])}]`;
+                
+                const statsElement = document.getElementById(`${this.config.parameter}-stats`);
+                if (statsElement) {
+                    statsElement.textContent = statsHtml;
+                }
+            }
+            
+            formatValue(value) {
+                const formatters = {
+                    vsl: (v) => `$${v.toFixed(1)}M`,
+                    suicides: (v) => `${Math.round(v/1000)}K`,
+                    attribution: (v) => `${v.toFixed(0)}%`,
+                    depression: (v) => `${(v/1000000).toFixed(1)}M`,
+                    yld: (v) => `${v.toFixed(1)} years`,
+                    qol: (v) => `${v.toFixed(0)}%`,
+                    healthcare: (v) => `$${(v/1000).toFixed(0)}K`,
+                    productivity: (v) => `$${(v/1000).toFixed(0)}K`,
+                    duration: (v) => `${v.toFixed(1)} years`
+                };
+                
+                return formatters[this.config.parameter] ? formatters[this.config.parameter](value) : value.toString();
+            }
+            
+            getColors() {
+                const colorMap = {
+                    vsl: { stroke: '#dc2626', fill: 'rgba(220, 38, 38, 0.15)' },
+                    suicides: { stroke: '#dc2626', fill: 'rgba(220, 38, 38, 0.15)' },
+                    attribution: { stroke: '#dc2626', fill: 'rgba(220, 38, 38, 0.15)' },
+                    depression: { stroke: '#8b5cf6', fill: 'rgba(139, 92, 246, 0.15)' },
+                    yld: { stroke: '#8b5cf6', fill: 'rgba(139, 92, 246, 0.15)' },
+                    qol: { stroke: '#8b5cf6', fill: 'rgba(139, 92, 246, 0.15)' },
+                    healthcare: { stroke: '#059669', fill: 'rgba(5, 150, 105, 0.15)' },
+                    productivity: { stroke: '#059669', fill: 'rgba(5, 150, 105, 0.15)' },
+                    duration: { stroke: '#059669', fill: 'rgba(5, 150, 105, 0.15)' }
+                };
+                
+                return colorMap[this.config.parameter] || { stroke: '#64748b', fill: 'rgba(100, 116, 139, 0.15)' };
+            }
+            
+            getValue() {
+                return this.currentValue;
+            }
+            
+            reset() {
+                this.updateValue(this.config.default);
+            }
+        }
+
+        // D3 Slider Manager
+        window.D3SliderManager = class {
+            constructor(calculator) {
+                this.calculator = calculator;
+                this.sliders = {};
+                this.configs = {
+                    vsl: { containerId: 'vsl-distribution', parameter: 'vsl', min: 8, max: 20, default: 13.7, step: 0.1, format: (v) => `$${v.toFixed(1)}M` },
+                    suicides: { containerId: 'suicides-distribution', parameter: 'suicides', min: 100000, max: 300000, default: 110000, step: 1000, format: (v) => `${Math.round(v/1000)}K` },
+                    attribution: { containerId: 'attribution-distribution', parameter: 'attribution', min: 5, max: 30, default: 18, step: 1, format: (v) => `${v.toFixed(0)}%` },
+                    depression: { containerId: 'depression-distribution', parameter: 'depression', min: 3000000, max: 15000000, default: 5000000, step: 100000, format: (v) => `${(v/1000000).toFixed(1)}M` },
+                    yld: { containerId: 'yld-distribution', parameter: 'yld', min: 4, max: 8, default: 6, step: 0.1, format: (v) => `${v.toFixed(1)}yr` },
+                    qol: { containerId: 'qol-distribution', parameter: 'qol', min: 30, max: 40, default: 35, step: 1, format: (v) => `${v.toFixed(0)}%` },
+                    healthcare: { containerId: 'healthcare-distribution', parameter: 'healthcare', min: 6500, max: 20000, default: 7000, step: 100, format: (v) => `$${(v/1000).toFixed(0)}K` },
+                    productivity: { containerId: 'productivity-distribution', parameter: 'productivity', min: 6000, max: 10000, default: 6000, step: 100, format: (v) => `$${(v/1000).toFixed(0)}K` },
+                    duration: { containerId: 'duration-distribution', parameter: 'duration', min: 3, max: 6, default: 4.5, step: 0.1, format: (v) => `${v.toFixed(1)}yr` }
+                };
+            }
+            
+            initialize() {
+                console.log('🎚️ Initializing D3 distribution sliders...');
+                
+                Object.keys(this.configs).forEach(key => {
+                    try {
+                        this.sliders[key] = new DistributionSlider(this.configs[key], this.calculator);
+                        console.log(`✅ Created D3 slider: ${key}`);
+                    } catch (error) {
+                        console.error(`❌ Failed to create D3 slider ${key}:`, error);
+                    }
+                });
+                
+                console.log('🎯 D3 sliders initialized successfully');
+            }
+            
+            updateSlider(parameter, value) {
+                const slider = this.sliders[parameter];
+                if (slider) slider.updateValue(value);
+            }
+            
+            getSliderValue(parameter) {
+                const slider = this.sliders[parameter];
+                return slider ? slider.getValue() : null;
+            }
+            
+            resetAll() {
+                Object.values(this.sliders).forEach(slider => slider.reset());
+            }
+            
+            handleResize() {
+                setTimeout(() => {
+                    Object.values(this.sliders).forEach(slider => slider.render());
+                }, 100);
+            }
+        };
+    </script>
+
+    <!-- Application Scripts -->
+    <script type="module" src="src/calculator-clean.js" defer></script>
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Social Media Impact Calculator",
+        "description": "Research-based calculator estimating the economic and human costs of social media's impact on mental health",
+        "url": "https://socialmediaimpact.org/",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Web Browser",
+        "author": {
+            "@type": "Organization",
+            "name": "Subconscious.ai",
+            "url": "https://subconscious.ai"
+        },
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "keywords": "social media, mental health, economic impact, calculator, research, depression, suicide, healthcare costs",
+        "isAccessibleForFree": true,
+        "datePublished": "2024-12-01",
+        "dateModified": "2024-12-01"
+    }
+    </script>
+</head>
+<body class="min-h-screen pt-24 sm:pt-32 md:pt-36 text-gray-900">
+    <!-- Fixed Elements Container -->
+    <div class="fixed-elements-container">
+        <!-- Top Bar -->
+        <div id="top-bar" class="fixed-element fixed-top">
+            <div class="flex flex-col items-center justify-center gap-2 sm:gap-4 w-full max-w-6xl mx-auto px-4">
+                <div class="flex flex-col items-center text-center">
+                    <div class="text-xs sm:text-sm text-gray-300 uppercase tracking-wide sm:tracking-widest mb-1">Total Social Media Cost (Est. Since 2009)</div>
+                    <div class="text-2xl sm:text-4xl md:text-5xl font-mono font-bold text-red-400 drop-shadow-lg flex items-baseline gap-1 sm:gap-2" id="total-amount">
+                        <span class="text-xl sm:text-3xl md:text-4xl">$</span>
+                        <span id="total-amount-value">2,481,760,000,000</span>
+                    </div>
+                    <div class="text-sm sm:text-base md:text-lg text-gray-200 mt-1">and counting…</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Help Button -->
+        <button id="help-button" class="fixed-element fixed-bottom-right" aria-label="Help" onclick="document.getElementById('help-modal').classList.remove('hidden')">?</button>
+        
+        <!-- Branding -->
+        <div id="branding" class="fixed-element fixed-bottom-left">
+            <div class="text-xs text-gray-600 mb-1">
+                A <a href="https://subconscious.ai" target="_blank" class="text-blue-600 hover:text-blue-900 font-semibold">Subconscious.ai</a> project
+            </div>
+            <div class="text-xs text-gray-600">
+                Join our <a href="https://discord.gg/3bgj4ZhABz" target="_blank" class="text-purple-600 hover:text-purple-900 font-semibold">Discord</a> for more research
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main role="main" class="container max-w-7xl mx-auto px-2 sm:px-4 mt-4 sm:mt-8 lg:mt-16">
+        <div class="flex flex-col lg:grid lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-8 items-start">
+            <!-- Main Calculator Column -->
+            <section aria-label="Interactive Calculator" class="col-span-2 calculator-section">
+                <div class="calculator-header px-8 py-8">
+                    <h2 class="text-2xl font-semibold mb-2">Interactive Cost Calculator</h2>
+                    <p class="text-base mb-4">Simple formulas showing cumulative costs since 2009</p>
+                    <div class="scenario-buttons">
+                        <button class="scenario-btn" data-scenario="reset">
+                            🔬 Research Consensus Values
+                        </button>
+                        <button class="scenario-btn" data-scenario="aggressive">
+                            🚨 Worst Case Scenario
+                        </button>
+                        <button class="scenario-btn" data-scenario="facebook-files">
+                            📱 "Facebook Files" Scenario
+                        </button>
+                        <button class="scenario-btn" data-scenario="optimistic">
+                            🌟 Most Optimistic
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
+                    <!-- Mortality Costs -->
+                    <section class="parameter-group" data-group="mortality" aria-labelledby="mortality-heading">
+                        <h3 id="mortality-heading">☠️ Death</h3>
+                        
+                        <div class="parameter">
+                            <label class="parameter-label">
+                                <span>Value of Statistical Life (VSL)
+                                    <button class="info-btn" data-parameter="vsl" aria-label="Information about VSL">ℹ️</button>
+                                </span>
+                                <span class="parameter-value" id="vsl-value">$13.7M</span>
+                            </label>
+                            <input type="range" min="8" max="20" value="13.7" step="0.1" class="parameter-slider" id="vsl-slider" aria-label="Value of Statistical Life" />
+                            <div class="distribution-chart-container" data-parameter="vsl">
+                                <canvas class="distribution-chart" id="vsl-distribution"></canvas>
+                                <div class="distribution-stats" id="vsl-stats"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="parameter">
+                            <label class="parameter-label">
+                                <span>Excess Suicides Since 2009 (P)
+                                    <button class="info-btn" data-parameter="suicides" aria-label="Information about suicides">ℹ️</button>
+                                </span>
+                                <span class="parameter-value" id="suicides-value">110K</span>
+                            </label>
+                            <input type="range" min="100000" max="300000" value="110000" step="1000" class="parameter-slider" id="suicides-slider" aria-label="Excess Suicides Since 2009" />
+                            <div class="distribution-chart-container" data-parameter="suicides">
+                                <canvas class="distribution-chart" id="suicides-distribution"></canvas>
+                                <div class="distribution-stats" id="suicides-stats"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="parameter">
+                            <label class="parameter-label">
+                                <span>% Attributable to Social Media (Q)
+                                    <button class="info-btn" data-parameter="attribution" aria-label="Information about attribution">ℹ️</button>
+                                </span>
+                                <span class="parameter-value" id="attribution-value">18%</span>
+                            </label>
+                            <input type="range" min="5" max="30" value="18" step="1" class="parameter-slider" id="attribution-slider" aria-label="Percentage Attributable to Social Media" />
+                            <div class="distribution-chart-container" data-parameter="attribution">
+                                <canvas class="distribution-chart" id="attribution-distribution"></canvas>
+                                                            <div class="distribution-stats" id="attribution-stats"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="formula-display">
+                            <strong>Formula:</strong> P × Q × VSL<br>
+                            <strong>Why this formula?</strong> We multiply the number of deaths by what society is willing to pay to prevent each death.<br>
+                            <strong>Result:</strong> <span id="mortality-result">110,000 × 18% × $13.7M = $226.1B</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Mental Health QALY Losses -->
+                    <section class="parameter-group" data-group="mental-health" aria-labelledby="mental-health-heading">
+                        <h3 id="mental-health-heading">😞 Disability</h3>
+                        
+                        <div class="parameter">
+                            <label class="parameter-label">
+                                <span>Americans with SM-Induced Depression (P)
+                                    <button class="info-btn" data-parameter="depression" aria-label="Information about depression">ℹ️</button>
+                                </span>
+                                <span class="parameter-value" id="depression-value">4M</span>
+                            </label>
+                            <input type="range" min="3000000" max="15000000" value="5000000" step="100000" class="parameter-slider" id="depression-slider" aria-label="People with Social Media-Induced Depression" />
+                            <div class="distribution-chart-container" data-parameter="depression">
+                                <canvas class="distribution-chart" id="depression-distribution"></canvas>
+                                                            <div class="distribution-stats" id="depression-stats"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="parameter">
+                            <label class="parameter-label">
+                                <span>Years Lived with Disability (Q)
+                                    <button class="info-btn" data-parameter="yld" aria-label="Information about YLD">ℹ️</button>
+                                </span>
+                                <span class="parameter-value" id="yld-value">6.0 years</span>
+                            </label>
+                            <input type="range" min="4" max="8" value="6" step="0.1" class="parameter-slider" id="yld-slider" aria-label="Years Lived with Disability" />
+                            <div class="distribution-chart-container" data-parameter="yld">
+                                <canvas class="distribution-chart" id="yld-distribution"></canvas>
+                                                            <div class="distribution-stats" id="yld-stats"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="parameter">
+                            <label class="parameter-label">
+                                <span>Quality of Life Reduction (R)
+                                    <button class="info-btn" data-parameter="qol" aria-label="Information about QOL">ℹ️</button>
+                                </span>
+                                <span class="parameter-value" id="qol-value">35%</span>
+                            </label>
+                            <input type="range" min="30" max="40" value="35" step="1" class="parameter-slider" id="qol-slider" aria-label="Quality of Life Reduction" />
+                            <div class="distribution-chart-container" data-parameter="qol">
+                                <canvas class="distribution-chart" id="qol-distribution"></canvas>
+                                                            <div class="distribution-stats" id="qol-stats"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="formula-display">
+                            <strong>Formula:</strong> P × Q × R × (VSL ÷ 75 years)<br>
+                            <strong>Why this formula?</strong> We calculate the value of years lived with reduced quality of life, based on how society values a year of perfect health.<br>
+                            <strong>Result:</strong> <span id="mental-result">4M × 6 × 35% × $182K = $1.53T</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Healthcare & Productivity Losses -->
+                    <section class="parameter-group" data-group="healthcare" aria-labelledby="healthcare-heading">
+                        <h3 id="healthcare-heading">💸 Lost Productivity</h3>
+                        
+                        <div class="parameter">
+                            <label class="parameter-label">
+                                <span>Annual Healthcare Costs
+                                    <button class="info-btn" data-parameter="healthcare" aria-label="Information about healthcare costs">ℹ️</button>
+                                </span>
+                                <span class="parameter-value" id="healthcare-value">$7,000</span>
+                            </label>
+                            <input type="range" min="6500" max="20000" value="7000" step="100" class="parameter-slider" id="healthcare-slider" aria-label="Annual Healthcare Costs per Person" />
+                            <div class="distribution-chart-container" data-parameter="healthcare">
+                                <canvas class="distribution-chart" id="healthcare-distribution"></canvas>
+                                                            <div class="distribution-stats" id="healthcare-stats"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="parameter">
+                            <label class="parameter-label">
+                                <span>Annual Productivity Loss per Person (Q)
+                                    <button class="info-btn" data-parameter="productivity" aria-label="Information about productivity loss">ℹ️</button>
+                                </span>
+                                <span class="parameter-value" id="productivity-value">$6,000</span>
+                            </label>
+                            <input type="range" min="6000" max="10000" value="6000" step="100" class="parameter-slider" id="productivity-slider" aria-label="Annual Productivity Loss per Person" />
+                            <div class="distribution-chart-container" data-parameter="productivity">
+                                <canvas class="distribution-chart" id="productivity-distribution"></canvas>
+                                                            <div class="distribution-stats" id="productivity-stats"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="parameter">
+                            <label class="parameter-label">
+                                <span>Treatment Duration in Years (R)
+                                    <button class="info-btn" data-parameter="duration" aria-label="Information about duration">ℹ️</button>
+                                </span>
+                                <span class="parameter-value" id="duration-value">4.5 years</span>
+                            </label>
+                            <input type="range" min="3" max="6" value="4.5" step="0.1" class="parameter-slider" id="duration-slider" aria-label="Treatment Duration in Years" />
+                            <div class="distribution-chart-container" data-parameter="duration">
+                                <canvas class="distribution-chart" id="duration-distribution"></canvas>
+                                                            <div class="distribution-stats" id="duration-stats"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="formula-display">
+                            <strong>Formula:</strong> Depressed Americans × (P + Q) × R<br>
+                            <strong>Why this formula?</strong> We add up the medical bills and lost work time for each person affected.<br>
+                            <strong>Result:</strong> <span id="healthcare-result">4M × ($7K + $6K) × 4.5 = $234B</span>
+                        </div>
+                    </div>
+
+                    <!-- Coming Soon Cards -->
+                    <div class="parameter-group bg-gray-50 p-6 rounded-xl border-l-4 border-green-600 mb-8 opacity-75">
+                        <h3 class="text-green-700 mb-4 text-lg font-semibold flex items-center gap-2">
+                            <span class="text-2xl">🌳</span>
+                            🚧 Coming Soon: Free Play Calculator
+                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">BETA</span>
+                        </h3>
+                        <div class="text-center py-8">
+                            <div class="text-4xl mb-4">🔨</div>
+                            <h4 class="text-lg font-semibold text-gray-700 mb-2">Calculator Under Development</h4>
+                            <p class="text-gray-600 mb-4">We're building a comprehensive calculator to quantify the economic impact of reduced free play opportunities and increased screen time on children's development.</p>
+                        </div>
+                    </div>
+
+                    <div class="parameter-group bg-gray-50 p-6 rounded-xl border-l-4 border-orange-600 mb-8 opacity-75">
+                        <h3 class="text-orange-700 mb-4 text-lg font-semibold flex items-center gap-2">
+                            <span class="text-2xl">🏛️</span>
+                            🚧 Coming Soon: Political Dysfunction Calculator
+                            <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full font-medium">BETA</span>
+                        </h3>
+                        <div class="text-center py-8">
+                            <div class="text-4xl mb-4">🔨</div>
+                            <h4 class="text-lg font-semibold text-gray-700 mb-2">Calculator Under Development</h4>
+                            <p class="text-gray-600 mb-4">We're developing a comprehensive calculator to measure the economic costs of social media's impact on political polarization, misinformation, and democratic processes.</p>
+                        </div>
+                    </section>
+                </div>
+            </section>
+
+            <!-- Results Column -->
+            <aside aria-label="Results Dashboard" class="results-section p-8">
+                <div class="total-card p-8 mb-8">
+                    <div class="text-4xl font-bold text-red-400 mb-2" id="total-cost">$2.48 Trillion</div>
+                    <p class="text-lg text-white">Total Economic Cost to Society</p>
+                    <p class="text-sm mt-2 text-white opacity-90">
+                        <span id="gdp-percentage">2.4%</span> of US GDP ($24T)
+                    </p>
+                </div>
+
+                <div class="counter-card p-8 mb-8">
+                    <div class="text-3xl font-bold text-red-400 mb-2 font-mono" id="running-total">$0</div>
+                    <div class="text-base opacity-90 mb-2">Cost Generated Since You Opened This Page</div>
+                    <div class="text-xs opacity-75">(at current annual rate)</div>
+                </div>
+
+                <div class="charts-section">
+                    <div class="chart-container mb-8">
+                        <h4>📈 Cumulative Costs Since 2009</h4>
+                        <div class="chart-wrapper">
+                            <canvas id="timeline-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-container mb-8">
+                        <h4>📊 Cost Composition</h4>
+                        <div class="chart-wrapper">
+                            <canvas id="pie-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="share-section">
+                    <h4>📢 Share Results</h4>
+                    <div class="grid gap-2">
+                        <button class="share-btn" data-platform="twitter">Share on Twitter</button>
+                        <button class="share-btn" data-platform="linkedin">Share on LinkedIn</button>
+                        <button class="share-btn" data-platform="facebook">Share on Facebook</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+         <!-- Help Modal -->
+     <div id="help-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onclick="if(event.target === this) this.classList.add('hidden')">
+        <div class="bg-white rounded-lg p-6 max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">How to Use This Calculator</h3>
+                                 <button id="close-help" class="text-gray-500 hover:text-gray-700" onclick="document.getElementById('help-modal').classList.add('hidden')">&times;</button>
+            </div>
+            <p class="text-gray-600 mb-4">
+                Adjust the sliders to see how different parameters affect the total cost. 
+                The distribution charts show uncertainty ranges based on research.
+            </p>
+            <p class="text-gray-600">
+                Use the scenario buttons to quickly load different parameter sets based on research studies.
+            </p>
+        </div>
+    </div>
+
+    <!-- Tooltip Container -->
+    <div id="tooltip-container"></div>
+</body>
+</html>

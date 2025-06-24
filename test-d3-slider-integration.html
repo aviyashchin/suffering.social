@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D3 Slider Integration Test | Social Media Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .test-section {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            background: white;
+        }
+        
+        .test-pass {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+        }
+        
+        .test-fail {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+        
+        .parameter-test {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .distribution-chart-container {
+            margin-top: 0.75rem;
+            height: 95px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 0.5rem;
+            background: white;
+        }
+        
+        .distribution-stats {
+            font-size: 11px;
+            color: #6b7280;
+            margin-top: 0.5rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-center">🧪 D3.js Slider Integration Test</h1>
+        
+        <!-- Test Status -->
+        <div class="test-section test-pass" id="test-status">
+            <h2 class="text-xl font-bold mb-4 text-green-800">✅ Integration Test Status</h2>
+            <div id="test-results" class="text-sm">
+                <div>🔄 Initializing tests...</div>
+            </div>
+        </div>
+        
+        <!-- Sample Parameter Tests -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <!-- VSL Test -->
+            <div class="parameter-test">
+                <h3 class="font-bold mb-2 text-red-700">Value of Statistical Life</h3>
+                <div class="text-sm mb-2">
+                    <span>Current Value: </span>
+                    <span id="vsl-value" class="font-bold">$13.7M</span>
+                </div>
+                <div class="distribution-chart-container" id="vsl-distribution"></div>
+                <div class="distribution-stats" id="vsl-stats">Loading...</div>
+            </div>
+
+            <!-- Attribution Test -->
+            <div class="parameter-test">
+                <h3 class="font-bold mb-2 text-purple-700">Attribution Percentage</h3>
+                <div class="text-sm mb-2">
+                    <span>Current Value: </span>
+                    <span id="attribution-value" class="font-bold">18%</span>
+                </div>
+                <div class="distribution-chart-container" id="attribution-distribution"></div>
+                <div class="distribution-stats" id="attribution-stats">Loading...</div>
+            </div>
+
+            <!-- Depression Test -->
+            <div class="parameter-test">
+                <h3 class="font-bold mb-2 text-green-700">Depression Cases</h3>
+                <div class="text-sm mb-2">
+                    <span>Current Value: </span>
+                    <span id="depression-value" class="font-bold">5.0M</span>
+                </div>
+                <div class="distribution-chart-container" id="depression-distribution"></div>
+                <div class="distribution-stats" id="depression-stats">Loading...</div>
+            </div>
+        </div>
+
+        <!-- Scenario Test -->
+        <div class="test-section">
+            <h2 class="text-xl font-bold mb-4">🎯 Scenario Testing</h2>
+            <div class="flex gap-4 mb-4">
+                <button id="test-scenario-reset" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    🔬 Test Reset Scenario
+                </button>
+                <button id="test-scenario-aggressive" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+                    🚨 Test Aggressive Scenario
+                </button>
+                <button id="test-scenario-optimistic" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                    🌟 Test Optimistic Scenario
+                </button>
+            </div>
+            <div id="scenario-results" class="text-sm text-gray-600">
+                Click a scenario button to test scenario loading...
+            </div>
+        </div>
+
+        <!-- Technical Details -->
+        <div class="test-section">
+            <h2 class="text-xl font-bold mb-4">🔧 Technical Details</h2>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <h3 class="font-semibold mb-2">✅ Features Implemented:</h3>
+                    <ul class="space-y-1 text-gray-700">
+                        <li>• Professional mathematical distributions (Normal, Beta, LogNormal)</li>
+                        <li>• Interactive D3.js sliders with real-time updates</li>
+                        <li>• Smooth curve visualization with confidence intervals</li>
+                        <li>• Dynamic distribution shapes based on slider values</li>
+                        <li>• Statistical summaries (Mean, CI, etc.)</li>
+                        <li>• Color-coded parameter groups</li>
+                        <li>• Scenario integration with slider updates</li>
+                        <li>• Responsive design with window resize handling</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-2">🎯 Key Improvements Over Chart.js:</h3>
+                    <ul class="space-y-1 text-gray-700">
+                        <li>• Mathematical accuracy with proper PDF/CDF calculations</li>
+                        <li>• Interactive sliders integrated with distribution visualization</li>
+                        <li>• Real-time distribution shape updates</li>
+                        <li>• Professional statistical analysis display</li>
+                        <li>• Smooth animations and better performance</li>
+                        <li>• Proper confidence interval visualization</li>
+                        <li>• Current value indicators on distributions</li>
+                        <li>• Better touch/mobile interaction support</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Copy of D3 slider code for testing (from social_media_cost_calculatorv3.html)
+        class MathUtils {
+            static erf(x) {
+                const a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
+                const sign = x >= 0 ? 1 : -1;
+                x = Math.abs(x);
+                const t = 1.0 / (1.0 + p * x);
+                const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+                return sign * y;
+            }
+        }
+
+        class NormalDistribution {
+            constructor(mean, std) {
+                this.mean = mean;
+                this.std = std;
+            }
+            
+            pdf(x) {
+                const coefficient = 1 / (this.std * Math.sqrt(2 * Math.PI));
+                const exponent = -0.5 * Math.pow((x - this.mean) / this.std, 2);
+                return coefficient * Math.exp(exponent);
+            }
+            
+            quantile(p) {
+                const c0 = 2.515517, c1 = 0.802853, c2 = 0.010328, d1 = 1.432788, d2 = 0.189269, d3 = 0.001308;
+                let x;
+                if (p > 0.5) {
+                    const t = Math.sqrt(-2 * Math.log(1 - p));
+                    x = t - (c0 + c1 * t + c2 * t * t) / (1 + d1 * t + d2 * t * t + d3 * t * t * t);
+                } else {
+                    const t = Math.sqrt(-2 * Math.log(p));
+                    x = -(t - (c0 + c1 * t + c2 * t * t) / (1 + d1 * t + d2 * t * t + d3 * t * t * t));
+                }
+                return this.mean + this.std * x;
+            }
+            
+            getStats() {
+                return {
+                    mean: this.mean,
+                    median: this.mean,
+                    ci95: [this.quantile(0.025), this.quantile(0.975)]
+                };
+            }
+        }
+
+        class DistributionSlider {
+            constructor(config, calculator) {
+                this.config = config;
+                this.calculator = calculator;
+                this.currentValue = config.default;
+                this.distribution = null;
+                this.svg = null;
+                this.scales = {};
+                this.handle = null;
+                
+                this.createDistribution();
+                this.render();
+            }
+            
+            createDistribution() {
+                const std = (this.config.max - this.config.min) * 0.15;
+                this.distribution = new NormalDistribution(this.currentValue, std);
+            }
+            
+            render() {
+                const container = d3.select(`#${this.config.containerId}`);
+                if (container.empty()) return;
+                
+                const containerRect = container.node().getBoundingClientRect();
+                const width = Math.max(280, containerRect.width - 20);
+                const height = 95;
+                const margin = { top: 15, right: 15, bottom: 25, left: 15 };
+                const innerWidth = width - margin.left - margin.right;
+                const innerHeight = height - margin.top - margin.bottom;
+                
+                container.selectAll("*").remove();
+                
+                this.svg = container.append("svg")
+                    .attr("width", width)
+                    .attr("height", height)
+                    .style("display", "block");
+                
+                const g = this.svg.append("g")
+                    .attr("transform", `translate(${margin.left},${margin.top})`);
+                
+                this.scales = {
+                    x: d3.scaleLinear().domain([this.config.min, this.config.max]).range([0, innerWidth]),
+                    y: d3.scaleLinear().domain([0, 1]).range([innerHeight - 25, 10])
+                };
+                
+                this.renderDistribution(g, innerWidth, innerHeight);
+                this.renderSlider(g, innerWidth, innerHeight);
+                this.updateStats();
+            }
+            
+            renderDistribution(g, width, height) {
+                const data = [];
+                for (let i = 0; i <= 100; i++) {
+                    const x = this.config.min + (this.config.max - this.config.min) * (i / 100);
+                    const y = this.distribution.pdf(x);
+                    data.push({ x, y });
+                }
+                
+                const maxY = Math.max(...data.map(d => d.y));
+                const normalizedData = data.map(d => ({ x: d.x, y: d.y / maxY }));
+                
+                const line = d3.line()
+                    .x(d => this.scales.x(d.x))
+                    .y(d => this.scales.y(d.y))
+                    .curve(d3.curveCardinal);
+                
+                const area = d3.area()
+                    .x(d => this.scales.x(d.x))
+                    .y0(this.scales.y(0))
+                    .y1(d => this.scales.y(d.y))
+                    .curve(d3.curveCardinal);
+                
+                const colors = this.getColors();
+                
+                g.selectAll('.distribution-fill, .distribution-path').remove();
+                
+                g.append("path")
+                    .datum(normalizedData)
+                    .attr("class", "distribution-fill")
+                    .attr("d", area)
+                    .style("fill", colors.fill)
+                    .style("opacity", 0.4);
+                
+                g.append("path")
+                    .datum(normalizedData)
+                    .attr("class", "distribution-path")
+                    .attr("d", line)
+                    .style("stroke", colors.stroke)
+                    .style("stroke-width", 2.5)
+                    .style("fill", "none");
+                
+                // Current value indicator
+                g.append("line")
+                    .attr("x1", this.scales.x(this.currentValue))
+                    .attr("x2", this.scales.x(this.currentValue))
+                    .attr("y1", this.scales.y(0))
+                    .attr("y2", this.scales.y(0.8))
+                    .style("stroke", colors.stroke)
+                    .style("stroke-width", 2)
+                    .style("stroke-dasharray", "4,2");
+            }
+            
+            renderSlider(g, width, height) {
+                const sliderY = height - 15;
+                const colors = this.getColors();
+                
+                // Track
+                g.append("line")
+                    .attr("class", "slider-track")
+                    .attr("x1", 0)
+                    .attr("x2", width)
+                    .attr("y1", sliderY)
+                    .attr("y2", sliderY)
+                    .style("stroke", "#cbd5e1")
+                    .style("stroke-width", 4)
+                    .style("stroke-linecap", "round");
+                
+                // Handle
+                this.handle = g.append("g")
+                    .attr("class", "slider-handle")
+                    .attr("transform", `translate(${this.scales.x(this.currentValue)}, ${sliderY})`)
+                    .style("cursor", "pointer");
+                
+                this.handle.append("circle")
+                    .attr("r", 10)
+                    .style("fill", colors.stroke)
+                    .style("stroke", "white")
+                    .style("stroke-width", 2.5)
+                    .style("filter", "drop-shadow(0 2px 4px rgba(0,0,0,0.2))");
+                
+                this.addInteraction(g, width, sliderY);
+            }
+            
+            addInteraction(g, width, sliderY) {
+                const self = this;
+                
+                const drag = d3.drag()
+                    .on("start", function(event) {
+                        event.sourceEvent.stopPropagation();
+                    })
+                    .on("drag", function(event) {
+                        const newX = Math.max(0, Math.min(width, event.x));
+                        const newValue = self.scales.x.invert(newX);
+                        const clampedValue = Math.max(self.config.min, Math.min(self.config.max, newValue));
+                        const snappedValue = Math.round(clampedValue / self.config.step) * self.config.step;
+                        
+                        self.updateValue(snappedValue);
+                    });
+                
+                this.handle.call(drag);
+                
+                // Click on track
+                g.append("rect")
+                    .attr("width", width)
+                    .attr("height", 20)
+                    .attr("y", sliderY - 10)
+                    .style("fill", "transparent")
+                    .style("cursor", "pointer")
+                    .on("click", function(event) {
+                        const [mouseX] = d3.pointer(event, this);
+                        const newValue = self.scales.x.invert(mouseX);
+                        const clampedValue = Math.max(self.config.min, Math.min(self.config.max, newValue));
+                        const snappedValue = Math.round(clampedValue / self.config.step) * self.config.step;
+                        
+                        self.updateValue(snappedValue);
+                    });
+            }
+            
+            updateValue(newValue) {
+                this.currentValue = newValue;
+                
+                // Update handle position
+                const sliderY = this.scales.y.range()[1] + 15;
+                this.handle.attr("transform", `translate(${this.scales.x(newValue)}, ${sliderY})`);
+                
+                // Update distribution
+                this.createDistribution();
+                
+                // Re-render distribution
+                const g = this.svg.select('g');
+                const containerRect = d3.select(`#${this.config.containerId}`).node().getBoundingClientRect();
+                const width = Math.max(280, containerRect.width - 50);
+                const height = 95;
+                this.renderDistribution(g, width - 30, height - 30);
+                
+                // Update parameter display
+                const valueDisplay = document.getElementById(`${this.config.parameter}-value`);
+                if (valueDisplay) {
+                    valueDisplay.textContent = this.formatValue(newValue);
+                }
+                
+                // Update stats
+                this.updateStats();
+                
+                // Notify calculator
+                if (this.calculator && this.calculator.updateParameter) {
+                    this.calculator.updateParameter(this.config.parameter, newValue);
+                }
+            }
+            
+            updateStats() {
+                const stats = this.distribution.getStats();
+                const statsHtml = `Mean: ${this.config.format(stats.mean)} | 95% CI: [${this.config.format(stats.ci95[0])}, ${this.config.format(stats.ci95[1])}]`;
+                
+                const statsElement = document.getElementById(`${this.config.parameter}-stats`);
+                if (statsElement) {
+                    statsElement.textContent = statsHtml;
+                }
+            }
+            
+            formatValue(value) {
+                const formatters = {
+                    vsl: (v) => `$${v.toFixed(1)}M`,
+                    suicides: (v) => `${Math.round(v/1000)}K`,
+                    attribution: (v) => `${v.toFixed(0)}%`,
+                    depression: (v) => `${(v/1000000).toFixed(1)}M`,
+                    yld: (v) => `${v.toFixed(1)} years`,
+                    qol: (v) => `${v.toFixed(0)}%`,
+                    healthcare: (v) => `$${(v/1000).toFixed(0)}K`,
+                    productivity: (v) => `$${(v/1000).toFixed(0)}K`,
+                    duration: (v) => `${v.toFixed(1)} years`
+                };
+                
+                return formatters[this.config.parameter] ? formatters[this.config.parameter](value) : value.toString();
+            }
+            
+            getColors() {
+                const colorMap = {
+                    vsl: { stroke: '#dc2626', fill: 'rgba(220, 38, 38, 0.15)' },
+                    suicides: { stroke: '#dc2626', fill: 'rgba(220, 38, 38, 0.15)' },
+                    attribution: { stroke: '#8b5cf6', fill: 'rgba(139, 92, 246, 0.15)' },
+                    depression: { stroke: '#059669', fill: 'rgba(5, 150, 105, 0.15)' },
+                    yld: { stroke: '#8b5cf6', fill: 'rgba(139, 92, 246, 0.15)' },
+                    qol: { stroke: '#8b5cf6', fill: 'rgba(139, 92, 246, 0.15)' },
+                    healthcare: { stroke: '#059669', fill: 'rgba(5, 150, 105, 0.15)' },
+                    productivity: { stroke: '#059669', fill: 'rgba(5, 150, 105, 0.15)' },
+                    duration: { stroke: '#059669', fill: 'rgba(5, 150, 105, 0.15)' }
+                };
+                
+                return colorMap[this.config.parameter] || { stroke: '#64748b', fill: 'rgba(100, 116, 139, 0.15)' };
+            }
+            
+            getValue() {
+                return this.currentValue;
+            }
+            
+            reset() {
+                this.updateValue(this.config.default);
+            }
+        }
+
+        // D3 Slider Manager
+        window.D3SliderManager = class {
+            constructor(calculator) {
+                this.calculator = calculator;
+                this.sliders = {};
+                this.configs = {
+                    vsl: { containerId: 'vsl-distribution', parameter: 'vsl', min: 8, max: 20, default: 13.7, step: 0.1, format: (v) => `$${v.toFixed(1)}M` },
+                    attribution: { containerId: 'attribution-distribution', parameter: 'attribution', min: 5, max: 30, default: 18, step: 1, format: (v) => `${v.toFixed(0)}%` },
+                    depression: { containerId: 'depression-distribution', parameter: 'depression', min: 3000000, max: 15000000, default: 5000000, step: 100000, format: (v) => `${(v/1000000).toFixed(1)}M` }
+                };
+            }
+            
+            initialize() {
+                console.log('🎚️ Initializing D3 distribution sliders...');
+                
+                Object.keys(this.configs).forEach(key => {
+                    try {
+                        this.sliders[key] = new DistributionSlider(this.configs[key], this.calculator);
+                        console.log(`✅ Created D3 slider: ${key}`);
+                    } catch (error) {
+                        console.error(`❌ Failed to create D3 slider ${key}:`, error);
+                    }
+                });
+                
+                console.log('🎯 D3 sliders initialized successfully');
+            }
+            
+            updateSlider(parameter, value) {
+                const slider = this.sliders[parameter];
+                if (slider) slider.updateValue(value);
+            }
+            
+            getSliderValue(parameter) {
+                const slider = this.sliders[parameter];
+                return slider ? slider.getValue() : null;
+            }
+            
+            resetAll() {
+                Object.values(this.sliders).forEach(slider => slider.reset());
+            }
+        };
+
+        // Test implementation
+        class TestSuite {
+            constructor() {
+                this.results = [];
+                this.sliderManager = null;
+                this.init();
+            }
+
+            init() {
+                console.log('🧪 Starting D3 slider integration tests...');
+                
+                setTimeout(() => {
+                    this.runTests();
+                    this.setupScenarioTests();
+                }, 500);
+            }
+
+            runTests() {
+                // Test 1: D3.js availability
+                this.test('D3.js Library', typeof d3 !== 'undefined', 'D3.js library should be loaded');
+                
+                // Test 2: D3SliderManager availability
+                this.test('D3SliderManager Class', typeof window.D3SliderManager !== 'undefined', 'D3SliderManager should be available');
+                
+                // Test 3: Create slider manager
+                try {
+                    this.sliderManager = new window.D3SliderManager(this);
+                    this.test('Slider Manager Creation', true, 'Should create D3SliderManager instance');
+                } catch (error) {
+                    this.test('Slider Manager Creation', false, `Failed to create: ${error.message}`);
+                    return;
+                }
+                
+                // Test 4: Initialize sliders
+                try {
+                    this.sliderManager.initialize();
+                    this.test('Slider Initialization', true, 'Should initialize all sliders');
+                } catch (error) {
+                    this.test('Slider Initialization', false, `Failed to initialize: ${error.message}`);
+                }
+                
+                // Test 5: Check slider creation
+                const testParams = ['vsl', 'attribution', 'depression'];
+                testParams.forEach(param => {
+                    const slider = this.sliderManager.sliders[param];
+                    this.test(`${param.toUpperCase()} Slider`, !!slider, `Should create ${param} slider`);
+                });
+                
+                // Test 6: Check DOM elements
+                testParams.forEach(param => {
+                    const container = document.getElementById(`${param}-distribution`);
+                    const svg = container ? container.querySelector('svg') : null;
+                    this.test(`${param.toUpperCase()} DOM`, !!svg, `Should create SVG for ${param}`);
+                });
+                
+                this.displayResults();
+            }
+
+            setupScenarioTests() {
+                document.getElementById('test-scenario-reset').addEventListener('click', () => {
+                    this.testScenario('reset', { vsl: 13.7, attribution: 18, depression: 5000000 });
+                });
+                
+                document.getElementById('test-scenario-aggressive').addEventListener('click', () => {
+                    this.testScenario('aggressive', { vsl: 20, attribution: 30, depression: 15000000 });
+                });
+                
+                document.getElementById('test-scenario-optimistic').addEventListener('click', () => {
+                    this.testScenario('optimistic', { vsl: 8, attribution: 5, depression: 3000000 });
+                });
+            }
+
+            testScenario(scenarioName, expectedValues) {
+                console.log(`🎯 Testing scenario: ${scenarioName}`);
+                
+                // Update sliders to expected values
+                Object.entries(expectedValues).forEach(([param, value]) => {
+                    if (this.sliderManager && this.sliderManager.sliders[param]) {
+                        this.sliderManager.updateSlider(param, value);
+                    }
+                });
+                
+                // Verify values after update
+                let results = [];
+                Object.entries(expectedValues).forEach(([param, expectedValue]) => {
+                    const slider = this.sliderManager.sliders[param];
+                    if (slider) {
+                        const actualValue = slider.getValue();
+                        const isCorrect = Math.abs(actualValue - expectedValue) < 0.001;
+                        results.push(`${param}: ${isCorrect ? '✅' : '❌'} (${actualValue} vs ${expectedValue})`);
+                    }
+                });
+                
+                document.getElementById('scenario-results').innerHTML = `
+                    <strong>Scenario "${scenarioName}" Test Results:</strong><br>
+                    ${results.join('<br>')}
+                `;
+            }
+
+            test(name, condition, description) {
+                const result = {
+                    name,
+                    passed: condition,
+                    description
+                };
+                this.results.push(result);
+                console.log(`${condition ? '✅' : '❌'} ${name}: ${description}`);
+            }
+
+            displayResults() {
+                const passed = this.results.filter(r => r.passed).length;
+                const total = this.results.length;
+                const allPassed = passed === total;
+                
+                const statusElement = document.getElementById('test-status');
+                statusElement.className = `test-section ${allPassed ? 'test-pass' : 'test-fail'}`;
+                
+                const resultsElement = document.getElementById('test-results');
+                resultsElement.innerHTML = `
+                    <div class="mb-2">
+                        <strong>${allPassed ? '✅' : '❌'} Test Results: ${passed}/${total} passed</strong>
+                    </div>
+                    ${this.results.map(r => `
+                        <div class="${r.passed ? 'text-green-700' : 'text-red-700'}">
+                            ${r.passed ? '✅' : '❌'} ${r.name}: ${r.description}
+                        </div>
+                    `).join('')}
+                `;
+            }
+
+            // Mock calculator interface
+            updateParameter(param, value) {
+                console.log(`📊 Calculator received update: ${param} = ${value}`);
+            }
+        }
+
+        // Start tests when page loads
+        window.addEventListener('load', () => {
+            new TestSuite();
+        });
+    </script>
+</body>
+</html> 

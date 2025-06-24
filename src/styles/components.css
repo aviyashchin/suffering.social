@@ -1,0 +1,976 @@
+/**
+ * Component Styles
+ * 
+ * Specific styling for calculator components, built on the base CSS foundation.
+ * Each component has clear, semantic styling that's easy to maintain.
+ * 
+ * @fileoverview Component-specific CSS styles
+ * @version 1.0.0
+ */
+
+/* ============================================================================
+   FIXED ELEMENTS
+   ============================================================================ */
+
+/* Top Bar - Clean implementation replacing "nuclear" CSS */
+#top-bar {
+  background: linear-gradient(135deg, #1f2937, #374151);
+  color: white;
+  padding: 1rem 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#top-bar .text-red-400 {
+  color: #f87171;
+  font-family: 'Courier New', Monaco, monospace;
+}
+
+#top-bar .text-gray-300 {
+  color: #d1d5db;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+#top-bar .text-gray-200 {
+  color: #e5e7eb;
+}
+
+/* Help Button */
+#help-button {
+  background-color: #ef4444;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#help-button:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+#help-button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Branding - Enhanced visibility and positioning */
+#branding {
+  background: rgba(255, 255, 255, 0.98) !important;
+  backdrop-filter: blur(6px) !important;
+  border: 1px solid #d1d5db !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 8px !important;
+  position: fixed !important;
+  bottom: 24px !important;
+  left: 24px !important;
+  z-index: 999995 !important;
+  padding: 12px !important;
+  font-size: 12px !important;
+  max-width: 200px !important;
+  line-height: 1.4 !important;
+  color: #374151 !important;
+  transform: none !important;
+}
+
+#branding a {
+  color: #3b82f6 !important;
+  text-decoration: none;
+  font-weight: 600 !important;
+  transition: color 0.2s ease;
+}
+
+#branding a:hover {
+  color: #1d4ed8 !important;
+  text-decoration: underline;
+}
+
+/* ============================================================================
+   CALCULATOR COMPONENTS
+   ============================================================================ */
+
+/* Calculator Section */
+.calculator-section {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+/* Calculator Header */
+.calculator-header {
+  background: linear-gradient(135deg, #1f2937, #374151);
+  color: white;
+  text-align: center;
+}
+
+.calculator-header h2 {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.calculator-header p {
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1rem;
+}
+
+/* Scenario Buttons */
+.scenario-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  max-width: 28rem;
+  margin: 0 auto;
+}
+
+.scenario-btn {
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.scenario-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.scenario-btn:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.scenario-btn.active {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* ============================================================================
+   PARAMETER GROUPS
+   ============================================================================ */
+
+.parameter-group {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.parameter-group h3 {
+  color: #111827;
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Parameter Styling by Type */
+.parameter-group[data-group="mortality"] {
+  border-left: 4px solid #ef4444;
+}
+
+.parameter-group[data-group="mortality"] h3 {
+  color: #dc2626;
+}
+
+.parameter-group[data-group="mental-health"] {
+  border-left: 4px solid #8b5cf6;
+}
+
+.parameter-group[data-group="mental-health"] h3 {
+  color: #8b5cf6;
+}
+
+.parameter-group[data-group="healthcare"] {
+  border-left: 4px solid #059669;
+}
+
+.parameter-group[data-group="healthcare"] h3 {
+  color: #059669;
+}
+
+/* Individual Parameters */
+.parameter {
+  margin-bottom: 1.5rem;
+}
+
+.parameter-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.parameter-value {
+  font-family: 'Courier New', Monaco, monospace;
+  font-weight: 700;
+  color: #1f2937;
+  background: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+}
+
+/* Sliders */
+.parameter-slider {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: #e5e7eb;
+  appearance: none;
+  outline: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.parameter-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.15s ease;
+}
+
+.parameter-slider::-webkit-slider-thumb:hover {
+  background: #2563eb;
+  transform: scale(1.1);
+}
+
+.parameter-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.parameter-slider:focus {
+  background: #ddd6fe;
+}
+
+/* Info Buttons - Removed duplicate (better version below) */
+
+/* Formula Display */
+.formula-display {
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+  font-family: 'Courier New', Monaco, monospace;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.formula-display strong {
+  color: #111827;
+  font-weight: 600;
+}
+
+/* ============================================================================
+   RESULTS SECTION
+   ============================================================================ */
+
+.results-section {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04);
+  min-width: 0; /* Prevent flex shrinking issues */
+}
+
+/* Ensure charts section is visible */
+.charts-section {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Total Card */
+.total-card {
+  background: linear-gradient(135deg, #1f2937, #374151);
+  color: white;
+  text-align: center;
+  border-radius: 12px;
+}
+
+.total-card .text-red-400 {
+  color: #f87171;
+  font-family: 'Courier New', Monaco, monospace;
+}
+
+/* Counter Card */
+.counter-card {
+  background: linear-gradient(135deg, #374151, #4b5563);
+  color: white;
+  text-align: center;
+  border-radius: 12px;
+}
+
+.counter-card .text-red-400 {
+  color: #f87171;
+  font-family: 'Courier New', Monaco, monospace;
+}
+
+/* Charts */
+.chart-container {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+}
+
+.chart-container h4 {
+  color: #374151;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+/* Chart wrapper for proper responsive sizing */
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  max-height: 220px;
+}
+
+.chart-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  display: block !important;
+}
+
+/* Ensure charts are visible */
+#pie-chart,
+#timeline-chart {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Responsive chart sizing */
+@media (max-width: 1023px) {
+  .chart-wrapper {
+    height: 300px; /* Slightly bigger on mobile */
+  }
+}
+
+@media (min-width: 1024px) {
+  .chart-wrapper {
+    height: 220px; /* Compact for sidebar */
+  }
+}
+
+/* Unified Parameter Component with Integrated Distribution */
+.parameter {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem; /* Increased from 1rem to prevent overlap */
+  position: relative;
+  transition: all 0.2s ease;
+  min-height: 180px; /* Ensure minimum height to accommodate charts */
+}
+
+.parameter:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Parameter label styling */
+.parameter-label {
+  display: flex;
+  justify-content: between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.parameter-label span:first-child {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.parameter-value {
+  font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+  font-weight: 600;
+  color: #1f2937;
+  background: #ffffff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  min-width: 4rem;
+  text-align: center;
+}
+
+/* Slider styling */
+.parameter-slider {
+  width: 100%;
+  margin: 0.5rem 0;
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 3px;
+  outline: none;
+  transition: background 0.3s ease;
+}
+
+.parameter-slider:hover {
+  background: #d1d5db;
+}
+
+.parameter-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.parameter-slider::-webkit-slider-thumb:hover {
+  background: #2563eb;
+  transform: scale(1.1);
+}
+
+.parameter-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Distribution Chart Integration */
+
+.distribution-chart {
+  width: 100% !important;
+  height: 62px !important;
+  max-height: 62px !important;
+  display: block !important;
+}
+
+/* Statistical Summary Overlay - Fixed positioning */
+.distribution-stats {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  right: 6px;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 9px;
+  font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+  color: #6b7280;
+  line-height: 1.2;
+  z-index: 10;
+  pointer-events: none;
+  backdrop-filter: blur(2px);
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  max-height: 18px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Parameter group color coding */
+.parameter-group[data-group="mortality"] .parameter {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.parameter-group[data-group="mortality"] .parameter:hover {
+  border-color: #fca5a5;
+}
+
+.parameter-group[data-group="mental-health"] .parameter {
+  background: #f5f3ff;
+  border-color: #d8b4fe;
+}
+
+.parameter-group[data-group="mental-health"] .parameter:hover {
+  border-color: #c4b5fd;
+}
+
+.parameter-group[data-group="healthcare"] .parameter {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.parameter-group[data-group="healthcare"] .parameter:hover {
+  border-color: #86efac;
+}
+
+/* Info button styling - Enhanced hover states */
+.info-btn {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  opacity: 0.8;
+  color: #3b82f6;
+  font-weight: 600;
+  min-width: 20px;
+  min-height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-btn:hover {
+  opacity: 1;
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.4);
+  transform: scale(1.15);
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+  color: #2563eb;
+}
+
+.info-btn:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.info-btn:active {
+  transform: scale(1.05);
+  transition: transform 0.1s ease;
+}
+
+/* Distribution research label */
+.distribution-chart-container::before {
+  content: 'Research Distribution';
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  font-size: 8px;
+  color: #6b7280;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 5;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 3px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(156, 163, 175, 0.2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Enhanced curve styling */
+.distribution-chart-container {
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  height: 95px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.distribution-chart-container::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, currentColor 50%, transparent 100%);
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* Parameter-specific curve colors */
+.parameter-group[data-group="mortality"] .distribution-chart-container::after {
+  color: #dc2626;
+}
+
+.parameter-group[data-group="mental-health"] .distribution-chart-container::after {
+  color: #8b5cf6;
+}
+
+.parameter-group[data-group="healthcare"] .distribution-chart-container::after {
+  color: #059669;
+}
+
+/* Fixed element positioning helpers */
+.fixed-element {
+  position: fixed !important;
+  z-index: 999990 !important;
+  transform: none !important;
+}
+
+.fixed-bottom-left {
+  bottom: 24px !important;
+  left: 24px !important;
+}
+
+.fixed-bottom-right {
+  bottom: 24px !important;
+  right: 24px !important;
+}
+
+.fixed-top {
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100vw !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .parameter {
+    padding: 0.75rem;
+  }
+  
+  .parameter-label {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .parameter-value {
+    align-self: flex-end;
+  }
+  
+  .distribution-chart-container {
+    height: 75px;
+  }
+  
+  .distribution-chart {
+    height: 55px !important;
+  }
+}
+
+/* Hide distributions option */
+.hide-distributions .distribution-chart-container {
+  display: none;
+}
+
+.hide-distributions .parameter {
+  padding-bottom: 0.75rem;
+}
+
+/* Community Section */
+.community-section {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+}
+
+.community-section h4 {
+  color: #1e40af;
+  font-weight: 600;
+}
+
+.community-section input,
+.community-section select {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  transition: border-color 0.15s ease;
+}
+
+.community-section input:focus,
+.community-section select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.community-section button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.community-section button:hover {
+  background: #1d4ed8;
+}
+
+/* Share Section */
+.share-section h4 {
+  color: #374151;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.share-btn {
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.share-btn:hover {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+  transform: translateY(-1px);
+}
+
+.share-btn:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* ============================================================================
+   RESEARCH SECTION
+   ============================================================================ */
+
+.research-section {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+}
+
+.research-section h3 {
+  color: #1e40af;
+  font-weight: 600;
+}
+
+.research-link {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.15s ease;
+  display: block;
+}
+
+.research-link:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+.research-link strong {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.research-link .text-gray-600 {
+  color: #6b7280;
+}
+
+/* ============================================================================
+   MODAL & TOOLTIPS
+   ============================================================================ */
+
+/* Help Modal */
+#help-modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  border: 1px solid #e5e7eb;
+  max-width: 28rem;
+  width: 90vw;
+}
+
+#help-modal h3 {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+#help-modal #close-help {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+#help-modal #close-help:hover {
+  color: #374151;
+}
+
+/* Tooltip Container */
+#tooltip-container {
+  position: absolute;
+  z-index: 1050;
+  pointer-events: none;
+}
+
+.tooltip {
+  background: #1f2937;
+  color: white;
+  padding: 0.75rem;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  font-size: 0.875rem;
+  max-width: 20rem;
+  z-index: 1050;
+}
+
+.tooltip strong {
+  font-weight: 600;
+}
+
+.tooltip a {
+  color: #93c5fd;
+  text-decoration: underline;
+}
+
+.tooltip a:hover {
+  color: #dbeafe;
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .scenario-buttons {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .scenario-btn {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .parameter-group {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .parameter-label {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .parameter-value {
+    align-self: flex-end;
+  }
+  
+  .parameter-slider {
+    height: 12px;
+  }
+  
+  .parameter-slider::-webkit-slider-thumb {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .parameter-slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .research-links {
+    grid-template-columns: 1fr;
+  }
+  
+  #help-modal {
+    width: 95vw;
+    margin: 1rem;
+  }
+}
+
+/* Large screen adjustments */
+@media (min-width: 1024px) {
+  .parameter-group {
+    padding: 2rem;
+  }
+  
+  .chart-container {
+    padding: 1.5rem;
+  }
+  
+  .total-card,
+  .counter-card {
+    padding: 2rem;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .parameter-slider {
+    background: #000;
+    border: 2px solid #333;
+  }
+  
+  .parameter-slider::-webkit-slider-thumb {
+    background: #fff;
+    border: 2px solid #000;
+  }
+  
+  .info-btn {
+    border: 2px solid currentColor;
+  }
+  
+  .scenario-btn {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Print styles */
+@media print {
+  .fixed-element {
+    position: static !important;
+  }
+  
+  .scenario-buttons,
+  .share-section,
+  #help-button,
+  #branding {
+    display: none !important;
+  }
+  
+  .parameter-slider {
+    display: none;
+  }
+  
+  .parameter-value::after {
+    content: " (current value)";
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+} 

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distribution Curves Test | Social Media Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link rel="stylesheet" href="src/styles/base.css">
+    <link rel="stylesheet" href="src/styles/components.css">
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-center">🎯 Distribution Curves Test</h1>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <!-- VSL Curve Test -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h3 class="font-bold mb-4 text-red-700">Value of Statistical Life</h3>
+                <div class="parameter-group" data-group="mortality">
+                    <div class="parameter">
+                        <label class="parameter-label">
+                            <span>VSL ($13.7M)</span>
+                            <span class="parameter-value">$13.7M</span>
+                        </label>
+                        <input type="range" min="8" max="20" value="13.7" step="0.1" 
+                               class="parameter-slider" id="vsl-test-slider" />
+                        <div class="distribution-chart-container" data-parameter="vsl">
+                            <canvas class="distribution-chart" id="vsl-test-distribution"></canvas>
+                            <div class="distribution-stats" id="vsl-test-stats">Mean: $13.7M | 80% CI: [$10.2M, $17.8M]</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Depression Curve Test -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h3 class="font-bold mb-4 text-purple-700">Depression Cases</h3>
+                <div class="parameter-group" data-group="mental-health">
+                    <div class="parameter">
+                        <label class="parameter-label">
+                            <span>Affected People (5M)</span>
+                            <span class="parameter-value">5.0M</span>
+                        </label>
+                        <input type="range" min="3000000" max="15000000" value="5000000" step="100000" 
+                               class="parameter-slider" id="depression-test-slider" />
+                        <div class="distribution-chart-container" data-parameter="depression">
+                            <canvas class="distribution-chart" id="depression-test-distribution"></canvas>
+                            <div class="distribution-stats" id="depression-test-stats">Mean: 5.0M | 80% CI: [3.5M, 8.0M]</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Healthcare Curve Test -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h3 class="font-bold mb-4 text-green-700">Healthcare Costs</h3>
+                <div class="parameter-group" data-group="healthcare">
+                    <div class="parameter">
+                        <label class="parameter-label">
+                            <span>Annual Cost ($7K)</span>
+                            <span class="parameter-value">$7,000</span>
+                        </label>
+                        <input type="range" min="6500" max="20000" value="7000" step="100" 
+                               class="parameter-slider" id="healthcare-test-slider" />
+                        <div class="distribution-chart-container" data-parameter="healthcare">
+                            <canvas class="distribution-chart" id="healthcare-test-distribution"></canvas>
+                            <div class="distribution-stats" id="healthcare-test-stats">Mean: $7K | 80% CI: [$6.8K, $9.2K]</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Results -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h2 class="text-xl font-bold text-blue-800 mb-4">✅ Curve Features Test</h2>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <h3 class="font-semibold mb-2 text-blue-700">Visual Features:</h3>
+                    <ul class="space-y-1 text-blue-600">
+                        <li>• Smooth interpolated curves (50 data points)</li>
+                        <li>• Color-coded by parameter group</li>
+                        <li>• Gradient fill under curves</li>
+                        <li>• Current value highlighting (red dot)</li>
+                        <li>• Research distribution labels</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-2 text-blue-700">Interactive Features:</h3>
+                    <ul class="space-y-1 text-blue-600">
+                        <li>• Hover tooltips with likelihood percentages</li>
+                        <li>• Smooth animations on value changes</li>
+                        <li>• Real-time curve updates</li>
+                        <li>• Statistical summary overlay</li>
+                        <li>• Responsive design</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="mt-6 bg-gray-100 p-4 rounded-lg">
+            <h3 class="font-bold mb-2">🎮 Test Instructions:</h3>
+            <p class="text-gray-700 text-sm">
+                Move the sliders above to see the smooth distribution curves update in real-time. 
+                Notice how the red dot highlights your current value on each curve, and hover over 
+                the curves to see likelihood percentages. Each curve represents research uncertainty 
+                from peer-reviewed studies.
+            </p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { generateDistributionData } from './src/utils/distributions.js';
+        
+        const testParams = [
+            { id: 'vsl-test', param: 'vsl', value: 13.7 },
+            { id: 'depression-test', param: 'depression', value: 5000000 },
+            { id: 'healthcare-test', param: 'healthcare', value: 7000 }
+        ];
+
+        function createTestChart(config) {
+            const canvas = document.getElementById(`${config.id}-distribution`);
+            const slider = document.getElementById(`${config.id}-slider`);
+            
+            if (!canvas || !slider) return;
+
+            const distributionData = generateDistributionData(config.param, config.value);
+            if (!distributionData) return;
+
+            const chart = new Chart(canvas, {
+                type: 'line',
+                data: distributionData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { intersect: false, mode: 'index' },
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: '#ffffff',
+                            borderWidth: 1,
+                            callbacks: {
+                                title: () => 'Research Uncertainty',
+                                label: (context) => `Likelihood: ${(context.parsed.y * 100).toFixed(0)}%`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { display: false, grid: { display: false }},
+                        y: { display: false, beginAtZero: true, max: 1.1, grid: { display: false }}
+                    },
+                    elements: { point: { hoverRadius: 6, hoverBorderWidth: 2 }},
+                    animation: { duration: 1000, easing: 'easeInOutQuart' }
+                }
+            });
+
+            // Update on slider change
+            slider.addEventListener('input', () => {
+                const newValue = parseFloat(slider.value);
+                const newData = generateDistributionData(config.param, newValue);
+                
+                if (newData) {
+                    chart.data.datasets[0].data = newData.datasets[0].data;
+                    chart.data.datasets[0].pointRadius = newData.datasets[0].pointRadius;
+                    chart.data.datasets[0].pointBackgroundColor = newData.datasets[0].pointBackgroundColor;
+                    chart.update('active');
+                }
+            });
+
+            return chart;
+        }
+
+        // Initialize test charts
+        document.addEventListener('DOMContentLoaded', () => {
+            testParams.forEach(createTestChart);
+        });
+    </script>
+</body>
+</html> 

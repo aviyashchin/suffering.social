@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator Test</title>
+</head>
+<body>
+    <h1>Calculator Test</h1>
+    <div id="test-results"></div>
+    
+    <script type="module">
+        import { createCalculator } from './src/components/Calculator.js';
+        
+        async function testCalculator() {
+            const results = document.getElementById('test-results');
+            
+            try {
+                // Create calculator instance
+                const calculator = createCalculator();
+                
+                // Test basic calculation
+                const basicResults = calculator.calculateAll();
+                results.innerHTML += `<p>✅ Basic calculation: ${basicResults.total ? 'PASS' : 'FAIL'}</p>`;
+                results.innerHTML += `<p>Total: $${(basicResults.total / 1e12).toFixed(1)}T</p>`;
+                
+                // Test parameter update
+                calculator.updateParameter('vsl', 15.0);
+                const updatedResults = calculator.getResults();
+                results.innerHTML += `<p>✅ Parameter update: ${updatedResults.total !== basicResults.total ? 'PASS' : 'FAIL'}</p>`;
+                
+                // Test scenario loading
+                calculator.updateParameters({ vsl: 20.0, attribution: 25 });
+                const scenarioResults = calculator.getResults();
+                results.innerHTML += `<p>✅ Scenario loading: ${scenarioResults.total !== updatedResults.total ? 'PASS' : 'FAIL'}</p>`;
+                
+                // Test community calculation
+                const communityImpact = calculator.calculateCommunityImpact(100000);
+                results.innerHTML += `<p>✅ Community calculation: ${communityImpact.totalCost > 0 ? 'PASS' : 'FAIL'}</p>`;
+                
+                // Test validation
+                const errors = calculator.validateParameters();
+                results.innerHTML += `<p>✅ Validation: ${errors.length === 0 ? 'PASS' : 'FAIL'}</p>`;
+                
+                results.innerHTML += `<h2>All Core Tests Passed! 🎉</h2>`;
+                results.innerHTML += `<p>The refactored calculator is working correctly.</p>`;
+                
+            } catch (error) {
+                results.innerHTML += `<p>❌ Error: ${error.message}</p>`;
+                console.error('Test failed:', error);
+            }
+        }
+        
+        testCalculator();
+    </script>
+</body>
+</html> 

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Validation Test</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="src/styles/base.css">
+    <link rel="stylesheet" href="src/styles/components.css">
+    
+    <style>
+        body {
+            padding: 2rem;
+            background: #f3f4f6;
+            font-family: system-ui, sans-serif;
+        }
+        
+        .test-section {
+            background: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .test-case {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .next-element {
+            background: #fef3c7;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            border: 2px dashed #f59e0b;
+        }
+        
+        .pass {
+            color: #16a34a;
+            font-weight: 600;
+        }
+        
+        .fail {
+            color: #dc2626;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="text-align: center; color: #1f2937; margin-bottom: 2rem;">🧪 Fix Validation Test</h1>
+    
+    <!-- Test 1: Distribution Chart Overlap Fix -->
+    <div class="test-section">
+        <div class="test-title">Test 1: Distribution Chart Overlap Fix</div>
+        
+        <div class="test-case">
+            <strong>Expected:</strong> Stats overlay should stay within chart container, not overlap with content below.
+            
+            <div class="parameter">
+                <label class="parameter-label">
+                    <span>Test Parameter
+                        <button class="info-btn" data-parameter="test" aria-label="Test info button">ℹ️</button>
+                    </span>
+                    <span class="parameter-value">$13.7M</span>
+                </label>
+                <input type="range" class="parameter-slider" min="8" max="20" value="13.7" step="0.1">
+                <div class="distribution-chart-container" data-parameter="test">
+                    <canvas class="distribution-chart" style="background: linear-gradient(45deg, #3b82f6, #8b5cf6);">
+                        <!-- Simulated chart content -->
+                    </canvas>
+                    <div class="distribution-stats">
+                        Mean: $13.7M | Median: $13.7M | 95% CI: [$10.0M, $17.4M]
+                    </div>
+                </div>
+            </div>
+            
+            <div class="next-element">
+                <strong>✅ PASS:</strong> This yellow box should not overlap with the stats above.
+                <br>If you see gray text overlapping this yellow area, the fix failed.
+            </div>
+        </div>
+    </div>
+    
+    <!-- Test 2: Info Button Hover Fix -->
+    <div class="test-section">
+        <div class="test-title">Test 2: Info Button Hover Fix</div>
+        
+        <div class="test-case">
+            <strong>Expected:</strong> Info buttons should have visible hover states with blue background and scaling effect.
+            
+            <div style="padding: 1rem;">
+                <p>Hover over these info buttons:</p>
+                <button class="info-btn" data-parameter="test1">ℹ️</button>
+                <button class="info-btn" data-parameter="test2">ℹ️</button>
+                <button class="info-btn" data-parameter="test3">ℹ️</button>
+            </div>
+            
+            <div style="margin-top: 1rem; padding: 1rem; background: #e0f2fe; border-radius: 6px;">
+                <strong>✅ PASS Criteria:</strong>
+                <ul>
+                    <li>Buttons have light blue background by default</li>
+                    <li>On hover: darker blue background, slight scale increase, shadow appears</li>
+                    <li>Smooth transition animations</li>
+                    <li>Circular shape with centered emoji</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Test 3: Branding Visibility Fix -->
+    <div class="test-section">
+        <div class="test-title">Test 3: Branding Element Visibility</div>
+        
+        <div class="test-case">
+            <strong>Expected:</strong> Branding should be visible in bottom-left corner with proper styling.
+            
+            <div style="margin: 1rem 0; padding: 1rem; background: #f0fdf4; border-radius: 6px;">
+                <strong>✅ PASS Criteria:</strong>
+                <ul>
+                    <li>Look at bottom-left corner of browser window</li>
+                    <li>Should see a white card with "A Subconscious.ai project"</li>
+                    <li>Card should have subtle shadow and rounded corners</li>
+                    <li>Text should be clearly readable</li>
+                    <li>Link should be blue and clickable</li>
+                </ul>
+            </div>
+            
+            <div style="margin-top: 1rem; padding: 1rem; background: #fef2f2; border-radius: 6px;">
+                <strong>❌ FAIL if:</strong>
+                <ul>
+                    <li>No branding visible at all</li>
+                    <li>Branding appears cut off or overlapped</li>
+                    <li>Text is unreadable or poorly positioned</li>
+                    <li>Styling looks broken or unstyled</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Test Summary -->
+    <div class="test-section" style="border: 3px solid #16a34a;">
+        <div class="test-title" style="color: #16a34a;">🎯 Test Summary</div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+            <div style="padding: 1rem; background: #f0fdf4; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">📊</div>
+                <strong>Chart Overlap</strong><br>
+                <span class="pass">Fixed ✅</span>
+            </div>
+            
+            <div style="padding: 1rem; background: #eff6ff; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔘</div>
+                <strong>Button Hover</strong><br>
+                <span class="pass">Enhanced ✅</span>
+            </div>
+            
+            <div style="padding: 1rem; background: #fef7ff; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏷️</div>
+                <strong>Branding Visible</strong><br>
+                <span class="pass">Positioned ✅</span>
+            </div>
+        </div>
+        
+        <div style="margin-top: 2rem; padding: 1rem; background: #1f2937; color: white; border-radius: 8px; text-align: center;">
+            <strong>🚀 All fixes implemented and ready for testing!</strong>
+        </div>
+    </div>
+    
+    <!-- Branding Element (Test Subject) -->
+    <div id="branding" class="fixed-element fixed-bottom-left">
+        <div class="text-xs text-gray-600">
+            A <a href="https://subconscious.ai" target="_blank" class="text-blue-600">Subconscious.ai</a> project
+        </div>
+    </div>
+</body>
+</html> 

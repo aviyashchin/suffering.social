@@ -25,16 +25,16 @@ class DistributionSliderLoader {
      * @param {Object} options - Loading options
      */
     async load(callback = () => {}, options = {}) {
-        console.log('🔄 Distribution slider loader called...');
+        // console.log('🔄 Distribution slider loader called...');
         
         if (this.isLoaded) {
-            console.log('✅ Already loaded, calling callback');
+            // console.log('✅ Already loaded, calling callback');
             callback(null, true);
             return;
         }
 
         if (this.isLoading) {
-            console.log('⏳ Already loading, adding callback to queue');
+            // console.log('⏳ Already loading, adding callback to queue');
             this.callbacks.push(callback);
             return;
         }
@@ -43,27 +43,27 @@ class DistributionSliderLoader {
         this.callbacks.push(callback);
         this.loadAttempts++;
 
-        console.log(`🚀 Starting load attempt ${this.loadAttempts}/${this.maxAttempts}`);
+        // console.log(`🚀 Starting load attempt ${this.loadAttempts}/${this.maxAttempts}`);
 
         try {
             // Load dependencies first
-            console.log('📦 Loading dependencies...');
+            // console.log('📦 Loading dependencies...');
             await this.loadDependencies();
-            console.log('✅ Dependencies loaded');
+            // console.log('✅ Dependencies loaded');
             
             // Load the main library
-            console.log('📚 Loading distribution sliders library...');
+            // console.log('📚 Loading distribution sliders library...');
             await this.loadDistributionSliders();
-            console.log('✅ Distribution sliders library loaded');
+            // console.log('✅ Distribution sliders library loaded');
             
             // Verify everything loaded correctly
-            console.log('🔍 Verifying library...');
+            // console.log('🔍 Verifying library...');
             
             // Add a small delay before verification to ensure classes are initialized
             await new Promise(resolve => setTimeout(resolve, 100));
             
             if (this.verifyLibrary()) {
-                console.log('✅ Library verification passed');
+                // console.log('✅ Library verification passed');
                 this.isLoaded = true;
                 this.notifyCallbacks(null, true);
             } else {
@@ -73,7 +73,7 @@ class DistributionSliderLoader {
             console.error('❌ Distribution slider loading failed:', error);
             
             if (this.loadAttempts < this.maxAttempts) {
-                console.log(`🔄 Retrying... (${this.loadAttempts}/${this.maxAttempts})`);
+                // console.log(`🔄 Retrying... (${this.loadAttempts}/${this.maxAttempts})`);
                 this.isLoading = false;
                 setTimeout(() => this.load(() => {}, options), 1000);
                 return;
@@ -90,17 +90,17 @@ class DistributionSliderLoader {
      */
     async loadDependencies() {
         for (const [name, dep] of Object.entries(this.dependencies)) {
-            console.log(`📦 Checking dependency: ${name}`);
+            // console.log(`📦 Checking dependency: ${name}`);
             
             if (!dep.check()) {
-                console.log(`⬇️ Loading ${name} from primary URL...`);
+                // console.log(`⬇️ Loading ${name} from primary URL...`);
                 try {
                     await this.loadScript(dep.url);
-                    console.log(`✅ ${name} loaded from primary URL`);
+                    // console.log(`✅ ${name} loaded from primary URL`);
                 } catch (error) {
                     console.warn(`⚠️ Primary URL failed for ${name}, trying fallback...`);
                     await this.loadScript(dep.fallback);
-                    console.log(`✅ ${name} loaded from fallback URL`);
+                    // console.log(`✅ ${name} loaded from fallback URL`);
                 }
                 
                 // Wait a bit for the script to initialize
@@ -110,7 +110,7 @@ class DistributionSliderLoader {
                     throw new Error(`Failed to load ${name} - not available after loading`);
                 }
             } else {
-                console.log(`✅ ${name} already available`);
+                // console.log(`✅ ${name} already available`);
             }
         }
     }
@@ -120,12 +120,12 @@ class DistributionSliderLoader {
      */
     async loadDistributionSliders() {
         if (!window.DistributionSlider || !window.DistributionSliderManager) {
-            console.log('⬇️ Loading distribution-sliders.js...');
+            // console.log('⬇️ Loading distribution-sliders.js...');
             await this.loadScript('assets/distribution-sliders.js');
-            console.log('✅ distribution-sliders.js loaded');
+            // console.log('✅ distribution-sliders.js loaded');
             
             // Wait for classes to be available with more flexible checking
-            console.log('⏳ Waiting for distribution slider classes...');
+            // console.log('⏳ Waiting for distribution slider classes...');
             await this.waitForCondition(() => {
                 const hasDistributionSlider = window.DistributionSlider && typeof window.DistributionSlider === 'function';
                 const hasManager = window.DistributionSliderManager && typeof window.DistributionSliderManager === 'function';
@@ -133,18 +133,21 @@ class DistributionSliderLoader {
                 const hasBeta = window.BetaDistribution && typeof window.BetaDistribution === 'function';
                 const hasLogNormal = window.LogNormalDistribution && typeof window.LogNormalDistribution === 'function';
                 
-                console.log(`🔍 Class availability check:`, {
-                    DistributionSlider: hasDistributionSlider,
-                    DistributionSliderManager: hasManager,
-                    NormalDistribution: hasNormal,
-                    BetaDistribution: hasBeta,
-                    LogNormalDistribution: hasLogNormal
-                });
+                // Only log if there are issues
+                if (!(hasDistributionSlider && hasManager && hasNormal && hasBeta && hasLogNormal)) {
+                    // console.log(`🔍 Class availability check:`, {
+                    //     DistributionSlider: hasDistributionSlider,
+                    //     DistributionSliderManager: hasManager,
+                    //     NormalDistribution: hasNormal,
+                    //     BetaDistribution: hasBeta,
+                    //     LogNormalDistribution: hasLogNormal
+                    // });
+                }
                 
                 return hasDistributionSlider && hasManager && hasNormal && hasBeta && hasLogNormal;
             }, 10000); // Increased timeout
         } else {
-            console.log('✅ Distribution slider classes already available');
+            // console.log('✅ Distribution slider classes already available');
         }
     }
 
@@ -196,7 +199,7 @@ class DistributionSliderLoader {
             script.defer = true;
             
             script.onload = () => {
-                console.log(`✅ Script loaded: ${url}`);
+                // console.log(`✅ Script loaded: ${url}`);
                 // Add a longer delay to ensure script initialization
                 setTimeout(resolve, 200); // Increased from 50ms
             };
@@ -214,7 +217,7 @@ class DistributionSliderLoader {
      * Verify the library loaded correctly
      */
     verifyLibrary() {
-        console.log('🔍 Starting library verification...');
+        // console.log('🔍 Starting library verification...');
         
         try {
             const checks = [
@@ -235,11 +238,9 @@ class DistributionSliderLoader {
                     results[name] = passed;
                     if (!passed) {
                         console.error(`❌ Verification failed: ${name} not available`);
-                        console.error(`   window.${name}:`, window[name]);
-                        console.error(`   typeof window.${name}:`, typeof window[name]);
                         allPassed = false;
                     } else {
-                        console.log(`✅ Verification passed: ${name} available`);
+                        // console.log(`✅ Verification passed: ${name} available`);
                     }
                 } catch (error) {
                     console.error(`❌ Verification error for ${name}:`, error);
@@ -248,7 +249,7 @@ class DistributionSliderLoader {
                 }
             }
             
-            console.log('📊 Verification summary:', results);
+            // console.log('📊 Verification summary:', results);
             
             if (!allPassed) {
                 console.error('❌ Library verification failed - not all required classes available');
@@ -256,25 +257,23 @@ class DistributionSliderLoader {
             }
             
             // Try creating a test distribution to ensure math functions work
-            console.log('🧮 Testing mathematical functions...');
+            // console.log('🧮 Testing mathematical functions...');
             try {
                 const testDist = new window.NormalDistribution(0, 1);
                 const testPdf = testDist.pdf(0);
-                console.log(`📊 Normal distribution PDF(0) = ${testPdf}`);
+                // console.log(`📊 Normal distribution PDF(0) = ${testPdf}`);
                 
                 if (!isFinite(testPdf) || testPdf <= 0) {
                     console.error('❌ Math verification failed: Normal distribution PDF test failed');
-                    console.error(`   Expected positive finite number, got: ${testPdf}`);
                     return false;
                 }
-                console.log('✅ Math verification passed');
+                // console.log('✅ Math verification passed');
             } catch (error) {
                 console.error('❌ Math verification failed:', error);
-                console.error('   Error creating or testing NormalDistribution');
                 return false;
             }
             
-            console.log('✅ All library verification checks passed');
+            // console.log('✅ All library verification checks passed');
             return true;
             
         } catch (error) {
@@ -287,12 +286,12 @@ class DistributionSliderLoader {
      * Notify all waiting callbacks
      */
     notifyCallbacks(error, success) {
-        console.log(`📢 Notifying ${this.callbacks.length} callbacks: ${success ? 'success' : 'failure'}`);
+        // console.log(`📢 Notifying ${this.callbacks.length} callbacks: ${success ? 'success' : 'failure'}`);
         
         this.callbacks.forEach((callback, index) => {
             try {
                 callback(error, success);
-                console.log(`✅ Callback ${index + 1} notified successfully`);
+                // console.log(`✅ Callback ${index + 1} notified successfully`);
             } catch (err) {
                 console.error(`❌ Callback ${index + 1} error:`, err);
             }
@@ -325,13 +324,13 @@ window.distributionSliderLoader = new DistributionSliderLoader();
 
 // Enhanced auto-load logic
 function initializeLoader() {
-    console.log('🎯 Initializing distribution slider loader...');
+    // console.log('🎯 Initializing distribution slider loader...');
     
     if (!window.distributionSliderLoader.isLoading && !window.distributionSliderLoader.isLoaded) {
-        console.log('🚀 Starting auto-load...');
+        // console.log('🚀 Starting auto-load...');
         window.distributionSliderLoader.load((error, success) => {
             if (success) {
-                console.log('✅ Auto-load successful');
+                // console.log('✅ Auto-load successful');
                 // Dispatch event for other components
                 document.dispatchEvent(new CustomEvent('distributionSlidersReady'));
             } else {
