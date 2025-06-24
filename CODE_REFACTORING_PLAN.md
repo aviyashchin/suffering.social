@@ -457,20 +457,281 @@ testCalculationConsistency() {
 - [ ] Add range boundary tests
 - [ ] Add UI interaction tests
 
+### 📋 Phase 2: HTML Optimization & Mobile-First Redesign
+
+### Completed ✅ (Current Updates)
+
+#### **🛠️ Utility Functions Added**
+- **CalculatorUtils**: Number formatting, GDP calculations, validation helpers
+- **UIHelpers**: Safe DOM updates, loading states, animations
+- **MobileOptimizations**: Device detection, responsive helpers
+- **VariableMapper**: Consistent semantic naming
+
+#### **📱 Mobile-First Responsive Design**
+- **✅ Fixed excessive side margins on mobile**
+- **✅ Edge-to-edge content with internal padding**
+- **✅ Larger touch targets (44px minimum)**
+- **✅ Mobile-optimized text sizes and spacing**
+- **✅ Device-specific optimization on load**
+
+#### **🔧 Fixed Critical Issues**
+- **✅ GDP percentage update issue resolved**
+- **✅ Consistent number formatting using utilities**
+- **✅ Safe DOM updates with error handling**
+
+### 🎯 **Next Phase: HTML Structure Optimization**
+
+#### **1. Component Separation**
+
+**Current Problem**: 6,434-line monolithic HTML file
+**Solution**: Extract into logical components
+
+```html
+<!-- TARGET STRUCTURE -->
+├── index.html (300 lines max)
+├── components/
+│   ├── header.html
+│   ├── hero-section.html
+│   ├── calculator-form.html
+│   ├── results-sidebar.html
+│   ├── charts-section.html
+│   └── footer.html
+├── styles/
+│   ├── main.css
+│   ├── mobile.css
+│   ├── components.css
+│   └── themes.css
+└── scripts/
+    ├── calculator.js
+    ├── utilities.js
+    ├── charts.js
+    └── mobile.js
+```
+
+#### **2. CSS Architecture Optimization**
+
+**Current**: 1,200+ lines of CSS in `<style>` tags
+**Target**: Modular, maintainable CSS system
+
+```css
+/* styles/main.css - Core variables and reset */
+:root { /* CSS custom properties */ }
+* { /* Reset and base styles */ }
+
+/* styles/components.css - Reusable components */
+.btn { /* Button system */ }
+.card { /* Card system */ }
+.parameter-group { /* Form groups */ }
+
+/* styles/mobile.css - Mobile-specific optimizations */
+@media (max-width: 768px) { /* Mobile overrides */ }
+
+/* styles/themes.css - Color themes and variants */
+.theme-mortality { /* Red theme */ }
+.theme-mental-health { /* Purple theme */ }
+.theme-productivity { /* Green theme */ }
+```
+
+#### **3. JavaScript Modularization**
+
+**Current**: 4,000+ lines in single `<script>` tag
+**Target**: Clean, testable modules
+
+```javascript
+// scripts/utilities.js
+export { CalculatorUtils, UIHelpers, MobileOptimizations };
+
+// scripts/calculator.js
+import { CalculatorUtils } from './utilities.js';
+export class SocialMediaCalculator { }
+
+// scripts/charts.js
+import Chart from 'chart.js';
+export class ChartManager { }
+
+// scripts/mobile.js
+export class MobileInterface { }
+```
+
+#### **4. HTML Semantic Improvements**
+
+**Current Issues**:
+- Div soup in many sections
+- Missing semantic landmarks
+- Inconsistent heading hierarchy
+- Poor accessibility structure
+
+**Improvements**:
+```html
+<!-- BEFORE -->
+<div class="grid lg:grid-cols-3 gap-8">
+  <div class="lg:col-span-2">
+    <div class="card">...</div>
+  </div>
+</div>
+
+<!-- AFTER -->
+<main class="calculator-interface" role="main">
+  <section class="parameter-controls" aria-label="Calculator Parameters">
+    <form class="parameter-form" role="form">...</form>
+  </section>
+  <aside class="results-panel" aria-label="Calculation Results">...</aside>
+</main>
+```
+
+#### **5. Performance Optimizations**
+
+**Target Metrics**:
+- **First Contentful Paint**: < 1.5s
+- **Largest Contentful Paint**: < 2.5s
+- **Cumulative Layout Shift**: < 0.1
+- **Time to Interactive**: < 3.5s
+
+**Optimizations**:
+```html
+<!-- Critical CSS inlined -->
+<style>/* Only critical path CSS */</style>
+
+<!-- Non-critical CSS deferred -->
+<link rel="preload" href="styles/main.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+
+<!-- JavaScript modules -->
+<script type="module" src="scripts/main.js"></script>
+
+<!-- Images optimized -->
+<img src="hero.webp" alt="..." loading="lazy" width="800" height="600">
+```
+
+### 📐 **Design System Implementation**
+
+#### **1. Consistent Spacing System**
+```css
+:root {
+  --space-xs: 0.25rem;   /* 4px */
+  --space-sm: 0.5rem;    /* 8px */
+  --space-md: 1rem;      /* 16px */
+  --space-lg: 1.5rem;    /* 24px */
+  --space-xl: 2rem;      /* 32px */
+  --space-2xl: 3rem;     /* 48px */
+}
+```
+
+#### **2. Typography Scale**
+```css
+:root {
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.875rem;   /* 14px */
+  --text-base: 1rem;     /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  --text-xl: 1.25rem;    /* 20px */
+}
+```
+
+#### **3. Color System**
+```css
+:root {
+  /* Semantic colors */
+  --color-mortality: #dc2626;
+  --color-mental-health: #8b5cf6;
+  --color-productivity: #059669;
+  
+  /* Gray scale */
+  --gray-50: #f9fafb;
+  --gray-900: #111827;
+}
+```
+
+### 🎨 **Mobile-First UI Improvements**
+
+#### **1. Progressive Enhancement Approach**
+```css
+/* Mobile-first base styles */
+.parameter-group {
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Tablet enhancements */
+@media (min-width: 768px) {
+  .parameter-group {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+}
+
+/* Desktop enhancements */
+@media (min-width: 1024px) {
+  .parameter-group {
+    padding: 2rem;
+    margin-bottom: 2.5rem;
+  }
+}
+```
+
+#### **2. Touch-Friendly Interface**
+```css
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.75rem;
+}
+
+.slider-mobile {
+  height: 40px;
+  border-radius: 20px;
+}
+```
+
+#### **3. Simplified Mobile Layout**
+```html
+<!-- Mobile: Single column, stacked -->
+<div class="layout-mobile">
+  <header class="sticky-header">...</header>
+  <main class="calculator-main">
+    <section class="parameter-carousel">...</section>
+    <section class="results-summary">...</section>
+  </main>
+</div>
+```
+
+### 📊 **Implementation Priority**
+
+1. **🔥 Critical (Week 1)**
+   - CSS extraction and optimization
+   - Mobile responsive fixes
+   - Performance improvements
+
+2. **⚡ High (Week 2)**
+   - JavaScript modularization  
+   - Component separation
+   - Accessibility improvements
+
+3. **📈 Medium (Week 3)**
+   - Design system implementation
+   - Advanced mobile features
+   - Testing and optimization
+
+4. **✨ Nice-to-have (Week 4)**
+   - Advanced animations
+   - PWA features
+   - Advanced analytics
+
+### 🧪 **Testing Strategy**
+
+```bash
+# Performance testing
+npm run lighthouse-ci
+
+# Mobile testing
+npm run test:mobile
+
+# Accessibility testing  
+npm run test:a11y
+
+# Cross-browser testing
+npm run test:browsers
+```
+
 ---
 
-## 🎯 Expected Outcomes
-
-After implementing this plan:
-
-1. **Code Quality**: Maximally informative method names and comprehensive documentation
-2. **Visual Design**: Clean, breathing layout with proper color scheme
-3. **Data Integrity**: Research-accurate ranges and consistent variable naming
-4. **User Experience**: Clear, unconfusing interface with proper spacing
-5. **Maintainability**: Well-documented, tested, and validated codebase
-
-The calculator will be both more professional for researchers and more maintainable for developers.
-
----
-
-*This plan ensures the calculator meets the highest standards of both academic rigor and software engineering best practices.* 
+*This HTML optimization plan will reduce file size by 60%, improve maintainability, and create a world-class mobile experience.* 
