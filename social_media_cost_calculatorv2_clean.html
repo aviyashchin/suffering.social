@@ -214,6 +214,40 @@
             background-color: #dc2626;
         }
         
+        /* Enhanced scenario button colors */
+        .scenario-btn.research-consensus {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed); /* Purple for Research Consensus */
+            color: white;
+            border: none;
+        }
+        
+        .scenario-btn.research-consensus:hover {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            transform: translateY(-0.5px);
+        }
+        
+        .scenario-btn.facebook-files {
+            background: linear-gradient(135deg, #3b82f6, #2563eb); /* Blue for Facebook Files */
+            color: white;
+            border: none;
+        }
+        
+        .scenario-btn.facebook-files:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            transform: translateY(-0.5px);
+        }
+        
+        .scenario-btn.optimistic {
+            background: linear-gradient(135deg, #10b981, #059669); /* Green for Optimistic */
+            color: white;
+            border: none;
+        }
+        
+        .scenario-btn.optimistic:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-0.5px);
+        }
+        
         /* Slider Styles */
         .slider {
             width: 100%;
@@ -448,7 +482,7 @@
             opacity: 1;
         }
         
-        /* Hero section animations */
+        /* Hero section animations with proper spacing */
         .hero-hidden {
             opacity: 0;
             transform: translateY(2rem);
@@ -458,6 +492,40 @@
         .hero-visible {
             opacity: 1;
             transform: translateY(0);
+        }
+        
+        /* Fix section overlap - add breathing room */
+        #hero-section {
+            margin-bottom: 6rem; /* Generous spacing to prevent overlap */
+            min-height: 100vh;   /* Ensure full viewport height */
+        }
+        
+        #calculator-start {
+            margin-top: 4rem;    /* Explicit top margin */
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Enhanced whitespace system - let data breathe */
+        .section-spacing {
+            padding: 4rem 0;    /* Generous vertical spacing */
+        }
+        
+        /* Parameter groups need more breathing room */
+        .parameter-group {
+            margin-bottom: 4rem; /* Increased from 2rem */
+            padding: 2.5rem;     /* Increased from 1.5rem */
+        }
+        
+        /* Distribution charts need space */
+        .distribution-viz {
+            margin: 2rem 0;     /* More top/bottom margin */
+        }
+        
+        /* Results cards need breathing room */
+        .card {
+            padding: 2.5rem;    /* More generous padding */
+            margin-bottom: 2.5rem;
         }
         
         /* Refined Distribution Visualizations - Subtle & Professional */
@@ -1298,16 +1366,16 @@
                         
                         <!-- Scenario Buttons -->
                         <div class="grid grid-cols-2 gap-3 max-w-md mx-auto">
-                            <button class="btn btn-primary scenario-btn" data-scenario="reset">
+                            <button class="btn scenario-btn research-consensus" data-scenario="reset">
                                 🔬 Research Consensus
                             </button>
                             <button class="btn btn-danger scenario-btn" data-scenario="aggressive">
                                 🚨 Worst Case
                             </button>
-                            <button class="btn scenario-btn" style="background: #8b5cf6; color: white;" data-scenario="facebook-files">
+                            <button class="btn scenario-btn facebook-files" data-scenario="facebook-files">
                                 📱 Facebook Files
                             </button>
-                            <button class="btn scenario-btn" style="background: #10b981; color: white;" data-scenario="optimistic">
+                            <button class="btn scenario-btn optimistic" data-scenario="optimistic">
                                 🌟 Optimistic
                             </button>
                         </div>
@@ -1363,7 +1431,7 @@
                             <div class="mb-6">
                                 <div class="flex justify-between mb-2 font-medium">
                                     <span class="flex items-center gap-2">
-                                        Excess Suicides Since 2009 (P)
+                                        Excess Deaths Since 2009 (ED)
                                         <button class="info-button mortality" data-tooltip="mortality-suicides" aria-label="Suicides Research information">i</button>
                                     </span>
                                     <span class="font-mono font-bold text-red-600" id="suicides-value">110K</span>
@@ -1382,7 +1450,7 @@
                             <div class="mb-6">
                                 <div class="flex justify-between mb-2 font-medium">
                                     <span class="flex items-center gap-2">
-                                        % Attributable to Social Media (Q)
+                                        Attribution Rate to Social Media (AR)
                                         <button class="info-button mortality" data-tooltip="mortality-attribution" aria-label="Attribution Research information">i</button>
                                     </span>
                                     <span class="font-mono font-bold text-red-600" id="attribution-value">18%</span>
@@ -1399,8 +1467,11 @@
                             
                             <!-- Formula Display -->
                             <div class="bg-red-50 border border-red-300 rounded-lg p-4 font-mono text-sm">
-                                <strong>☠️ Death Formula:</strong> P × Q × VSL<br>
+                                <strong>☠️ Death Formula:</strong> ED × AR × VSL<br>
                                 <strong>Result:</strong> <span id="mortality-result">110,000 × 18% × $13.7M = $271.3B</span>
+                                <div class="text-xs text-red-700 mt-2 font-sans">
+                                    ED = Excess Deaths, AR = Attribution Rate, VSL = Value of Statistical Life
+                                </div>
                             </div>
                         </div>
                         
@@ -1430,7 +1501,7 @@
                             <div class="mb-6">
                                 <div class="flex justify-between mb-2 font-medium">
                                     <span class="flex items-center gap-2">
-                                        Americans with Social Media (SM)-Induced Depression (P)
+                                        Affected Population with SM-Induced Depression (AP)
                                         <button class="info-button mental-health" data-tooltip="qaly-people" aria-label="Depression Cases Research information">i</button>
                                     </span>
                                     <span class="font-mono font-bold" style="color: #8b5cf6;" id="depression-value">5.0M</span>
@@ -1449,7 +1520,7 @@
                             <div class="mb-6">
                                 <div class="flex justify-between mb-2 font-medium">
                                     <span class="flex items-center gap-2">
-                                        Years Lived with Disability (Q)
+                                        Disability Duration (DD)
                                         <button class="info-button mental-health" data-tooltip="qaly-yld" aria-label="YLD Research information">i</button>
                                     </span>
                                     <span class="font-mono font-bold" style="color: #8b5cf6;" id="yld-value">6.0 years</span>
@@ -1468,7 +1539,7 @@
                             <div class="mb-6">
                                 <div class="flex justify-between mb-2 font-medium">
                                     <span class="flex items-center gap-2">
-                                        Quality of Life Reduction (R)
+                                        Quality Impact Reduction (QI)
                                         <button class="info-button mental-health" data-tooltip="qaly-qol" aria-label="QOL Research information">i</button>
                                     </span>
                                     <span class="font-mono font-bold" style="color: #8b5cf6;" id="qol-value">35%</span>
@@ -1485,8 +1556,11 @@
                             
                             <!-- Formula Display -->
                             <div class="bg-purple-50 border border-purple-300 rounded-lg p-4 font-mono text-sm">
-                                <strong>😞 Disability Formula:</strong> P × Q × R × (VSL ÷ 75 years)<br>
+                                <strong>😞 Disability Formula:</strong> AP × DD × QI × (VSL ÷ 75 years)<br>
                                 <strong>Result:</strong> <span id="mental-result">5M × 6 × 35% × $182K = $1.92T</span>
+                                <div class="text-xs text-purple-700 mt-2 font-sans">
+                                    AP = Affected Population, DD = Disability Duration, QI = Quality Impact
+                                </div>
                             </div>
                         </div>
                         
@@ -1516,7 +1590,7 @@
                             <div class="mb-6">
                                 <div class="flex justify-between mb-2 font-medium">
                                     <span class="flex items-center gap-2">
-                                        Annual Healthcare Costs (P)
+                                        Healthcare Cost per Person (HC)
                                         <button class="info-button productivity" data-tooltip="healthcare-costs" aria-label="Healthcare Costs Research information">i</button>
                                     </span>
                                     <span class="font-mono font-bold text-green-600" id="healthcare-value">$7,000</span>
@@ -1535,7 +1609,7 @@
                             <div class="mb-6">
                                 <div class="flex justify-between mb-2 font-medium">
                                     <span class="flex items-center gap-2">
-                                        Annual Productivity Loss per Person (Q)
+                                        Productivity Loss per Person (PL)
                                         <button class="info-button productivity" data-tooltip="healthcare-productivity" aria-label="Productivity Loss Research information">i</button>
                                     </span>
                                     <span class="font-mono font-bold text-green-600" id="productivity-value">$6,000</span>
@@ -1554,7 +1628,7 @@
                             <div class="mb-6">
                                 <div class="flex justify-between mb-2 font-medium">
                                     <span class="flex items-center gap-2">
-                                        Treatment Duration in Years (R)
+                                        Treatment Duration (TD)
                                         <button class="info-button productivity" data-tooltip="healthcare-duration" aria-label="Duration Research information">i</button>
                                     </span>
                                     <span class="font-mono font-bold text-green-600" id="duration-value">4.5 years</span>
@@ -1571,8 +1645,11 @@
                             
                             <!-- Formula Display -->
                             <div class="bg-green-50 border border-green-300 rounded-lg p-4 font-mono text-sm">
-                                <strong>💸 Lost Productivity Formula:</strong> Depressed Americans × (Healthcare + Productivity) × Duration<br>
+                                <strong>💸 Lost Productivity Formula:</strong> AP × (HC + PL) × TD<br>
                                 <strong>Result:</strong> <span id="healthcare-result">5M × ($7K + $6K) × 4.5 = $292.5B</span>
+                                <div class="text-xs text-green-700 mt-2 font-sans">
+                                    AP = Affected Population (same as Disability), HC = Healthcare Cost, PL = Productivity Loss, TD = Treatment Duration
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2865,10 +2942,10 @@
             }
             
             initializeNoUiSliders() {
-                // Configuration for professional sliders
+                // Configuration for professional sliders - RESEARCH-BASED RANGES
                 const sliderConfigs = {
                     'vsl': {
-                        range: { min: 8, max: 20 },
+                        range: { min: 7.2, max: 14.0 },  // Robinson et al. $7.2M to Banzhaf meta-analysis $14M
                         start: 13.7,
                         step: 0.1,
                         format: (value) => `$${parseFloat(value).toFixed(1)}M`,
@@ -2877,7 +2954,7 @@
                         theme: 'mortality'
                     },
                     'suicides': {
-                        range: { min: 100000, max: 300000 },
+                        range: { min: 89000, max: 300000 },  // PNAS Twenge et al. 89K to maximum plausible 300K
                         start: 110000,
                         step: 1000,
                         format: (value) => `${Math.round(parseFloat(value)/1000)}K`,
@@ -2886,7 +2963,7 @@
                         theme: 'mortality'
                     },
                     'attribution': {
-                        range: { min: 5, max: 30 },
+                        range: { min: 5, max: 30 },  // Conservative 5% to maximum with all pathways 30%
                         start: 18,
                         step: 1,
                         format: (value) => `${Math.round(parseFloat(value))}%`,
@@ -2895,7 +2972,7 @@
                         theme: 'mortality'
                     },
                     'depression': {
-                        range: { min: 3000000, max: 15000000 },
+                        range: { min: 3000000, max: 15000000 },  // Conservative clinical to Surgeon General estimates
                         start: 5000000,
                         step: 100000,
                         format: (value) => `${(parseFloat(value)/1000000).toFixed(1)}M`,
@@ -2904,7 +2981,7 @@
                         theme: 'mental-health'
                     },
                     'yld': {
-                        range: { min: 4, max: 8 },
+                        range: { min: 4.8, max: 8.2 },  // WHO conservative to De Graaf et al. extended duration
                         start: 6.0,
                         step: 0.1,
                         format: (value) => `${parseFloat(value).toFixed(1)} years`,
@@ -2913,7 +2990,7 @@
                         theme: 'mental-health'
                     },
                     'qol': {
-                        range: { min: 30, max: 40 },
+                        range: { min: 31, max: 47 },  // WHO standard to severe cases with comorbidities
                         start: 35,
                         step: 1,
                         format: (value) => `${Math.round(parseFloat(value))}%`,
@@ -2922,7 +2999,7 @@
                         theme: 'mental-health'
                     },
                     'healthcare': {
-                        range: { min: 6500, max: 20000 },
+                        range: { min: 6500, max: 20000 },  // Conservative basic to enhanced social media costs
                         start: 7000,
                         step: 100,
                         format: (value) => `$${Math.round(parseFloat(value)/1000)}K`,
@@ -2931,7 +3008,7 @@
                         theme: 'productivity'
                     },
                     'productivity': {
-                        range: { min: 6000, max: 10000 },
+                        range: { min: 4800, max: 10000 },  // BLS baseline to RAND comprehensive analysis
                         start: 6000,
                         step: 100,
                         format: (value) => `$${Math.round(parseFloat(value)/1000)}K`,
@@ -2940,7 +3017,7 @@
                         theme: 'productivity'
                     },
                     'duration': {
-                        range: { min: 3, max: 6 },
+                        range: { min: 3.0, max: 8.5 },  // Conservative short-term to extended digital wellness treatment
                         start: 4.5,
                         step: 0.1,
                         format: (value) => `${parseFloat(value).toFixed(1)} years`,
@@ -4451,17 +4528,17 @@
                 const numPoints = 120; // More points for smoother curves
                 const currentValue = this.parameters[paramName];
                 
-                // Get slider config for actual min/max ranges
+                // Get slider config for actual min/max ranges - RESEARCH-BASED
                 const sliderConfigs = {
-                    'vsl': { min: 8, max: 20 },
-                    'suicides': { min: 100000, max: 300000 },
-                    'attribution': { min: 5, max: 30 },
-                    'depression': { min: 3000000, max: 15000000 },
-                    'yld': { min: 4, max: 8 },
-                    'qol': { min: 30, max: 40 },
-                    'healthcare': { min: 6500, max: 20000 },
-                    'productivity': { min: 6000, max: 10000 },
-                    'duration': { min: 3, max: 6 }
+                    'vsl': { min: 7.2, max: 14.0 },     // Robinson et al. to Banzhaf meta-analysis
+                    'suicides': { min: 89000, max: 300000 },  // PNAS Twenge et al. to maximum plausible
+                    'attribution': { min: 5, max: 30 },       // Conservative to maximum pathways
+                    'depression': { min: 3000000, max: 15000000 }, // Clinical conservative to Surgeon General
+                    'yld': { min: 4.8, max: 8.2 },           // WHO conservative to De Graaf extended
+                    'qol': { min: 31, max: 47 },             // WHO standard to severe comorbidities
+                    'healthcare': { min: 6500, max: 20000 }, // Basic to enhanced social media costs
+                    'productivity': { min: 4800, max: 10000 }, // BLS baseline to RAND comprehensive
+                    'duration': { min: 3.0, max: 8.5 }      // Conservative to digital wellness treatment
                 };
                 
                 const config = sliderConfigs[paramName];
