@@ -8,11 +8,17 @@
     <title>Social Media Cost Calculator | Economic Impact Analysis</title>
     <meta name="description" content="Research-based calculator estimating the economic and human costs of social media's impact on mental health. Based on peer-reviewed studies.">
     
-    <!-- External Dependencies -->
+    <!-- External Dependencies with Fallbacks -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
+    
+    <!-- noUiSlider - Professional Range Sliders -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
+    
+    <!-- Chart.js for Visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    
+    <!-- D3.js for Distribution Curves -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
     
     <!-- Modular CSS -->
@@ -20,9 +26,114 @@
     <link rel="stylesheet" href="src/styles/components.css">
     <link rel="stylesheet" href="src/styles/calculator.css">
     <link rel="stylesheet" href="src/styles/mobile.css">
+    
+    <!-- Error Handling & Loading States -->
+    <style>
+        /* Loading State */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            font-family: system-ui, sans-serif;
+        }
+        
+        .loading.hidden {
+            display: none;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Error State */
+        .error-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #fee2e2;
+            border-bottom: 1px solid #fecaca;
+            padding: 1rem;
+            text-align: center;
+            z-index: 9998;
+            display: none;
+        }
+        
+        .error-banner.show {
+            display: block;
+        }
+        
+        /* Fallback Slider Styling */
+        .fallback-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e5e7eb;
+            outline: none;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        .fallback-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .fallback-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+    </style>
 </head>
 
 <body class="bg-gray-50">
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading">
+        <div class="text-center">
+            <div class="spinner mb-4"></div>
+            <div class="text-gray-600">Loading Calculator...</div>
+        </div>
+    </div>
+    
+    <!-- Error Banner -->
+    <div id="error-banner" class="error-banner">
+        <div class="text-red-700">
+            <strong>Loading Error:</strong> Some features may not work properly. 
+            <button onclick="location.reload()" class="ml-2 px-3 py-1 bg-red-100 rounded hover:bg-red-200">
+                Refresh Page
+            </button>
+        </div>
+    </div>
+
     <!-- Header -->
     <header class="bg-white shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-4">
@@ -297,6 +408,64 @@
         </div>
     </footer>
 
+    <!-- Error Handling & Initialization -->
+    <script>
+        // Global error handler
+        window.addEventListener('error', function(e) {
+            console.error('Global error:', e.error);
+            document.getElementById('error-banner').classList.add('show');
+        });
+        
+        // Library loading verification
+        let librariesLoaded = {
+            tailwind: false,
+            nouislider: false,
+            chartjs: false,
+            d3: false
+        };
+        
+        // Check library loading
+        function checkLibraries() {
+            librariesLoaded.tailwind = typeof window.tailwind !== 'undefined' || document.querySelector('.bg-gray-50') !== null;
+            librariesLoaded.nouislider = typeof noUiSlider !== 'undefined';
+            librariesLoaded.chartjs = typeof Chart !== 'undefined';
+            librariesLoaded.d3 = typeof d3 !== 'undefined';
+            
+            console.log('📚 Libraries loaded:', librariesLoaded);
+            
+            // Show warnings for missing libraries
+            const missing = Object.entries(librariesLoaded).filter(([key, loaded]) => !loaded);
+            if (missing.length > 0) {
+                console.warn('⚠️ Missing libraries:', missing.map(([key]) => key));
+            }
+        }
+        
+        // Initialize with timeout
+        let initTimeout;
+        function attemptInitialization() {
+            clearTimeout(initTimeout);
+            checkLibraries();
+            
+            // Wait a bit more if libraries are still loading
+            if (!librariesLoaded.nouislider || !librariesLoaded.d3) {
+                console.log('⏳ Waiting for libraries to load...');
+                initTimeout = setTimeout(attemptInitialization, 500);
+                return;
+            }
+            
+            // Hide loading screen
+            document.getElementById('loading-screen').classList.add('hidden');
+            
+            // Initialize the calculator app
+            if (typeof window.socialMediaApp !== 'undefined') {
+                console.log('✅ Calculator already initialized');
+            }
+        }
+        
+        // Start checking after a short delay
+        setTimeout(attemptInitialization, 100);
+    </script>
+
     <!-- Modular JavaScript -->
     <script type="module" src="src/main.js"></script>
 
@@ -307,7 +476,7 @@
         gtag('config', 'G-RQ28MDK57K', {
           custom_map: {
             'system_type': 'modular',
-            'version': '2.0'
+            'version': '2.1'
           }
         });
         
@@ -316,7 +485,7 @@
           gtag('event', 'modular_system_loaded', {
             'event_category': 'performance',
             'file_size_reduction': '95%',
-            'architecture': 'modular'
+            'architecture': 'modular_enhanced'
           });
         });
       }
