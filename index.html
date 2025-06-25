@@ -585,20 +585,30 @@
                 const scenario = this.scenarios[scenarioName];
                 if (!scenario) return;
                 
+                console.log(`🎯 Loading scenario: ${scenarioName}`, scenario);
+                
                 Object.keys(scenario).forEach(param => {
                     this.parameters[param] = scenario[param];
                     
-                    // Update slider
+                    // Update slider with animation
                     const container = document.getElementById(`${param}-nouislider`);
                     if (container && container.noUiSlider) {
-                        container.noUiSlider.set(scenario[param]);
+                        container.noUiSlider.set(scenario[param], true); // true = fire events
                     }
                     
                     this.updateDisplay(param, scenario[param]);
-                    this.updateDistributionChart(param);
                 });
                 
+                // Force update all distribution charts after a short delay
+                setTimeout(() => {
+                    Object.keys(scenario).forEach(param => {
+                        this.updateCurrentValueIndicator(param);
+                        this.updateDistributionStats(param);
+                    });
+                }, 100);
+                
                 this.updateAllDisplays();
+                console.log(`✅ Scenario ${scenarioName} loaded successfully`);
             }
             
             setupDistributionCharts() {
@@ -762,11 +772,66 @@
             }
             
             updateDistributionChart(param) {
-                // Recreate the chart with new current value
-                this.createDistributionChart(param);
+                // More efficient: just update the current value indicator
+                this.updateCurrentValueIndicator(param);
                 
                 // Update distribution statistics
                 this.updateDistributionStats(param);
+            }
+            
+            updateCurrentValueIndicator(param) {
+                const container = document.getElementById(`${param}-distribution`);
+                if (!container) return;
+                
+                const svg = d3.select(container);
+                const currentValue = this.parameters[param];
+                const config = this.getParameterConfig(param);
+                
+                // Calculate chart dimensions (same as createDistributionChart)
+                const width = 250;
+                const height = 60;
+                const margin = { top: 5, right: 10, bottom: 5, left: 10 };
+                
+                const xScale = d3.scaleLinear()
+                    .domain([config.min, config.max])
+                    .range([0, width - margin.left - margin.right]);
+                
+                const x = xScale(currentValue);
+                
+                // Remove existing current value indicators
+                svg.selectAll('.current-value-line, .current-value-dot').remove();
+                
+                // Add updated current value line and dot
+                const g = svg.select('g');
+                if (g.empty()) return;
+                
+                g.append('line')
+                    .attr('class', 'current-value-line')
+                    .attr('x1', x)
+                    .attr('x2', x)
+                    .attr('y1', 0)
+                    .attr('y2', height - margin.top - margin.bottom)
+                    .style('stroke', '#ef4444')
+                    .style('stroke-width', 2)
+                    .style('stroke-dasharray', '3,3')
+                    .style('opacity', 0)
+                    .transition()
+                    .duration(200)
+                    .style('opacity', 1);
+                
+                g.append('circle')
+                    .attr('class', 'current-value-dot')
+                    .attr('cx', x)
+                    .attr('cy', 5)
+                    .attr('r', 0)
+                    .style('fill', '#ef4444')
+                    .style('stroke', '#ffffff')
+                    .style('stroke-width', 1)
+                    .transition()
+                    .duration(200)
+                    .attr('r', 3);
+                
+                console.log(`📊 Updated ${param} indicator to position ${x.toFixed(1)}px (value: ${currentValue})`);
             }
             
             updateDistributionStats(param) {
@@ -1036,10 +1101,38 @@
                         }, 500);
                     };
                     
+                    window.testDistributionUpdates = function() {
+                        console.log('🧪 Testing distribution updates...');
+                        const params = ['vsl', 'attribution', 'depression'];
+                        
+                        params.forEach((param, index) => {
+                            setTimeout(() => {
+                                const config = window.calculator.getParameterConfig(param);
+                                const testValue = config.min + (config.max - config.min) * 0.7; // 70% of range
+                                
+                                console.log(`📊 Testing ${param}: setting to ${testValue}`);
+                                window.calculator.parameters[param] = testValue;
+                                window.calculator.updateCurrentValueIndicator(param);
+                                window.calculator.updateDisplay(param, testValue);
+                                
+                                // Also update the slider
+                                const container = document.getElementById(`${param}-nouislider`);
+                                if (container && container.noUiSlider) {
+                                    container.noUiSlider.set(testValue);
+                                }
+                            }, index * 1000);
+                        });
+                        
+                        setTimeout(() => {
+                            console.log('✅ Distribution update test complete - red lines should have moved!');
+                        }, 4000);
+                    };
+                    
                     console.log('🔧 Debug utilities available:');
                     console.log('  testSliders() - Test slider functionality');
                     console.log('  testCharts() - Test distribution charts');
                     console.log('  testScenarios() - Test scenario loading');
+                    console.log('  testDistributionUpdates() - Test red line movement');
                     
                     // Hide loading screen
                     document.getElementById('loading-screen').classList.add('hidden');
