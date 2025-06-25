@@ -611,6 +611,61 @@
             .card { 
                 box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
             }
+            
+            /* MOBILE TOOLTIP SYSTEM - Fix tap issues */
+            .mobile-tooltip {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 9999;
+                display: flex;
+                align-items: flex-start;
+                justify-content: center;
+                padding: 1rem;
+                opacity: 0;
+                transform: translateY(20px);
+                transition: all 0.2s ease;
+                backdrop-filter: blur(5px);
+            }
+            
+            .mobile-tooltip.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            
+            .mobile-tooltip .mobile-tooltip-header {
+                display: flex;
+                justify-content: flex-end;
+                margin-bottom: 0.5rem;
+            }
+            
+            .mobile-tooltip .mobile-tooltip-close {
+                background: rgba(255, 255, 255, 0.2);
+                border: none;
+                border-radius: 50%;
+                width: 32px;
+                height: 32px;
+                color: white;
+                font-size: 18px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .mobile-tooltip .mobile-tooltip-content {
+                background: white;
+                border-radius: 12px;
+                padding: 1rem;
+                max-height: 75vh;
+                overflow-y: auto;
+                width: 100%;
+                max-width: 500px;
+                margin-top: 2rem;
+            }
         }
         
         /* Tablet optimizations */
@@ -4387,34 +4442,79 @@
                     
                     const content = this.createTooltipContent(tooltipId, buttonType, data);
                     
-                    tippy(button, {
-                        content: content,
-                        allowHTML: true,
-                        theme: 'research',
-                        placement: 'auto',
-                        maxWidth: window.innerWidth <= 768 ? 320 : 400,
-                        interactive: true,
-                        appendTo: document.body,
-                        
-                        // MOBILE-FIRST TRIGGERS - Fix tap issue
-                        trigger: window.innerWidth <= 768 ? 'click' : 'mouseenter focus',
-                        hideOnClick: true,
-                        
-                        // Mobile-optimized timing
-                        delay: window.innerWidth <= 768 ? [0, 0] : [300, 0],
-                        duration: [150, 100],
-                        animation: 'shift-away',
-                        
-                        // Auto-close on mobile for better UX
-                        onShow(instance) {
-                            if (window.innerWidth <= 768) {
-                                setTimeout(() => instance.hide(), 8000);
-                            }
+                    // MOBILE-FIRST: Use mobile tooltips on mobile, Tippy on desktop
+                    if (window.innerWidth <= 768) {
+                        this.setupMobileTooltip(button, content, tooltipId);
+                    } else {
+                        tippy(button, {
+                            content: content,
+                            allowHTML: true,
+                            theme: 'research',
+                            placement: 'auto',
+                            maxWidth: 400,
+                            interactive: true,
+                            appendTo: document.body,
+                            trigger: 'mouseenter focus',
+                            hideOnClick: true,
+                            delay: [300, 0],
+                            duration: [150, 100],
+                            animation: 'shift-away'
+                        });
+                    }
+                });
+                
+                console.log('✅ Tooltips initialized (mobile-first)');
+            }
+            
+            setupMobileTooltip(button, content, tooltipId) {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Remove any existing mobile tooltips
+                    this.removeMobileTooltips();
+                    
+                    // Create mobile-optimized tooltip
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'mobile-tooltip';
+                    tooltip.innerHTML = `
+                        <div class="mobile-tooltip-header">
+                            <button class="mobile-tooltip-close" aria-label="Close">×</button>
+                        </div>
+                        <div class="mobile-tooltip-content">
+                            ${content}
+                        </div>
+                    `;
+                    
+                    // Add to body
+                    document.body.appendChild(tooltip);
+                    
+                    // Position tooltip
+                    setTimeout(() => {
+                        tooltip.classList.add('show');
+                    }, 10);
+                    
+                    // Close handlers
+                    const closeBtn = tooltip.querySelector('.mobile-tooltip-close');
+                    closeBtn.addEventListener('click', () => this.removeMobileTooltips());
+                    
+                    // Auto-close after 10 seconds
+                    setTimeout(() => this.removeMobileTooltips(), 10000);
+                    
+                    // Close on backdrop tap
+                    tooltip.addEventListener('click', (e) => {
+                        if (e.target === tooltip) {
+                            this.removeMobileTooltips();
                         }
                     });
                 });
-                
-                console.log('✅ Tippy.js tooltips initialized');
+            }
+            
+            removeMobileTooltips() {
+                document.querySelectorAll('.mobile-tooltip').forEach(tooltip => {
+                    tooltip.classList.remove('show');
+                    setTimeout(() => tooltip.remove(), 200);
+                });
             }
             
             createTooltipContent(tooltipId, buttonType, data) {
@@ -5354,6 +5454,10 @@
             
             // NEW: Get research-based typical values for distribution display
             getResearchBasedTypical(paramName, currentValue) {
+                // FIXED: Get current parameter value for accurate mean calculation
+                const currentParams = this.parameters || this.getDefaultParameters();
+                const currentVal = currentParams[paramName] || currentValue;
+                
                 const researchTypicals = {
                     'vsl': 11.4,  // Mid-point of EPA and DOT guidance ($11.5M and $13.7M)
                     'suicides': 150000,  // Mid-range estimate between conservative and high estimates
@@ -5366,7 +5470,8 @@
                     'duration': 4.5  // Current research consensus
                 };
                 
-                return researchTypicals[paramName] || currentValue;
+                // Return research-based typical OR current actual value
+                return researchTypicals[paramName] || currentVal;
             }
             
             calculateResearchBasedCI(currentValue, paramName, config) {
