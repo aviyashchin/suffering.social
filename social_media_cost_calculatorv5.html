@@ -410,143 +410,207 @@
             color: #dbeafe;
         }
         
-        /* Enhanced Mobile-First Responsive Design */
+        /* MOBILE-FIRST: Ultra-compressed layout */
         @media (max-width: 768px) {
-            /* AGGRESSIVE whitespace reduction - Fix excessive spacing */
+            /* EXTREME whitespace reduction */
             .container {
                 max-width: 100% !important;
-                padding-left: 0.5rem !important;
-                padding-right: 0.5rem !important;
+                padding: 0 !important;
                 margin: 0 !important;
             }
             
-            /* Let content breathe edge-to-edge on mobile */
+            /* Edge-to-edge content */
             main {
-                padding-left: 0 !important;
-                padding-right: 0 !important;
+                padding: 0 !important;
+                margin: 0 !important;
             }
             
-            /* Dramatically reduce card padding */
+            /* Minimal card spacing */
             .card {
-                padding: 1rem !important; /* Was 2.5rem */
-                margin-bottom: 1rem !important; /* Was 2.5rem */
-                margin-left: 0.25rem !important;
-                margin-right: 0.25rem !important;
-                border-radius: 1rem;
+                padding: 0.75rem !important;
+                margin: 0.5rem !important;
+                border-radius: 0.75rem !important;
+                border: none !important;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
             }
             
-            /* Compress parameter groups heavily */
+            /* Ultra-compressed parameter groups - REMOVE VERTICAL BARS */
             .parameter-group {
-                padding: 1rem !important; /* Was 1.5rem */
-                margin-bottom: 1.5rem !important; /* Was 2rem */
-            }
-            
-            /* Reduce section spacing dramatically */
-            .section-spacing {
-                padding: 1rem 0 !important; /* Was 4rem 0 */
-            }
-            
-            /* Hero section mobile compression */
-            #hero-section {
-                min-height: 60vh !important; /* Was 100vh */
-                margin-bottom: 2rem !important; /* Was 8rem */
-                padding: 2rem 1rem !important;
-            }
-            
-            /* Calculator start section */
-            #calculator-start {
-                margin-top: 1rem !important; /* Was 6rem */
-                padding-top: 1rem !important; /* Was 2rem */
-            }
-            
-            /* Results sidebar compression */
-            aside .card {
-                padding: 1rem !important;
+                padding: 0.75rem !important;
                 margin-bottom: 1rem !important;
+                border-left: none !important; /* REMOVE vertical bars */
+                border-radius: 0.75rem !important;
+                background: white !important;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
             }
             
-            /* Bigger touch targets - Fix tap issues */
+            /* Color coding without borders */
+            .parameter-group.mortality {
+                background: linear-gradient(to right, #fef2f2, #ffffff) !important;
+            }
+            
+            .parameter-group.mental-health {
+                background: linear-gradient(to right, #faf5ff, #ffffff) !important;
+            }
+            
+            .parameter-group.productivity {
+                background: linear-gradient(to right, #f0fdf4, #ffffff) !important;
+            }
+            
+            /* Minimal section spacing */
+            .section-spacing {
+                padding: 0.5rem 0 !important;
+            }
+            
+            /* Compact hero */
+            #hero-section {
+                min-height: 50vh !important;
+                margin-bottom: 1rem !important;
+                padding: 1rem !important;
+            }
+            
+            /* Tight calculator start */
+            #calculator-start {
+                margin-top: 0.5rem !important;
+                padding: 1rem !important;
+            }
+            
+            /* Compressed sidebar */
+            aside .card {
+                padding: 0.75rem !important;
+                margin-bottom: 0.5rem !important;
+            }
+            
+            /* Touch targets */
             .info-button {
-                width: 32px !important;
-                height: 32px !important;
-                font-size: 16px !important;
-                margin-left: 0.75rem !important;
+                width: 28px !important;
+                height: 28px !important;
+                font-size: 14px !important;
+                margin-left: 0.5rem !important;
             }
             
-            /* Touch-friendly minimum sizes */
+            /* Touch-friendly sizes */
             .btn, .scenario-btn {
                 min-height: 44px !important;
-                min-width: 44px !important;
+                padding: 0.5rem 0.75rem !important;
+                font-size: 0.875rem !important;
             }
             
-            /* Better slider controls for mobile */
+            /* Compact slider controls */
             .slider, input[type="range"] {
-                height: 40px !important;
-                -webkit-appearance: none;
-                background: transparent;
-                cursor: pointer;
+                height: 32px !important;
+                margin: 0.5rem 0 !important;
             }
             
             .slider::-webkit-slider-track {
-                height: 8px;
+                height: 6px;
                 background: #e5e7eb;
-                border-radius: 4px;
+                border-radius: 3px;
             }
             
             .slider::-webkit-slider-thumb {
-                -webkit-appearance: none;
-                width: 32px !important;
-                height: 32px !important;
+                width: 24px !important;
+                height: 24px !important;
                 border-radius: 50%;
                 background: #3b82f6;
-                border: 3px solid white;
-                box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-                cursor: pointer;
+                border: 2px solid white;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.2);
             }
             
-            /* No hover states on mobile - prevent sticky states */
+            /* FIX: Distribution visualizations - REMOVE VERTICAL BARS */
+            .distribution-viz {
+                height: 60px !important; /* Reduced height */
+                margin: 0.25rem 0 !important; /* Minimal margin */
+                border: none !important; /* REMOVE border causing bars */
+                border-radius: 0.5rem !important;
+                background: #f8fafc !important;
+                box-shadow: inset 0 1px 2px rgba(0,0,0,0.05) !important;
+            }
+            
+            /* Remove parameter-specific borders that create bars */
+            .parameter-group.mortality .distribution-viz {
+                border-left: none !important;
+                background: #fef7f7 !important;
+            }
+            
+            .parameter-group.mental-health .distribution-viz {
+                border-left: none !important;
+                background: #faf5ff !important;
+            }
+            
+            .parameter-group.productivity .distribution-viz {
+                border-left: none !important;
+                background: #f0fdf4 !important;
+            }
+            
+            /* Simplified distribution info */
+            .distribution-info {
+                font-size: 0.625rem !important;
+                line-height: 1.2 !important;
+                margin-top: 0.25rem !important;
+                padding: 0 0.25rem !important;
+            }
+            
+            /* Remove hover effects on mobile */
             .btn:hover, .scenario-btn:hover, .card:hover {
                 transform: none !important;
                 box-shadow: inherit !important;
             }
             
-            /* Mobile-friendly text sizes */
-            .distribution-info {
-                font-size: 0.75rem !important;
-                line-height: 1.4 !important;
-            }
-            
-            /* Simplified mobile formulas */
+            /* Compact formulas */
             .parameter-group .bg-red-50,
             .parameter-group .bg-purple-50,
             .parameter-group .bg-green-50 {
                 font-size: 0.75rem !important;
-                padding: 0.75rem !important; /* Reduced further */
+                padding: 0.5rem !important;
+                margin: 0.5rem 0 !important;
+                border-radius: 0.5rem !important;
             }
             
-            /* Mobile scenario buttons */
+            /* Compact scenario buttons */
             .scenario-btn {
-                font-size: 0.8rem !important;
-                padding: 0.75rem 1rem !important;
-                min-height: 44px;
+                font-size: 0.75rem !important;
+                padding: 0.5rem 0.75rem !important;
+                margin: 0.25rem !important;
             }
             
-            /* Sticky mobile header optimization */
+            /* Ultra-compact header */
             .header-fixed {
-                padding: 0.75rem 1rem !important;
+                padding: 0.5rem !important;
             }
             
-            .header-fixed .text-2xl {
-                font-size: 1.5rem !important;
+            .header-fixed .text-2xl, .header-fixed .text-4xl, .header-fixed .text-5xl {
+                font-size: 1.25rem !important;
             }
             
-            /* Mobile grid improvements */
+            .header-fixed .text-xs, .header-fixed .text-sm {
+                font-size: 0.625rem !important;
+            }
+            
+            /* Minimal grid spacing */
             .grid {
-                gap: 1rem !important;
+                gap: 0.5rem !important;
             }
             
             .lg\\:grid-cols-3 {
                 grid-template-columns: 1fr !important;
+            }
+            
+            /* Remove excessive padding from layout containers */
+            .max-w-7xl, .max-w-6xl, .max-w-5xl {
+                max-width: 100% !important;
+                padding: 0 !important;
+            }
+            
+            /* Compact parameter labels */
+            .parameter-label {
+                font-size: 0.8rem !important;
+                margin-bottom: 0.25rem !important;
+            }
+            
+            /* Reduce chart container padding */
+            .h-64 {
+                height: 200px !important;
             }
             
             /* Mobile-optimized fixed elements */
@@ -571,45 +635,71 @@
                 font-size: 0.65rem;
             }
             
-            /* Mobile typography optimization */
+            /* Ultra-compact typography */
             h1 { 
-                font-size: 1.75rem !important; /* Reduced from 2.5rem */
+                font-size: 1.5rem !important;
+                margin: 0.25rem 0 !important;
             }
             h2 { 
-                font-size: 1.5rem !important;  /* Reduced from 2rem */
+                font-size: 1.25rem !important;
+                margin: 0.25rem 0 !important;
             }
             h3 { 
-                font-size: 1.25rem !important; /* Reduced from 1.5rem */
+                font-size: 1.125rem !important;
+                margin: 0.25rem 0 !important;
             }
             
-            /* Make big numbers prominent but not overwhelming */
+            /* Compact big numbers */
             .big-number, #total-cost, #hero-total-cost { 
-                font-size: 2rem !important; /* Reduced from 3-4rem */
+                font-size: 1.75rem !important;
                 line-height: 1.1 !important;
+                margin: 0.25rem 0 !important;
             }
             
-            /* Readable parameter labels */
+            /* Minimal text elements */
             .parameter-label { 
-                font-size: 0.9rem !important;
-            }
-            
-            /* Compact formula displays */
-            .formula-display, .bg-red-50, .bg-purple-50, .bg-green-50 { 
                 font-size: 0.8rem !important;
-                line-height: 1.3 !important;
+                margin-bottom: 0.25rem !important;
             }
             
-            /* Ensure contrast for outdoor use */
-            .text-gray-600 { 
-                color: #374151 !important; /* Darker gray */
-            }
-            .bg-gray-50 { 
-                background: #ffffff !important; /* Pure white backgrounds */
+            /* Ultra-compact formula displays */
+            .formula-display, .bg-red-50, .bg-purple-50, .bg-green-50 { 
+                font-size: 0.75rem !important;
+                line-height: 1.2 !important;
+                padding: 0.5rem !important;
+                margin: 0.25rem 0 !important;
             }
             
-            /* Stronger shadows for depth */
+            /* Hero section - MASSIVE space reduction */
+            .hero-section, #hero-section {
+                padding: 1rem 0.5rem !important;
+                margin: 0 !important;
+                min-height: auto !important;
+                height: auto !important;
+            }
+            
+            /* Results section ultra-compact */
+            .results-sidebar {
+                padding: 0.75rem !important;
+                margin: 0.5rem 0 !important;
+            }
+            
+            /* Remove ALL unnecessary spacing */
+            .space-y-2 > * + *, .space-y-4 > * + *, 
+            .space-y-6 > * + *, .space-y-8 > * + *,
+            .space-y-12 > * + *, .space-y-16 > * + * { 
+                margin-top: 0.5rem !important; 
+            }
+            
+            /* Ultra-slim cards */
             .card { 
-                box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+                border-radius: 0.75rem !important;
+            }
+            
+            /* Hide branding to save space */
+            .fixed-branding {
+                display: none !important;
             }
             
             /* MOBILE TOOLTIP SYSTEM - Fix tap issues */
