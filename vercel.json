@@ -1,37 +1,14 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "index.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "social_media_cost_calculatorv5.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "calculator.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "favicon.svg",
-      "use": "@vercel/static"
-    }
-  ],
-  "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
-  "installCommand": "echo 'No install needed for static deployment'",
-  "outputDirectory": ".",
   "cleanUrls": true,
   "trailingSlash": false,
-  "routes": [
+  "redirects": [
     {
-      "src": "/calculator",
-      "dest": "/index.html"
+      "source": "/calculator",
+      "destination": "/index.html"
     },
     {
-      "src": "/v5",
-      "dest": "/social_media_cost_calculatorv5.html"
+      "source": "/v5", 
+      "destination": "/social_media_cost_calculatorv5.html"
     }
   ],
   "headers": [
@@ -43,7 +20,7 @@
           "value": "nosniff"
         },
         {
-          "key": "X-Frame-Options",
+          "key": "X-Frame-Options", 
           "value": "DENY"
         },
         {
