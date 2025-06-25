@@ -34,12 +34,15 @@ export class UIController {
         console.log('🎯 Initializing UI Controller...');
         
         try {
+            // Wait for DOM to be fully loaded
+            await this.waitForDOM();
+            
             // Initialize core components
             await this.initializeSliders();
+            await this.initializeDistributionCharts();
             await this.initializeCharts();
             await this.initializeScenarioButtons();
             await this.initializeInfoButtons();
-            await this.initializeDistributionCharts();
             
             // Set up event listeners
             this.setupEventListeners();
@@ -54,6 +57,19 @@ export class UIController {
             console.error('❌ UI Controller initialization failed:', error);
             throw error;
         }
+    }
+    
+    /**
+     * Wait for DOM elements to be ready
+     */
+    async waitForDOM() {
+        return new Promise((resolve) => {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', resolve);
+            } else {
+                resolve();
+            }
+        });
     }
     
     /**
@@ -97,8 +113,9 @@ export class UIController {
                     start: config.start,
                     step: config.step,
                     connect: 'lower',
-                    tooltips: {
-                        to: (value) => this.calculator.getFormattedParameter(paramName),
+                    tooltips: false, // We'll use our own value display
+                    format: {
+                        to: (value) => value,
                         from: (value) => Number(value)
                     }
                 });
@@ -110,6 +127,12 @@ export class UIController {
                     const value = parseFloat(values[handle]);
                     this.calculator.updateParameter(paramName, value);
                     this.updateParameterDisplay(paramName, value);
+                    
+                    // Update distribution chart
+                    const chart = this.distributionCharts.get(paramName);
+                    if (chart) {
+                        chart.updateCurrentValue(value);
+                    }
                 });
                 
                 container.noUiSlider.on('change', () => {
@@ -144,6 +167,12 @@ export class UIController {
             const value = parseFloat(slider.value);
             this.calculator.updateParameter(paramName, value);
             this.updateParameterDisplay(paramName, value);
+            
+            // Update distribution chart
+            const chart = this.distributionCharts.get(paramName);
+            if (chart) {
+                chart.updateCurrentValue(value);
+            }
         });
         
         slider.addEventListener('change', () => {
@@ -151,6 +180,38 @@ export class UIController {
         });
         
         console.log(`✅ Created fallback slider for ${paramName}`);
+    }
+    
+    /**
+     * Initialize distribution charts for uncertainty visualization
+     */
+    async initializeDistributionCharts() {
+        const parameters = ['vsl', 'suicides', 'attribution', 'depression', 'yld', 'qol', 'healthcare', 'productivity', 'duration'];
+        
+        // Wait a bit for D3 to be fully loaded
+        if (typeof d3 === 'undefined') {
+            console.warn('D3.js not loaded, distribution charts will be skipped');
+            return;
+        }
+        
+        for (const param of parameters) {
+            const container = document.getElementById(`${param}-distribution`);
+            if (container) {
+                try {
+                    const chart = new DistributionChart(container, param);
+                    const currentValue = this.calculator.parameters[param] || 0;
+                    await chart.initialize(currentValue);
+                    this.distributionCharts.set(param, chart);
+                    console.log(`✅ Distribution chart created for ${param}`);
+                } catch (error) {
+                    console.error(`❌ Failed to create distribution chart for ${param}:`, error);
+                }
+            } else {
+                console.warn(`Distribution container for ${param} not found`);
+            }
+        }
+        
+        console.log('✅ Distribution charts initialized');
     }
     
     /**
@@ -208,24 +269,6 @@ export class UIController {
     }
     
     /**
-     * Initialize distribution charts for uncertainty visualization
-     */
-    async initializeDistributionCharts() {
-        const parameters = ['vsl', 'suicides', 'attribution', 'depression', 'yld', 'qol', 'healthcare', 'productivity', 'duration'];
-        
-        for (const param of parameters) {
-            const container = document.getElementById(`${param}-distribution`);
-            if (container) {
-                const chart = new DistributionChart(container, param);
-                await chart.initialize(this.calculator.parameters[param]);
-                this.distributionCharts.set(param, chart);
-            }
-        }
-        
-        console.log('✅ Distribution charts initialized');
-    }
-    
-    /**
      * Set up global event listeners
      */
     setupEventListeners() {
@@ -258,7 +301,33 @@ export class UIController {
             }
         });
         
+        // Window resize handling for distribution charts
+        window.addEventListener('resize', () => {
+            this.handleResize();
+        });
+        
         console.log('✅ Event listeners set up');
+    }
+    
+    /**
+     * Handle window resize for distribution charts
+     */
+    handleResize() {
+        // Debounce resize events
+        clearTimeout(this.resizeTimeout);
+        this.resizeTimeout = setTimeout(() => {
+            // Update distribution charts
+            this.distributionCharts.forEach(chart => {
+                if (chart.handleResize) {
+                    chart.handleResize();
+                }
+            });
+            
+            // Update other charts
+            if (this.chartManager) {
+                this.chartManager.handleResize();
+            }
+        }, 100);
     }
     
     /**

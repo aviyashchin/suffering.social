@@ -349,6 +349,226 @@
     .space-y-12 > * + *, .space-y-16 > * + * { 
         margin-top: 0.5rem !important; 
     }
+    
+    /* Base mobile layout */
+    body {
+        padding-top: 3rem;
+    }
+    
+    .max-w-7xl {
+        max-width: 100%;
+        padding: 0 1rem;
+    }
+    
+    /* Compact hero section */
+    .hero-section h2 {
+        font-size: 2rem;
+    }
+    
+    .hero-section .text-6xl {
+        font-size: 3rem;
+    }
+    
+    /* Parameter groups - ultra-compact with curves */
+    .parameter-group {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Distribution Chart Mobile Styles */
+    .distribution-chart-container {
+        margin-top: 0.75rem;
+        margin-bottom: 0.75rem;
+        padding: 0.5rem;
+        height: 95px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Beautiful curve styling for mobile */
+    .distribution-chart {
+        width: 100% !important;
+        height: 65px !important;
+        display: block !important;
+        border-radius: 4px;
+    }
+    
+    /* Statistical overlay - mobile optimized */
+    .distribution-stats {
+        position: absolute;
+        bottom: 4px;
+        left: 6px;
+        right: 6px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 4px;
+        padding: 3px 6px;
+        font-size: 8px;
+        font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+        color: #6b7280;
+        line-height: 1.2;
+        z-index: 10;
+        pointer-events: none;
+        backdrop-filter: blur(2px);
+        border: 1px solid rgba(229, 231, 235, 0.8);
+        max-height: 16px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Research distribution label */
+    .distribution-chart-container::before {
+        content: 'Research Distribution';
+        position: absolute;
+        top: 3px;
+        right: 6px;
+        font-size: 7px;
+        color: #6b7280;
+        font-weight: 500;
+        pointer-events: none;
+        z-index: 5;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 2px 4px;
+        border-radius: 3px;
+        border: 1px solid rgba(156, 163, 175, 0.2);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    
+    /* Parameter group color coding for mobile */
+    .parameter-group[data-group="mortality"] {
+        background: linear-gradient(to right, #fef2f2, #ffffff);
+        border-left: 3px solid #dc2626;
+    }
+    
+    .parameter-group[data-group="mental-health"] {
+        background: linear-gradient(to right, #faf5ff, #ffffff);
+        border-left: 3px solid #8b5cf6;
+    }
+    
+    .parameter-group[data-group="healthcare"] {
+        background: linear-gradient(to right, #f0fdf4, #ffffff);
+        border-left: 3px solid #10b981;
+    }
+    
+    /* Curve accent colors */
+    .parameter-group[data-group="mortality"] .distribution-chart-container::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent 0%, #dc2626 50%, transparent 100%);
+        opacity: 0.3;
+        pointer-events: none;
+    }
+    
+    .parameter-group[data-group="mental-health"] .distribution-chart-container::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent 0%, #8b5cf6 50%, transparent 100%);
+        opacity: 0.3;
+        pointer-events: none;
+    }
+    
+    .parameter-group[data-group="healthcare"] .distribution-chart-container::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent 0%, #10b981 50%, transparent 100%);
+        opacity: 0.3;
+        pointer-events: none;
+    }
+    
+    /* Touch-friendly slider spacing */
+    .nouislider {
+        margin: 0.75rem 0;
+    }
+    
+    /* Compact parameter labels */
+    .parameter-group label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Parameter value displays */
+    .parameter-group .text-right {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #374151;
+    }
+    
+    /* Section headers for mobile */
+    .parameter-group h4 {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    /* Results section mobile optimization */
+    .bg-red-50, .bg-purple-50, .bg-green-50 {
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+        border-radius: 0.5rem;
+    }
+    
+    /* Scenario buttons for mobile */
+    .scenario-btn {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.8rem;
+        border-radius: 0.5rem;
+        text-align: center;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Grid adjustments for mobile */
+    .grid.lg\\:grid-cols-2 {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .grid.grid-cols-2 {
+        gap: 0.75rem;
+    }
+    
+    /* Chart canvas mobile sizing */
+    #breakdown-chart {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    /* Share buttons mobile optimization */
+    .flex.justify-center.space-x-4 {
+        flex-direction: column;
+        space-x: 0;
+        gap: 0.75rem;
+        align-items: center;
+    }
+    
+    .flex.justify-center.space-x-4 button {
+        width: 100%;
+        max-width: 280px;
+    }
 }
 
 /* Tablet optimizations */
@@ -368,5 +588,122 @@
 @media (min-width: 1025px) {
     .container {
         max-width: 90% !important;
+    }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+    .max-w-7xl {
+        padding: 0 0.75rem;
+    }
+    
+    .parameter-group {
+        padding: 0.75rem;
+    }
+    
+    .distribution-chart {
+        height: 60px !important;
+    }
+    
+    .distribution-chart-container {
+        height: 85px;
+        padding: 0.4rem;
+    }
+    
+    .distribution-stats {
+        font-size: 7px;
+        padding: 2px 4px;
+    }
+    
+    .distribution-chart-container::before {
+        font-size: 6px;
+        padding: 1px 3px;
+    }
+}
+
+/* Landscape mobile optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+    .distribution-chart-container {
+        height: 75px;
+    }
+    
+    .distribution-chart {
+        height: 50px !important;
+    }
+    
+    .parameter-group {
+        padding: 0.5rem;
+    }
+    
+    .grid.lg\\:grid-cols-2 {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+}
+
+/* High DPI mobile displays */
+@media (max-width: 768px) and (-webkit-min-device-pixel-ratio: 2) {
+    .distribution-chart {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+    
+    .distribution-stats {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
+/* Dark mode mobile support (if implemented) */
+@media (max-width: 768px) and (prefers-color-scheme: dark) {
+    .distribution-chart-container {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        border-color: #374151;
+    }
+    
+    .distribution-stats {
+        background: rgba(31, 41, 55, 0.95);
+        color: #d1d5db;
+        border-color: #374151;
+    }
+    
+    .distribution-chart-container::before {
+        background: rgba(31, 41, 55, 0.9);
+        color: #d1d5db;
+        border-color: #374151;
+    }
+}
+
+/* Accessibility improvements for mobile */
+@media (max-width: 768px) {
+    .distribution-chart-container {
+        min-height: 44px; /* Touch target minimum */
+    }
+    
+    /* Focus indicators for mobile */
+    .parameter-group:focus-within .distribution-chart-container {
+        outline: 2px solid #3b82f6;
+        outline-offset: 2px;
+    }
+    
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+        .distribution-chart-container {
+            border: 2px solid #000000;
+        }
+        
+        .distribution-stats {
+            background: #ffffff;
+            color: #000000;
+            border: 1px solid #000000;
+        }
+    }
+    
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+        .distribution-chart * {
+            animation: none !important;
+            transition: none !important;
+        }
     }
 }
