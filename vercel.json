@@ -2,22 +2,26 @@
   "version": 2,
   "builds": [
     {
-      "src": "**/*.html",
+      "src": "index.html",
       "use": "@vercel/static"
     },
     {
-      "src": "**/*.css",
+      "src": "social_media_cost_calculatorv5.html",
       "use": "@vercel/static"
     },
     {
-      "src": "**/*.js",
+      "src": "calculator.html",
       "use": "@vercel/static"
     },
     {
-      "src": "**/*.svg",
+      "src": "favicon.svg",
       "use": "@vercel/static"
     }
   ],
+  "buildCommand": null,
+  "devCommand": null,
+  "installCommand": null,
+  "outputDirectory": ".",
   "cleanUrls": true,
   "trailingSlash": false,
   "routes": [

@@ -60,4 +60,8 @@ temp/
 *.backup
 vite.config.js.backup
 package.json.backup
-package-lock.json.backup 
+package-lock.json.backup
+scripts.backup/
+node_modules.backup/
+.eslintrc.js.backup
+.prettierrc.backup 
