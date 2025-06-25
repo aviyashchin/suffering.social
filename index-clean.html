@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO and Meta Tags -->
+    <title>Social Media Cost Calculator | Economic Impact Analysis</title>
+    <meta name="description" content="Research-based calculator estimating the economic and human costs of social media's impact on mental health. Based on peer-reviewed studies.">
+    <meta name="keywords" content="social media, mental health, economic impact, cost calculator, research">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Social Media's Hidden Economic Cost">
+    <meta property="og:description" content="Calculate the true economic impact of social media on society">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://suffering.social">
+    <meta property="og:image" content="https://suffering.social/social-preview.png">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Social Media's Hidden Economic Cost">
+    <meta name="twitter:description" content="Calculate the true economic impact of social media on society">
+    <meta name="twitter:image" content="https://suffering.social/social-preview.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    
+    <!-- External Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css">
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Modular CSS -->
+    <link rel="stylesheet" href="src/styles/base.css">
+    <link rel="stylesheet" href="src/styles/components.css">
+    <link rel="stylesheet" href="src/styles/calculator.css">
+    <link rel="stylesheet" href="src/styles/mobile.css">
+    <link rel="stylesheet" href="src/styles/animations.css">
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'mortality': '#dc2626',
+                        'mental-health': '#8b5cf6',
+                        'productivity': '#059669'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50 font-sans antialiased">
+    <!-- Skip Navigation -->
+    <a href="#main-calculator" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded z-50">
+        Skip to main calculator
+    </a>
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold text-gray-900">
+                        Social Media Cost Calculator
+                    </h1>
+                </div>
+                <div class="flex space-x-4">
+                    <button id="help-btn" class="px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors">
+                        Help
+                    </button>
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                        Share Results
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-calculator" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Hero Section -->
+        <section class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                The Hidden Economic Cost of Social Media
+            </h2>
+            <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                Research-based calculator using peer-reviewed studies to estimate 
+                social media's economic impact through mental health costs.
+            </p>
+            
+            <!-- Total Cost Display -->
+            <div class="bg-gradient-to-r from-red-500 to-purple-600 text-white rounded-2xl p-8 mb-8">
+                <div class="text-6xl font-bold mb-2" id="hero-total-cost">$3.2T</div>
+                <div class="text-2xl opacity-90">Annual Economic Impact</div>
+                <div class="text-lg opacity-75 mt-2">
+                    That's <span id="gdp-percentage">13.3%</span> of US GDP
+                </div>
+            </div>
+        </section>
+
+        <!-- Calculator Interface -->
+        <section class="grid lg:grid-cols-2 gap-8 mb-12">
+            
+            <!-- Parameter Controls -->
+            <div class="space-y-6">
+                <h3 class="text-2xl font-semibold text-gray-900 mb-6">
+                    Research Parameters
+                </h3>
+                
+                <!-- Mortality Parameters -->
+                <div class="card mortality-theme">
+                    <h4 class="text-lg font-semibold text-red-700 mb-4">
+                        ☠️ Mortality Costs
+                    </h4>
+                    
+                    <!-- VSL Slider -->
+                    <div class="parameter-group">
+                        <label class="parameter-label">
+                            Value of Statistical Life
+                            <button class="info-button" data-tooltip="vsl">ℹ️</button>
+                        </label>
+                        <div id="vsl-nouislider" class="slider-container"></div>
+                        <div class="parameter-value" id="vsl-value">$13.7M</div>
+                    </div>
+                    
+                    <!-- Excess Deaths Slider -->
+                    <div class="parameter-group">
+                        <label class="parameter-label">
+                            Excess Deaths Since 2009
+                            <button class="info-button" data-tooltip="suicides">ℹ️</button>
+                        </label>
+                        <div id="suicides-nouislider" class="slider-container"></div>
+                        <div class="parameter-value" id="suicides-value">110K</div>
+                    </div>
+                    
+                    <!-- Attribution Slider -->
+                    <div class="parameter-group">
+                        <label class="parameter-label">
+                            Attribution to Social Media
+                            <button class="info-button" data-tooltip="attribution">ℹ️</button>
+                        </label>
+                        <div id="attribution-nouislider" class="slider-container"></div>
+                        <div class="parameter-value" id="attribution-value">18%</div>
+                    </div>
+                </div>
+                
+                <!-- Mental Health Parameters -->
+                <div class="card mental-health-theme">
+                    <h4 class="text-lg font-semibold text-purple-700 mb-4">
+                        🧠 Mental Health Costs
+                    </h4>
+                    
+                    <!-- Affected Population -->
+                    <div class="parameter-group">
+                        <label class="parameter-label">
+                            People with SM-Induced Depression
+                            <button class="info-button" data-tooltip="depression">ℹ️</button>
+                        </label>
+                        <div id="depression-nouislider" class="slider-container"></div>
+                        <div class="parameter-value" id="depression-value">5.0M</div>
+                    </div>
+                    
+                    <!-- Years Lived with Disability -->
+                    <div class="parameter-group">
+                        <label class="parameter-label">
+                            Years Lived with Disability
+                            <button class="info-button" data-tooltip="yld">ℹ️</button>
+                        </label>
+                        <div id="yld-nouislider" class="slider-container"></div>
+                        <div class="parameter-value" id="yld-value">6.0 years</div>
+                    </div>
+                    
+                    <!-- Quality of Life Impact -->
+                    <div class="parameter-group">
+                        <label class="parameter-label">
+                            Quality of Life Reduction
+                            <button class="info-button" data-tooltip="qol">ℹ️</button>
+                        </label>
+                        <div id="qol-nouislider" class="slider-container"></div>
+                        <div class="parameter-value" id="qol-value">35%</div>
+                    </div>
+                </div>
+                
+                <!-- Economic Parameters -->
+                <div class="card productivity-theme">
+                    <h4 class="text-lg font-semibold text-green-700 mb-4">
+                        💰 Economic Costs
+                    </h4>
+                    
+                    <!-- Healthcare Costs -->
+                    <div class="parameter-group">
+                        <label class="parameter-label">
+                            Annual Healthcare Cost per Person
+                            <button class="info-button" data-tooltip="healthcare">ℹ️</button>
+                        </label>
+                        <div id="healthcare-nouislider" class="slider-container"></div>
+                        <div class="parameter-value" id="healthcare-value">$7K</div>
+                    </div>
+                    
+                    <!-- Productivity Loss -->
+                    <div class="parameter-group">
+                        <label class="parameter-label">
+                            Annual Productivity Loss per Person
+                            <button class="info-button" data-tooltip="productivity">ℹ️</button>
+                        </label>
+                        <div id="productivity-nouislider" class="slider-container"></div>
+                        <div class="parameter-value" id="productivity-value">$6K</div>
+                    </div>
+                    
+                    <!-- Treatment Duration -->
+                    <div class="parameter-group">
+                        <label class="parameter-label">
+                            Average Treatment Duration
+                            <button class="info-button" data-tooltip="duration">ℹ️</button>
+                        </label>
+                        <div id="duration-nouislider" class="slider-container"></div>
+                        <div class="parameter-value" id="duration-value">4.5 years</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results Display -->
+            <div class="space-y-6">
+                <h3 class="text-2xl font-semibold text-gray-900 mb-6">
+                    Economic Impact Results
+                </h3>
+                
+                <!-- Formula Results -->
+                <div class="card">
+                    <h4 class="text-lg font-semibold mb-4">Cost Breakdown</h4>
+                    
+                    <div class="formula-result mortality-result">
+                        <div class="formula-label">Mortality Costs</div>
+                        <div class="formula-calculation" id="mortality-result">
+                            110K × 18% × $13.7M = $271B
+                        </div>
+                    </div>
+                    
+                    <div class="formula-result mental-health-result">
+                        <div class="formula-label">Mental Health Costs</div>
+                        <div class="formula-calculation" id="mental-result">
+                            5.0M × 6.0 × 35% × $183K = $1.9T
+                        </div>
+                    </div>
+                    
+                    <div class="formula-result productivity-result">
+                        <div class="formula-label">Economic Costs</div>
+                        <div class="formula-calculation" id="healthcare-result">
+                            5.0M × ($7K + $6K) × 4.5 = $293B
+                        </div>
+                    </div>
+                    
+                    <div class="total-result">
+                        <div class="text-2xl font-bold">
+                            Total: <span id="total-cost">$3.2T</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Scenario Buttons -->
+                <div class="card">
+                    <h4 class="text-lg font-semibold mb-4">Research Scenarios</h4>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button class="scenario-btn" data-scenario="reset">
+                            🔬 Research Consensus
+                        </button>
+                        <button class="scenario-btn" data-scenario="optimistic">
+                            🌟 Most Optimistic
+                        </button>
+                        <button class="scenario-btn" data-scenario="aggressive">
+                            🚨 Worst Case
+                        </button>
+                        <button class="scenario-btn" data-scenario="facebookFiles">
+                            📱 Facebook Files
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Comparison Chart -->
+                <div class="card">
+                    <h4 class="text-lg font-semibold mb-4">GDP Comparison</h4>
+                    <canvas id="comparison-chart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Research Sources -->
+        <section class="mb-12">
+            <h3 class="text-2xl font-semibold text-gray-900 mb-6">
+                Research Foundation
+            </h3>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="card">
+                    <h4 class="font-semibold text-red-700 mb-2">Mortality Evidence</h4>
+                    <p class="text-sm text-gray-600 mb-3">
+                        Causal evidence from Braghieri, Levy & Makarin (2022) showing 9% increase in depression 
+                        and 12% increase in anxiety from Facebook introduction.
+                    </p>
+                    <a href="#" class="text-blue-600 text-sm hover:underline">
+                        Read Study →
+                    </a>
+                </div>
+                
+                <div class="card">
+                    <h4 class="font-semibold text-purple-700 mb-2">Mental Health Impact</h4>
+                    <p class="text-sm text-gray-600 mb-3">
+                        WHO Global Burden of Disease methodology combined with Twenge et al. (2018) 
+                        findings on social media use and depression rates.
+                    </p>
+                    <a href="#" class="text-blue-600 text-sm hover:underline">
+                        View Methodology →
+                    </a>
+                </div>
+                
+                <div class="card">
+                    <h4 class="font-semibold text-green-700 mb-2">Economic Burden</h4>
+                    <p class="text-sm text-gray-600 mb-3">
+                        Healthcare and productivity costs based on Greenberg et al. (2021) 
+                        comprehensive economic burden analysis.
+                    </p>
+                    <a href="#" class="text-blue-600 text-sm hover:underline">
+                        See Analysis →
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Share Section -->
+        <section class="text-center">
+            <h3 class="text-2xl font-semibold text-gray-900 mb-6">
+                Share These Findings
+            </h3>
+            <div class="flex justify-center space-x-4">
+                <button id="share-twitter" class="share-btn bg-blue-500 hover:bg-blue-600">
+                    Share on Twitter
+                </button>
+                <button id="share-linkedin" class="share-btn bg-blue-700 hover:bg-blue-800">
+                    Share on LinkedIn
+                </button>
+                <button id="share-facebook" class="share-btn bg-blue-600 hover:bg-blue-700">
+                    Share on Facebook
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">About This Calculator</h4>
+                    <p class="text-gray-300 text-sm">
+                        Built using peer-reviewed research and federal agency methodologies 
+                        to provide transparent estimates of social media's economic impact.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Methodology</h4>
+                    <ul class="text-gray-300 text-sm space-y-2">
+                        <li>• Federal VSL guidelines ($13.7M)</li>
+                        <li>• WHO QALY methodology</li>
+                        <li>• Peer-reviewed attribution rates</li>
+                        <li>• Economic burden analysis</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Open Source</h4>
+                    <p class="text-gray-300 text-sm mb-4">
+                        All calculations and data sources are transparent and available for review.
+                    </p>
+                    <a href="https://www.subconscious.ai/leaderboard" 
+                       target="_blank" 
+                       class="text-blue-400 hover:text-blue-300 text-sm">
+                        View on GitHub →
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
+                <p>&copy; 2024 Social Media Cost Calculator. Open source research project.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>How to Use This Calculator</h3>
+                <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.classList.remove('show')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>This calculator estimates the economic impact of social media on society using research-based parameters.</p>
+                <h4>Key Features:</h4>
+                <ul>
+                    <li>Adjust sliders to see how different research values affect the total cost</li>
+                    <li>Try different scenarios based on various research studies</li>
+                    <li>All calculations use peer-reviewed research and federal methodologies</li>
+                    <li>Hover over ℹ️ icons to see research sources</li>
+                </ul>
+                <h4>Keyboard Shortcuts:</h4>
+                <ul>
+                    <li><kbd>?</kbd> - Show this help</li>
+                    <li><kbd>Ctrl+Shift+R</kbd> - Reset to default values</li>
+                    <li><kbd>Escape</kbd> - Close modals</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Updating calculations...</div>
+    </div>
+
+    <!-- Modular JavaScript -->
+    <script type="module" src="src/main.js"></script>
+    
+    <!-- Fallback for older browsers -->
+    <script nomodule>
+        console.warn('This browser does not support ES6 modules. Please use a modern browser.');
+        document.body.innerHTML = '<div style="text-align: center; padding: 50px; font-family: Arial;"><h2>Browser Not Supported</h2><p>Please use a modern browser like Chrome, Firefox, Safari, or Edge.</p></div>';
+    </script>
+</body>
+</html> 

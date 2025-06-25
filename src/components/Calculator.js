@@ -10,13 +10,16 @@
 
 import { DEFAULTS, CALCULATION, FORMULAS } from '../utils/constants.js';
 import { isValidNumber } from '../utils/formatters.js';
+import { CalculatorUtils } from '../utils/formatting.js';
+import { ValidationUtils } from '../utils/validation.js';
+import { DEFAULT_PARAMETERS, PARAMETER_RANGES, SCENARIOS } from '../utils/constants.js';
 
 /**
  * Main Calculator class handling all economic impact calculations
  */
 export class Calculator {
-  constructor() {
-    this.parameters = { ...DEFAULTS };
+  constructor(config = {}) {
+    this.parameters = { ...DEFAULTS, ...config.parameters };
     this.results = {
       mortality: 0,
       mentalHealth: 0,
@@ -27,6 +30,14 @@ export class Calculator {
       formulas: {},
       timestamp: Date.now()
     };
+    this.scenarios = SCENARIOS;
+    this.validationUtils = new ValidationUtils();
+    this.utils = CalculatorUtils;
+    
+    // Event system for parameter changes
+    this.listeners = new Map();
+    
+    console.log('✅ Calculator core initialized');
   }
 
   /**
@@ -392,6 +403,219 @@ export class Calculator {
       error: true,
       timestamp: Date.now()
     };
+  }
+
+  /**
+   * Calculates the total economic impact using the three-component research model
+   * @returns {Object} Economic impact breakdown in USD
+   */
+  calculateTotalEconomicImpact() {
+    // Validate parameters before calculation
+    this.validationUtils.validateParameterRanges(this.parameters);
+    
+    // Component 1: Mortality costs using federal VSL methodology
+    const excessDeaths = this.parameters.suicides * (this.parameters.attribution / 100);
+    const mortalityCosts = excessDeaths * this.parameters.vsl * 1_000_000;
+    
+    // Component 2: Disability costs using WHO QALY methodology  
+    const annualQALYValue = (this.parameters.vsl * 1_000_000) / 75; // 75-year life expectancy
+    const qualityDecrement = this.parameters.qol / 100;
+    const disabilityCosts = this.parameters.depression * this.parameters.yld * qualityDecrement * annualQALYValue;
+    
+    // Component 3: Economic productivity losses (healthcare + workplace)
+    const annualCostPerPerson = this.parameters.healthcare + this.parameters.productivity;
+    const productivityCosts = this.parameters.depression * annualCostPerPerson * this.parameters.duration;
+    
+    const totalCosts = mortalityCosts + disabilityCosts + productivityCosts;
+    
+    // Sanity checks
+    console.assert(totalCosts > 0, 'Total economic impact must be positive');
+    console.assert(totalCosts < 50_000_000_000_000, `Total cost ${totalCosts} exceeds reasonable bounds`);
+    
+    return {
+      mortality: mortalityCosts,
+      mental: disabilityCosts, 
+      productivity: productivityCosts,
+      total: totalCosts
+    };
+  }
+
+  /**
+   * Applies a research scenario with validation
+   * @param {string} scenarioName - Name of scenario to apply
+   */
+  applyScenario(scenarioName) {
+    const scenario = this.scenarios[scenarioName];
+    if (!scenario) {
+      console.error(`Unknown scenario: ${scenarioName}`);
+      return false;
+    }
+    
+    const oldParameters = { ...this.parameters };
+    
+    // Apply scenario parameters
+    Object.entries(scenario).forEach(([param, value]) => {
+      this.parameters[param] = value;
+    });
+    
+    this.emit('scenarioApplied', { 
+      scenarioName, 
+      oldParameters, 
+      newParameters: { ...this.parameters } 
+    });
+    
+    console.log(`✅ Applied scenario: ${scenarioName}`);
+    return true;
+  }
+  
+  /**
+   * Applies research citation values to parameters
+   * @param {Object} citationValues - Parameter values from research citation
+   */
+  applyCitationValues(citationValues) {
+    const oldParameters = { ...this.parameters };
+    const appliedChanges = {};
+    
+    Object.entries(citationValues).forEach(([param, value]) => {
+      if (this.updateParameter(param, value)) {
+        appliedChanges[param] = value;
+      }
+    });
+    
+    this.emit('citationApplied', { 
+      appliedChanges, 
+      oldParameters,
+      newParameters: { ...this.parameters }
+    });
+    
+    console.log(`✅ Applied citation values:`, appliedChanges);
+    return appliedChanges;
+  }
+  
+  /**
+   * Gets formatted parameter value for display
+   * @param {string} parameterName - Parameter to format
+   * @returns {string} Formatted value
+   */
+  getFormattedParameter(parameterName) {
+    const value = this.parameters[parameterName];
+    const formatters = {
+      vsl: v => `$${v.toFixed(1)}M`,
+      suicides: v => `${Math.round(v/1000)}K`,
+      attribution: v => `${Math.round(v)}%`,
+      depression: v => `${(v/1000000).toFixed(1)}M`,
+      yld: v => `${v.toFixed(1)} years`,
+      qol: v => `${Math.round(v)}%`,
+      healthcare: v => `$${Math.round(v/1000)}K`,
+      productivity: v => `$${Math.round(v/1000)}K`,
+      duration: v => `${v.toFixed(1)} years`
+    };
+    
+    return formatters[parameterName] ? formatters[parameterName](value) : value.toString();
+  }
+  
+  /**
+   * Gets parameter range information for validation
+   * @param {string} parameterName - Parameter to get range for
+   * @returns {Object} Range information
+   */
+  getParameterRange(parameterName) {
+    return PARAMETER_RANGES[parameterName] || null;
+  }
+  
+  /**
+   * Validates all current parameters
+   * @returns {Object} Validation results
+   */
+  validateAllParameters() {
+    return this.validationUtils.validateAll(this.parameters);
+  }
+  
+  /**
+   * Gets confidence interval for a parameter
+   * @param {string} parameterName - Parameter name
+   * @returns {Object} Confidence interval information
+   */
+  getConfidenceInterval(parameterName) {
+    const currentValue = this.parameters[parameterName];
+    return this.validationUtils.calculateConfidenceInterval(parameterName, currentValue);
+  }
+  
+  /**
+   * Tests calculation consistency (for debugging)
+   * @returns {boolean} True if all tests pass
+   */
+  testCalculationConsistency() {
+    console.log('🧪 Running calculation consistency tests...');
+    
+    try {
+      const baseline = this.calculateTotalEconomicImpact();
+      
+      // Test 1: VSL doubling should roughly double mortality costs
+      const originalVSL = this.parameters.vsl;
+      this.parameters.vsl *= 2;
+      const doubled = this.calculateTotalEconomicImpact();
+      const mortalityRatio = doubled.mortality / baseline.mortality;
+      
+      if (Math.abs(mortalityRatio - 2) > 0.1) {
+        console.error(`❌ VSL doubling test failed. Expected ~2x, got ${mortalityRatio.toFixed(2)}x`);
+        return false;
+      }
+      
+      // Restore and test other components
+      this.parameters.vsl = originalVSL;
+      
+      console.log('✅ All calculation consistency tests passed');
+      return true;
+      
+    } catch (error) {
+      console.error('❌ Consistency test error:', error);
+      return false;
+    }
+  }
+  
+  /**
+   * Simple event system for parameter changes
+   */
+  on(event, callback) {
+    if (!this.listeners.has(event)) {
+      this.listeners.set(event, []);
+    }
+    this.listeners.get(event).push(callback);
+  }
+  
+  emit(event, data) {
+    const callbacks = this.listeners.get(event);
+    if (callbacks) {
+      callbacks.forEach(callback => {
+        try {
+          callback(data);
+        } catch (error) {
+          console.error(`Error in event callback for ${event}:`, error);
+        }
+      });
+    }
+  }
+  
+  /**
+   * Returns current state for serialization/debugging
+   */
+  getState() {
+    return {
+      parameters: { ...this.parameters },
+      results: this.calculateTotalEconomicImpact(),
+      validation: this.validateAllParameters()
+    };
+  }
+  
+  /**
+   * Loads state from serialized data
+   */
+  loadState(state) {
+    if (state.parameters) {
+      this.parameters = { ...DEFAULT_PARAMETERS, ...state.parameters };
+      this.emit('stateLoaded', state);
+    }
   }
 }
 

@@ -1,35 +1,177 @@
-        :root {
-            --color-primary: #1f2937;
-            --color-primary-light: #374151;
-            --color-secondary: #3b82f6;
-            --color-accent: #ef4444;
-            --color-success: #10b981;
-            --color-warning: #f59e0b;
-            --color-danger: #ef4444;
-            --color-text-primary: #111827;
-            --color-text-secondary: #6b7280;
-            --color-text-light: #9ca3af;
-            --color-text-white: #ffffff;
-            --color-bg-primary: #ffffff;
-            --color-bg-secondary: #f9fafb;
-            --color-bg-tertiary: #f3f4f6;
-            --color-bg-dark: #1f2937;
-            --font-family-primary: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-            --font-family-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
-            --spacing-xs: 0.25rem;
-            --spacing-sm: 0.5rem;
-            --spacing-md: 1rem;
-            --spacing-lg: 1.5rem;
-            --spacing-xl: 2rem;
-            --spacing-2xl: 3rem;
-            --radius-sm: 0.25rem;
-            --radius-md: 0.5rem;
-            --radius-lg: 0.75rem;
-            --radius-xl: 1rem;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            --z-dropdown: 1000;
-            --z-sticky: 1020;
-            --z-fixed: 1030;
+/* src/styles/main.css - Core styles extracted from monolith */
+
+:root {
+    /* Color System */
+    --color-primary: #1f2937;
+    --color-primary-light: #374151;
+    --color-secondary: #3b82f6;
+    --color-accent: #ef4444;
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-danger: #ef4444;
+    
+    /* Text Colors */
+    --color-text-primary: #111827;
+    --color-text-secondary: #6b7280;
+    --color-text-light: #9ca3af;
+    --color-text-white: #ffffff;
+    
+    /* Background Colors */
+    --color-bg-primary: #ffffff;
+    --color-bg-secondary: #f9fafb;
+    --color-bg-tertiary: #f3f4f6;
+    --color-bg-dark: #1f2937;
+    
+    /* Component Theme Colors */
+    --color-mortality: #dc2626;
+    --color-mental-health: #8b5cf6;
+    --color-productivity: #16a34a;
+    
+    /* Typography */
+    --font-family-primary: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-family-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+    
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    
+    /* Border Radius */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    
+    /* Z-index Scale */
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+}
+
+/* Reset and Base Styles */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family-primary);
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-secondary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding-top: 5rem; /* Space for fixed header */
+}
+
+/* Fixed Header */
+.header-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--z-fixed);
+    background: linear-gradient(to right, var(--color-primary), var(--color-primary-light));
+    color: var(--color-text-white);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Typography */
+h1 { 
+    font-size: 2.5rem;
+    margin: 0.5rem 0;
+    line-height: 1.2;
+}
+
+h2 { 
+    font-size: 2rem;
+    margin: 0.5rem 0;
+    line-height: 1.3;
+}
+
+h3 { 
+    font-size: 1.5rem;
+    margin: 0.5rem 0;
+    line-height: 1.4;
+}
+
+.big-number {
+    font-size: 3rem;
+    font-weight: bold;
+    line-height: 1.1;
+    margin: 0.5rem 0;
+}
+
+/* Layout Helpers */
+.container {
+    max-width: 90%;
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
+}
+
+.section-spacing {
+    padding: 4rem 0;
+}
+
+/* Loading States */
+.loading {
+    opacity: 0;
+    transition: opacity 0.8s ease-out;
+}
+
+.loaded {
+    opacity: 1;
+}
+
+/* Accessibility */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Focus Indicators */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    outline: 2px solid var(--color-secondary);
+    outline-offset: 2px;
+}
+
+/* Performance Mode */
+.performance-mode * {
+    animation: none !important;
+    transition: opacity 0.3s ease, visibility 0.3s ease !important;
+}
+
+.performance-mode .card {
+    box-shadow: var(--shadow-sm);
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

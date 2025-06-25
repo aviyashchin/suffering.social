@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>Social Media Impact Calculator | Economic Cost Analysis</title>
+    <meta name="description" content="Research-based calculator estimating the economic and human costs of social media's impact on mental health.">
+    
+    <!-- External Stylesheets -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <!-- Internal Stylesheets (modularized) -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/animations.css">
+    
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js" defer></script>
+</head>
+
+<body class="loading">
+    <!-- Header Component -->
+    <header class="header-fixed" id="main-header">
+        <!-- Header content here -->
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Hero Section Component -->
+        <section id="hero-section" class="hero-section">
+            <!-- Hero content here -->
+        </section>
+
+        <!-- Calculator Section Component -->
+        <section id="calculator-section" class="calculator-section">
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Calculator Parameters -->
+                <div class="lg:col-span-2">
+                    <div id="calculator-container"></div>
+                </div>
+                
+                <!-- Results Sidebar -->
+                <aside class="lg:col-span-1">
+                    <div id="results-container"></div>
+                </aside>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Component -->
+    <footer id="main-footer">
+        <!-- Footer content here -->
+    </footer>
+
+    <!-- Modular JavaScript Modules -->
+    <script type="module">
+        import { Calculator } from './js/calculator/Calculator.js';
+        import { UIManager } from './js/components/UIManager.js';
+        import { PerformanceMonitor } from './js/utils/PerformanceMonitor.js';
+        
+        // Application Configuration
+        const config = {
+            calculator: {
+                defaultScenario: 'reset',
+                enableAnimations: true,
+                enablePerformanceMonitoring: true
+            }
+        };
+        
+        // Initialize Application
+        class App {
+            constructor(config) {
+                this.config = config;
+                this.calculator = null;
+                this.uiManager = null;
+                this.performanceMonitor = null;
+            }
+            
+            async initialize() {
+                try {
+                    // Initialize core components
+                    this.calculator = new Calculator(this.config.calculator);
+                    this.uiManager = new UIManager();
+                    this.performanceMonitor = new PerformanceMonitor();
+                    
+                    // Setup event listeners
+                    this.setupEventListeners();
+                    
+                    console.log('✅ Application initialized successfully');
+                } catch (error) {
+                    console.error('❌ Application initialization failed:', error);
+                }
+            }
+            
+            setupEventListeners() {
+                // Global event listeners
+                window.addEventListener('resize', this.handleResize.bind(this));
+                document.addEventListener('DOMContentLoaded', this.handleDOMReady.bind(this));
+            }
+            
+            handleResize() {
+                this.calculator?.handleResize();
+                this.uiManager?.handleResize();
+            }
+            
+            handleDOMReady() {
+                document.body.classList.replace('loading', 'loaded');
+                this.uiManager?.initializeAnimations();
+            }
+        }
+        
+        // Start the application
+        const app = new App(config);
+        app.initialize();
+    </script>
+</body>
+</html> 
