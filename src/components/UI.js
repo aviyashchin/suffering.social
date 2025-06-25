@@ -4,6 +4,7 @@ import { Calculator } from './Calculator.js';
 import { DistributionChart } from './DistributionChart.js';
 import { ChartManager } from './ChartManager.js';
 import { CalculatorUtils } from '../utils/formatting.js';
+import { RANGES, DEFAULTS } from '../utils/constants.js';
 
 /**
  * UI Controller - Manages all DOM interactions and updates
@@ -76,17 +77,24 @@ export class UIController {
      * Initialize parameter sliders with noUiSlider or fallback
      */
     async initializeSliders() {
-        const sliderConfigs = {
-            'vsl': { range: { min: 7.2, max: 14.0 }, start: 13.7, step: 0.1 },
-            'suicides': { range: { min: 89000, max: 300000 }, start: 110000, step: 1000 },
-            'attribution': { range: { min: 5, max: 30 }, start: 18, step: 1 },
-            'depression': { range: { min: 3000000, max: 15000000 }, start: 5000000, step: 100000 },
-            'yld': { range: { min: 4.8, max: 8.2 }, start: 6.0, step: 0.1 },
-            'qol': { range: { min: 31, max: 47 }, start: 35, step: 1 },
-            'healthcare': { range: { min: 6500, max: 20000 }, start: 7000, step: 100 },
-            'productivity': { range: { min: 4800, max: 10000 }, start: 6000, step: 100 },
-            'duration': { range: { min: 3.0, max: 8.5 }, start: 4.5, step: 0.1 }
-        };
+        // Use RANGES from constants.js with DEFAULTS for starting values
+        const sliderConfigs = {};
+        
+        // Build configs from RANGES and DEFAULTS
+        Object.keys(RANGES).forEach(param => {
+            if (DEFAULTS[param] !== undefined) {
+                sliderConfigs[param] = {
+                    range: { 
+                        min: RANGES[param].min, 
+                        max: RANGES[param].max 
+                    },
+                    start: DEFAULTS[param],
+                    step: RANGES[param].step
+                };
+            }
+        });
+        
+        console.log('🎯 Creating sliders with configs:', sliderConfigs);
         
         for (const [param, config] of Object.entries(sliderConfigs)) {
             await this.createSlider(param, config);
@@ -108,6 +116,11 @@ export class UIController {
         // Check if noUiSlider is available
         if (typeof noUiSlider !== 'undefined') {
             try {
+                // Clear any existing slider
+                if (container.noUiSlider) {
+                    container.noUiSlider.destroy();
+                }
+                
                 noUiSlider.create(container, {
                     range: config.range,
                     start: config.start,
@@ -139,11 +152,14 @@ export class UIController {
                     this.updateAllDisplays();
                 });
                 
+                console.log(`✅ Created noUiSlider for ${paramName}:`, config);
+                
             } catch (error) {
-                console.warn(`Failed to create noUiSlider for ${paramName}, using fallback`);
+                console.warn(`Failed to create noUiSlider for ${paramName}, using fallback:`, error);
                 this.createFallbackSlider(paramName, config, container);
             }
         } else {
+            console.warn('noUiSlider not available, using fallback');
             this.createFallbackSlider(paramName, config, container);
         }
     }
@@ -159,7 +175,7 @@ export class UIController {
         slider.max = config.range.max;
         slider.step = config.step;
         slider.value = config.start;
-        slider.className = 'slider fallback-slider w-full';
+        slider.className = 'slider fallback-slider w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer';
         
         container.appendChild(slider);
         
@@ -179,7 +195,7 @@ export class UIController {
             this.updateAllDisplays();
         });
         
-        console.log(`✅ Created fallback slider for ${paramName}`);
+        console.log(`✅ Created fallback slider for ${paramName}:`, config);
     }
     
     /**
@@ -199,7 +215,7 @@ export class UIController {
             if (container) {
                 try {
                     const chart = new DistributionChart(container, param);
-                    const currentValue = this.calculator.parameters[param] || 0;
+                    const currentValue = this.calculator.parameters[param] || DEFAULTS[param] || 0;
                     await chart.initialize(currentValue);
                     this.distributionCharts.set(param, chart);
                     console.log(`✅ Distribution chart created for ${param}`);
@@ -232,10 +248,14 @@ export class UIController {
         scenarioButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 const scenario = e.target.dataset.scenario;
-                this.applyScenario(scenario);
-                
-                // Visual feedback
-                this.highlightActiveScenario(button);
+                if (scenario) {
+                    this.applyScenario(scenario);
+                    
+                    // Visual feedback
+                    this.highlightActiveScenario(button);
+                } else {
+                    console.warn('No scenario data found on button:', e.target);
+                }
             });
         });
         
@@ -407,7 +427,7 @@ export class UIController {
             this.chartManager.updateCharts(results);
         }
         
-        console.log('✅ All displays updated');
+        console.log('✅ All displays updated:', results);
     }
     
     /**
@@ -433,14 +453,18 @@ export class UIController {
      * Apply scenario with UI feedback
      */
     applyScenario(scenarioName) {
-        this.calculator.applyScenario(scenarioName);
+        const success = this.calculator.applyScenario(scenarioName);
         
-        // Add loading animation
-        this.addLoadingState();
-        
-        setTimeout(() => {
-            this.removeLoadingState();
-        }, 300);
+        if (success) {
+            // Add loading animation
+            this.addLoadingState();
+            
+            setTimeout(() => {
+                this.removeLoadingState();
+            }, 300);
+        } else {
+            console.error('Failed to apply scenario:', scenarioName);
+        }
     }
     
     /**

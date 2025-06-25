@@ -8,11 +8,10 @@
  * @version 1.0.0
  */
 
-import { DEFAULTS, CALCULATION, FORMULAS } from '../utils/constants.js';
+import { DEFAULTS, CALCULATION, FORMULAS, SCENARIOS, RANGES } from '../utils/constants.js';
 import { isValidNumber } from '../utils/formatters.js';
 import { CalculatorUtils } from '../utils/formatting.js';
 import { ValidationUtils } from '../utils/validation.js';
-import { DEFAULT_PARAMETERS, PARAMETER_RANGES, SCENARIOS } from '../utils/constants.js';
 
 /**
  * Main Calculator class handling all economic impact calculations
@@ -31,13 +30,14 @@ export class Calculator {
       timestamp: Date.now()
     };
     this.scenarios = SCENARIOS;
+    this.ranges = RANGES;
     this.validationUtils = new ValidationUtils();
     this.utils = CalculatorUtils;
     
     // Event system for parameter changes
     this.listeners = new Map();
     
-    console.log('✅ Calculator core initialized');
+    console.log('✅ Calculator core initialized with parameters:', this.parameters);
   }
 
   /**
@@ -52,8 +52,27 @@ export class Calculator {
       return this.results;
     }
 
+    const oldValue = this.parameters[parameterName];
     this.parameters[parameterName] = value;
-    return this.calculateAll();
+    
+    // Emit parameter change event
+    this.emit('parameterChanged', { 
+      parameter: parameterName, 
+      oldValue, 
+      newValue: value 
+    });
+    
+    // Recalculate and check for significant changes
+    const results = this.calculateAll();
+    
+    if (Math.abs((results.total - this.results.total) / this.results.total) > 0.1) {
+      this.emit('significantChange', { 
+        parameter: parameterName, 
+        results 
+      });
+    }
+    
+    return results;
   }
 
   /**
@@ -227,185 +246,6 @@ export class Calculator {
   }
 
   /**
-   * Generate formula display strings with current values
-   * @param {number} mortality - Mortality cost result
-   * @param {number} mentalHealth - Mental health cost result  
-   * @param {number} healthcare - Healthcare cost result
-   * @returns {Object} Formatted formula strings for display
-   */
-  getFormulaResults(mortality, mentalHealth, healthcare) {
-    const { suicides, attribution, vsl, depression, yld, qol, healthcare: healthcareCost, productivity, duration } = this.parameters;
-    
-    return {
-      mortality: {
-        formula: `${this.formatNumber(suicides)} × ${attribution}% × $${vsl}M`,
-        result: this.formatCurrency(mortality || 0),
-        description: FORMULAS?.mortality?.description || 'Mortality cost calculation'
-      },
-      mentalHealth: {
-        formula: `${this.formatNumber(depression)} × ${yld}yr × ${qol}% × $${Math.round(vsl * 1000000 / CALCULATION.LIFE_EXPECTANCY / 1000)}K`,
-        result: this.formatCurrency(mentalHealth || 0),
-        description: FORMULAS?.mentalHealth?.description || 'Mental health cost calculation'
-      },
-      healthcare: {
-        formula: `${this.formatNumber(depression)} × ($${(healthcareCost || 0).toLocaleString()} + $${(productivity || 0).toLocaleString()}) × ${duration}yr`,
-        result: this.formatCurrency(healthcare || 0),
-        description: FORMULAS?.healthcare?.description || 'Healthcare cost calculation'
-      }
-    };
-  }
-
-  /**
-   * Calculate running costs for real-time counter
-   * @param {number} elapsedSeconds - Seconds since page load
-   * @returns {number} Cost accumulated since page load
-   */
-  calculateRunningCost(elapsedSeconds) {
-    if (!this.results.total || elapsedSeconds <= 0) return 0;
-    
-    const annualCost = this.results.total;
-    const secondsPerYear = 365.25 * 24 * 60 * 60;
-    const costPerSecond = annualCost / secondsPerYear;
-    
-    return costPerSecond * elapsedSeconds;
-  }
-
-  /**
-   * Calculate uncertainty range for sensitivity analysis
-   * @param {number} parameterVariation - Percentage variation (e.g., 0.1 for ±10%)
-   * @returns {Object} Min and max values for uncertainty range
-   */
-  calculateUncertaintyRange(parameterVariation = 0.15) {
-    const baseResults = this.results;
-    
-    // Calculate variation bounds
-    const minMultiplier = 1 - parameterVariation;
-    const maxMultiplier = 1 + parameterVariation;
-    
-    return {
-      min: baseResults.total * minMultiplier,
-      max: baseResults.total * maxMultiplier,
-      variation: parameterVariation * 100
-    };
-  }
-
-  /**
-   * Validate all current parameters
-   * @returns {Array} Array of validation errors (empty if all valid)
-   */
-  validateParameters() {
-    const errors = [];
-    
-    for (const [key, value] of Object.entries(this.parameters)) {
-      if (!isValidNumber(value)) {
-        errors.push(`Invalid value for ${key}: ${value}`);
-      }
-      
-      // Additional validation rules
-      if (key === 'attribution' && (value < 0 || value > 100)) {
-        errors.push(`Attribution percentage must be between 0-100%: ${value}%`);
-      }
-      
-      if (key === 'qol' && (value < 0 || value > 100)) {
-        errors.push(`Quality of life reduction must be between 0-100%: ${value}%`);
-      }
-      
-      if (['vsl', 'suicides', 'depression', 'healthcare', 'productivity', 'yld', 'duration'].includes(key) && value <= 0) {
-        errors.push(`${key} must be positive: ${value}`);
-      }
-    }
-    
-    return errors;
-  }
-
-  /**
-   * Get current parameter values
-   * @returns {Object} Current parameter values
-   */
-  getParameters() {
-    return { ...this.parameters };
-  }
-
-  /**
-   * Get current calculation results
-   * @returns {Object} Current calculation results
-   */
-  getResults() {
-    return { ...this.results };
-  }
-
-  /**
-   * Reset parameters to defaults
-   * @returns {Object} Reset calculation results
-   */
-  reset() {
-    this.parameters = { ...DEFAULTS };
-    return this.calculateAll();
-  }
-
-  // ============================================================================
-  // HELPER METHODS
-  // ============================================================================
-
-  /**
-   * Format large numbers for display
-   * @param {number} value - Number to format
-   * @returns {string} Formatted number string
-   */
-  formatNumber(value) {
-    if (!isValidNumber(value)) return '0';
-    
-    if (value >= 1e6) {
-      return `${(value / 1e6).toFixed(1)}M`;
-    } else if (value >= 1e3) {
-      return `${(value / 1e3).toFixed(0)}K`;
-    } else {
-      return value.toLocaleString();
-    }
-  }
-
-  /**
-   * Format currency values for display
-   * @param {number} value - Currency value to format
-   * @returns {string} Formatted currency string
-   */
-  formatCurrency(value) {
-    if (!isValidNumber(value)) return '$0';
-    
-    if (value >= 1e12) {
-      return `$${(value / 1e12).toFixed(1)}T`;
-    } else if (value >= 1e9) {
-      return `$${(value / 1e9).toFixed(1)}B`;
-    } else if (value >= 1e6) {
-      return `$${(value / 1e6).toFixed(1)}M`;
-    } else {
-      return `$${value.toLocaleString()}`;
-    }
-  }
-
-  /**
-   * Get error results structure
-   * @returns {Object} Error results with safe default values
-   */
-  getErrorResults() {
-    return {
-      mortality: 0,
-      mentalHealth: 0,
-      healthcare: 0,
-      total: 0,
-      gdpPercentage: 0,
-      parameters: { ...this.parameters },
-      formulas: {
-        mortality: { formula: 'Error', result: '$0', description: 'Calculation error' },
-        mentalHealth: { formula: 'Error', result: '$0', description: 'Calculation error' },
-        healthcare: { formula: 'Error', result: '$0', description: 'Calculation error' }
-      },
-      error: true,
-      timestamp: Date.now()
-    };
-  }
-
-  /**
    * Calculates the total economic impact using the three-component research model
    * @returns {Object} Economic impact breakdown in USD
    */
@@ -446,17 +286,20 @@ export class Calculator {
    */
   applyScenario(scenarioName) {
     const scenario = this.scenarios[scenarioName];
-    if (!scenario) {
-      console.error(`Unknown scenario: ${scenarioName}`);
+    if (!scenario || !scenario.values) {
+      console.error(`Unknown scenario or missing values: ${scenarioName}`);
       return false;
     }
     
     const oldParameters = { ...this.parameters };
     
-    // Apply scenario parameters
-    Object.entries(scenario).forEach(([param, value]) => {
+    // Apply scenario values (not the scenario object itself)
+    Object.entries(scenario.values).forEach(([param, value]) => {
       this.parameters[param] = value;
     });
+    
+    // Recalculate
+    this.calculateAll();
     
     this.emit('scenarioApplied', { 
       scenarioName, 
@@ -464,7 +307,7 @@ export class Calculator {
       newParameters: { ...this.parameters } 
     });
     
-    console.log(`✅ Applied scenario: ${scenarioName}`);
+    console.log(`✅ Applied scenario: ${scenarioName}`, scenario.values);
     return true;
   }
   
@@ -499,6 +342,8 @@ export class Calculator {
    */
   getFormattedParameter(parameterName) {
     const value = this.parameters[parameterName];
+    if (!isValidNumber(value)) return '0';
+    
     const formatters = {
       vsl: v => `$${v.toFixed(1)}M`,
       suicides: v => `${Math.round(v/1000)}K`,
@@ -520,7 +365,7 @@ export class Calculator {
    * @returns {Object} Range information
    */
   getParameterRange(parameterName) {
-    return PARAMETER_RANGES[parameterName] || null;
+    return this.ranges[parameterName] || null;
   }
   
   /**
@@ -585,13 +430,12 @@ export class Calculator {
   }
   
   emit(event, data) {
-    const callbacks = this.listeners.get(event);
-    if (callbacks) {
-      callbacks.forEach(callback => {
+    if (this.listeners.has(event)) {
+      this.listeners.get(event).forEach(callback => {
         try {
           callback(data);
         } catch (error) {
-          console.error(`Error in event callback for ${event}:`, error);
+          console.error(`Error in event listener for ${event}:`, error);
         }
       });
     }
@@ -603,8 +447,8 @@ export class Calculator {
   getState() {
     return {
       parameters: { ...this.parameters },
-      results: this.calculateTotalEconomicImpact(),
-      validation: this.validateAllParameters()
+      results: { ...this.results },
+      isValid: this.validateParameters().length === 0
     };
   }
   
@@ -613,9 +457,53 @@ export class Calculator {
    */
   loadState(state) {
     if (state.parameters) {
-      this.parameters = { ...DEFAULT_PARAMETERS, ...state.parameters };
+      this.parameters = { ...DEFAULTS, ...state.parameters };
       this.emit('stateLoaded', state);
     }
+  }
+
+  /**
+   * Validate all current parameters
+   * @returns {Array} Array of validation errors (empty if all valid)
+   */
+  validateParameters() {
+    const errors = [];
+    
+    for (const [key, value] of Object.entries(this.parameters)) {
+      if (!isValidNumber(value)) {
+        errors.push(`Invalid value for ${key}: ${value}`);
+      }
+      
+      // Check ranges
+      const range = this.ranges[key];
+      if (range && (value < range.min || value > range.max)) {
+        errors.push(`${key} must be between ${range.min} and ${range.max}`);
+      }
+    }
+    
+    return errors;
+  }
+
+  /**
+   * Get error results structure
+   * @returns {Object} Error results with safe default values
+   */
+  getErrorResults() {
+    return {
+      mortality: 0,
+      mentalHealth: 0,
+      healthcare: 0,
+      total: 0,
+      gdpPercentage: 0,
+      parameters: { ...this.parameters },
+      formulas: {
+        mortality: { formula: 'Error', result: '$0', description: 'Calculation error' },
+        mentalHealth: { formula: 'Error', result: '$0', description: 'Calculation error' },
+        healthcare: { formula: 'Error', result: '$0', description: 'Calculation error' }
+      },
+      error: true,
+      timestamp: Date.now()
+    };
   }
 }
 
