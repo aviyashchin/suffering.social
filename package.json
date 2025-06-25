@@ -1,0 +1,39 @@
+{
+  "name": "suffering-social-calculator",
+  "version": "1.0.0", 
+  "description": "Research-based calculator for social media economic impact on mental health",
+  "type": "module",
+  "scripts": {
+    "dev": "npx serve . -l 3000",
+    "build": "echo Static HTML - no build needed",
+    "preview": "npx serve . -l 4173",
+    "lint": "npx eslint --init || echo ESLint not configured", 
+    "format": "npx prettier --write *.html *.md || echo Prettier not configured",
+    "deploy": "git add . && git commit -m Deploy update && git push",
+    "test": "echo Add tests when needed"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aviyashchin/suffering.social.git"
+  },
+  "keywords": [
+    "social-media",
+    "mental-health", 
+    "economics",
+    "research",
+    "calculator",
+    "open-source"
+  ],
+  "author": "Subconscious.ai",
+  "license": "Apache-2.0",
+  "homepage": "https://suffering.social",
+  "bugs": {
+    "url": "https://github.com/aviyashchin/suffering.social/issues"
+  },
+  "devDependencies": {
+    "serve": "^14.2.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

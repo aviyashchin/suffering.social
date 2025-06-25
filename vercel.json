@@ -18,9 +18,9 @@
       "use": "@vercel/static"
     }
   ],
-  "buildCommand": null,
-  "devCommand": null,
-  "installCommand": null,
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "echo 'No install needed for static deployment'",
   "outputDirectory": ".",
   "cleanUrls": true,
   "trailingSlash": false,
