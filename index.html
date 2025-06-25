@@ -142,6 +142,11 @@
                 font-size: 0.6rem !important;
             }
             
+            /* RHS sections mobile optimization */
+            .flex.justify-end .w-full.max-w-lg {
+                max-width: 100% !important;
+            }
+            
             /* Sticky scenario buttons mobile */
             #sticky-scenarios {
                 gap: 4px !important;
@@ -773,115 +778,119 @@
             </div>
         </section>
 
-        <!-- Open Source & Better Way - Side by Side -->
+        <!-- Open Source & Better Way - Moved to RHS -->
         <section class="mb-16">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Open Source Section (Left) -->
-                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
-                    <div class="text-center">
-                        <h3 class="text-xl font-bold mb-3 flex items-center justify-center gap-2 text-gray-900">
-                            <span class="text-2xl">🔓</span>
-                            This Research is Open Source
-                        </h3>
-                        <p class="mb-6 text-gray-700 text-sm">
-                            Help improve this calculator, add new features, or use it for your own research. 
-                            All code, data, and methodology are freely available.
-                        </p>
-                        
-                        <div class="grid grid-cols-1 gap-3 mb-6">
-                            <a href="https://github.com/aviyashchin/suffering.social/" target="_blank" class="bg-white rounded-lg p-3 border border-blue-200 hover:bg-blue-50 transition-colors">
-                                <div class="flex items-center gap-3">
-                                    <div class="text-xl">🍴</div>
-                                    <div class="text-left">
-                                        <h4 class="font-semibold text-gray-900 text-sm">Fork & Customize</h4>
-                                        <p class="text-gray-600 text-xs">Create your own version</p>
-                                    </div>
+            <div class="flex justify-end">
+                <div class="w-full max-w-lg">
+                    <div class="grid grid-cols-1 gap-8">
+                        <!-- Open Source Section -->
+                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
+                            <div class="text-center">
+                                <h3 class="text-xl font-bold mb-3 flex items-center justify-center gap-2 text-gray-900">
+                                    <span class="text-2xl">🔓</span>
+                                    This Research is Open Source
+                                </h3>
+                                <p class="mb-6 text-gray-700 text-sm">
+                                    Help improve this calculator, add new features, or use it for your own research. 
+                                    All code, data, and methodology are freely available.
+                                </p>
+                                
+                                <div class="grid grid-cols-1 gap-3 mb-6">
+                                    <a href="https://github.com/aviyashchin/suffering.social/" target="_blank" class="bg-white rounded-lg p-3 border border-blue-200 hover:bg-blue-50 transition-colors">
+                                        <div class="flex items-center gap-3">
+                                            <div class="text-xl">🍴</div>
+                                            <div class="text-left">
+                                                <h4 class="font-semibold text-gray-900 text-sm">Fork & Customize</h4>
+                                                <p class="text-gray-600 text-xs">Create your own version</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    
+                                    <a href="https://discord.gg/3bgj4ZhABz" target="_blank" class="bg-white rounded-lg p-3 border border-blue-200 hover:bg-blue-50 transition-colors">
+                                        <div class="flex items-center gap-3">
+                                            <div class="text-xl">🤝</div>
+                                            <div class="text-left">
+                                                <h4 class="font-semibold text-gray-900 text-sm">Contribute</h4>
+                                                <p class="text-gray-600 text-xs">Add research, fix bugs</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    
+                                    <a href="https://www.subconscious.ai/leaderboard" target="_blank" class="bg-white rounded-lg p-3 border border-blue-200 hover:bg-blue-50 transition-colors">
+                                        <div class="flex items-center gap-3">
+                                            <div class="text-xl">📊</div>
+                                            <div class="text-left">
+                                                <h4 class="font-semibold text-gray-900 text-sm">Use the Data</h4>
+                                                <p class="text-gray-600 text-xs">Transparent & reusable</p>
+                                            </div>
+                                        </div>
+                                    </a>
                                 </div>
-                            </a>
-                            
-                            <a href="https://discord.gg/3bgj4ZhABz" target="_blank" class="bg-white rounded-lg p-3 border border-blue-200 hover:bg-blue-50 transition-colors">
-                                <div class="flex items-center gap-3">
-                                    <div class="text-xl">🤝</div>
-                                    <div class="text-left">
-                                        <h4 class="font-semibold text-gray-900 text-sm">Contribute</h4>
-                                        <p class="text-gray-600 text-xs">Add research, fix bugs</p>
-                                    </div>
+                                
+                                <div class="flex flex-col gap-2">
+                                    <a href="https://github.com/aviyashchin/suffering.social" target="_blank" 
+                                       class="inline-flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-lg font-semibold transition-colors text-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                        </svg>
+                                        View on GitHub
+                                    </a>
+                                    
+                                    <a href="https://github.com/aviyashchin/suffering.social/fork" target="_blank" 
+                                       class="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors text-sm">
+                                        🍴 Fork This Project
+                                    </a>
                                 </div>
-                            </a>
-                            
-                            <a href="https://www.subconscious.ai/leaderboard" target="_blank" class="bg-white rounded-lg p-3 border border-blue-200 hover:bg-blue-50 transition-colors">
-                                <div class="flex items-center gap-3">
-                                    <div class="text-xl">📊</div>
-                                    <div class="text-left">
-                                        <h4 class="font-semibold text-gray-900 text-sm">Use the Data</h4>
-                                        <p class="text-gray-600 text-xs">Transparent & reusable</p>
-                                    </div>
+                                
+                                <div class="mt-3 text-xs text-gray-500">
+                                    Licensed under Apache 2.0 • Community contributions welcome
                                 </div>
-                            </a>
+                            </div>
                         </div>
-                        
-                        <div class="flex flex-col gap-2">
-                            <a href="https://github.com/aviyashchin/suffering.social" target="_blank" 
-                               class="inline-flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-lg font-semibold transition-colors text-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                                </svg>
-                                View on GitHub
-                            </a>
-                            
-                            <a href="https://github.com/aviyashchin/suffering.social/fork" target="_blank" 
-                               class="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors text-sm">
-                                🍴 Fork This Project
-                            </a>
-                        </div>
-                        
-                        <div class="mt-3 text-xs text-gray-500">
-                            Licensed under Apache 2.0 • Community contributions welcome
-                        </div>
-                    </div>
-                </div>
 
-                <!-- There's a Better Way Section (Right) -->
-                <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6">
-                    <div class="text-center">
-                        <h3 class="text-xl font-bold mb-3 text-gray-900">🌟 There's a Better Way</h3>
-                        <p class="mb-6 text-gray-700 text-sm">
-                            Learn how Subconscious.ai is building technology that enhances well-being instead of exploiting attention.
-                        </p>
-                        
-                        <div class="bg-white rounded-lg p-4 border border-green-200 mb-6">
-                            <div class="text-4xl mb-3">🚀</div>
-                            <h4 class="font-semibold text-gray-900 mb-2">Ethical Technology</h4>
-                            <p class="text-gray-600 text-sm">
-                                Building AI systems that prioritize human flourishing over engagement metrics
-                            </p>
-                        </div>
-                        
-                        <a href="http://www.subconscious.ai" target="_blank" class="inline-block bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
-                            🚀 Discover Subconscious.ai
-                        </a>
-                        
-                        <div class="mt-4 text-sm text-gray-600">
-                            Join the movement for ethical technology
-                        </div>
-                        
-                        <div class="mt-6 space-y-2">
-                            <div class="bg-white rounded-lg p-3 border border-green-200">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-green-600">✓</span>
-                                    <span class="text-sm text-gray-700">Human-centered design</span>
+                        <!-- There's a Better Way Section -->
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6">
+                            <div class="text-center">
+                                <h3 class="text-xl font-bold mb-3 text-gray-900">🌟 There's a Better Way</h3>
+                                <p class="mb-6 text-gray-700 text-sm">
+                                    Learn how Subconscious.ai is building technology that enhances well-being instead of exploiting attention.
+                                </p>
+                                
+                                <div class="bg-white rounded-lg p-4 border border-green-200 mb-6">
+                                    <div class="text-4xl mb-3">🚀</div>
+                                    <h4 class="font-semibold text-gray-900 mb-2">Ethical Technology</h4>
+                                    <p class="text-gray-600 text-sm">
+                                        Building AI systems that prioritize human flourishing over engagement metrics
+                                    </p>
                                 </div>
-                            </div>
-                            <div class="bg-white rounded-lg p-3 border border-green-200">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-green-600">✓</span>
-                                    <span class="text-sm text-gray-700">Well-being focused metrics</span>
+                                
+                                <a href="http://www.subconscious.ai" target="_blank" class="inline-block bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                                    🚀 Discover Subconscious.ai
+                                </a>
+                                
+                                <div class="mt-4 text-sm text-gray-600">
+                                    Join the movement for ethical technology
                                 </div>
-                            </div>
-                            <div class="bg-white rounded-lg p-3 border border-green-200">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-green-600">✓</span>
-                                    <span class="text-sm text-gray-700">Transparent algorithms</span>
+                                
+                                <div class="mt-6 space-y-2">
+                                    <div class="bg-white rounded-lg p-3 border border-green-200">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-green-600">✓</span>
+                                            <span class="text-sm text-gray-700">Human-centered design</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-white rounded-lg p-3 border border-green-200">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-green-600">✓</span>
+                                            <span class="text-sm text-gray-700">Well-being focused metrics</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-white rounded-lg p-3 border border-green-200">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-green-600">✓</span>
+                                            <span class="text-sm text-gray-700">Transparent algorithms</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1469,7 +1478,7 @@
                     depression: 5000000,
                     yld: 6.0,
                     qol: 35,
-                    healthcare: 7000,
+                    healthcare: 8000,
                     productivity: 6000,
                     duration: 4.5
                 };
@@ -1522,7 +1531,7 @@
                     'depression': { range: { min: 2000000, max: 8000000 }, start: 5000000, step: 100000 },
                     'yld': { range: { min: 3.0, max: 8.0 }, start: 6.0, step: 0.1 },
                     'qol': { range: { min: 30, max: 50 }, start: 35, step: 1 },
-                    'healthcare': { range: { min: 8000, max: 12000 }, start: 7000, step: 100 },
+                    'healthcare': { range: { min: 8000, max: 12000 }, start: 8000, step: 100 },
                     'productivity': { range: { min: 5000, max: 9000 }, start: 6000, step: 100 },
                     'duration': { range: { min: 0.25, max: 6.8 }, start: 4.5, step: 0.1 }
                 };
@@ -1726,24 +1735,36 @@
                 const data = [];
                 const numPoints = 50;
                 
+                // Ensure we stay within exact bounds
+                const minBound = config.min;
+                const maxBound = config.max;
+                const range = maxBound - minBound;
+                
                 for (let i = 0; i <= numPoints; i++) {
-                    const x = config.min + (config.max - config.min) * (i / numPoints);
+                    // Generate x values that exactly span from min to max
+                    const x = minBound + range * (i / numPoints);
                     let y;
                     
                     if (config.type === 'normal') {
-                        // Normal distribution centered on current value
-                        const variance = config.std * config.std;
-                        const exponent = -0.5 * Math.pow((x - currentValue) / config.std, 2);
-                        y = Math.exp(exponent) / (config.std * Math.sqrt(2 * Math.PI));
+                        // Normal distribution centered on current value, constrained to bounds
+                        const constrainedMean = Math.max(minBound, Math.min(maxBound, currentValue));
+                        const constrainedStd = Math.min(config.std, range / 4); // Prevent overflow beyond bounds
+                        const variance = constrainedStd * constrainedStd;
+                        const exponent = -0.5 * Math.pow((x - constrainedMean) / constrainedStd, 2);
+                        y = Math.exp(exponent) / (constrainedStd * Math.sqrt(2 * Math.PI));
                     } else {
-                        // Skewed distribution with peak near current value
-                        const shift = currentValue / config.mean; // Scale factor
-                        const adjustedMean = currentValue;
-                        const logX = Math.log(Math.max(x, 1));
-                        const logMean = Math.log(Math.max(adjustedMean, 1));
-                        const logStd = 0.4;
-                        const exponent = -0.5 * Math.pow((logX - logMean) / logStd, 2);
-                        y = Math.exp(exponent) / (Math.max(x, 1) * logStd * Math.sqrt(2 * Math.PI));
+                        // Skewed distribution with peak near current value, constrained to bounds
+                        const constrainedMean = Math.max(minBound, Math.min(maxBound, currentValue));
+                        const normalizedX = (x - minBound) / range; // Normalize to 0-1
+                        const normalizedMean = (constrainedMean - minBound) / range; // Normalize mean to 0-1
+                        
+                        // Use beta-like distribution for skewed curves within bounds
+                        const alpha = 2 + (normalizedMean * 3); // Shape parameter
+                        const beta = 2 + ((1 - normalizedMean) * 3); // Shape parameter
+                        
+                        // Simplified beta distribution approximation
+                        y = Math.pow(normalizedX, alpha - 1) * Math.pow(1 - normalizedX, beta - 1);
+                        y = y / (range * 0.1); // Scale for visibility
                     }
                     
                     data.push({ x, y });
@@ -1753,7 +1774,7 @@
             }
             
             getParameterConfig(param) {
-                // Evidence-based distribution parameters from research citations (updated ranges)
+                // Distribution parameters matching exact slider ranges for accurate curve bounds
                 const configs = {
                     vsl: { type: 'normal', min: 7.0, max: 14.0, mean: 13.7, std: 1.4 },
                     suicides: { type: 'skewed', min: 60000, max: 120000, mean: 110000, std: 15000 },
@@ -2526,26 +2547,30 @@
             }
             
             updateExternalities() {
-                const { suicides, attribution, depression } = this.parameters;
+                // Update both hero and cumulative externalities with ticking values
+                this.updateCumulativeExternalities();
+                this.updateHeroExternalities();
+            }
+            
+            updateHeroExternalities() {
+                // Calculate elapsed time since cumulative tracking started
+                const elapsedSeconds = (Date.now() - this.cumulativeStartTime) / 1000;
                 
-                // Calculate current externalities based on model assumptions
-                const totalDeaths = Math.round(suicides * (attribution / 100));
-                const totalDepression = Math.round(depression);
+                // Calculate cumulative totals for hero section (same as sticky header)
+                const heroTotalDeaths = Math.floor(this.baseCumulativeDeaths + (this.deathsPerSecond * elapsedSeconds));
+                const heroTotalDepression = Math.floor(this.baseCumulativeDepression + (this.depressionPerSecond * elapsedSeconds));
                 
-                // Update hero section externalities (current values)
+                // Update hero section externalities with ticking values
                 const heroDepressionEl = document.getElementById('hero-depression-cases');
                 const heroSuicideEl = document.getElementById('hero-suicide-deaths');
                 
                 if (heroDepressionEl) {
-                    heroDepressionEl.textContent = totalDepression.toLocaleString();
+                    heroDepressionEl.textContent = heroTotalDepression.toLocaleString();
                 }
                 
                 if (heroSuicideEl) {
-                    heroSuicideEl.textContent = totalDeaths.toLocaleString();
+                    heroSuicideEl.textContent = heroTotalDeaths.toLocaleString();
                 }
-                
-                // Update cumulative externalities (ticking values)
-                this.updateCumulativeExternalities();
             }
             
             updateCumulativeExternalities() {
@@ -3605,7 +3630,7 @@
                         
                         console.log('✅ Externalities test complete');
                         console.log('💡 Try changing sliders to see externalities update in real-time!');
-                        console.log('💡 Watch cumulative externalities tick up every 100ms in sticky header!');
+                        console.log('💡 Watch cumulative externalities tick up every 100ms in BOTH hero and sticky header!');
                     };
                     
                     window.testAllNewFeatures = function() {
@@ -3702,6 +3727,55 @@
                         console.log('💡 Most actionable studies (Very High + Apply Value) appear first!');
                     };
                     
+                    window.testCurveBounds = function() {
+                        console.log('📈 Testing distribution curve bounds...');
+                        
+                        const testParams = ['vsl', 'healthcare', 'attribution', 'duration'];
+                        
+                        testParams.forEach(param => {
+                            console.log(`\n📊 Testing ${param} curve bounds:`);
+                            
+                            // Get slider configuration
+                            const sliderContainer = document.getElementById(`${param}-nouislider`);
+                            if (!sliderContainer || !sliderContainer.noUiSlider) {
+                                console.log(`   ❌ Slider not found for ${param}`);
+                                return;
+                            }
+                            
+                            const sliderOptions = sliderContainer.noUiSlider.options;
+                            const sliderMin = sliderOptions.range.min;
+                            const sliderMax = sliderOptions.range.max;
+                            
+                            // Get distribution configuration
+                            const config = window.calculator.getParameterConfig(param);
+                            const configMin = config.min;
+                            const configMax = config.max;
+                            
+                            // Generate curve data
+                            const curveData = window.calculator.generateCurveData(param);
+                            const curveMin = Math.min(...curveData.map(d => d.x));
+                            const curveMax = Math.max(...curveData.map(d => d.x));
+                            
+                            console.log(`   Slider range: [${sliderMin}, ${sliderMax}]`);
+                            console.log(`   Config range: [${configMin}, ${configMax}]`);
+                            console.log(`   Curve range:  [${curveMin.toFixed(3)}, ${curveMax.toFixed(3)}]`);
+                            
+                            const sliderMatch = Math.abs(sliderMin - configMin) < 0.01 && Math.abs(sliderMax - configMax) < 0.01;
+                            const curveMatch = Math.abs(curveMin - configMin) < 0.01 && Math.abs(curveMax - configMax) < 0.01;
+                            
+                            console.log(`   Slider ↔ Config: ${sliderMatch ? '✅' : '❌'} ${sliderMatch ? 'Match' : 'Mismatch'}`);
+                            console.log(`   Curve ↔ Config:  ${curveMatch ? '✅' : '❌'} ${curveMatch ? 'Match' : 'Mismatch'}`);
+                            
+                            if (!sliderMatch || !curveMatch) {
+                                console.log(`   🔧 Bounds need adjustment for ${param}`);
+                            }
+                        });
+                        
+                        console.log('\n✅ Curve bounds test complete');
+                        console.log('💡 All curves should exactly match slider ranges!');
+                        console.log('💡 Red indicator lines should appear at appropriate positions within bounds!');
+                    };
+                    
                     console.log('🔧 Debug utilities available:');
                     console.log('  testSliders() - Test slider functionality');
                     console.log('  testCharts() - Test distribution charts');
@@ -3722,6 +3796,7 @@
                     console.log('  testScrollMorphing() - Test minimal sticky header 🎬');
                     console.log('  testAllNewFeatures() - Test all v5 features 🚀');
                     console.log('  testCitationOrdering() - Test citation prioritization 📚');
+                    console.log('  testCurveBounds() - Test distribution curve bounds 📈');
                     
                     // Hide loading screen
                     document.getElementById('loading-screen').classList.add('hidden');
