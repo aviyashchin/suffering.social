@@ -54,4 +54,10 @@ tmp/
 temp/
 
 # Local development
-.vercel 
+.vercel
+
+# Backup files (moved for static deployment)
+*.backup
+vite.config.js.backup
+package.json.backup
+package-lock.json.backup 
