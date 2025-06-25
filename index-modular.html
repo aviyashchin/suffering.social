@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Cost Calculator - Research-Based Economic Impact Analysis</title>
+    
+    <!-- Meta tags for SEO and social sharing -->
+    <meta name="description" content="Calculate the economic impact of social media on society using research-based parameters. Free, open-source tool for researchers, policymakers, and journalists.">
+    <meta name="keywords" content="social media, mental health, economic impact, cost calculator, research tool">
+    <meta name="author" content="Subconscious.ai">
+    
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content="Social Media Cost Calculator">
+    <meta property="og:description" content="Research-based tool to calculate the economic impact of social media on society">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://suffering.social">
+    
+    <!-- Critical CSS - Inlined for performance -->
+    <style>
+        /* CSS Custom Properties - Design System */
+        :root {
+            /* Semantic color system */
+            --color-mortality: #dc2626;
+            --color-mental-health: #8b5cf6;
+            --color-productivity: #059669;
+            --color-background: #f8fafc;
+            --color-surface: #ffffff;
+            --color-text: #1e293b;
+            --color-text-muted: #64748b;
+            
+            /* Spacing scale */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            
+            /* Typography scale */
+            --text-xs: 0.75rem;
+            --text-sm: 0.875rem;
+            --text-base: 1rem;
+            --text-lg: 1.125rem;
+            --text-xl: 1.25rem;
+            --text-2xl: 1.5rem;
+            --text-3xl: 1.875rem;
+            
+            /* Component sizing */
+            --container-max-width: 1200px;
+            --sidebar-width: 280px;
+            --header-height: 80px;
+        }
+        
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--color-text);
+            background-color: var(--color-background);
+            font-size: var(--text-base);
+        }
+        
+        /* Loading states */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-top: 2px solid #333;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            transform: translate(-50%, -50%);
+        }
+        
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        /* Progressive enhancement - Hide content until components load */
+        .component-loading {
+            display: none;
+        }
+        
+        .component-ready .component-loading {
+            display: block;
+        }
+    </style>
+    
+    <!-- External Dependencies - Loaded from CDN for performance -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.min.js" as="script">
+    <link rel="preload" href="https://unpkg.com/nouislider@15.7.1/dist/nouislider.min.css" as="style">
+    
+    <!-- Third-party CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/nouislider@15.7.1/dist/nouislider.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    
+    <!-- Component-specific CSS - Loaded asynchronously -->
+    <link rel="stylesheet" href="src/styles/main.css" media="print" onload="this.media='all'; this.onload=null;">
+    <link rel="stylesheet" href="src/styles/components.css" media="print" onload="this.media='all'; this.onload=null;">
+    <link rel="stylesheet" href="src/styles/mobile.css" media="print" onload="this.media='all'; this.onload=null;">
+</head>
+
+<body class="loading">
+    <!-- App Container -->
+    <div id="app" class="min-h-screen">
+        <!-- Header Component -->
+        <header id="header-component" class="component-loading">
+            <!-- Header content will be loaded by HeaderComponent -->
+        </header>
+        
+        <!-- Hero Section Component -->
+        <section id="hero-component" class="component-loading">
+            <!-- Hero content will be loaded by HeroComponent -->
+        </section>
+        
+        <!-- Main Calculator Section -->
+        <main id="calculator-component" class="component-loading">
+            <!-- Calculator content will be loaded by CalculatorComponent -->
+        </main>
+        
+        <!-- Charts Section -->
+        <section id="charts-component" class="component-loading">
+            <!-- Charts content will be loaded by ChartsComponent -->
+        </section>
+        
+        <!-- Research Modal -->
+        <div id="research-modal-component" class="component-loading">
+            <!-- Research modal content will be loaded by ResearchComponent -->
+        </div>
+        
+        <!-- Help Modal -->
+        <div id="help-modal-component" class="component-loading">
+            <!-- Help modal content will be loaded by UIComponent -->
+        </div>
+        
+        <!-- Share Buttons -->
+        <div id="share-component" class="component-loading">
+            <!-- Share buttons will be loaded by UIComponent -->
+        </div>
+    </div>
+    
+    <!-- Loading Indicator -->
+    <div id="loading-indicator" class="fixed inset-0 bg-white/80 flex items-center justify-center z-50">
+        <div class="text-center">
+            <div class="loading w-8 h-8 mx-auto mb-4"></div>
+            <p class="text-gray-600">Loading Calculator...</p>
+        </div>
+    </div>
+    
+    <!-- Third-party JavaScript Libraries -->
+    <script src="https://unpkg.com/lodash@4.17.21/lodash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.min.js"></script>
+    <script src="https://unpkg.com/nouislider@15.7.1/dist/nouislider.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+    
+    <!-- Application JavaScript - ES6 Modules -->
+    <script type="module">
+        // Dynamic imports for better performance
+        let calculator;
+        
+        async function initializeApp() {
+            try {
+                console.log('🚀 Initializing modular Social Media Calculator...');
+                
+                // Import core utilities first
+                const { CalculatorUtils, UIHelpers, MobileOptimizations } = await import('./src/utils/utilities.js');
+                
+                // Import and initialize components in order
+                const [
+                    { HeaderComponent },
+                    { HeroComponent }, 
+                    { CalculatorComponent },
+                    { ChartsComponent },
+                    { ResearchComponent },
+                    { UIComponent }
+                ] = await Promise.all([
+                    import('./src/components/UI/Header.js'),
+                    import('./src/components/UI/HeroSection.js'),
+                    import('./src/components/Calculator/Calculator.js'),
+                    import('./src/components/Charts/Charts.js'),
+                    import('./src/components/Research/Research.js'),
+                    import('./src/components/UI/UI.js')
+                ]);
+                
+                // Initialize components
+                const header = new HeaderComponent();
+                const hero = new HeroComponent();
+                const charts = new ChartsComponent();
+                const research = new ResearchComponent();
+                const ui = new UIComponent();
+                
+                // Initialize main calculator (depends on other components)
+                calculator = new CalculatorComponent({
+                    header,
+                    charts,
+                    research,
+                    ui
+                });
+                
+                // Connect components
+                header.setCalculator(calculator);
+                charts.setCalculator(calculator);
+                research.setCalculator(calculator);
+                ui.setCalculator(calculator);
+                
+                // Initialize all components
+                await Promise.all([
+                    header.initialize(),
+                    hero.initialize(),
+                    calculator.initialize(),
+                    charts.initialize(),
+                    research.initialize(),
+                    ui.initialize()
+                ]);
+                
+                // Mark app as ready
+                document.body.classList.remove('loading');
+                document.body.classList.add('component-ready');
+                
+                // Hide loading indicator
+                const loadingIndicator = document.getElementById('loading-indicator');
+                if (loadingIndicator) {
+                    loadingIndicator.style.display = 'none';
+                }
+                
+                console.log('✅ Modular Social Media Calculator initialized successfully');
+                
+                // Analytics
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'app_initialized', {
+                        initialization_time: performance.now(),
+                        components_loaded: 6
+                    });
+                }
+                
+            } catch (error) {
+                console.error('❌ Failed to initialize app:', error);
+                
+                // Fallback to monolithic version
+                console.log('🔄 Falling back to monolithic calculator...');
+                window.location.href = 'social_media_cost_calculatorv4.html';
+            }
+        }
+        
+        // Performance monitoring
+        if ('performance' in window) {
+            window.addEventListener('load', () => {
+                const perfData = performance.getEntriesByType('navigation')[0];
+                console.log(`📊 Page load performance:`, {
+                    'DOM Content Loaded': `${perfData.domContentLoadedEventEnd - perfData.fetchStart}ms`,
+                    'Full Load': `${perfData.loadEventEnd - perfData.fetchStart}ms`,
+                    'First Paint': `${performance.getEntriesByType('paint')[0]?.startTime || 0}ms`
+                });
+            });
+        }
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            initializeApp();
+        }
+        
+        // Global error handling
+        window.addEventListener('error', (e) => {
+            console.error('❌ Global error:', e.error);
+            
+            // Report to analytics if available
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'exception', {
+                    description: e.error.message,
+                    fatal: false
+                });
+            }
+        });
+        
+        // Expose calculator globally for debugging
+        window.getCalculator = () => calculator;
+        
+        // Development utilities
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            window.debugCalculator = () => {
+                console.log('Calculator instance:', calculator);
+                console.log('Current parameters:', calculator?.parameters);
+                console.log('Available methods:', Object.getOwnPropertyNames(calculator?.constructor.prototype));
+            };
+            
+            console.log('🔧 Development mode - debugCalculator() available');
+        }
+    </script>
+    
+    <!-- Google Analytics (if needed) -->
+    <!-- 
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+    -->
+</body>
+</html> 

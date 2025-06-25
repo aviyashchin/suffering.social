@@ -1,0 +1,39 @@
+<section class="relative min-h-screen flex items-center justify-center mb-16 overflow-hidden" id="hero-section">
+            <!-- Video Background Placeholder -->
+            <div class="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-blue-900">
+                <!-- Replace this div with actual video when ready -->
+                <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTAiIGN5PSIxMCIgcj0iMSIgZmlsbD0iIzM3NDE1MSIgZmlsbC1vcGFjaXR5PSIwLjMiLz4KPHN2Zz4K')] opacity-20"></div>
+            </div>
+            
+            <!-- Overlay Content -->
+            <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
+                <div class="hero-hidden" id="hero-content">
+                    <h1 class="text-5xl lg:text-7xl font-bold mb-6 text-white leading-tight">
+                        The Hidden
+                        <span class="bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent">
+                            Cost
+                        </span>
+                        <br>
+                        of Progress
+                    </h1>
+                    <p class="text-xl lg:text-2xl text-gray-300 mb-8 leading-relaxed">
+                        What happens when innovation sacrifices human wellbeing?
+                        <br>
+                        <span class="text-gray-400">We measured the unmeasurable.</span>
+                    </p>
+                    
+                    <!-- Scroll Indicator -->
+                    <div class="mt-12 opacity-0 transition-opacity duration-1000 delay-1000" id="scroll-indicator">
+                        <div class="inline-flex flex-col items-center text-gray-400 cursor-pointer transition-transform hover:scale-110" onclick="smoothScrollToCalculator()">
+                            <span class="text-sm uppercase tracking-wider mb-2">Explore the Data</span>
+                            <div class="w-6 h-10 border-2 border-gray-400 rounded-full flex justify-center">
+                                <div class="w-1 h-3 bg-gray-400 rounded-full mt-2 animate-bounce"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gradient Fade to Content -->
+            <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-50 to-transparent z-20"></div>
+        </section>

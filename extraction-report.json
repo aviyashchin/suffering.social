@@ -1,0 +1,37 @@
+{
+  "timestamp": "2025-06-25T00:09:45.479Z",
+  "originalFile": "social_media_cost_calculatorv4.html",
+  "extraction": {
+    "components": {
+      "header": 685,
+      "hero": 2577,
+      "calculator": 23615,
+      "charts": 70,
+      "modal": 1475
+    },
+    "styles": {
+      "main": 35,
+      "header": 100,
+      "calculator": 223,
+      "charts": 73,
+      "modal": 114,
+      "mobile": 36,
+      "animations": 375
+    },
+    "scripts": {
+      "utils": 537,
+      "calculator": 1779,
+      "charts": 411,
+      "ui": 528,
+      "research": 383,
+      "main": 22
+    }
+  },
+  "recommendations": [
+    "Start with Calculator.js - it contains the core business logic",
+    "Extract constants and utilities first for immediate reuse",
+    "Break down large CSS files into component-specific stylesheets",
+    "Add proper ES6 imports/exports to JavaScript modules",
+    "Consider TypeScript for better development experience"
+  ]
+}

@@ -1,0 +1,320 @@
+<section class="bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 rounded-3xl p-8 lg:p-12 mb-12 text-white shadow-2xl" id="calculator-start">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl lg:text-5xl font-bold mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">
+                    The Unmeasured <span class="text-red-400" id="hero-total-cost">$2.48 Trillion</span>
+                </h1>
+                <p class="text-lg lg:text-xl text-blue-100 max-w-4xl mx-auto" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.8);">
+                    Economic externalities hidden from GDP — the true cost of human suffering, lost potential, and broken social bonds
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                <div class="bg-blue-800/30 backdrop-blur-sm rounded-2xl p-6 border border-blue-400/30 shadow-xl">
+                    <div class="text-4xl mb-4">🧠</div>
+                    <h3 class="text-xl font-bold mb-2">Mental Wellbeing</h3>
+                    <p class="text-blue-100 text-sm">Freedom from anxiety, depression, and digital addiction</p>
+                </div>
+                
+                <div class="bg-teal-800/30 backdrop-blur-sm rounded-2xl p-6 border border-teal-400/30 shadow-xl">
+                    <div class="text-4xl mb-4">🤝</div>
+                    <h3 class="text-xl font-bold mb-2">Social Connection</h3>
+                    <p class="text-teal-100 text-sm">Meaningful relationships and community bonds</p>
+                </div>
+                
+                <div class="bg-purple-800/30 backdrop-blur-sm rounded-2xl p-6 border border-purple-400/30 shadow-xl">
+                    <div class="text-4xl mb-4">💜</div>
+                    <h3 class="text-xl font-bold mb-2">Life Satisfaction</h3>
+                    <p class="text-purple-100 text-sm">Purpose, fulfillment, and genuine happiness</p>
+                </div>
+                
+                <div class="bg-orange-800/30 backdrop-blur-sm rounded-2xl p-6 border border-orange-400/30 shadow-xl">
+                    <div class="text-4xl mb-4">🛡️</div>
+                    <h3 class="text-xl font-bold mb-2">Personal Autonomy</h3>
+                    <p class="text-orange-100 text-sm">Freedom from manipulation and surveillance</p>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <h2 class="text-2xl lg:text-4xl font-bold mb-6" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">
+                    It's time to measure what truly matters
+                </h2>
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 max-w-4xl mx-auto">
+                    <p class="text-lg lg:text-xl text-blue-100" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.8);">
+                        GDP captures income, but misses the essence of human flourishing. We must quantify the hidden costs — 
+                        the mental health crises, broken social bonds, and lost purpose that make life truly rich.
+                        <strong class="text-yellow-300"> Let's build an economy that optimizes for wellbeing, not just wealth.</strong>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center">
+                <div class="inline-flex items-center gap-3 bg-gray-900/60 backdrop-blur-sm rounded-full px-6 py-3 border border-gray-400/30">
+                    <span class="text-2xl font-bold">Beyond GDP.</span>
+                    <span class="text-gray-300 text-xl">Reclaiming what matters.</span>
+                </div>
+            </div>
+        </section>
+<div class="parameter-group mortality">
+                            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                                <button class="info-button mortality" data-tooltip="mortality" aria-label="Research information">i</button>
+                                ☠️ Death
+                            </h2>
+                            
+                            <!-- Research Context -->
+                            <div class="bg-blue-50 text-blue-900 rounded-xl p-5 mb-6 border border-blue-200">
+                                <p class="font-medium">Mortality Statistics</p>
+                                <div class="mt-3 grid grid-cols-2 gap-4 text-sm">
+                                    <div class="bg-white p-3 rounded-lg border">
+                                        <div class="text-2xl font-bold text-red-600">49,000+</div>
+                                        <div class="text-xs text-gray-600">Deaths by suicide in the U.S. (2023)</div>
+                                    </div>
+                                    <div class="bg-white p-3 rounded-lg border">
+                                        <div class="text-2xl font-bold text-orange-600">37%</div>
+                                        <div class="text-xs text-gray-600">Increase in suicide rates (2000-2022)</div>
+                                    </div>
+                                </div>
+                                <p class="mt-3 text-xs text-gray-600">
+                                    Source: <a href="https://www.cdc.gov/suicide/facts/index.html" target="_blank" class="text-indigo-600 underline">CDC National Vital Statistics System, 2023</a>
+                                </p>
+                            </div>
+                            
+                            <!-- VSL Slider -->
+                            <div class="mb-6">
+                                <div class="flex justify-between mb-2 font-medium">
+                                    <span class="flex items-center gap-2">
+                                        Value of Statistical Life (VSL)
+                                        <button class="info-button mortality" data-tooltip="mortality-vsl" aria-label="VSL Research information">i</button>
+                                    </span>
+                                    <span class="font-mono font-bold text-red-600" id="vsl-value">$13.7M</span>
+                                </div>
+                                <input type="range" min="8" max="20" value="13.7" step="0.1" class="slider" id="vsl-slider">
+                                <div class="distribution-viz" id="vsl-distribution">
+                                    <div class="current-value" id="vsl-current"></div>
+                                    <svg id="vsl-svg"></svg>
+                                </div>
+                                <div class="distribution-info" id="vsl-info">
+                                    <span>Normal Distribution | Mean: $13.7M | Median: $13.5M | 95% CI: [$10.2M, $17.8M]</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Suicides Slider -->
+                            <div class="mb-6">
+                                <div class="flex justify-between mb-2 font-medium">
+                                    <span class="flex items-center gap-2">
+                                        Excess Deaths Since 2009 (ED)
+                                        <button class="info-button mortality" data-tooltip="mortality-suicides" aria-label="Suicides Research information">i</button>
+                                    </span>
+                                    <span class="font-mono font-bold text-red-600" id="suicides-value">110K</span>
+                                </div>
+                                <input type="range" min="100000" max="300000" value="110000" step="1000" class="slider" id="suicides-slider">
+                                <div class="distribution-viz" id="suicides-distribution">
+                                    <div class="current-value" id="suicides-current"></div>
+                                    <svg id="suicides-svg"></svg>
+                                </div>
+                                <div class="distribution-info" id="suicides-info">
+                                    <span>Gamma Distribution | Mean: 110K | Median: 105K | 95% CI: [85K, 140K]</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Attribution Slider -->
+                            <div class="mb-6">
+                                <div class="flex justify-between mb-2 font-medium">
+                                    <span class="flex items-center gap-2">
+                                        Attribution Rate to Social Media (AR)
+                                        <button class="info-button mortality" data-tooltip="mortality-attribution" aria-label="Attribution Research information">i</button>
+                                    </span>
+                                    <span class="font-mono font-bold text-red-600" id="attribution-value">18%</span>
+                                </div>
+                                <input type="range" min="5" max="30" value="18" step="1" class="slider" id="attribution-slider">
+                                <div class="distribution-viz" id="attribution-distribution">
+                                    <div class="current-value" id="attribution-current"></div>
+                                    <svg id="attribution-svg"></svg>
+                                </div>
+                                <div class="distribution-info" id="attribution-info">
+                                    <span>Beta Distribution | Mean: 18% | Median: 17% | 95% CI: [12%, 25%]</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Formula Display -->
+                            <div class="bg-red-50 border border-red-300 rounded-lg p-4 font-mono text-sm">
+                                <strong>☠️ Death Formula:</strong> ED × AR × VSL<br>
+                                <strong>Result:</strong> <span id="mortality-result">110,000 × 18% × $13.7M = $271.3B</span>
+                                <div class="text-xs text-red-700 mt-2 font-sans">
+                                    ED = Excess Deaths, AR = Attribution Rate, VSL = Value of Statistical Life
+                                </div>
+                            </div>
+                        </div>
+<div class="parameter-group mental-health">
+                            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2" style="color: #8b5cf6;">
+                                <button class="info-button mental-health" data-tooltip="mental-health" aria-label="Research information">i</button>
+                                😞 Disability
+                            </h2>
+                            
+                            <!-- Research Context -->
+                            <div class="bg-purple-50 text-purple-900 rounded-xl p-5 mb-6 border border-purple-200">
+                                <p class="font-medium">Mental Health Impact</p>
+                                <div class="mt-3 grid grid-cols-2 gap-4 text-sm">
+                                    <div class="bg-white p-3 rounded-lg border">
+                                        <div class="text-2xl font-bold text-purple-600">15.8%</div>
+                                        <div class="text-xs text-gray-600">Teens with major depression (2019)</div>
+                                    </div>
+                                    <div class="bg-white p-3 rounded-lg border">
+                                        <div class="text-2xl font-bold text-blue-600">5.2M</div>
+                                        <div class="text-xs text-gray-600">U.S. teens with major depressive episode (2024)</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Depression Cases Slider -->
+                            <div class="mb-6">
+                                <div class="flex justify-between mb-2 font-medium">
+                                    <span class="flex items-center gap-2">
+                                        Affected Population with SM-Induced Depression (AP)
+                                        <button class="info-button mental-health" data-tooltip="qaly-people" aria-label="Depression Cases Research information">i</button>
+                                    </span>
+                                    <span class="font-mono font-bold" style="color: #8b5cf6;" id="depression-value">5.0M</span>
+                                </div>
+                                <input type="range" min="3000000" max="15000000" value="5000000" step="100000" class="slider" id="depression-slider">
+                                <div class="distribution-viz" id="depression-distribution">
+                                    <div class="current-value" id="depression-current"></div>
+                                    <svg id="depression-svg"></svg>
+                                </div>
+                                <div class="distribution-info" id="depression-info">
+                                    <span>Log-Normal Distribution | Mean: 5.0M | Median: 4.8M | 95% CI: [3.2M, 7.8M]</span>
+                                </div>
+                            </div>
+                            
+                            <!-- YLD Slider -->
+                            <div class="mb-6">
+                                <div class="flex justify-between mb-2 font-medium">
+                                    <span class="flex items-center gap-2">
+                                        Disability Duration (DD)
+                                        <button class="info-button mental-health" data-tooltip="qaly-yld" aria-label="YLD Research information">i</button>
+                                    </span>
+                                    <span class="font-mono font-bold" style="color: #8b5cf6;" id="yld-value">6.0 years</span>
+                                </div>
+                                <input type="range" min="4" max="8" value="6" step="0.1" class="slider" id="yld-slider">
+                                <div class="distribution-viz" id="yld-distribution">
+                                    <div class="current-value" id="yld-current"></div>
+                                    <svg id="yld-svg"></svg>
+                                </div>
+                                <div class="distribution-info" id="yld-info">
+                                    <span>Normal Distribution | Mean: 6.0 years | Median: 6.0 years | 95% CI: [5.0, 7.0 years]</span>
+                                </div>
+                            </div>
+                            
+                            <!-- QOL Slider -->
+                            <div class="mb-6">
+                                <div class="flex justify-between mb-2 font-medium">
+                                    <span class="flex items-center gap-2">
+                                        Quality Impact Reduction (QI)
+                                        <button class="info-button mental-health" data-tooltip="qaly-qol" aria-label="QOL Research information">i</button>
+                                    </span>
+                                    <span class="font-mono font-bold" style="color: #8b5cf6;" id="qol-value">35%</span>
+                                </div>
+                                <input type="range" min="30" max="40" value="35" step="1" class="slider" id="qol-slider">
+                                <div class="distribution-viz" id="qol-distribution">
+                                    <div class="current-value" id="qol-current"></div>
+                                    <svg id="qol-svg"></svg>
+                                </div>
+                                <div class="distribution-info" id="qol-info">
+                                    <span>Beta Distribution | Mean: 35% | Median: 35% | 95% CI: [31%, 39%]</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Formula Display -->
+                            <div class="bg-purple-50 border border-purple-300 rounded-lg p-4 font-mono text-sm">
+                                <strong>😞 Disability Formula:</strong> AP × DD × QI × (VSL ÷ 75 years)<br>
+                                <strong>Result:</strong> <span id="mental-result">5M × 6 × 35% × $182K = $1.92T</span>
+                                <div class="text-xs text-purple-700 mt-2 font-sans">
+                                    AP = Affected Population, DD = Disability Duration, QI = Quality Impact
+                                </div>
+                            </div>
+                        </div>
+<div class="parameter-group productivity">
+                            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2 text-green-700">
+                                <button class="info-button productivity" data-tooltip="productivity" aria-label="Research information">i</button>
+                                💸 Lost Productivity
+                            </h2>
+                            
+                            <!-- Research Context -->
+                            <div class="bg-green-50 text-green-900 rounded-xl p-5 mb-6 border border-green-200">
+                                <p class="font-medium">Economic Impact</p>
+                                <div class="mt-3 grid grid-cols-2 gap-4 text-sm">
+                                    <div class="bg-white p-3 rounded-lg border">
+                                        <div class="text-2xl font-bold text-green-600">$282B</div>
+                                        <div class="text-xs text-gray-600">Annual cost of mental illness to U.S. economy</div>
+                                    </div>
+                                    <div class="bg-white p-3 rounded-lg border">
+                                        <div class="text-2xl font-bold text-orange-600">$47.6B</div>
+                                        <div class="text-xs text-gray-600">Annual mental health productivity losses</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Healthcare Costs Slider -->
+                            <div class="mb-6">
+                                <div class="flex justify-between mb-2 font-medium">
+                                    <span class="flex items-center gap-2">
+                                        Healthcare Cost per Person (HC)
+                                        <button class="info-button productivity" data-tooltip="healthcare-costs" aria-label="Healthcare Costs Research information">i</button>
+                                    </span>
+                                    <span class="font-mono font-bold text-green-600" id="healthcare-value">$7,000</span>
+                                </div>
+                                <input type="range" min="6500" max="20000" value="7000" step="100" class="slider" id="healthcare-slider">
+                                <div class="distribution-viz" id="healthcare-distribution">
+                                    <div class="current-value" id="healthcare-current"></div>
+                                    <svg id="healthcare-svg"></svg>
+                                </div>
+                                <div class="distribution-info" id="healthcare-info">
+                                    <span>Log-Normal Distribution | Mean: $7.0K | Median: $6.8K | 95% CI: [$6.5K, $8.2K]</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Productivity Loss Slider -->
+                            <div class="mb-6">
+                                <div class="flex justify-between mb-2 font-medium">
+                                    <span class="flex items-center gap-2">
+                                        Productivity Loss per Person (PL)
+                                        <button class="info-button productivity" data-tooltip="healthcare-productivity" aria-label="Productivity Loss Research information">i</button>
+                                    </span>
+                                    <span class="font-mono font-bold text-green-600" id="productivity-value">$6,000</span>
+                                </div>
+                                <input type="range" min="6000" max="10000" value="6000" step="100" class="slider" id="productivity-slider">
+                                <div class="distribution-viz" id="productivity-distribution">
+                                    <div class="current-value" id="productivity-current"></div>
+                                    <svg id="productivity-svg"></svg>
+                                </div>
+                                <div class="distribution-info" id="productivity-info">
+                                    <span>Gamma Distribution | Mean: $6.0K | Median: $5.9K | 95% CI: [$6.0K, $7.5K]</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Duration Slider -->
+                            <div class="mb-6">
+                                <div class="flex justify-between mb-2 font-medium">
+                                    <span class="flex items-center gap-2">
+                                        Treatment Duration (TD)
+                                        <button class="info-button productivity" data-tooltip="healthcare-duration" aria-label="Duration Research information">i</button>
+                                    </span>
+                                    <span class="font-mono font-bold text-green-600" id="duration-value">4.5 years</span>
+                                </div>
+                                <input type="range" min="3" max="6" value="4.5" step="0.1" class="slider" id="duration-slider">
+                                <div class="distribution-viz" id="duration-distribution">
+                                    <div class="current-value" id="duration-current"></div>
+                                    <svg id="duration-svg"></svg>
+                                </div>
+                                <div class="distribution-info" id="duration-info">
+                                    <span>Normal Distribution | Mean: 4.5 years | Median: 4.5 years | 95% CI: [3.7, 5.3 years]</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Formula Display -->
+                            <div class="bg-green-50 border border-green-300 rounded-lg p-4 font-mono text-sm">
+                                <strong>💸 Lost Productivity Formula:</strong> AP × (HC + PL) × TD<br>
+                                <strong>Result:</strong> <span id="healthcare-result">5M × ($7K + $6K) × 4.5 = $292.5B</span>
+                                <div class="text-xs text-green-700 mt-2 font-sans">
+                                    AP = Affected Population (same as Disability), HC = Healthcare Cost, PL = Productivity Loss, TD = Treatment Duration
+                                </div>
+                            </div>
+                        </div>

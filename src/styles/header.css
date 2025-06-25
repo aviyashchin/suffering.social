@@ -1,0 +1,100 @@
+            padding-top: 5rem; /* Space for fixed header */
+        }
+        .header-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: var(--z-fixed);
+            background: linear-gradient(to right, var(--color-primary), var(--color-primary-light));
+            color: var(--color-text-white);
+            box-shadow: var(--shadow-lg);
+        }
+        .card {
+            background: var(--color-bg-primary);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+        .fixed-help {
+            position: fixed;
+            bottom: var(--spacing-lg);
+            right: var(--spacing-lg);
+            z-index: var(--z-fixed);
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            background-color: var(--color-danger);
+            color: var(--color-text-white);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-lg);
+        .fixed-help:hover {
+            background-color: #dc2626;
+        .fixed-branding {
+            position: fixed;
+            bottom: var(--spacing-lg);
+            left: var(--spacing-lg);
+            z-index: var(--z-fixed);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            font-size: 0.75rem;
+        }
+            .header-fixed {
+                padding: 0.75rem 1rem !important;
+            }
+            .header-fixed .text-2xl {
+                font-size: 1.5rem !important;
+            }
+            .grid {
+                gap: 1rem !important;
+            }
+            .lg\\:grid-cols-3 {
+                grid-template-columns: 1fr !important;
+            }
+            body {
+                padding-top: 4rem;
+            }
+            .fixed-help,
+            .fixed-branding {
+                bottom: var(--spacing-md);
+            }
+            .fixed-help {
+                right: var(--spacing-md);
+                width: 3rem;
+                height: 3rem;
+                font-size: 1.25rem;
+            }
+            .fixed-branding {
+                left: var(--spacing-md);
+                font-size: 0.65rem;
+            }
+        }
+        .citation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+        .confidence-badge {
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.625rem;
+            font-weight: 600;
+            .citation-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.25rem;
+            }
+            .citation-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }

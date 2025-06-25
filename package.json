@@ -1,0 +1,57 @@
+{
+  "name": "social-media-cost-calculator",
+  "version": "2.0.0",
+  "description": "Research-based calculator for the economic impact of social media on mental health",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev-server.js",
+    "build": "node scripts/build.js",
+    "test": "node scripts/test.js",
+    "extract": "node scripts/extract-html.js",
+    "optimize": "node scripts/optimize-assets.js",
+    "preview": "node scripts/preview.js",
+    "lint": "eslint src/",
+    "format": "prettier --write src/",
+    "deploy": "npm run build && npm run optimize"
+  },
+  "keywords": [
+    "social-media",
+    "mental-health",
+    "economic-impact",
+    "calculator",
+    "research",
+    "public-health"
+  ],
+  "author": "Subconscious.ai",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/subconsciousai/social-media-calculator.git"
+  },
+  "dependencies": {
+    "animejs": "^3.2.1",
+    "chart.js": "^4.4.0",
+    "jsdom": "^26.1.0",
+    "lodash-es": "^4.17.21",
+    "nouislider": "^15.7.1",
+    "tippy.js": "^6.3.7"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.16",
+    "cssnano": "^6.0.1",
+    "eslint": "^8.55.0",
+    "postcss": "^8.4.32",
+    "prettier": "^3.1.0",
+    "terser": "^5.24.0",
+    "vite": "^5.4.19"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
