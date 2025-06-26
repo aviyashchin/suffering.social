@@ -39,6 +39,17 @@ export function formatCurrency(value, decimalPlaces = CALCULATION.DECIMAL_PLACES
 }
 
 /**
+ * Format a large number as full currency with commas (no abbreviations)
+ * @param {number} value - Raw value to format
+ * @returns {string} Formatted full currency string (e.g., "$3,200,000,000,000")
+ */
+export function formatFullCurrency(value) {
+  if (!isValidNumber(value)) return '$0';
+  
+  return `$${Math.round(value).toLocaleString('en-US')}`;
+}
+
+/**
  * Format a number as a percentage
  * @param {number} value - Raw percentage value (e.g., 18 for 18%)
  * @param {number} decimalPlaces - Number of decimal places (default: 1)
@@ -304,6 +315,7 @@ export function formatComparison(template, totalCost) {
 
 export default {
   formatCurrency,
+  formatFullCurrency,
   formatPercentage,
   formatNumber,
   formatYears,

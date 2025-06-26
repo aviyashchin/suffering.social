@@ -2,7 +2,7 @@
 
 import { UIController } from './components/UI.js';
 import { Calculator } from './components/Calculator.js';
-import { CalculatorUtils } from './utils/formatters.js';
+import CalculatorUtils from './utils/formatters.js';
 import { FEATURES, DEFAULTS } from './utils/constants.js';
 
 /**
@@ -163,7 +163,7 @@ class SocialMediaCalculatorApp {
         if (this.calculator) {
             this.calculator.on('significantChange', (event) => {
                 const results = this.calculator.calculateTotalEconomicImpact();
-                const announcement = `Total cost updated to ${CalculatorUtils.formatLargeNumber(results.total)} trillion dollars`;
+                const announcement = `Total cost updated to ${CalculatorUtils.formatNumber(results.total)} trillion dollars`;
                 this.announceToScreenReader(announcement);
             });
         }
@@ -247,18 +247,92 @@ class SocialMediaCalculatorApp {
     startRealTimeCounter() {
         if (this.counterInterval) return;
         
+        // Store the initial total cost for the ticking animation
+        this.initialTotalCost = this.calculator ? this.calculator.calculateTotalEconomicImpact().total : 3.2e12;
+        this.currentDisplayedCost = this.initialTotalCost;
+        
         this.counterInterval = setInterval(() => {
             const elapsedSeconds = (Date.now() - this.startTime) / 1000;
-            const runningCost = this.calculator.calculateRunningCost(elapsedSeconds);
+            const runningCost = this.calculator ? this.calculator.calculateRunningCost(elapsedSeconds) : elapsedSeconds * 101465;
+            
+            // Calculate the new total cost (initial + accumulated)
+            const newTotalCost = this.initialTotalCost + runningCost;
             
             // Update running counter display
             const counterElement = document.getElementById('running-counter');
             if (counterElement && runningCost > 0) {
                 counterElement.textContent = CalculatorUtils.formatCurrency(runningCost);
             }
+            
+            // Update the main hero cost display with ticking animation
+            this.updateHeroCostDisplay(newTotalCost);
+            
+            // Update sticky header cost display
+            this.updateStickyHeaderCost(newTotalCost);
+            
         }, 1000);
         
         console.log('✅ Real-time counter started');
+    }
+    
+    /**
+     * Update the hero cost display with smooth animation (full number format)
+     */
+    updateHeroCostDisplay(newTotalCost) {
+        const heroElement = document.getElementById('hero-total-cost');
+        if (!heroElement) return;
+        
+        // Add ticking class for visual feedback
+        heroElement.classList.add('ticking');
+        
+        // Smooth increment animation
+        const increment = (newTotalCost - this.currentDisplayedCost) / 10;
+        const steps = 10;
+        let currentStep = 0;
+        
+        const animateIncrement = () => {
+            if (currentStep < steps) {
+                this.currentDisplayedCost += increment;
+                heroElement.textContent = CalculatorUtils.formatFullCurrency(this.currentDisplayedCost);
+                currentStep++;
+                setTimeout(animateIncrement, 100); // 100ms per step for smooth animation
+            } else {
+                this.currentDisplayedCost = newTotalCost;
+                heroElement.textContent = CalculatorUtils.formatFullCurrency(newTotalCost);
+                
+                // Remove ticking class after animation completes
+                setTimeout(() => {
+                    heroElement.classList.remove('ticking');
+                }, 200);
+            }
+        };
+        
+        animateIncrement();
+    }
+    
+    /**
+     * Update the sticky header cost display (full number format)
+     */
+    updateStickyHeaderCost(newTotalCost) {
+        const stickyElement = document.getElementById('debt-clock-total');
+        if (stickyElement) {
+            // Add ticking class for visual feedback (triggers programmatically)
+            stickyElement.classList.add('ticking');
+            
+            stickyElement.textContent = CalculatorUtils.formatFullCurrency(newTotalCost);
+            
+            // Remove ticking class after animation completes
+            setTimeout(() => {
+                stickyElement.classList.remove('ticking');
+            }, 500);
+        }
+        
+        // Update the rate display
+        const rateElement = document.getElementById('debt-clock-rate');
+        if (rateElement) {
+            const costPerSecond = this.calculator ? (this.calculator.calculateTotalEconomicImpact().total / (365 * 24 * 60 * 60)) : 101465;
+            rateElement.textContent = `$${Math.round(costPerSecond).toLocaleString()}/sec`;
+        }
     }
     
     /**

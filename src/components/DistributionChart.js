@@ -157,32 +157,58 @@ export class DistributionChart {
     
     drawCurrentValueIndicator() {
         const colorScheme = this.getColorScheme();
-        const x = this.scales.x(this.currentValue);
+        const dist = this.distributions[this.parameter];
         
-        // Remove existing indicator
-        this.chartGroup.selectAll('.current-value-line, .current-value-dot').remove();
+        // Remove existing indicators
+        this.chartGroup.selectAll('.current-value-line, .current-value-dot, .mean-line, .mean-dot').remove();
         
-        // Draw vertical line
+        // Always draw mean line (the actual research mean of the distribution)
+        const meanX = this.scales.x(dist.mean);
         this.chartGroup.append('line')
-            .attr('class', 'current-value-line')
-            .attr('x1', x)
-            .attr('x2', x)
+            .attr('class', 'mean-line')
+            .attr('x1', meanX)
+            .attr('x2', meanX)
             .attr('y1', 0)
             .attr('y2', this.dimensions.innerHeight)
             .style('stroke', '#ef4444')
-            .style('stroke-width', 2)
-            .style('stroke-dasharray', '3,3')
-            .style('opacity', 0.8);
+            .style('stroke-width', 2.5)
+            .style('stroke-dasharray', '4,4')
+            .style('opacity', 0.9);
         
-        // Draw dot at top
+        // Draw mean dot at the top
         this.chartGroup.append('circle')
-            .attr('class', 'current-value-dot')
-            .attr('cx', x)
-            .attr('cy', 5)
+            .attr('class', 'mean-dot')
+            .attr('cx', meanX)
+            .attr('cy', 3)
             .attr('r', 4)
             .style('fill', '#ef4444')
             .style('stroke', '#ffffff')
             .style('stroke-width', 2);
+        
+        // Draw current value indicator only if it's significantly different from mean
+        const threshold = (dist.range.max - dist.range.min) * 0.03; // 3% threshold
+        if (Math.abs(this.currentValue - dist.mean) > threshold) {
+            const currentX = this.scales.x(this.currentValue);
+            this.chartGroup.append('line')
+                .attr('class', 'current-value-line')
+                .attr('x1', currentX)
+                .attr('x2', currentX)
+                .attr('y1', 0)
+                .attr('y2', this.dimensions.innerHeight)
+                .style('stroke', '#3b82f6')
+                .style('stroke-width', 2)
+                .style('stroke-dasharray', '2,2')
+                .style('opacity', 0.7);
+            
+            this.chartGroup.append('circle')
+                .attr('class', 'current-value-dot')
+                .attr('cx', currentX)
+                .attr('cy', 3)
+                .attr('r', 3)
+                .style('fill', '#3b82f6')
+                .style('stroke', '#ffffff')
+                .style('stroke-width', 1.5);
+        }
     }
     
     updateCurrentValue(value) {

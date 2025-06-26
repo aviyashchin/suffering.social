@@ -347,7 +347,7 @@ export const FEATURES = {
   // Experimental features
   enableDarkMode: false,        // Future feature
   enableMultiLanguage: false,   // Future feature
-  enableRealTimeData: false     // Future feature
+  enableRealTimeData: true      // Live ticking counter
 };
 
 // ============================================================================
