@@ -138,23 +138,22 @@
             #floating-branding {
                 bottom: 1rem;
                 left: 1rem;
-                right: 1rem;
-                max-width: none;
-                padding: 0.75rem;
+                max-width: 200px;
+                padding: 0.5rem;
             }
             
             #floating-branding .text-xs {
-                font-size: 0.7rem;
+                font-size: 0.65rem;
             }
             
             #floating-branding .text-sm {
-                font-size: 0.8rem;
+                font-size: 0.75rem;
             }
         }
         
         /* Enhanced Mobile Experience */
         @media (max-width: 768px) {
-            /* Improved Sticky Header Mobile Layout */
+            /* Clean Mobile Sticky Header Layout */
             #debt-clock-header {
                 padding: 6px 12px;
             }
@@ -163,42 +162,44 @@
                 padding: 0;
             }
             
+            /* Stack vertically on mobile for clarity */
             #debt-clock-header .flex.items-center.justify-between {
-                flex-direction: row;
-                gap: 8px;
-                align-items: stretch;
-                min-height: 50px;
-            }
-            
-            #debt-clock-header .flex.flex-col.items-start {
-                flex: 0.8;
-                align-items: flex-start !important;
-                justify-content: center;
-                min-width: 0;
-            }
-            
-            #debt-clock-header .text-center.flex-1 {
-                flex: 1.4;
-                display: flex;
                 flex-direction: column;
-                justify-content: center;
+                gap: 4px;
                 align-items: center;
-                min-width: 0;
+                margin-bottom: 4px;
             }
             
+            /* Hide left side stats on mobile to reduce clutter */
+            #debt-clock-header .flex.flex-col.items-start {
+                display: none;
+            }
+            
+            /* Center the main cost prominently */
+            #debt-clock-header .text-center.flex-1 {
+                width: 100%;
+                text-align: center;
+                margin: 0;
+            }
+            
+            /* Show only social cost stats on right, make them compact */
             #debt-clock-header .flex.flex-col.items-end {
-                flex: 0.8;
-                align-items: flex-end !important;
-                justify-content: center;
-                min-width: 0;
+                align-items: center !important;
+                text-align: center;
+            }
+            
+            #debt-clock-header .flex.flex-col.items-end > span:first-child {
+                font-size: 0.7rem !important;
+                margin-bottom: 2px;
             }
             
             #debt-clock-total {
-                font-size: 1.25rem !important;
+                font-size: 1rem !important;
                 line-height: 1.1;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                max-width: 120px;
             }
             
             #debt-clock-rate {
@@ -208,7 +209,7 @@
             
             /* Improved cumulative externalities mobile styling */
             #sticky-cumulative-depression, #sticky-cumulative-deaths {
-                font-size: 0.6rem !important;
+                font-size: 0.75rem !important;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -225,16 +226,16 @@
             
             /* Enhanced sticky scenario buttons mobile */
             #sticky-scenarios {
-                gap: 2px !important;
+                gap: 3px !important;
                 flex-wrap: wrap;
                 justify-content: center;
-                margin-top: 6px;
+                margin-top: 8px;
             }
             
             #sticky-scenarios .scenario-btn {
-                font-size: 8px !important;
-                padding: 3px 6px !important;
-                min-height: 28px;
+                font-size: 9px !important;
+                padding: 4px 8px !important;
+                min-height: 32px;
                 white-space: nowrap;
                 flex: 1;
                 min-width: 0;
@@ -602,7 +603,7 @@
         <!-- Hero Section -->
         <section id="hero-section" class="text-center mb-16 py-12">
             <h2 class="text-3xl md:text-4xl font-semibold text-gray-800 mb-8 max-w-4xl mx-auto leading-relaxed">
-                The Social Cost of Social Media
+                Social Costs of Social Media
             </h2>
             
             <!-- Minimal Cost Display - Number as Star -->
@@ -610,11 +611,8 @@
                 <div class="text-8xl md:text-9xl font-mono font-black text-gray-900 mb-4 tracking-tight" id="hero-total-cost">
                     $3,200,000,000,000
                 </div>
-                <div class="text-xl md:text-2xl text-gray-600 font-medium mb-2">
-                    Estimated Social Impact
-                </div>
-                <div class="text-lg text-gray-500 mb-4">
-                    <span id="gdp-percentage">13.3%</span> of US GDP
+                <div class="text-xl md:text-2xl text-gray-600 font-medium mb-4">
+                    Estimated Impact: <span id="gdp-percentage">13.3%</span> of US GDP
                 </div>
                 
                 <!-- Externalities Ticker -->
@@ -630,7 +628,7 @@
                             <div class="text-2xl font-mono font-bold text-red-700" id="hero-suicide-deaths">
                                 19,800
                             </div>
-                            <div class="text-sm text-red-600 font-medium">Social Media Caused Deaths</div>
+                            <div class="text-sm text-red-600 font-medium">Additional Suicides</div>
                         </div>
                     </div>
                 </div>
@@ -1393,7 +1391,7 @@
                 </div>
                 
                 <div class="text-center mt-6">
-                    <p class="text-sm text-gray-500">💙 Each click rotates through 3 caring posts • We can't improve what we don't measure</p>
+                    <p class="text-sm text-gray-500">We can't improve what we don't measure</p>
                 </div>
             </div>
         </section>
@@ -1799,7 +1797,7 @@
                 unit: "$ thousands",
                 description: "Annual healthcare expenditure per person with social media-induced depression.",
                 defaultValue: 7.0,
-                evidenceRange: { min: 8.0, max: 12.0, confidence: "High" },
+                evidenceRange: { min: 6.5, max: 12.0, confidence: "High" },
                 studies: [
                     {
                         title: "Healthcare costs of depression",
@@ -1824,7 +1822,7 @@
                 unit: "$ thousands",
                 description: "Annual workplace productivity loss per person with social media-induced depression.",
                 defaultValue: 6.0,
-                evidenceRange: { min: 5.0, max: 9.0, confidence: "High" },
+                evidenceRange: { min: 4.0, max: 10.0, confidence: "High" },
                 studies: [
                     {
                         title: "Workplace impact of depression",
@@ -1905,9 +1903,9 @@
                 // Updated scenarios to fit within evidence-based ranges
                 this.scenarios = {
                     reset: { vsl: 13.7, suicides: 110000, attribution: 18, depression: 5000000, yld: 6.0, qol: 35, healthcare: 8000, productivity: 6000, duration: 4.5 },
-                    aggressive: { vsl: 14.0, suicides: 120000, attribution: 30, depression: 8000000, yld: 8.0, qol: 50, healthcare: 12000, productivity: 9000, duration: 6.8 },
+                    aggressive: { vsl: 14.0, suicides: 120000, attribution: 30, depression: 8000000, yld: 8.0, qol: 50, healthcare: 12000, productivity: 10000, duration: 6.8 },
                     facebookFiles: { vsl: 13.7, suicides: 110000, attribution: 22, depression: 8000000, yld: 6.5, qol: 38, healthcare: 10000, productivity: 7500, duration: 5.2 },
-                    optimistic: { vsl: 7.0, suicides: 60000, attribution: 7, depression: 2000000, yld: 3.0, qol: 30, healthcare: 8000, productivity: 5000, duration: 0.25 }
+                    optimistic: { vsl: 7.0, suicides: 60000, attribution: 7, depression: 2000000, yld: 3.0, qol: 30, healthcare: 6500, productivity: 4000, duration: 0.25 }
                 };
                 
                 // Performance optimizations
@@ -1950,8 +1948,8 @@
                     'depression': { range: { min: 2000000, max: 8000000 }, start: 5000000, step: 100000 },
                     'yld': { range: { min: 3.0, max: 8.0 }, start: 6.0, step: 0.1 },
                     'qol': { range: { min: 30, max: 50 }, start: 35, step: 1 },
-                    'healthcare': { range: { min: 8000, max: 12000 }, start: 8000, step: 100 },
-                    'productivity': { range: { min: 5000, max: 9000 }, start: 6000, step: 100 },
+                    'healthcare': { range: { min: 6500, max: 12000 }, start: 8000, step: 100 },
+                    'productivity': { range: { min: 4000, max: 10000 }, start: 6000, step: 100 },
                     'duration': { range: { min: 0.25, max: 6.8 }, start: 4.5, step: 0.1 }
                 };
                 
@@ -2201,8 +2199,8 @@
                     depression: { type: 'skewed', min: 2000000, max: 8000000, mean: 5000000, std: 1500000 },
                     yld: { type: 'normal', min: 3.0, max: 8.0, mean: 6.0, std: 1.2 },
                     qol: { type: 'normal', min: 30, max: 50, mean: 35, std: 5 },
-                    healthcare: { type: 'skewed', min: 8000, max: 12000, mean: 8000, std: 1200 },
-                    productivity: { type: 'skewed', min: 5000, max: 9000, mean: 6000, std: 1000 },
+                    healthcare: { type: 'skewed', min: 6500, max: 12000, mean: 8000, std: 1200 },
+                    productivity: { type: 'skewed', min: 4000, max: 10000, mean: 6000, std: 1000 },
                     duration: { type: 'normal', min: 0.25, max: 6.8, mean: 4.5, std: 1.5 }
                 };
                 return configs[param];
