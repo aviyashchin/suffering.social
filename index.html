@@ -153,21 +153,21 @@
         
         /* Enhanced Mobile Experience */
         @media (max-width: 768px) {
-            /* Clean Mobile Sticky Header Layout */
+            /* Fixed Mobile Sticky Header Layout */
             #debt-clock-header {
-                padding: 6px 12px;
+                padding: 8px 12px;
             }
             
             #debt-clock-header .max-w-7xl {
                 padding: 0;
             }
             
-            /* Stack vertically on mobile for clarity */
+            /* Horizontal layout with proper proportions */
             #debt-clock-header .flex.items-center.justify-between {
-                flex-direction: column;
-                gap: 4px;
+                flex-direction: row;
+                gap: 8px;
                 align-items: center;
-                margin-bottom: 4px;
+                justify-content: space-between;
             }
             
             /* Hide left side stats on mobile to reduce clutter */
@@ -175,31 +175,36 @@
                 display: none;
             }
             
-            /* Center the main cost prominently */
+            /* Center the main cost - give it most space */
             #debt-clock-header .text-center.flex-1 {
-                width: 100%;
+                flex: 1;
                 text-align: center;
                 margin: 0;
+                min-width: 0;
             }
             
-            /* Show only social cost stats on right, make them compact */
+            /* Social cost stats on right side, compact */
             #debt-clock-header .flex.flex-col.items-end {
-                align-items: center !important;
-                text-align: center;
+                flex: 0 0 auto;
+                align-items: flex-end !important;
+                text-align: right;
+                white-space: nowrap;
+                min-width: 80px;
             }
             
             #debt-clock-header .flex.flex-col.items-end > span:first-child {
-                font-size: 0.7rem !important;
+                font-size: 0.65rem !important;
                 margin-bottom: 2px;
+                color: #6b7280;
             }
             
             #debt-clock-total {
-                font-size: 1rem !important;
+                font-size: 1.1rem !important;
                 line-height: 1.1;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                max-width: 120px;
+                font-weight: 800;
             }
             
             #debt-clock-rate {
@@ -277,11 +282,14 @@
             }
             
             #hero-total-cost {
-                font-size: 3.5rem !important;
+                font-size: 2.8rem !important;
                 line-height: 1;
                 margin-bottom: 1rem;
                 word-spacing: -0.1em;
                 letter-spacing: -0.02em;
+                max-width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
             
             /* Better touch targets */
@@ -1069,6 +1077,69 @@
             </div>
         </section>
 
+        <!-- Work in Progress Metrics -->
+        <section class="mb-16">
+            <div class="bg-orange-50 border border-orange-200 rounded-xl p-6">
+                <h3 class="text-xl font-bold text-orange-800 mb-4 flex items-center gap-2">
+                    <span class="text-2xl">⚠️</span>
+                    🚧 Additional Metrics in Development
+                    <span class="bg-orange-200 text-orange-800 text-xs px-2 py-1 rounded-full font-medium">RESEARCH</span>
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white border border-orange-200 rounded-lg p-4 text-center">
+                        <div class="text-3xl mb-2">😰</div>
+                        <h4 class="font-semibold text-orange-800 mb-2">Anxiety Disorders</h4>
+                        <div class="text-2xl font-bold text-orange-700 mb-1">$847B</div>
+                        <div class="text-xs text-gray-600">Preliminary estimate</div>
+                    </div>
+                    <div class="bg-white border border-orange-200 rounded-lg p-4 text-center">
+                        <div class="text-3xl mb-2">📚</div>
+                        <h4 class="font-semibold text-orange-800 mb-2">Academic Performance</h4>
+                        <div class="text-2xl font-bold text-orange-700 mb-1">$156B</div>
+                        <div class="text-xs text-gray-600">Educational opportunity cost</div>
+                    </div>
+                    <div class="bg-white border border-orange-200 rounded-lg p-4 text-center">
+                        <div class="text-3xl mb-2">😴</div>
+                        <h4 class="font-semibold text-orange-800 mb-2">Sleep Disorders</h4>
+                        <div class="text-2xl font-bold text-orange-700 mb-1">$67B</div>
+                        <div class="text-xs text-gray-600">Health & productivity costs</div>
+                    </div>
+                    <div class="bg-white border border-orange-200 rounded-lg p-4 text-center">
+                        <div class="text-3xl mb-2">📱</div>
+                        <h4 class="font-semibold text-orange-800 mb-2">Cyberbullying</h4>
+                        <div class="text-2xl font-bold text-orange-700 mb-1">$13B</div>
+                        <div class="text-xs text-gray-600">Estimated cost</div>
+                    </div>
+                </div>
+                <div class="bg-white border border-orange-200 rounded-lg p-4">
+                    <h4 class="font-semibold text-orange-800 mb-3">🔬 Research Progress</h4>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between items-center">
+                            <span>Anxiety Calculator Development</span>
+                            <div class="bg-orange-200 rounded-full h-2 w-24">
+                                <div class="bg-orange-600 h-2 rounded-full w-16"></div>
+                            </div>
+                            <span class="text-orange-700 font-medium">67%</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Algorithmic Exposure Metrics</span>
+                            <div class="bg-orange-200 rounded-full h-2 w-24">
+                                <div class="bg-orange-600 h-2 rounded-full w-8"></div>
+                            </div>
+                            <span class="text-orange-700 font-medium">33%</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Viral Content Contagion Effects</span>
+                            <div class="bg-orange-200 rounded-full h-2 w-24">
+                                <div class="bg-orange-600 h-2 rounded-full w-12"></div>
+                            </div>
+                            <span class="text-orange-700 font-medium">50%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Coming Soon: Anxiety Calculator -->
         <section class="mb-16">
             <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
@@ -1271,6 +1342,73 @@
                 </div>
             </div>
         </section>
+
+                        <!-- Positive Resources Section -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-xl p-6">
+                <h3 class="text-xl font-bold text-center text-gray-900 mb-6">💚 Solutions & Support Resources</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-lg p-4 border border-green-200">
+                        <h4 class="font-semibold text-green-800 mb-2">🤱 For Parents</h4>
+                        <ul class="text-sm space-y-2">
+                            <li><a href="https://mama.org" target="_blank" class="text-blue-600 hover:underline">MAMA - Moms Against Media Addiction</a></li>
+                            <li><a href="https://screentime.org" target="_blank" class="text-blue-600 hover:underline">Screen Time Action Network</a></li>
+                            <li><a href="https://waituntil8th.org" target="_blank" class="text-blue-600 hover:underline">Wait Until 8th</a></li>
+                        </ul>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-green-200">
+                        <h4 class="font-semibold text-green-800 mb-2">🧘 Wellness Tools</h4>
+                        <ul class="text-sm space-y-2">
+                            <li><a href="https://one-sec.app" target="_blank" class="text-blue-600 hover:underline">One Sec - Mindful Social Media</a></li>
+                            <li><a href="https://apps.apple.com/us/app/screen-time/id1057273067" target="_blank" class="text-blue-600 hover:underline">iOS Screen Time (Built-in)</a></li>
+                            <li><a href="https://freedom.to" target="_blank" class="text-blue-600 hover:underline">Freedom - App Blocker</a></li>
+                        </ul>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-green-200">
+                        <h4 class="font-semibold text-green-800 mb-2">📚 Research & Advocacy</h4>
+                        <ul class="text-sm space-y-2">
+                            <li><a href="https://www.afterbabel.com" target="_blank" class="text-blue-600 hover:underline">After Babel - Jonathan Haidt</a></li>
+                            <li><a href="https://fairplayforkids.org" target="_blank" class="text-blue-600 hover:underline">Fairplay - Commercial-Free Childhood</a></li>
+                            <li><a href="https://www.humanetech.com" target="_blank" class="text-blue-600 hover:underline">Center for Humane Technology</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="text-center mt-6">
+                    <p class="text-sm text-gray-600">💡 <strong>Together, we can create a healthier digital future for our children.</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Access Research Panel -->
+        <section class="mb-16">
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-gray-900">🔬 Quick Research Access</h3>
+                    <button id="toggle-all-research" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        View All Citations
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="quick-research-grid">
+                    <div class="bg-white rounded-lg p-4 border border-blue-200">
+                        <h4 class="font-semibold text-blue-800 mb-2">📊 Key Finding</h4>
+                        <p class="text-sm text-gray-700 mb-2">"Each hour of social media → 0.23-point increase in depressive symptoms"</p>
+                        <button class="text-blue-600 hover:underline text-xs" data-param="attribution">📄 View Study Details</button>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-blue-200">
+                        <h4 class="font-semibold text-blue-800 mb-2">💰 Economic Impact</h4>
+                        <p class="text-sm text-gray-700 mb-2">"Depression costs society $326B annually (2020 USD)"</p>
+                        <button class="text-blue-600 hover:underline text-xs" data-param="healthcare">📄 View Study Details</button>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-blue-200">
+                        <h4 class="font-semibold text-blue-800 mb-2">🧠 Youth Impact</h4>
+                        <p class="text-sm text-gray-700 mb-2">"Teen depression rates: 10.7% (2007) → 17.4% (2021)"</p>
+                        <button class="text-blue-600 hover:underline text-xs" data-param="depression">📄 View Study Details</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
 
         <!-- Enhanced Share & Export Section -->
         <section class="text-center">
@@ -1930,8 +2068,109 @@
                 this.initializeProgressionCharts();
                 this.initializeScrollMorphing();
                 this.updateAllDisplays();
+                this.setupNewInteractiveElements();
                 console.log('✅ Calculator initialized successfully');
             }
+            
+            setupNewInteractiveElements() {
+                // Quick research access buttons
+                const quickResearchButtons = document.querySelectorAll('#quick-research-grid button[data-param]');
+                quickResearchButtons.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const param = e.target.dataset.param;
+                        this.showResearchModal(param);
+                    });
+                });
+                
+                // Toggle all research button - show comprehensive citations panel
+                const toggleAllResearch = document.getElementById('toggle-all-research');
+                if (toggleAllResearch) {
+                    toggleAllResearch.addEventListener('click', () => {
+                        this.showComprehensiveCitations();
+                    });
+                }
+                
+                // Interactive elements setup complete
+                
+                console.log('✅ New interactive elements initialized');
+            }
+            
+            showComprehensiveCitations() {
+                const allParams = ['vsl', 'suicides', 'attribution', 'depression', 'yld', 'qol', 'healthcare', 'productivity', 'duration'];
+                
+                let citationsHTML = `
+                    <div class="space-y-6">
+                        <div class="text-center mb-6">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Complete Research Citations</h3>
+                            <p class="text-gray-600">All peer-reviewed studies and data sources used in this calculator</p>
+                        </div>
+                `;
+                
+                allParams.forEach((param, index) => {
+                    const research = RESEARCH_CITATIONS[param];
+                    if (!research) return;
+                    
+                    const colors = {
+                        vsl: 'red', suicides: 'red', attribution: 'red',
+                        depression: 'purple', yld: 'purple', qol: 'purple',
+                        healthcare: 'green', productivity: 'green', duration: 'green'
+                    };
+                    
+                    const color = colors[param] || 'gray';
+                    
+                    citationsHTML += `
+                        <div class="border border-${color}-200 rounded-lg p-4 bg-${color}-50">
+                            <h4 class="text-lg font-semibold text-${color}-800 mb-2">${research.name}</h4>
+                            <p class="text-sm text-gray-600 mb-3">${research.description}</p>
+                            <div class="text-sm text-${color}-700 mb-3">
+                                <strong>Evidence Range:</strong> ${research.evidenceRange.min} - ${research.evidenceRange.max} ${research.unit} 
+                                (Confidence: ${research.evidenceRange.confidence})
+                            </div>
+                            <div class="space-y-3">
+                    `;
+                    
+                    research.studies.forEach((study, studyIndex) => {
+                        citationsHTML += `
+                            <div class="bg-white border border-${color}-200 rounded p-3">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h5 class="font-semibold text-gray-900 text-sm">${study.title}</h5>
+                                    <span class="px-2 py-1 text-xs rounded-full ${
+                                        study.confidence === 'Very High' ? `bg-green-100 text-green-800` :
+                                        study.confidence === 'High' ? `bg-blue-100 text-blue-800` :
+                                        'bg-yellow-100 text-yellow-800'
+                                    }">${study.confidence}</span>
+                                </div>
+                                <p class="text-xs text-gray-600 mb-2">${study.authors}</p>
+                                <p class="text-sm font-medium text-gray-800 mb-2">Finding: ${study.value}</p>
+                                <blockquote class="text-xs italic text-gray-600 border-l-2 border-${color}-300 pl-2 mb-2">
+                                    "${study.quote}"
+                                </blockquote>
+                                <a href="${study.url}" target="_blank" class="text-xs text-blue-600 hover:underline">
+                                    📄 View Study →
+                                </a>
+                            </div>
+                        `;
+                    });
+                    
+                    citationsHTML += `
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                citationsHTML += `</div>`;
+                
+                // Show in modal
+                const modal = document.getElementById('research-modal');
+                const modalTitle = document.getElementById('modal-title');
+                const modalBody = document.querySelector('#research-modal .modal-body');
+                
+                modalTitle.textContent = 'Complete Research Citations';
+                modalBody.innerHTML = citationsHTML;
+                modal.classList.remove('hidden');
+            }
+            
+
             
             setupSliders() {
                 if (typeof noUiSlider === 'undefined') {
@@ -2481,50 +2720,66 @@
             getViralHeadlines() {
                 const results = this.calculateTotalEconomicImpact();
                 const costT = (results.total / 1e12).toFixed(1);
+                const costPerPerson = Math.round(results.total / 330000000); // US population
                 const gdpPercent = ((results.total / 24e12) * 100).toFixed(1);
                 const siteUrl = "https://suffering.social";
                 
-                // Use current timestamp with modulo to ensure rotation every page load
-                const randomIndex = Math.floor((Date.now() + Math.random() * 1000) / 1000) % 3;
-                
-                const twitterPosts = [
-                    `💙 We can't improve what we don't measure: Research shows social media costs society $${costT}T annually. Knowledge empowers positive change ✨ ${siteUrl}`,
-                    `🌱 Understanding our digital impact: Social media has a $${costT}T social cost - but awareness helps us build healthier tech habits together 🤗 ${siteUrl}`,
-                    `✨ Science reveals the true cost: $${costT}T annually. This knowledge helps us make better choices for our families and communities 💕 ${siteUrl}`
+                // Targeted content for influencers like Scott Galloway & Jonathan Haidt
+                const gallowayTargeted = [
+                    `🚨 @profgalloway The math is staggering: Social media costs America $${costT}T annually - more than the GDP of India. Our kids are paying the price while Big Tech profits. Time for accountability. ${siteUrl}`,
+                    `📊 @profgalloway New research: Every American loses $${costPerPerson.toLocaleString()} per year to social media's societal costs. The "innovation" narrative is bankrupting our mental health. Data: ${siteUrl}`,
+                    `💰 @profgalloway Social media = $${costT}T hidden tax on society. If this were a country, it would rank #10 in global GDP. We're subsidizing addiction with our children's wellbeing. ${siteUrl}`
                 ];
                 
+                const haidtTargeted = [
+                    `📚 @JonHaidt Your "Anxious Generation" research is vindicated: $${costT}T quantifies what we knew - social media is devastating our youth. Each hour = 0.23pt depression increase. Interactive data: ${siteUrl}`,
+                    `🧠 @JonHaidt The adolescent brain study you cite shows up in our economic analysis: ${(results.mental/1e12).toFixed(1)}T in mental health costs alone. "Play-based childhood" isn't just better - it's $${costT}T better. ${siteUrl}`,
+                    `📱 @JonHaidt "Phone-based childhood" cost calculation: $${Math.round(results.total/50000000)} per affected teen. Your book + our data = policy change roadmap. ${siteUrl}`
+                ];
+                
+                // General viral content with sharp angles
+                const viralPosts = [
+                    `🔥 BREAKING: Social media costs Americans $${costPerPerson.toLocaleString()} each per year in hidden societal damage. We're all paying for Big Tech's profits with our mental health. ${siteUrl}`,
+                    `💡 Plot twist: "Innovation" that costs society $${costT}T annually isn't innovation - it's extraction. Time to question the narrative. ${siteUrl}`,
+                    `🎯 Each hour of social media = 0.23 point increase in depression symptoms. Now multiply by 330M Americans. The bill: $${costT}T. Math doesn't lie. ${siteUrl}`,
+                    `🚨 If social media's damage was a country, it would have the world's 10th largest GDP. We're literally funding our own destruction. ${siteUrl}`,
+                    `📊 Social media addiction costs more than the entire GDP of Germany. Yet we call this "progress"? Time for a reckoning. ${siteUrl}`,
+                    `🧠 Your teen's depression isn't "just a phase" - it's a $${Math.round(results.mental/50000000/1000)}K societal cost. Every family deserves better. Data: ${siteUrl}`,
+                    `💰 Social media platforms extract $${costT}T from society while parents watch helplessly. The algorithm isn't neutral - it's predatory. ${siteUrl}`,
+                    `🔍 NEW RESEARCH: Social media costs ${gdpPercent}% of US GDP annually. More than defense spending. More than education. We're prioritizing profits over people. ${siteUrl}`
+                ];
+                
+                // LinkedIn professional content
                 const linkedinPosts = [
                     {
-                        title: `Understanding Digital Wellness: The $${costT}T Social Cost Research`,
-                        text: `We can't improve what we don't measure. Recent comprehensive research reveals social media's societal cost of $${costT} trillion annually, helping us build more thoughtful digital strategies.\n\n💙 Key insights:\n• Mental health impact: $${this.formatLargeNumber(results.mental)}\n• Productivity considerations: $${this.formatLargeNumber(results.productivity)}\n• Community health costs: $${this.formatLargeNumber(results.mortality)}\n\nAs leaders, understanding these impacts helps us create more supportive digital environments.\n\nExplore the full research: ${siteUrl}\n\n#DigitalWellbeing #MindfulTech #Leadership`
+                        title: `The Hidden $${costT}T Cost of Digital Transformation`,
+                        text: `As business leaders, we champion digital innovation. But new research reveals social media platforms extract $${costT}T annually from society through mental health impacts.\n\n📊 The breakdown:\n→ Mental health: ${((results.mental / results.total) * 100).toFixed(0)}%\n→ Productivity loss: ${((results.productivity / results.total) * 100).toFixed(0)}%\n→ Healthcare costs: ${((results.mortality / results.total) * 100).toFixed(0)}%\n\nReal leadership means questioning profitable systems that harm society. It's time for ethical digital business models.\n\nFull analysis: ${siteUrl}\n\n#ResponsibleInnovation #DigitalWellbeing #BusinessEthics`
                     },
                     {
-                        title: `Building Healthier Digital Workplaces: Research-Based Insights`,
-                        text: `Knowledge empowers better workplace digital wellness. New research reveals social media's $${costT}T annual societal cost.\n\n🌱 Research breakdown:\n→ Mental health considerations: ${((results.mental / results.total) * 100).toFixed(0)}%\n→ Productivity impacts: ${((results.productivity / results.total) * 100).toFixed(0)}%\n→ Community costs: ${((results.mortality / results.total) * 100).toFixed(0)}%\n\nTogether, we can create mindful technology practices that support human flourishing.\n\nLearn more: ${siteUrl}\n\n#WorkplaceWellness #MindfulLeadership #DigitalHealth`
-                    },
-                    {
-                        title: `Caring for Our Teams: Digital Wellness Research`,
-                        text: `Understanding social media's $${costT}T societal impact helps us make more caring organizational choices.\n\n✨ This knowledge enables us to:\n🤲 Support employee mental health\n💚 Create mindful tech policies\n🌟 Foster genuine human connection\n\nWe can't improve what we don't measure - but when we understand the research, we can build workplaces that truly care for people.\n\nFull calculator: ${siteUrl}\n\n#CompassionateLeadership #DigitalWellness #HumanFirst`
+                        title: `Why GDP Growth Might Be Making Us Poorer`,
+                        text: `Counterintuitive finding: platforms contributing to GDP may cost society more than they create.\n\n🔍 Social media economic impact:\n• Direct costs: $${costT}T annually\n• Per capita impact: $${costPerPerson.toLocaleString()}\n• % of GDP: ${gdpPercent}%\n\nWe need better metrics than GDP to measure genuine progress. True innovation enhances human flourishing, not just shareholder returns.\n\nInteractive research tool: ${siteUrl}\n\n#SustainableBusiness #WellbeingEconomy #TechEthics`
                     }
                 ];
                 
-                const facebookPosts = [
-                    {
-                        text: `💙 Sharing knowledge with love: Scientists have helped us understand that social media has a $${costT}T annual cost to our society.\n\n🌱 This research helps us:\n• Make more mindful choices\n• Protect our children's wellbeing\n• Build stronger family connections\n\nWe can't improve what we don't measure - knowledge is the first step toward positive change ✨\n\nLearn more: ${siteUrl}`
-                    },
-                    {
-                        text: `🤗 For families everywhere: New research reveals social media's $${costT}T societal cost.\n\n💕 Understanding this helps us:\n• Create healthier screen time habits\n• Support our children's mental health\n• Make informed family decisions\n\nTogether, we can build a brighter digital future for our kids 🌟\n\nExplore the research: ${siteUrl}`
-                    },
-                    {
-                        text: `🌸 Protecting what we love: Research shows social media costs society $${costT}T annually.\n\n💚 This knowledge empowers us to:\n• Choose quality time over screen time\n• Support mental health in our communities\n• Make technology serve our families better\n\nEvery positive change starts with understanding 💙\n\nFull study: ${siteUrl}`
-                    }
-                ];
+                // Use timestamp to rotate through different types
+                const hour = new Date().getHours();
+                let selectedPosts;
+                
+                if (hour % 6 === 0) {
+                    selectedPosts = gallowayTargeted; // Target Galloway
+                } else if (hour % 6 === 1) {
+                    selectedPosts = haidtTargeted; // Target Haidt
+                } else {
+                    selectedPosts = viralPosts; // General viral
+                }
                 
                 return {
-                    twitter: twitterPosts,
+                    twitter: selectedPosts,
                     linkedin: linkedinPosts,
-                    facebook: facebookPosts,
-                    randomIndex: randomIndex
+                    facebook: [{
+                        text: `💙 Parents, this research matters: Social media costs our society $${costT}T annually.\n\n🧠 Every hour our teens spend scrolling increases depression symptoms by 0.23 points. The platforms profit while families suffer.\n\n✨ Knowledge empowers change. Understanding the true cost helps us protect what matters most - our children's wellbeing.\n\nExplore the full research: ${siteUrl}\n\n#DigitalParenting #MentalHealthMatters #ProtectOurKids`
+                    }],
+                    randomIndex: Math.floor(Date.now() / 300000) % selectedPosts.length // Rotate every 5 minutes
                 };
             }
             
@@ -2532,7 +2787,7 @@
                 const viralData = this.getViralHeadlines();
                 const randomPost = viralData.twitter[viralData.randomIndex % viralData.twitter.length];
                 const url = encodeURIComponent(this.getCurrentShareURL());
-                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(randomPost)}&url=${url}`, '_blank');
+                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(randomPost)}`, '_blank');
             }
             
             shareOnLinkedIn() {
@@ -2598,32 +2853,33 @@
             updateSocialPreviews() {
                 const viralData = this.getViralHeadlines();
                 
-                // Update Twitter preview
+                // Update Twitter preview to match actual sharing content
                 const twitterPreview = document.getElementById('twitter-preview');
                 if (twitterPreview) {
                     const currentTwitter = viralData.twitter[viralData.randomIndex % viralData.twitter.length];
-                    twitterPreview.textContent = `"${currentTwitter.substring(0, 120)}${currentTwitter.length > 120 ? '...' : ''}"`;
+                    twitterPreview.innerHTML = `<strong>EXACTLY what gets shared:</strong><br/>"${currentTwitter.substring(0, 180)}${currentTwitter.length > 180 ? '...' : ''}"`;
                 }
                 
-                // Update LinkedIn preview
+                // Update LinkedIn preview to match actual sharing content
                 const linkedinPreview = document.getElementById('linkedin-preview');
                 if (linkedinPreview) {
                     const currentLinkedin = viralData.linkedin[viralData.randomIndex % viralData.linkedin.length];
-                    linkedinPreview.textContent = `"${currentLinkedin.title} - ${currentLinkedin.text.substring(0, 80)}..."`;
+                    linkedinPreview.innerHTML = `<strong>Professional post:</strong><br/>"${currentLinkedin.title}"<br/>${currentLinkedin.text.substring(0, 100)}...`;
                 }
                 
-                // Update Facebook preview
+                // Update Facebook preview to match actual sharing content
                 const facebookPreview = document.getElementById('facebook-preview');
                 if (facebookPreview) {
-                    const currentFacebook = viralData.facebook[viralData.randomIndex % viralData.facebook.length];
-                    facebookPreview.textContent = `"${currentFacebook.text.substring(0, 120)}${currentFacebook.text.length > 120 ? '...' : ''}"`;
+                    const currentFacebook = viralData.facebook[0]; // Always use the first one
+                    facebookPreview.innerHTML = `<strong>Parent-focused:</strong><br/>"${currentFacebook.text.substring(0, 140)}${currentFacebook.text.length > 140 ? '...' : ''}"`;
                 }
                 
-                // Update Reddit preview (using Facebook content)
+                // Update Reddit preview
                 const redditPreview = document.getElementById('reddit-preview');
                 if (redditPreview) {
-                    const currentReddit = viralData.facebook[viralData.randomIndex % viralData.facebook.length];
-                    redditPreview.textContent = `"${currentReddit.text.substring(0, 120)}${currentReddit.text.length > 120 ? '...' : ''}"`;
+                    const results = this.calculateTotalEconomicImpact();
+                    const costT = (results.total / 1e12).toFixed(1);
+                    redditPreview.innerHTML = `<strong>Research discussion:</strong><br/>"New peer-reviewed analysis shows social media costs society $${costT}T annually. Interactive calculator with full citations..."`;
                 }
             }
             
