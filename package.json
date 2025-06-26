@@ -32,12 +32,15 @@
     "jest-environment-jsdom": "^29.3.1",
     "lighthouse": "^9.6.8",
     "prettier": "^2.8.1",
+    "tailwindcss": "^4.1.11",
     "vite": "^4.0.4",
     "vite-bundle-analyzer": "^0.7.0"
   },
   "jest": {
     "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": ["@testing-library/jest-dom"],
+    "setupFilesAfterEnv": [
+      "@testing-library/jest-dom"
+    ],
     "moduleNameMapping": {
       "^@/(.*)$": "<rootDir>/js/$1"
     },
@@ -59,7 +62,10 @@
       "es2022": true,
       "jest": true
     },
-    "extends": ["eslint:recommended", "prettier"],
+    "extends": [
+      "eslint:recommended",
+      "prettier"
+    ],
     "parserOptions": {
       "ecmaVersion": "latest",
       "sourceType": "module"
@@ -70,4 +76,4 @@
       "prefer-const": "error"
     }
   }
-} 
+}
