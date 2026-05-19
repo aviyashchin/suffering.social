@@ -71,3 +71,31 @@ elements and would collide with the site's existing CSS).
   template literals or `cssVar()` calls, not bare JS). ✓
 - Live visual render: confirm by opening `index.html` locally or via the
   Vercel preview deploy — pending.
+
+---
+
+## Phase 3 — CDN bundle adoption (issue #4) — supersedes Phase 2 vendoring
+
+Phase 2 vendored a *copy* of `contract.css`. Phase 3 adopts the design
+system itself via its CDN bundle — the path `ADOPTING.md` §"Option B"
+prescribes for static marketing sites (no bundler, no `npm install`).
+
+1. `index.html` `<head>` loads `cdn/v1/all.css` (fonts + full token set +
+   8-theme registry + primitive classes), before the site's own CSS so
+   site element rules still win on layout.
+2. `<html data-theme="kong" data-mode="light">` — the SSR contract attrs.
+3. `runtime.js` intentionally **not** loaded — it binds a global Space/M
+   keydown for theme cycling, which would hijack page scroll.
+4. Retired: `src/styles/contract.css`, `src/styles/ds-bridge.css`,
+   `scripts/sync-contract.sh`, the standalone Google-Fonts import. The
+   contract now resolves from the CDN; updates propagate on its ~10-min
+   cache TTL with no sync step.
+5. `src/styles/site-tokens.css` keeps only the site-specific cost-category
+   tokens (`--c-*`, `--surface-*`, `--accent`); everything else (`--fg-*`,
+   `--grey-*`, `--bg-*`, `--red`, `--chart-*`, `--font-*`, `--fs-*`,
+   `--tracking-*`) now comes from the bundle.
+
+Pre-existing, out of scope: the site's CSS still references legacy
+`--shadow-*` / `--spacing-*` / `--color-text-*` / `--radius-*` / `--z-*`
+vars from the long-deleted `css/variables.css` — broken before any of this
+work, not design-system tokens. Separate cleanup.

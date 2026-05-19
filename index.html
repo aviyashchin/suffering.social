@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="kong" data-mode="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -75,9 +75,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     
-    <!-- Subconscious design-system contract + bridge (must load first) -->
-    <link rel="stylesheet" href="src/styles/contract.css">
-    <link rel="stylesheet" href="src/styles/ds-bridge.css">
+    <!-- Subconscious design system — CDN bundle (fonts, tokens, theme
+         registry, primitive classes). Loaded before the site's own CSS so
+         the site's element rules still win on layout. See ADOPTING.md
+         Option B. runtime.js is intentionally NOT loaded: it binds a global
+         Space/M keydown for theme cycling, which would hijack page scroll. -->
+    <link rel="stylesheet" href="https://subconscious-ai.github.io/design-system/cdn/v1/all.css">
+    <link rel="stylesheet" href="src/styles/site-tokens.css">
 
     <!-- Resolves a design-system token to its computed colour. CSS var()
          works in stylesheets and CSS contexts (d3 .style()), but NOT in
