@@ -1,0 +1,124 @@
+/* Subconscious Design System app contract.
+   Import this in apps that need only the root compatibility boundary.
+
+   What the contract carries:
+   · Color: --darkColor, --lightColor + light/dark mode swap
+   · Typography: font-family stacks, type scale, line heights, weights, tracking
+   · Spacing: 4pt scale, 8 steps
+
+   What the contract does NOT carry:
+   · Font-face declarations (consumer ships fonts privately)
+   · Other-stylesheet imports (no transitive imports)
+   · Element-level styling (no body, h1, p — consumers compose their own)
+   · Component classes (.btn, .card, etc — those live in preview/ as patterns)
+
+   Names mirror tokens.css. Values are pinned (no clamps) at the contract
+   layer; consuming apps that need fluid sizing override locally. */
+
+:root {
+  color-scheme: light;
+
+  /* ---- Color ----------------------------------------------- */
+  --darkColor: #000000;
+  --lightColor: #ffffff;
+  --backgroundColor: var(--lightColor);
+  --color: var(--darkColor);
+
+  /* ---- Typography · families ------------------------------- */
+  /* Public default stack — Inter Tight, IBM Plex Mono, Redaction (all SIL
+     OFL on Google Fonts). Internal builds may load Exposure / Söhne Mono
+     privately; the design-system contract does not redistribute them. */
+  --font-display: "Exposure", "Inter Tight", "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-body:    "Exposure", "Inter Tight", "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-mono:    "SohneMono", "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-italic:  "Redaction", "Cormorant Garamond", Georgia, serif;
+
+  /* ---- Typography · weights -------------------------------- */
+  --fw-thin:       100;
+  --fw-extralight: 200;
+  --fw-light:      300;
+  --fw-regular:    400;
+  --fw-display:    800;
+
+  /* ---- Typography · type scale (px, pinned) ----------------
+     Five sizes total. Consuming apps wrap with clamp() locally if
+     fluid sizing is needed. Keeping the contract pinned so app
+     builds are deterministic.
+
+     Why five, not eight: the doctrinal scale is "violently large /
+     uncomfortably small". A long mid-scale just blurs the gap. */
+  --fs-display: 64px;   /* hero / cover surfaces        */
+  --fs-h1:      40px;   /* primary page heading         */
+  --fs-h2:      28px;   /* section heading              */
+  --fs-body:    16px;   /* default running text         */
+  --fs-meta:    12px;   /* labels, mono captions, micro */
+
+  /* ---- Typography · line heights --------------------------- */
+  --lh-tight:   1.0;    /* display / hero        */
+  --lh-display: 1.05;   /* h1 / h2               */
+  --lh-body:    1.45;   /* default running text  */
+  --lh-loose:   1.6;    /* small / meta          */
+
+  /* ---- Typography · tracking (optical, per-size) -----------
+     Bringhurst's counterpoint principle: letter-spacing scales
+     inversely with type size. New code maps tracking to the type
+     scale 1:1; legacy aliases preserved for back-compat. */
+  --tracking-display: -0.065em;  /* ≥ 64px hero / cover           */
+  --tracking-h1:      -0.045em;  /* 36-44px primary headlines     */
+  --tracking-h2:      -0.025em;  /* 24-32px subheads              */
+  --tracking-body:    -0.015em;  /* 14-18px body                  */
+  --tracking-meta:    -0.005em;  /* 11-13px micro-body            */
+  --tracking-caps:     0.14em;   /* mono caps default             */
+  --tracking-caps-l:   0.18em;   /* mono caps when very small     */
+
+  /* Legacy aliases — preserved for back-compat. New code: prefer
+     the per-size tokens above. */
+  --tracking-tight:   -0.04em;
+  --tracking-normal:  -0.03em;
+  --tracking-loose:    0.12em;
+
+  /* ---- Spacing · 4pt scale, 8 steps ------------------------ */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+
+  /* ---- Chart palette · five categorical hues ---------------
+     Light-mode pinned here; the [data-mode="dark"] block below
+     swaps to a darker rotation that reads against dark backgrounds.
+     Mirrors the data-viz palette on www.subconscious.ai. Five hues
+     that sit clear of signal red and the body type stack.
+
+     Production consumers reach these by copying contract.css. Same
+     values are re-declared in tokens.css (preview-canon) for the
+     legacy preview/_base.css consumers — keep both sites in lockstep
+     when editing. */
+  --chart-1: #f05100;   /* orange  */
+  --chart-2: #00bb7f;   /* teal    */
+  --chart-3: #f99c00;   /* amber   */
+  --chart-4: #fcbb00;   /* gold    */
+  --chart-5: #ff2357;   /* pink-red — kept distinct from --red via hue */
+}
+
+:root[data-mode="light"],
+:root:not([data-mode]) {
+  color-scheme: light;
+  --backgroundColor: var(--lightColor, #ffffff);
+  --color: var(--darkColor, #000000);
+}
+
+:root[data-mode="dark"] {
+  color-scheme: dark;
+  --backgroundColor: var(--darkColor, #000000);
+  --color: var(--lightColor, #ffffff);
+  /* Chart palette · dark-mode rotation (mirrors tokens.css). */
+  --chart-1: #1447e6;   /* blue       */
+  --chart-2: #009588;   /* muted teal */
+  --chart-3: #104e64;   /* dark teal  */
+  --chart-4: #ac4bff;   /* purple     */
+  --chart-5: #f99c00;   /* amber      */
+}

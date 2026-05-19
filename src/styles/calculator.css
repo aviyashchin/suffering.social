@@ -13,35 +13,35 @@
             color: var(--color-text-white);
         }
         .btn-primary:hover {
-            background-color: #2563eb;
+            background-color: var(--accent);
         .btn-danger {
             background-color: var(--color-danger);
             color: var(--color-text-white);
         }
         .btn-danger:hover {
-            background-color: #dc2626;
+            background-color: var(--c-mortality);
         }
         .scenario-btn.research-consensus {
-            background: linear-gradient(135deg, #8b5cf6, #7c3aed); /* Purple for Research Consensus */
+            background: linear-gradient(135deg, var(--c-mental-health), var(--c-mental-health)); /* Purple for Research Consensus */
             color: white;
             border: none;
         }
         .scenario-btn.research-consensus:hover {
-            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            background: linear-gradient(135deg, var(--c-mental-health), var(--c-mental-health));
         .scenario-btn.facebook-files {
-            background: linear-gradient(135deg, #3b82f6, #2563eb); /* Blue for Facebook Files */
+            background: linear-gradient(135deg, var(--accent), var(--accent)); /* Blue for Facebook Files */
             color: white;
             border: none;
         }
         .scenario-btn.facebook-files:hover {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            background: linear-gradient(135deg, var(--accent), var(--accent));
         .scenario-btn.optimistic {
-            background: linear-gradient(135deg, #10b981, #059669); /* Green for Optimistic */
+            background: linear-gradient(135deg, var(--c-productivity), var(--c-productivity)); /* Green for Optimistic */
             color: white;
             border: none;
         }
         .scenario-btn.optimistic:hover {
-            background: linear-gradient(135deg, #059669, #047857);
+            background: linear-gradient(135deg, var(--c-productivity), var(--c-productivity));
         .slider {
             width: 100%;
             height: 0.5rem;
@@ -62,7 +62,7 @@
             border-left-color: var(--color-danger);
         }
         .parameter-group.mental-health {
-            border-left-color: #8b5cf6;
+            border-left-color: var(--c-mental-health);
         }
         .parameter-group.productivity {
             border-left-color: var(--color-success);
@@ -107,16 +107,16 @@
             padding: 2.5rem;     /* Increased from 1.5rem */
         }
         .parameter-group.mortality .distribution-viz {
-            border-left: 2px solid #dc2626;
-            background: #fefefe;
+            border-left: 2px solid var(--c-mortality);
+            background: var(--bg-1);
         }
         .parameter-group.mental-health .distribution-viz {
-            border-left: 2px solid #7c3aed;
-            background: #fefefe;
+            border-left: 2px solid var(--c-mental-health);
+            background: var(--bg-1);
         }
         .parameter-group.productivity .distribution-viz {
-            border-left: 2px solid #059669;
-            background: #fefefe;
+            border-left: 2px solid var(--c-productivity);
+            background: var(--bg-1);
         }
         .parameter-group.mortality .distribution-viz:hover {
             box-shadow: 0 4px 8px rgba(220, 38, 38, 0.1);
@@ -137,7 +137,7 @@
             width: 100%;
         }
         .apply-values-btn {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            background: linear-gradient(135deg, var(--accent), var(--accent));
             color: white;
             border: none;
             border-radius: 6px;
@@ -146,7 +146,7 @@
             font-weight: 600;
             cursor: pointer;
         .apply-values-btn:hover {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            background: linear-gradient(135deg, var(--accent), var(--accent));
             .apply-values-btn {
                 width: 100%;
                 text-align: center;
@@ -156,7 +156,7 @@
             padding: 0.5rem 0;
         }
         .noUi-target {
-            background: #e5e7eb;
+            background: var(--bg-3);
             border-radius: 8px;
             border: none;
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -175,28 +175,28 @@
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
             cursor: pointer;
         .nouislider-container.mortality .noUi-handle {
-            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            background: linear-gradient(135deg, var(--c-mortality), var(--c-mortality));
         }
         .nouislider-container.mortality .noUi-connect {
-            background: linear-gradient(90deg, #dc2626, #ef4444);
+            background: linear-gradient(90deg, var(--c-mortality), var(--c-mortality));
         }
         .nouislider-container.mental-health .noUi-handle {
-            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            background: linear-gradient(135deg, var(--c-mental-health), var(--c-mental-health));
         }
         .nouislider-container.mental-health .noUi-connect {
-            background: linear-gradient(90deg, #8b5cf6, #a855f7);
+            background: linear-gradient(90deg, var(--c-mental-health), var(--c-mental-health));
         }
         .nouislider-container.productivity .noUi-handle {
-            background: linear-gradient(135deg, #16a34a, #15803d);
+            background: linear-gradient(135deg, var(--c-productivity), var(--c-productivity));
         }
         .nouislider-container.productivity .noUi-connect {
-            background: linear-gradient(90deg, #16a34a, #22c55e);
+            background: linear-gradient(90deg, var(--c-productivity), var(--c-productivity));
         }
         .fallback-slider {
             width: 100%;
             height: 14px;
             border-radius: 8px;
-            background: #e5e7eb;
+            background: var(--bg-3);
             outline: none;
             -webkit-appearance: none;
             margin: 1rem 0 2rem 0;
@@ -205,7 +205,7 @@
             width: 24px;
             height: 24px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--color-secondary), #2563eb);
+            background: linear-gradient(135deg, var(--color-secondary), var(--accent));
             border: 3px solid white;
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
             cursor: pointer;
@@ -215,7 +215,7 @@
             width: 24px;
             height: 24px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--color-secondary), #2563eb);
+            background: linear-gradient(135deg, var(--color-secondary), var(--accent));
             border: 3px solid white;
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
             cursor: pointer;

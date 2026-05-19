@@ -14,30 +14,30 @@
 
 /* Top Bar - Clean implementation replacing "nuclear" CSS */
 #top-bar {
-  background: linear-gradient(135deg, #1f2937, #374151);
+  background: linear-gradient(135deg, var(--color), var(--fg-2));
   color: white;
   padding: 1rem 0;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 #top-bar .text-red-400 {
-  color: #f87171;
+  color: var(--c-mortality);
   font-family: 'Courier New', Monaco, monospace;
 }
 
 #top-bar .text-gray-300 {
-  color: #d1d5db;
+  color: var(--grey-300);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 #top-bar .text-gray-200 {
-  color: #e5e7eb;
+  color: var(--bg-3);
 }
 
 /* Help Button */
 #help-button {
-  background-color: #ef4444;
+  background-color: var(--c-mortality);
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -45,13 +45,13 @@
 }
 
 #help-button:hover {
-  background-color: #dc2626;
+  background-color: var(--c-mortality);
   transform: translateY(-1px);
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
 
 #help-button:focus {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -59,7 +59,7 @@
 #branding {
   background: rgba(255, 255, 255, 0.98) !important;
   backdrop-filter: blur(6px) !important;
-  border: 1px solid #d1d5db !important;
+  border: 1px solid var(--grey-300) !important;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
   border-radius: 8px !important;
   position: fixed !important;
@@ -70,19 +70,19 @@
   font-size: 12px !important;
   max-width: 200px !important;
   line-height: 1.4 !important;
-  color: #374151 !important;
+  color: var(--fg-2) !important;
   transform: none !important;
 }
 
 #branding a {
-  color: #3b82f6 !important;
+  color: var(--accent) !important;
   text-decoration: none;
   font-weight: 600 !important;
   transition: color 0.2s ease;
 }
 
 #branding a:hover {
-  color: #1d4ed8 !important;
+  color: var(--accent) !important;
   text-decoration: underline;
 }
 
@@ -100,7 +100,7 @@
 
 /* Calculator Header */
 .calculator-header {
-  background: linear-gradient(135deg, #1f2937, #374151);
+  background: linear-gradient(135deg, var(--color), var(--fg-2));
   color: white;
   text-align: center;
 }
@@ -145,7 +145,7 @@
 }
 
 .scenario-btn:focus {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -161,13 +161,13 @@
 .parameter-group {
   margin-bottom: 2rem;
   padding: 1.5rem;
-  background: #f9fafb;
+  background: var(--bg-2);
   border-radius: 12px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--bg-3);
 }
 
 .parameter-group h3 {
-  color: #111827;
+  color: var(--color);
   font-size: 1.125rem;
   font-weight: 600;
   margin-bottom: 1rem;
@@ -178,27 +178,27 @@
 
 /* Parameter Styling by Type */
 .parameter-group[data-group="mortality"] {
-  border-left: 4px solid #ef4444;
+  border-left: 4px solid var(--c-mortality);
 }
 
 .parameter-group[data-group="mortality"] h3 {
-  color: #dc2626;
+  color: var(--c-mortality);
 }
 
 .parameter-group[data-group="mental-health"] {
-  border-left: 4px solid #8b5cf6;
+  border-left: 4px solid var(--c-mental-health);
 }
 
 .parameter-group[data-group="mental-health"] h3 {
-  color: #8b5cf6;
+  color: var(--c-mental-health);
 }
 
 .parameter-group[data-group="healthcare"] {
-  border-left: 4px solid #059669;
+  border-left: 4px solid var(--c-productivity);
 }
 
 .parameter-group[data-group="healthcare"] h3 {
-  color: #059669;
+  color: var(--c-productivity);
 }
 
 /* Individual Parameters */
@@ -212,17 +212,17 @@
   align-items: center;
   margin-bottom: 0.5rem;
   font-weight: 500;
-  color: #374151;
+  color: var(--fg-2);
 }
 
 .parameter-value {
   font-family: 'Courier New', Monaco, monospace;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--color);
   background: white;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--grey-300);
 }
 
 /* Sliders */
@@ -230,7 +230,7 @@
   width: 100%;
   height: 8px;
   border-radius: 4px;
-  background: #e5e7eb;
+  background: var(--bg-3);
   appearance: none;
   outline: none;
   cursor: pointer;
@@ -242,14 +242,14 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #3b82f6;
+  background: var(--accent);
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.15s ease;
 }
 
 .parameter-slider::-webkit-slider-thumb:hover {
-  background: #2563eb;
+  background: var(--accent);
   transform: scale(1.1);
 }
 
@@ -257,14 +257,14 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #3b82f6;
+  background: var(--accent);
   cursor: pointer;
   border: none;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .parameter-slider:focus {
-  background: #ddd6fe;
+  background: var(--surface-mental-health);
 }
 
 /* Info Buttons - Removed duplicate (better version below) */
@@ -272,17 +272,17 @@
 /* Formula Display */
 .formula-display {
   background: white;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--grey-300);
   border-radius: 8px;
   padding: 1rem;
   margin-top: 1rem;
   font-family: 'Courier New', Monaco, monospace;
   font-size: 0.875rem;
-  color: #374151;
+  color: var(--fg-2);
 }
 
 .formula-display strong {
-  color: #111827;
+  color: var(--color);
   font-weight: 600;
 }
 
@@ -305,40 +305,40 @@
 
 /* Total Card */
 .total-card {
-  background: linear-gradient(135deg, #1f2937, #374151);
+  background: linear-gradient(135deg, var(--color), var(--fg-2));
   color: white;
   text-align: center;
   border-radius: 12px;
 }
 
 .total-card .text-red-400 {
-  color: #f87171;
+  color: var(--c-mortality);
   font-family: 'Courier New', Monaco, monospace;
 }
 
 /* Counter Card */
 .counter-card {
-  background: linear-gradient(135deg, #374151, #4b5563);
+  background: linear-gradient(135deg, var(--fg-2), var(--grey-700));
   color: white;
   text-align: center;
   border-radius: 12px;
 }
 
 .counter-card .text-red-400 {
-  color: #f87171;
+  color: var(--c-mortality);
   font-family: 'Courier New', Monaco, monospace;
 }
 
 /* Charts */
 .chart-container {
-  background: #f9fafb;
+  background: var(--bg-2);
   border-radius: 8px;
   padding: 1rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--bg-3);
 }
 
 .chart-container h4 {
-  color: #374151;
+  color: var(--fg-2);
   font-weight: 600;
   margin-bottom: 0.75rem;
 }
@@ -382,8 +382,8 @@
 
 /* Unified Parameter Component with Integrated Distribution */
 .parameter {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-2);
+  border: 1px solid var(--bg-3);
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1.5rem; /* Increased from 1rem to prevent overlap */
@@ -393,7 +393,7 @@
 }
 
 .parameter:hover {
-  border-color: #cbd5e1;
+  border-color: var(--grey-300);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
@@ -404,7 +404,7 @@
   align-items: center;
   margin-bottom: 0.75rem;
   font-weight: 500;
-  color: #374151;
+  color: var(--fg-2);
 }
 
 .parameter-label span:first-child {
@@ -417,11 +417,11 @@
 .parameter-value {
   font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
   font-weight: 600;
-  color: #1f2937;
-  background: #ffffff;
+  color: var(--color);
+  background: var(--bg-1);
   padding: 0.25rem 0.5rem;
   border-radius: 6px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--bg-3);
   min-width: 4rem;
   text-align: center;
 }
@@ -431,14 +431,14 @@
   width: 100%;
   margin: 0.5rem 0;
   height: 6px;
-  background: #e5e7eb;
+  background: var(--bg-3);
   border-radius: 3px;
   outline: none;
   transition: background 0.3s ease;
 }
 
 .parameter-slider:hover {
-  background: #d1d5db;
+  background: var(--grey-300);
 }
 
 .parameter-slider::-webkit-slider-thumb {
@@ -446,15 +446,15 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #3b82f6;
+  background: var(--accent);
   cursor: pointer;
-  border: 2px solid #ffffff;
+  border: 2px solid var(--bg-1);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transition: all 0.2s ease;
 }
 
 .parameter-slider::-webkit-slider-thumb:hover {
-  background: #2563eb;
+  background: var(--accent);
   transform: scale(1.1);
 }
 
@@ -462,9 +462,9 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #3b82f6;
+  background: var(--accent);
   cursor: pointer;
-  border: 2px solid #ffffff;
+  border: 2px solid var(--bg-1);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -488,7 +488,7 @@
   padding: 4px 8px;
   font-size: 9px;
   font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
-  color: #6b7280;
+  color: var(--fg-3);
   line-height: 1.2;
   z-index: 10;
   pointer-events: none;
@@ -503,30 +503,30 @@
 
 /* Parameter group color coding */
 .parameter-group[data-group="mortality"] .parameter {
-  background: #fef2f2;
-  border-color: #fecaca;
+  background: var(--surface-mortality);
+  border-color: var(--surface-mortality);
 }
 
 .parameter-group[data-group="mortality"] .parameter:hover {
-  border-color: #fca5a5;
+  border-color: var(--c-mortality);
 }
 
 .parameter-group[data-group="mental-health"] .parameter {
-  background: #f5f3ff;
-  border-color: #d8b4fe;
+  background: var(--surface-mental-health);
+  border-color: var(--c-mental-health);
 }
 
 .parameter-group[data-group="mental-health"] .parameter:hover {
-  border-color: #c4b5fd;
+  border-color: var(--c-mental-health);
 }
 
 .parameter-group[data-group="healthcare"] .parameter {
-  background: #f0fdf4;
-  border-color: #bbf7d0;
+  background: var(--surface-productivity);
+  border-color: var(--surface-productivity);
 }
 
 .parameter-group[data-group="healthcare"] .parameter:hover {
-  border-color: #86efac;
+  border-color: var(--c-productivity);
 }
 
 /* Info button styling - Enhanced hover states */
@@ -539,7 +539,7 @@
   border-radius: 50%;
   transition: all 0.2s ease;
   opacity: 0.8;
-  color: #3b82f6;
+  color: var(--accent);
   font-weight: 600;
   min-width: 20px;
   min-height: 20px;
@@ -554,11 +554,11 @@
   border-color: rgba(59, 130, 246, 0.4);
   transform: scale(1.15);
   box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
-  color: #2563eb;
+  color: var(--accent);
 }
 
 .info-btn:focus {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -574,7 +574,7 @@
   top: 4px;
   right: 8px;
   font-size: 8px;
-  color: #6b7280;
+  color: var(--fg-3);
   font-weight: 500;
   pointer-events: none;
   z-index: 5;
@@ -591,9 +591,9 @@
   margin-bottom: 0.5rem;
   padding: 0.5rem;
   height: 95px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--bg-3);
   border-radius: 8px;
-  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
@@ -613,15 +613,15 @@
 
 /* Parameter-specific curve colors */
 .parameter-group[data-group="mortality"] .distribution-chart-container::after {
-  color: #dc2626;
+  color: var(--c-mortality);
 }
 
 .parameter-group[data-group="mental-health"] .distribution-chart-container::after {
-  color: #8b5cf6;
+  color: var(--c-mental-health);
 }
 
 .parameter-group[data-group="healthcare"] .distribution-chart-container::after {
-  color: #059669;
+  color: var(--c-productivity);
 }
 
 /* Fixed element positioning helpers */
@@ -684,19 +684,19 @@
 
 /* Community Section */
 .community-section {
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
+  background: var(--surface-accent);
+  border: 1px solid var(--accent);
   border-radius: 8px;
 }
 
 .community-section h4 {
-  color: #1e40af;
+  color: var(--accent);
   font-weight: 600;
 }
 
 .community-section input,
 .community-section select {
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--grey-300);
   border-radius: 6px;
   padding: 0.5rem;
   font-size: 0.875rem;
@@ -706,12 +706,12 @@
 .community-section input:focus,
 .community-section select:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .community-section button {
-  background: #2563eb;
+  background: var(--accent);
   color: white;
   border: none;
   border-radius: 6px;
@@ -722,20 +722,20 @@
 }
 
 .community-section button:hover {
-  background: #1d4ed8;
+  background: var(--accent);
 }
 
 /* Share Section */
 .share-section h4 {
-  color: #374151;
+  color: var(--fg-2);
   font-weight: 600;
   margin-bottom: 0.75rem;
 }
 
 .share-btn {
-  background: #f3f4f6;
-  border: 1px solid #d1d5db;
-  color: #374151;
+  background: var(--bg-2);
+  border: 1px solid var(--grey-300);
+  color: var(--fg-2);
   padding: 0.5rem 1rem;
   border-radius: 6px;
   font-size: 0.875rem;
@@ -746,13 +746,13 @@
 }
 
 .share-btn:hover {
-  background: #e5e7eb;
-  border-color: #9ca3af;
+  background: var(--bg-3);
+  border-color: var(--grey-500);
   transform: translateY(-1px);
 }
 
 .share-btn:focus {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -761,19 +761,19 @@
    ============================================================================ */
 
 .research-section {
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
+  background: var(--surface-accent);
+  border: 1px solid var(--accent);
   border-radius: 12px;
 }
 
 .research-section h3 {
-  color: #1e40af;
+  color: var(--accent);
   font-weight: 600;
 }
 
 .research-link {
   background: white;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--bg-3);
   border-radius: 8px;
   text-decoration: none;
   color: inherit;
@@ -782,18 +782,18 @@
 }
 
 .research-link:hover {
-  border-color: #3b82f6;
+  border-color: var(--accent);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   transform: translateY(-1px);
 }
 
 .research-link strong {
-  color: #1f2937;
+  color: var(--color);
   font-weight: 600;
 }
 
 .research-link .text-gray-600 {
-  color: #6b7280;
+  color: var(--fg-3);
 }
 
 /* ============================================================================
@@ -805,27 +805,27 @@
   background: white;
   border-radius: 12px;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--bg-3);
   max-width: 28rem;
   width: 90vw;
 }
 
 #help-modal h3 {
-  color: #1f2937;
+  color: var(--color);
   font-weight: 600;
 }
 
 #help-modal #close-help {
   background: none;
   border: none;
-  color: #9ca3af;
+  color: var(--grey-500);
   font-size: 1.5rem;
   cursor: pointer;
   transition: color 0.15s ease;
 }
 
 #help-modal #close-help:hover {
-  color: #374151;
+  color: var(--fg-2);
 }
 
 /* Tooltip Container */
@@ -836,7 +836,7 @@
 }
 
 .tooltip {
-  background: #1f2937;
+  background: var(--color);
   color: white;
   padding: 0.75rem;
   border-radius: 8px;
@@ -851,12 +851,12 @@
 }
 
 .tooltip a {
-  color: #93c5fd;
+  color: var(--accent);
   text-decoration: underline;
 }
 
 .tooltip a:hover {
-  color: #dbeafe;
+  color: var(--surface-accent);
 }
 
 /* ============================================================================
@@ -933,13 +933,13 @@
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   .parameter-slider {
-    background: #000;
-    border: 2px solid #333;
+    background: var(--color);
+    border: 2px solid var(--fg-2);
   }
   
   .parameter-slider::-webkit-slider-thumb {
-    background: #fff;
-    border: 2px solid #000;
+    background: var(--bg-1);
+    border: 2px solid var(--color);
   }
   
   .info-btn {
@@ -971,7 +971,7 @@
   .parameter-value::after {
     content: " (current value)";
     font-size: 0.75rem;
-    color: #6b7280;
+    color: var(--fg-3);
   }
 }
 
@@ -1007,7 +1007,7 @@
 }
 
 .btn-primary:hover {
-    background-color: #2563eb;
+    background-color: var(--accent);
     transform: translateY(-0.5px);
 }
 
@@ -1017,7 +1017,7 @@
 }
 
 .btn-danger:hover {
-    background-color: #dc2626;
+    background-color: var(--c-mortality);
     transform: translateY(-0.5px);
 }
 
@@ -1031,35 +1031,35 @@
 }
 
 .scenario-btn.research-consensus {
-    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    background: linear-gradient(135deg, var(--c-mental-health), var(--c-mental-health));
     color: white;
     border: none;
 }
 
 .scenario-btn.research-consensus:hover {
-    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    background: linear-gradient(135deg, var(--c-mental-health), var(--c-mental-health));
     transform: translateY(-0.5px);
 }
 
 .scenario-btn.facebook-files {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, var(--accent), var(--accent));
     color: white;
     border: none;
 }
 
 .scenario-btn.facebook-files:hover {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background: linear-gradient(135deg, var(--accent), var(--accent));
     transform: translateY(-0.5px);
 }
 
 .scenario-btn.optimistic {
-    background: linear-gradient(135deg, #10b981, #059669);
+    background: linear-gradient(135deg, var(--c-productivity), var(--c-productivity));
     color: white;
     border: none;
 }
 
 .scenario-btn.optimistic:hover {
-    background: linear-gradient(135deg, #059669, #047857);
+    background: linear-gradient(135deg, var(--c-productivity), var(--c-productivity));
     transform: translateY(-0.5px);
 }
 
@@ -1118,17 +1118,17 @@
 }
 
 .info-button.mortality {
-    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    background: linear-gradient(135deg, var(--c-mortality), var(--c-mortality));
     color: white;
 }
 
 .info-button.mental-health {
-    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    background: linear-gradient(135deg, var(--c-mental-health), var(--c-mental-health));
     color: white;
 }
 
 .info-button.productivity {
-    background: linear-gradient(135deg, #16a34a, #15803d);
+    background: linear-gradient(135deg, var(--c-productivity), var(--c-productivity));
     color: white;
 }
 
@@ -1159,7 +1159,7 @@
 }
 
 .fixed-help:hover {
-    background-color: #dc2626;
+    background-color: var(--c-mortality);
     transform: scale(1.1);
 }
 
@@ -1254,12 +1254,12 @@
 }
 
 .tooltip a {
-    color: #93c5fd;
+    color: var(--accent);
     text-decoration: underline;
 }
 
 .tooltip a:hover {
-    color: #dbeafe;
+    color: var(--surface-accent);
 }
 
 /* Performance Metrics Display */
@@ -1282,16 +1282,16 @@
 }
 
 .performance-good {
-    color: #22c55e;
+    color: var(--c-productivity);
     font-weight: 600;
 }
 
 .performance-needs-improvement {
-    color: #f59e0b;
+    color: var(--chart-3);
     font-weight: 600;
 }
 
 .performance-poor {
-    color: #ef4444;
+    color: var(--c-mortality);
     font-weight: 600;
 } 
