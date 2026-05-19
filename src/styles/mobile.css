@@ -36,15 +36,15 @@
     
     /* Color coding without borders */
     .parameter-group.mortality {
-        background: linear-gradient(to right, #fef2f2, #ffffff) !important;
+        background: linear-gradient(to right, var(--surface-mortality), var(--bg-1)) !important;
     }
     
     .parameter-group.mental-health {
-        background: linear-gradient(to right, #faf5ff, #ffffff) !important;
+        background: linear-gradient(to right, var(--surface-mental-health), var(--bg-1)) !important;
     }
     
     .parameter-group.productivity {
-        background: linear-gradient(to right, #f0fdf4, #ffffff) !important;
+        background: linear-gradient(to right, var(--surface-productivity), var(--bg-1)) !important;
     }
     
     /* Minimal section spacing */
@@ -94,7 +94,7 @@
     
     .slider::-webkit-slider-track {
         height: 6px;
-        background: #e5e7eb;
+        background: var(--bg-3);
         border-radius: 3px;
     }
     
@@ -102,7 +102,7 @@
         width: 24px !important;
         height: 24px !important;
         border-radius: 50%;
-        background: #3b82f6;
+        background: var(--accent);
         border: 2px solid white;
         box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     }
@@ -383,9 +383,9 @@
         margin-bottom: 0.75rem;
         padding: 0.5rem;
         height: 95px;
-        border: 1px solid #e5e7eb;
+        border: 1px solid var(--bg-3);
         border-radius: 8px;
-        background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+        background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         position: relative;
         overflow: hidden;
@@ -410,7 +410,7 @@
         padding: 3px 6px;
         font-size: 8px;
         font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
-        color: #6b7280;
+        color: var(--fg-3);
         line-height: 1.2;
         z-index: 10;
         pointer-events: none;
@@ -430,7 +430,7 @@
         top: 3px;
         right: 6px;
         font-size: 7px;
-        color: #6b7280;
+        color: var(--fg-3);
         font-weight: 500;
         pointer-events: none;
         z-index: 5;
@@ -443,18 +443,18 @@
     
     /* Parameter group color coding for mobile */
     .parameter-group[data-group="mortality"] {
-        background: linear-gradient(to right, #fef2f2, #ffffff);
-        border-left: 3px solid #dc2626;
+        background: linear-gradient(to right, var(--surface-mortality), var(--bg-1));
+        border-left: 3px solid var(--c-mortality);
     }
     
     .parameter-group[data-group="mental-health"] {
-        background: linear-gradient(to right, #faf5ff, #ffffff);
-        border-left: 3px solid #8b5cf6;
+        background: linear-gradient(to right, var(--surface-mental-health), var(--bg-1));
+        border-left: 3px solid var(--c-mental-health);
     }
     
     .parameter-group[data-group="healthcare"] {
-        background: linear-gradient(to right, #f0fdf4, #ffffff);
-        border-left: 3px solid #10b981;
+        background: linear-gradient(to right, var(--surface-productivity), var(--bg-1));
+        border-left: 3px solid var(--c-productivity);
     }
     
     /* Curve accent colors */
@@ -465,7 +465,7 @@
         left: 0;
         right: 0;
         height: 2px;
-        background: linear-gradient(90deg, transparent 0%, #dc2626 50%, transparent 100%);
+        background: linear-gradient(90deg, transparent 0%, var(--c-mortality) 50%, transparent 100%);
         opacity: 0.3;
         pointer-events: none;
     }
@@ -477,7 +477,7 @@
         left: 0;
         right: 0;
         height: 2px;
-        background: linear-gradient(90deg, transparent 0%, #8b5cf6 50%, transparent 100%);
+        background: linear-gradient(90deg, transparent 0%, var(--c-mental-health) 50%, transparent 100%);
         opacity: 0.3;
         pointer-events: none;
     }
@@ -489,7 +489,7 @@
         left: 0;
         right: 0;
         height: 2px;
-        background: linear-gradient(90deg, transparent 0%, #10b981 50%, transparent 100%);
+        background: linear-gradient(90deg, transparent 0%, var(--c-productivity) 50%, transparent 100%);
         opacity: 0.3;
         pointer-events: none;
     }
@@ -510,7 +510,7 @@
     .parameter-group .text-right {
         font-size: 0.875rem;
         font-weight: 600;
-        color: #374151;
+        color: var(--fg-2);
     }
     
     /* Section headers for mobile */
@@ -657,20 +657,20 @@
 /* Dark mode mobile support (if implemented) */
 @media (max-width: 768px) and (prefers-color-scheme: dark) {
     .distribution-chart-container {
-        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
-        border-color: #374151;
+        background: linear-gradient(135deg, var(--color) 0%, var(--color) 100%);
+        border-color: var(--fg-2);
     }
     
     .distribution-stats {
         background: rgba(31, 41, 55, 0.95);
-        color: #d1d5db;
-        border-color: #374151;
+        color: var(--grey-300);
+        border-color: var(--fg-2);
     }
     
     .distribution-chart-container::before {
         background: rgba(31, 41, 55, 0.9);
-        color: #d1d5db;
-        border-color: #374151;
+        color: var(--grey-300);
+        border-color: var(--fg-2);
     }
 }
 
@@ -682,20 +682,20 @@
     
     /* Focus indicators for mobile */
     .parameter-group:focus-within .distribution-chart-container {
-        outline: 2px solid #3b82f6;
+        outline: 2px solid var(--accent);
         outline-offset: 2px;
     }
     
     /* High contrast mode support */
     @media (prefers-contrast: high) {
         .distribution-chart-container {
-            border: 2px solid #000000;
+            border: 2px solid var(--color);
         }
         
         .distribution-stats {
-            background: #ffffff;
-            color: #000000;
-            border: 1px solid #000000;
+            background: var(--bg-1);
+            color: var(--color);
+            border: 1px solid var(--color);
         }
     }
     
