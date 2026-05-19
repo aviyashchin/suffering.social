@@ -22,7 +22,7 @@
 
 #top-bar .text-red-400 {
   color: var(--c-mortality);
-  font-family: 'Courier New', Monaco, monospace;
+  font-family: var(--font-mono);
 }
 
 #top-bar .text-gray-300 {
@@ -216,7 +216,7 @@
 }
 
 .parameter-value {
-  font-family: 'Courier New', Monaco, monospace;
+  font-family: var(--font-mono);
   font-weight: 700;
   color: var(--color);
   background: white;
@@ -276,7 +276,7 @@
   border-radius: 8px;
   padding: 1rem;
   margin-top: 1rem;
-  font-family: 'Courier New', Monaco, monospace;
+  font-family: var(--font-mono);
   font-size: 0.875rem;
   color: var(--fg-2);
 }
@@ -313,7 +313,7 @@
 
 .total-card .text-red-400 {
   color: var(--c-mortality);
-  font-family: 'Courier New', Monaco, monospace;
+  font-family: var(--font-mono);
 }
 
 /* Counter Card */
@@ -326,7 +326,7 @@
 
 .counter-card .text-red-400 {
   color: var(--c-mortality);
-  font-family: 'Courier New', Monaco, monospace;
+  font-family: var(--font-mono);
 }
 
 /* Charts */
@@ -415,7 +415,7 @@
 }
 
 .parameter-value {
-  font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+  font-family: var(--font-mono);
   font-weight: 600;
   color: var(--color);
   background: var(--bg-1);
@@ -487,7 +487,7 @@
   border-radius: 4px;
   padding: 4px 8px;
   font-size: 9px;
-  font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+  font-family: var(--font-mono);
   color: var(--fg-3);
   line-height: 1.2;
   z-index: 10;
@@ -1112,7 +1112,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-family: var(--font-family-primary);
+    font-family: var(--font-body);
     box-shadow: var(--shadow-sm);
     margin-left: 0.5rem;
 }
@@ -1272,7 +1272,7 @@
     padding: 0.5rem;
     border-radius: 6px;
     font-size: 0.75rem;
-    font-family: monospace;
+    font-family: var(--font-mono);
     z-index: var(--z-tooltip);
     display: none;
 }
