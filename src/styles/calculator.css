@@ -2,70 +2,69 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: var(--spacing-sm) var(--spacing-md);
-            border-radius: var(--radius-md);
+            padding: 0.75rem 1rem;
+            border-radius: 2px;
             font-weight: 600;
             text-decoration: none;
             border: none;
             cursor: pointer;
         .btn-primary {
-            background-color: var(--color-secondary);
-            color: var(--color-text-white);
+            background-color: var(--grey-500);
+            color: var(--bg-1);
         }
         .btn-primary:hover {
             background-color: var(--accent);
         .btn-danger {
-            background-color: var(--color-danger);
-            color: var(--color-text-white);
+            background-color: var(--red);
+            color: var(--bg-1);
         }
         .btn-danger:hover {
             background-color: var(--c-mortality);
         }
         .scenario-btn.research-consensus {
-            background: linear-gradient(135deg, var(--c-mental-health), var(--c-mental-health)); /* Purple for Research Consensus */
+            background: var(--c-mental-health, var(--c-mental-health)); /* Purple for Research Consensus */
             color: white;
             border: none;
         }
         .scenario-btn.research-consensus:hover {
-            background: linear-gradient(135deg, var(--c-mental-health), var(--c-mental-health));
+            background: var(--c-mental-health, var(--c-mental-health));
         .scenario-btn.facebook-files {
-            background: linear-gradient(135deg, var(--accent), var(--accent)); /* Blue for Facebook Files */
+            background: var(--accent, var(--accent)); /* Blue for Facebook Files */
             color: white;
             border: none;
         }
         .scenario-btn.facebook-files:hover {
-            background: linear-gradient(135deg, var(--accent), var(--accent));
+            background: var(--accent, var(--accent));
         .scenario-btn.optimistic {
-            background: linear-gradient(135deg, var(--c-productivity), var(--c-productivity)); /* Green for Optimistic */
+            background: var(--c-productivity, var(--c-productivity)); /* Green for Optimistic */
             color: white;
             border: none;
         }
         .scenario-btn.optimistic:hover {
-            background: linear-gradient(135deg, var(--c-productivity), var(--c-productivity));
+            background: var(--c-productivity, var(--c-productivity));
         .slider {
             width: 100%;
             height: 0.5rem;
-            border-radius: var(--radius-md);
-            background: var(--color-bg-tertiary);
+            border-radius: 2px;
+            background: var(--bg-3);
             outline: none;
         .slider:focus {
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
+}
         .parameter-group {
-            margin-bottom: var(--spacing-xl);
-            padding: var(--spacing-lg);
-            background: var(--color-bg-primary);
-            border-radius: var(--radius-xl);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--bg-1);
+            border-radius: 2px;
             border-left: 4px solid;
         }
         .parameter-group.mortality {
-            border-left-color: var(--color-danger);
+            border-left-color: var(--red);
         }
         .parameter-group.mental-health {
             border-left-color: var(--c-mental-health);
         }
         .parameter-group.productivity {
-            border-left-color: var(--color-success);
+            border-left-color: var(--chart-2);
         }
             .parameter-group {
                 margin-bottom: 2rem !important;
@@ -96,7 +95,7 @@
             margin-top: 6rem;    /* Increased explicit top margin */
             position: relative;
             z-index: 10;         /* Higher z-index to stay on top */
-            background-color: var(--color-bg-secondary);
+            background-color: var(--bg-2);
             padding-top: 2rem;   /* Additional padding for breathing room */
         }
         .section-spacing {
@@ -119,14 +118,11 @@
             background: var(--bg-1);
         }
         .parameter-group.mortality .distribution-viz:hover {
-            box-shadow: 0 4px 8px rgba(220, 38, 38, 0.1);
-        }
+}
         .parameter-group.mental-health .distribution-viz:hover {
-            box-shadow: 0 4px 8px rgba(124, 58, 237, 0.1);
-        }
+}
         .parameter-group.productivity .distribution-viz:hover {
-            box-shadow: 0 4px 8px rgba(5, 150, 105, 0.1);
-        }
+}
         .slider {
             width: 100%;
             margin: 0;
@@ -137,16 +133,16 @@
             width: 100%;
         }
         .apply-values-btn {
-            background: linear-gradient(135deg, var(--accent), var(--accent));
+            background: var(--accent, var(--accent));
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 2px;
             padding: 0.375rem 0.75rem;
             font-size: 0.75rem;
             font-weight: 600;
             cursor: pointer;
         .apply-values-btn:hover {
-            background: linear-gradient(135deg, var(--accent), var(--accent));
+            background: var(--accent, var(--accent));
             .apply-values-btn {
                 width: 100%;
                 text-align: center;
@@ -157,10 +153,9 @@
         }
         .noUi-target {
             background: var(--bg-3);
-            border-radius: 8px;
+            border-radius: 2px;
             border: none;
-            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-            height: 14px;
+height: 14px;
             margin: 1rem 0 2rem 0;
         }
         .noUi-base {
@@ -172,30 +167,29 @@
             height: 24px;
             border-radius: 50%;
             border: 3px solid white;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-            cursor: pointer;
+cursor: pointer;
         .nouislider-container.mortality .noUi-handle {
-            background: linear-gradient(135deg, var(--c-mortality), var(--c-mortality));
+            background: var(--c-mortality, var(--c-mortality));
         }
         .nouislider-container.mortality .noUi-connect {
-            background: linear-gradient(90deg, var(--c-mortality), var(--c-mortality));
+            background: var(--c-mortality, var(--c-mortality));
         }
         .nouislider-container.mental-health .noUi-handle {
-            background: linear-gradient(135deg, var(--c-mental-health), var(--c-mental-health));
+            background: var(--c-mental-health, var(--c-mental-health));
         }
         .nouislider-container.mental-health .noUi-connect {
-            background: linear-gradient(90deg, var(--c-mental-health), var(--c-mental-health));
+            background: var(--c-mental-health, var(--c-mental-health));
         }
         .nouislider-container.productivity .noUi-handle {
-            background: linear-gradient(135deg, var(--c-productivity), var(--c-productivity));
+            background: var(--c-productivity, var(--c-productivity));
         }
         .nouislider-container.productivity .noUi-connect {
-            background: linear-gradient(90deg, var(--c-productivity), var(--c-productivity));
+            background: var(--c-productivity, var(--c-productivity));
         }
         .fallback-slider {
             width: 100%;
             height: 14px;
-            border-radius: 8px;
+            border-radius: 2px;
             background: var(--bg-3);
             outline: none;
             -webkit-appearance: none;
@@ -205,19 +199,17 @@
             width: 24px;
             height: 24px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--color-secondary), var(--accent));
+            background: var(--grey-500, var(--accent));
             border: 3px solid white;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-            cursor: pointer;
+cursor: pointer;
             -webkit-appearance: none;
         }
         .fallback-slider::-moz-range-thumb {
             width: 24px;
             height: 24px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--color-secondary), var(--accent));
+            background: var(--grey-500, var(--accent));
             border: 3px solid white;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-            cursor: pointer;
+cursor: pointer;
         }
         .animate-enhanced {
