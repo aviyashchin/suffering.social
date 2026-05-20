@@ -32,9 +32,12 @@ State after tonight's work (branch `ds-converge`, mergeable):
 |---|---|---|
 | design-system tokens consumed | 0 | ~180 `var()` refs |
 | broken/orphaned `var()` refs | 72 | 0 |
-| `box-shadow` rules | 53 | 0 |
-| `border-radius` ≥ 12px | 24 | 0 |
-| decorative `linear-gradient` | 45 | 0 |
+| CSS `box-shadow` rules | 53 | 0 |
+| CSS `border-radius` ≥ 12px | 24 | 0 |
+| CSS decorative `linear-gradient` | 45 | 0 |
+| HTML `shadow-*` utility classes | 10 | 0 |
+| HTML `bg-gradient-to-*` utility classes | 4 | 0 (collapsed to `bg-from-color`) |
+| HTML `rounded-{md,lg,xl,2xl,3xl}` classes | 63 | 0 (collapsed to `rounded-sm` = 2px) |
 | Tailwind utility palette | Tailwind defaults | every step resolves through DS via `tailwind.config` ramp |
 | Tailwind preflight competing with `_base.css` | yes | off |
 | heading scale inside content areas | DS display sizes overrode authored utilities | content reset in `site-tokens.css` |
@@ -114,16 +117,17 @@ example. Smell test belongs in CI for consuming apps.
 ### 5. The button question — make the dodge explicit in `DECISIONS.md`
 
 DS deliberately doesn't ship a `.btn`. Every consumer reinvents it.
-Either:
+This repo went one round of reinvention (a `.btn-flat` class we then
+deleted unused — YAGNI). The right answer is upstream:
 
-- **(a)** Add a canonical recipe to `PATTERNS.md` (the `.btn-flat` we
-  wrote in `site-tokens.css`: 1px border, 2px radius, no shadow,
-  ink/cream invert on hover). Future agents copy the reference.
-- **(b)** Reverse the decision and ship a `.btn` primitive in `_base.css`.
+- **(a)** Document a canonical recipe in `PATTERNS.md` so future agents
+  copy a reference instead of improvising.
+- **(b)** Ship a `.btn` primitive in `_base.css`.
 
 (a) is consistent with current doctrine; (b) ends the rediscovery tax.
-Either way, the standing answer goes in `DECISIONS.md` so the question
-is closed.
+Either way the standing answer belongs in DS's `DECISIONS.md`. We are
+not solving it here — the React rewrite (per "Not doing" below) is
+where this site's buttons get answered.
 
 ## What we are NOT doing
 

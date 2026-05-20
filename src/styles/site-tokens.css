@@ -44,24 +44,3 @@ body h1, body h2, body h3, body h4, body h5, body h6 {
   letter-spacing: normal;
   margin: 0;
 }
-
-/* Editorial button: flat, hairline border, no shadow, no radius >2px.
-   Use `.btn-flat` (or `.btn-flat--primary`) in markup to opt in.
-   We don't restyle every existing button — that's content-level work
-   for a follow-up. */
-.btn-flat {
-  display: inline-flex; align-items: center; gap: 0.5em;
-  padding: 0.5rem 1rem;
-  background: transparent;
-  color: var(--fg-1);
-  border: 1px solid var(--fg-1);
-  border-radius: 2px;
-  font-family: var(--font-body);
-  font-weight: 500;
-  letter-spacing: var(--tracking-body);
-  cursor: pointer;
-  transition: background 120ms ease-out, color 120ms ease-out;
-}
-.btn-flat:hover { background: var(--fg-1); color: var(--bg-1); }
-.btn-flat--primary { background: var(--fg-1); color: var(--bg-1); }
-.btn-flat--primary:hover { background: var(--accent); border-color: var(--accent); }
