@@ -60,6 +60,54 @@
     
     <!-- External Dependencies with Fallbacks -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind Play CDN reads tailwind.config AFTER its script loads.
+         - preflight off: design-system all.css already styles base elements.
+         - palette: every Tailwind colour resolves through a DS token, so
+           the utility classes in the HTML render in brand, not Tailwind defaults. -->
+    <script>
+      tailwind.config = {
+        corePlugins: { preflight: false },
+        theme: { extend: { colors: (() => {
+          // Ramp anchor -> 50..900 via the DS color-mix() recipe.
+          //   light end mixes anchor into --bg-1; dark end mixes anchor into --fg-1.
+          //   This preserves Tailwind's 50->900 depth (which buttons & hover states
+          //   rely on) while every step still resolves through DS tokens.
+          const ramp = (anchor) => ({
+            50:  `color-mix(in srgb, ${anchor}  6%, var(--bg-1))`,
+            100: `color-mix(in srgb, ${anchor} 12%, var(--bg-1))`,
+            200: `color-mix(in srgb, ${anchor} 22%, var(--bg-1))`,
+            300: `color-mix(in srgb, ${anchor} 38%, var(--bg-1))`,
+            400: `color-mix(in srgb, ${anchor} 62%, var(--bg-1))`,
+            500: anchor,
+            600: `color-mix(in srgb, ${anchor} 88%, var(--fg-1))`,
+            700: `color-mix(in srgb, ${anchor} 72%, var(--fg-1))`,
+            800: `color-mix(in srgb, ${anchor} 55%, var(--fg-1))`,
+            900: `color-mix(in srgb, ${anchor} 40%, var(--fg-1))`,
+          });
+          const greyRamp = {
+            50: 'var(--bg-1)', 100: 'var(--bg-2)', 200: 'var(--bg-3)',
+            300: 'var(--grey-300)', 400: 'var(--grey-500)', 500: 'var(--grey-500)',
+            600: 'var(--grey-700)', 700: 'var(--grey-700)',
+            800: 'var(--fg-2)', 900: 'var(--fg-1)',
+          };
+          return {
+            gray: greyRamp, slate: greyRamp, neutral: greyRamp, zinc: greyRamp, stone: greyRamp,
+            blue:   ramp('var(--accent)'),
+            indigo: ramp('var(--c-productivity)'),
+            purple: ramp('var(--c-productivity)'),
+            violet: ramp('var(--c-productivity)'),
+            red:    ramp('var(--red)'),
+            rose:   ramp('var(--red)'),
+            green:  ramp('var(--chart-2)'),
+            emerald:ramp('var(--chart-2)'),
+            yellow: ramp('var(--chart-5)'),
+            amber:  ramp('var(--chart-5)'),
+            orange: ramp('var(--chart-1)'),
+            black: 'var(--fg-1)', white: 'var(--bg-1)',
+          };
+        })() } }
+      };
+    </script>
     
     <!-- noUiSlider - Professional Range Sliders -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css">
@@ -366,7 +414,7 @@
                 font-size: 16px;
                 min-height: 48px;
                 min-width: 48px;
-                border-radius: 12px;
+                border-radius: 2px;
                 touch-action: manipulation;
             }
             
@@ -374,7 +422,7 @@
                 padding: 14px 18px;
                 font-size: 14px;
                 min-height: 48px;
-                border-radius: 12px;
+                border-radius: 2px;
                 touch-action: manipulation;
             }
             
@@ -382,7 +430,7 @@
             .parameter-group {
                 margin-bottom: 32px;
                 padding: 20px 16px;
-                border-radius: 16px;
+                border-radius: 2px;
             }
             
             .parameter-group h4 {
@@ -406,7 +454,7 @@
             .distribution-chart-container {
                 margin-bottom: 20px;
                 padding: 12px;
-                border-radius: 12px;
+                border-radius: 2px;
                 background: rgba(0, 0, 0, 0.03);
                 touch-action: pan-y;
             }
@@ -428,13 +476,13 @@
             .modal-content {
                 margin: 8px;
                 max-height: calc(100vh - 16px);
-                border-radius: 16px;
+                border-radius: 2px;
                 max-width: calc(100vw - 16px);
             }
             
             .modal-header {
                 padding: 20px;
-                border-radius: 16px 16px 0 0;
+                border-radius: 2px;
             }
             
             .modal-body {
@@ -521,8 +569,7 @@
             width: 24px !important;
             height: 24px !important;
             border: 3px solid var(--bg-1) !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
-            cursor: grab !important;
+cursor: grab !important;
         }
         
         .noUi-handle:active {
@@ -531,12 +578,12 @@
         }
         
         .noUi-connect {
-            background: linear-gradient(90deg, var(--accent), var(--accent)) !important;
+            background: var(--accent, var(--accent)) !important;
         }
         
         .noUi-base {
             height: 8px !important;
-            border-radius: 4px !important;
+            border-radius: 2px !important;
             background: var(--bg-3) !important;
         }
         
@@ -545,7 +592,7 @@
             background: var(--color) !important;
             color: white !important;
             border: none !important;
-            border-radius: 8px !important;
+            border-radius: 2px !important;
             padding: 6px 12px !important;
             font-size: 14px !important;
             font-weight: 600 !important;
@@ -573,7 +620,7 @@
         .fallback-slider {
             width: 100%;
             height: 8px;
-            border-radius: 4px;
+            border-radius: 2px;
             background: var(--bg-3);
             outline: none;
             cursor: pointer;
@@ -589,8 +636,7 @@
             border-radius: 50%;
             background: var(--accent);
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
+}
         
         .fallback-slider::-moz-range-thumb {
             width: 20px;
@@ -599,8 +645,7 @@
             background: var(--accent);
             cursor: pointer;
             border: none;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
+}
     </style>
 </head>
 
@@ -624,7 +669,7 @@
     </div>
 
     <!-- Minimal Sticky Header (Initially Hidden) -->
-    <header id="debt-clock-header" class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm transform -translate-y-full opacity-0 transition-all duration-300">
+    <header id="debt-clock-header" class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 transform -translate-y-full opacity-0 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 py-3">
             <!-- Main Header Row -->
             <div class="flex items-center justify-between mb-2">
@@ -655,16 +700,16 @@
             
             <!-- Sticky Scenario Buttons -->
             <div id="sticky-scenarios" class="flex flex-wrap justify-center gap-2">
-                <button class="scenario-btn px-3 py-1 bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors text-xs font-medium" data-scenario="optimistic">
+                <button class="scenario-btn px-3 py-1 bg-green-100 text-green-700 rounded-sm hover:bg-green-200 transition-colors text-xs font-medium" data-scenario="optimistic">
                     🌟 Best Case
                 </button>
-                <button class="scenario-btn px-3 py-1 bg-purple-100 text-purple-700 rounded-md hover:bg-purple-200 transition-colors text-xs font-medium" data-scenario="reset">
+                <button class="scenario-btn px-3 py-1 bg-purple-100 text-purple-700 rounded-sm hover:bg-purple-200 transition-colors text-xs font-medium" data-scenario="reset">
                     🔬 Research Consensus
                 </button>
-                <button class="scenario-btn px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors text-xs font-medium" data-scenario="facebookFiles">
+                <button class="scenario-btn px-3 py-1 bg-blue-100 text-blue-700 rounded-sm hover:bg-blue-200 transition-colors text-xs font-medium" data-scenario="facebookFiles">
                     📱 Facebook Files
                 </button>
-                <button class="scenario-btn px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors text-xs font-medium" data-scenario="aggressive">
+                <button class="scenario-btn px-3 py-1 bg-red-100 text-red-700 rounded-sm hover:bg-red-200 transition-colors text-xs font-medium" data-scenario="aggressive">
                     🚨 Worst Case
                 </button>
             </div>
@@ -692,7 +737,7 @@
                 </div>
                 
                 <!-- Externalities Ticker -->
-                <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 max-w-2xl mx-auto">
+                <div class="bg-red-50 border border-red-200 rounded-sm p-4 mb-6 max-w-2xl mx-auto">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
                         <div>
                             <div class="text-2xl font-mono font-bold text-red-700" id="hero-depression-cases">
@@ -712,16 +757,16 @@
                 
                 <!-- Hero Scenario Buttons -->
                 <div id="hero-scenarios" class="flex flex-wrap justify-center gap-3 max-w-2xl mx-auto">
-                    <button class="scenario-btn px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm font-medium" data-scenario="optimistic">
+                    <button class="scenario-btn px-4 py-2 bg-green-100 text-green-700 rounded-sm hover:bg-green-200 transition-colors text-sm font-medium" data-scenario="optimistic">
                         🌟 Best Case
                     </button>
-                    <button class="scenario-btn px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors text-sm font-medium" data-scenario="reset">
+                    <button class="scenario-btn px-4 py-2 bg-purple-100 text-purple-700 rounded-sm hover:bg-purple-200 transition-colors text-sm font-medium" data-scenario="reset">
                         🔬 Research Consensus
                     </button>
-                    <button class="scenario-btn px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium" data-scenario="facebookFiles">
+                    <button class="scenario-btn px-4 py-2 bg-blue-100 text-blue-700 rounded-sm hover:bg-blue-200 transition-colors text-sm font-medium" data-scenario="facebookFiles">
                         📱 Facebook Files
                     </button>
-                    <button class="scenario-btn px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium" data-scenario="aggressive">
+                    <button class="scenario-btn px-4 py-2 bg-red-100 text-red-700 rounded-sm hover:bg-red-200 transition-colors text-sm font-medium" data-scenario="aggressive">
                         🚨 Worst Case
                     </button>
                 </div>
@@ -730,7 +775,7 @@
 
         <!-- Prominent Methodology & Research Access Section -->
         <section class="mb-12">
-            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
+            <div class="bg-blue-50 border border-blue-200 rounded-sm p-6">
                 <div class="text-center">
                     <h3 class="text-2xl font-bold text-gray-900 mb-4">📚 Research Foundation & Methodology</h3>
                     <p class="text-gray-700 mb-6 max-w-3xl mx-auto">
@@ -739,28 +784,28 @@
                     </p>
                     
                     <div class="flex flex-wrap justify-center gap-4 mb-6">
-                        <button id="show-methodology" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold flex items-center gap-2">
+                        <button id="show-methodology" class="px-6 py-3 bg-blue-600 text-white rounded-sm hover:bg-blue-700 transition-colors font-semibold flex items-center gap-2">
                             🔬 View Full Methodology
                         </button>
-                        <button id="show-evidence-summary" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold flex items-center gap-2">
+                        <button id="show-evidence-summary" class="px-6 py-3 bg-indigo-600 text-white rounded-sm hover:bg-indigo-700 transition-colors font-semibold flex items-center gap-2">
                             📊 Evidence Summary
                         </button>
-                        <button id="show-all-citations" class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold flex items-center gap-2">
+                        <button id="show-all-citations" class="px-6 py-3 bg-purple-600 text-white rounded-sm hover:bg-purple-700 transition-colors font-semibold flex items-center gap-2">
                             📖 All Citations
                         </button>
                     </div>
                     
                     <!-- Quick Stats Preview -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                        <div class="bg-white rounded-lg p-4 border border-blue-200">
+                        <div class="bg-white rounded-sm p-4 border border-blue-200">
                             <div class="font-semibold text-blue-800">Research Span</div>
                             <div class="text-blue-700">15+ years of studies</div>
                         </div>
-                        <div class="bg-white rounded-lg p-4 border border-blue-200">
+                        <div class="bg-white rounded-sm p-4 border border-blue-200">
                             <div class="font-semibold text-blue-800">Study Quality</div>
                             <div class="text-blue-700">Peer-reviewed journals</div>
                         </div>
-                        <div class="bg-white rounded-lg p-4 border border-blue-200">
+                        <div class="bg-white rounded-sm p-4 border border-blue-200">
                             <div class="font-semibold text-blue-800">Methodology</div>
                             <div class="text-blue-700">Natural experiments</div>
                         </div>
@@ -779,7 +824,7 @@
                 </h3>
                 
                 <!-- Mortality Parameters -->
-                <div class="bg-white rounded-lg p-6 shadow-sm parameter-group" data-group="mortality">
+                <div class="bg-white rounded-sm p-6 parameter-group" data-group="mortality">
                     <h4 class="text-lg font-semibold text-red-700 mb-4">
                         ☠️ Mortality Costs
                     </h4>
@@ -834,7 +879,7 @@
                 </div>
                 
                 <!-- Mental Health Parameters -->
-                <div class="bg-white rounded-lg p-6 shadow-sm parameter-group" data-group="mental-health">
+                <div class="bg-white rounded-sm p-6 parameter-group" data-group="mental-health">
                     <h4 class="text-lg font-semibold text-purple-700 mb-4">
                         🧠 Mental Health Costs
                     </h4>
@@ -889,7 +934,7 @@
                 </div>
                 
                 <!-- Economic Parameters -->
-                <div class="bg-white rounded-lg p-6 shadow-sm parameter-group" data-group="healthcare">
+                <div class="bg-white rounded-sm p-6 parameter-group" data-group="healthcare">
                     <h4 class="text-lg font-semibold text-green-700 mb-4">
                         💰 Economic Costs
                     </h4>
@@ -951,24 +996,24 @@
                 </h3>
                 
                 <!-- Formula Results -->
-                <div class="bg-white rounded-lg p-6 shadow-sm">
+                <div class="bg-white rounded-sm p-6">
                     <h4 class="text-lg font-semibold mb-4">Cost Breakdown</h4>
                     
-                    <div class="mb-4 p-4 bg-red-50 rounded-lg">
+                    <div class="mb-4 p-4 bg-red-50 rounded-sm">
                         <div class="font-medium text-red-700">Mortality Costs</div>
                         <div class="text-sm text-gray-600" id="mortality-result">
                             110K × 18% × $13.7M = $271B
                         </div>
                     </div>
                     
-                    <div class="mb-4 p-4 bg-purple-50 rounded-lg">
+                    <div class="mb-4 p-4 bg-purple-50 rounded-sm">
                         <div class="font-medium text-purple-700">Mental Health Costs</div>
                         <div class="text-sm text-gray-600" id="mental-result">
                             5.0M × 6.0 × 35% × $183K = $1.9T
                         </div>
                     </div>
                     
-                    <div class="mb-4 p-4 bg-green-50 rounded-lg">
+                    <div class="mb-4 p-4 bg-green-50 rounded-sm">
                         <div class="font-medium text-green-700">Economic Costs</div>
                         <div class="text-sm text-gray-600" id="healthcare-result">
                             5.0M × ($7K + $6K) × 4.5 = $293B
@@ -985,7 +1030,7 @@
 
                 
                                 <!-- Cost Generated Since Page Load -->
-                <div class="bg-gradient-to-r from-gray-800 to-gray-700 text-white rounded-xl p-6 shadow-sm mb-6">
+                <div class="bg-gray-800 text-white rounded-sm p-6 mb-6">
                     <div class="text-center">
                         <div class="text-3xl font-mono font-bold text-red-400 mb-2" id="running-counter">
                             -$0
@@ -995,7 +1040,7 @@
                 </div>
 
                 <!-- Cost Component Progression Since 2009 -->
-                <div class="bg-white rounded-lg p-6 shadow-sm mb-6">
+                <div class="bg-white rounded-sm p-6 mb-6">
                     <h4 class="text-lg font-semibold mb-4 flex items-center">
                         📈 Cost Component Progression Since 2009
                     </h4>
@@ -1008,7 +1053,7 @@
                 </div>
 
                 <!-- Cost Composition -->
-                <div class="bg-white rounded-lg p-6 shadow-sm mb-6">
+                <div class="bg-white rounded-sm p-6 mb-6">
                     <h4 class="text-lg font-semibold mb-4 flex items-center">
                         📊 Cost Composition
                     </h4>
@@ -1024,7 +1069,7 @@
                 <div class="w-full mb-6">
                     <div class="grid grid-cols-1 gap-2">
                         <!-- Open Source Section -->
-                        <div class="bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-xl p-6 w-full">
+                        <div class="bg-gray-50 border border-gray-200 rounded-sm p-6 w-full">
                             <div class="text-center">
                                 <h3 class="text-xl font-bold mb-4 flex items-center justify-center gap-2 text-gray-900">
                                     <span class="text-2xl">🔓</span>
@@ -1036,7 +1081,7 @@
                                 </p>
                                 
                                 <div class="grid grid-cols-1 gap-3 mb-6">
-                                    <div class="bg-white rounded-lg p-4 border border-gray-200 min-h-[4rem] flex items-center">
+                                    <div class="bg-white rounded-sm p-4 border border-gray-200 min-h-[4rem] flex items-center">
                                         <div class="flex items-center gap-3 w-full">
                                             <div class="text-xl flex-shrink-0">🍴</div>
                                             <div class="text-left flex-grow">
@@ -1046,7 +1091,7 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="bg-white rounded-lg p-4 border border-gray-200 min-h-[4rem] flex items-center">
+                                    <div class="bg-white rounded-sm p-4 border border-gray-200 min-h-[4rem] flex items-center">
                                         <div class="flex items-center gap-3 w-full">
                                             <div class="text-xl flex-shrink-0">🤝</div>
                                             <div class="text-left flex-grow">
@@ -1056,7 +1101,7 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="bg-white rounded-lg p-4 border border-gray-200 min-h-[4rem] flex items-center">
+                                    <div class="bg-white rounded-sm p-4 border border-gray-200 min-h-[4rem] flex items-center">
                                         <div class="flex items-center gap-3 w-full">
                                             <div class="text-xl flex-shrink-0">📊</div>
                                             <div class="text-left flex-grow">
@@ -1069,7 +1114,7 @@
                                 
                                 <div class="grid grid-cols-1 gap-3 mb-6">
                                     <a href="https://github.com/aviyashchin/suffering.social" target="_blank" 
-                                       class="inline-flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-900 text-white px-6 py-3 rounded-lg font-semibold transition-colors text-sm w-full min-h-[3rem]">
+                                       class="inline-flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-900 text-white px-6 py-3 rounded-sm font-semibold transition-colors text-sm w-full min-h-[3rem]">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                                         </svg>
@@ -1077,7 +1122,7 @@
                                     </a>
                                     
                                     <a href="https://github.com/aviyashchin/suffering.social/fork" target="_blank" 
-                                       class="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors text-sm w-full min-h-[3rem]">
+                                       class="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-sm font-semibold transition-colors text-sm w-full min-h-[3rem]">
                                         🍴 Fork This Project
                                     </a>
                                 </div>
@@ -1099,7 +1144,7 @@
 
         <!-- Research Foundation -->
         <section class="mb-16">
-            <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 research-foundation-mobile">
+            <div class="bg-blue-50 border border-blue-200 rounded-sm p-6 research-foundation-mobile">
                 <h3 class="text-xl font-bold text-gray-900 mb-4">📚 Research Foundation</h3>
                 <p class="text-gray-700 mb-4">Our calculations draw from peer-reviewed research showing:</p>
                 <ul class="space-y-2 text-gray-700">
@@ -1141,7 +1186,7 @@
 
         <!-- Research Context -->
         <section class="mb-16">
-            <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+            <div class="bg-yellow-50 border border-yellow-200 rounded-sm p-6">
                 <h3 class="text-xl font-bold text-yellow-800 mb-4">⚠️ Research Context</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
@@ -1163,7 +1208,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="mt-4 p-3 bg-white rounded-lg border border-yellow-200">
+                <div class="mt-4 p-3 bg-white rounded-sm border border-yellow-200">
                     <p class="text-sm text-gray-700">
                         <strong>Transparency Note:</strong> Results are illustrative estimates based on conservative assumptions. 
                         Click info buttons (ℹ️) for detailed research citations and parameter ranges.
@@ -1174,7 +1219,7 @@
 
         <!-- Digital Wellness Resources -->
         <section class="mb-16">
-            <div class="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-xl p-6">
+            <div class="bg-green-50 border border-green-200 rounded-sm p-6">
                 <div class="text-center mb-6">
                     <h3 class="text-xl font-bold text-gray-900 mb-3">🌱 Digital Wellness Resources</h3>
                     <p class="text-gray-700 max-w-2xl mx-auto">
@@ -1183,7 +1228,7 @@
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-white rounded-lg p-4 border border-green-200">
+                    <div class="bg-white rounded-sm p-4 border border-green-200">
                         <h4 class="font-semibold text-green-800 mb-3">🧘 Mindfulness Tools</h4>
                         <ul class="text-sm space-y-2">
                             <li><a href="https://one-sec.app" target="_blank" class="text-blue-600 hover:underline">One Sec - Pause Before Apps</a></li>
@@ -1192,7 +1237,7 @@
                         </ul>
                     </div>
                     
-                    <div class="bg-white rounded-lg p-4 border border-green-200">
+                    <div class="bg-white rounded-sm p-4 border border-green-200">
                         <h4 class="font-semibold text-green-800 mb-3">👨‍👩‍👧‍👦 Family Resources</h4>
                         <ul class="text-sm space-y-2">
                             <li><a href="https://waituntil8th.org" target="_blank" class="text-blue-600 hover:underline">Wait Until 8th - Community Pledge</a></li>
@@ -1201,7 +1246,7 @@
                         </ul>
                     </div>
                     
-                    <div class="bg-white rounded-lg p-4 border border-green-200">
+                    <div class="bg-white rounded-sm p-4 border border-green-200">
                         <h4 class="font-semibold text-green-800 mb-3">🔬 Research & Advocacy</h4>
                         <ul class="text-sm space-y-2">
                             <li><a href="https://www.afterbabel.com" target="_blank" class="text-blue-600 hover:underline">After Babel - Jonathan Haidt</a></li>
@@ -1225,16 +1270,16 @@
                 📤 Share Your Analysis
             </h3>
             
-            <div class="bg-white rounded-xl p-6 shadow-sm max-w-2xl mx-auto">
+            <div class="bg-white rounded-sm p-6 max-w-2xl mx-auto">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <button id="copy-url" class="flex items-center justify-center gap-2 p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <button id="copy-url" class="flex items-center justify-center gap-2 p-3 bg-blue-600 text-white rounded-sm hover:bg-blue-700 transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
                         </svg>
                         Copy Link
                     </button>
                     
-                    <button id="share-twitter" class="flex items-center justify-center gap-2 p-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                    <button id="share-twitter" class="flex items-center justify-center gap-2 p-3 bg-gray-600 text-white rounded-sm hover:bg-gray-700 transition-colors">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
                             </svg>
@@ -1253,7 +1298,7 @@
         
         <!-- Export Modal -->
         <div id="export-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-            <div class="modal-content bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="modal-content bg-white rounded-sm max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                 <div class="modal-header p-6 border-b border-gray-200">
                     <div class="flex justify-between items-center">
                         <h2 id="export-modal-title" class="text-2xl font-bold text-gray-900">Export Options</h2>
@@ -1269,7 +1314,7 @@
 
     <!-- Research Modal -->
     <div id="research-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="modal-content bg-white rounded-lg max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div class="modal-content bg-white rounded-sm max-w-4xl max-h-[90vh] overflow-y-auto">
             <div class="modal-header p-6 border-b border-gray-200">
                 <div class="flex justify-between items-center">
                     <h2 id="modal-title" class="text-2xl font-bold text-gray-900">Parameter Research</h2>
@@ -1280,11 +1325,11 @@
                 <div id="modal-description" class="mb-4 text-gray-600"></div>
                 
                 <div class="grid md:grid-cols-2 gap-6 mb-6">
-                    <div class="bg-blue-50 p-4 rounded-lg">
+                    <div class="bg-blue-50 p-4 rounded-sm">
                         <h3 class="font-semibold text-blue-800 mb-2">Evidence Range</h3>
                         <div id="modal-evidence-range" class="text-blue-700"></div>
                     </div>
-                    <div class="bg-green-50 p-4 rounded-lg">
+                    <div class="bg-green-50 p-4 rounded-sm">
                         <h3 class="font-semibold text-green-800 mb-2">Current Value</h3>
                         <div id="modal-current-value" class="text-green-700 text-lg font-bold"></div>
                     </div>
@@ -1424,7 +1469,7 @@
     <!-- Note: Modular JavaScript removed to avoid CORS issues - all functionality is now inline -->
 
     <!-- Floating Branding Box -->
-    <div id="floating-branding" class="fixed bottom-4 left-4 z-40 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg p-3 shadow-lg max-w-xs">
+    <div id="floating-branding" class="fixed bottom-4 left-4 z-40 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-sm p-3 max-w-xs">
         <div class="text-center">
             <div class="text-xs text-gray-600 mb-2">Powered by</div>
             <a href="http://www.subconscious.ai" target="_blank" class="block text-blue-600 hover:text-blue-800 font-semibold text-sm mb-2">
@@ -1900,7 +1945,7 @@
                     const color = colors[param] || 'gray';
                     
                     citationsHTML += `
-                        <div class="border border-${color}-200 rounded-lg p-4 bg-${color}-50">
+                        <div class="border border-${color}-200 rounded-sm p-4 bg-${color}-50">
                             <h4 class="text-lg font-semibold text-${color}-800 mb-2">${research.name}</h4>
                             <p class="text-sm text-gray-600 mb-3">${research.description}</p>
                             <div class="text-sm text-${color}-700 mb-3">
@@ -1915,11 +1960,7 @@
                             <div class="bg-white border border-${color}-200 rounded p-3">
                                 <div class="flex justify-between items-start mb-2">
                                     <h5 class="font-semibold text-gray-900 text-sm">${study.title}</h5>
-                                    <span class="px-2 py-1 text-xs rounded-full ${
-                                        study.confidence === 'Very High' ? `bg-green-100 text-green-800` :
-                                        study.confidence === 'High' ? `bg-blue-100 text-blue-800` :
-                                        'bg-yellow-100 text-yellow-800'
-                                    }">${study.confidence}</span>
+                                    <span class="px-2 py-1 text-xs rounded-full ${ study.confidence === 'Very High' ? `bg-green-100 text-green-800` : study.confidence === 'High' ? `bg-blue-100 text-blue-800` : 'bg-yellow-100 text-yellow-800' }">${study.confidence}</span>
                                 </div>
                                 <p class="text-xs text-gray-600 mb-2">${study.authors}</p>
                                 <p class="text-sm font-medium text-gray-800 mb-2">Finding: ${study.value}</p>
@@ -1962,7 +2003,7 @@
                             <p class="text-gray-600">How we calculate the economic impact of social media</p>
                         </div>
                         
-                        <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+                        <div class="bg-red-50 border border-red-200 rounded-sm p-6">
                             <h4 class="text-lg font-bold text-red-800 mb-4 flex items-center gap-2">
                                 ☠️ Mortality Costs
                             </h4>
@@ -1982,7 +2023,7 @@
                             </div>
                         </div>
                         
-                        <div class="bg-purple-50 border border-purple-200 rounded-lg p-6">
+                        <div class="bg-purple-50 border border-purple-200 rounded-sm p-6">
                             <h4 class="text-lg font-bold text-purple-800 mb-4 flex items-center gap-2">
                                 🧠 Mental Health Quality-of-Life Costs
                             </h4>
@@ -2002,7 +2043,7 @@
                             </div>
                         </div>
                         
-                        <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                        <div class="bg-green-50 border border-green-200 rounded-sm p-6">
                             <h4 class="text-lg font-bold text-green-800 mb-4 flex items-center gap-2">
                                 💰 Direct Economic Costs
                             </h4>
@@ -2022,7 +2063,7 @@
                             </div>
                         </div>
                         
-                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                        <div class="bg-blue-50 border border-blue-200 rounded-sm p-6">
                             <h4 class="text-lg font-bold text-blue-800 mb-4">🔬 Key Methodological Principles</h4>
                             <ul class="space-y-2 text-sm text-gray-700">
                                 <li class="flex items-start gap-2">
@@ -2072,7 +2113,7 @@
                         </div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                            <div class="bg-red-50 border border-red-200 rounded-sm p-4">
                                 <h4 class="font-bold text-red-800 mb-3">🔥 Key Findings</h4>
                                 <ul class="space-y-2 text-sm text-red-700">
                                     <li>• Each hour of social media → +0.23 depression points</li>
@@ -2082,7 +2123,7 @@
                                 </ul>
                             </div>
                             
-                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <div class="bg-blue-50 border border-blue-200 rounded-sm p-4">
                                 <h4 class="font-bold text-blue-800 mb-3">📈 Study Quality</h4>
                                 <ul class="space-y-2 text-sm text-blue-700">
                                     <li>• Published in American Economic Review</li>
@@ -2092,7 +2133,7 @@
                                 </ul>
                             </div>
                             
-                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                            <div class="bg-green-50 border border-green-200 rounded-sm p-4">
                                 <h4 class="font-bold text-green-800 mb-3">💰 Economic Evidence</h4>
                                 <ul class="space-y-2 text-sm text-green-700">
                                     <li>• Depression costs: $326B annually (2020)</li>
@@ -2102,7 +2143,7 @@
                                 </ul>
                             </div>
                             
-                            <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                            <div class="bg-purple-50 border border-purple-200 rounded-sm p-4">
                                 <h4 class="font-bold text-purple-800 mb-3">🧠 Mental Health</h4>
                                 <ul class="space-y-2 text-sm text-purple-700">
                                     <li>• 30-50% quality of life reduction</li>
@@ -2113,7 +2154,7 @@
                             </div>
                         </div>
                         
-                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-sm p-6">
                             <h4 class="font-bold text-yellow-800 mb-3">⚠️ Important Context</h4>
                             <div class="text-sm text-yellow-700 space-y-2">
                                 <p><strong>Causal Evidence:</strong> Studies use Facebook college rollout as natural experiment, providing strong causal identification beyond correlation.</p>
@@ -2124,7 +2165,7 @@
                         </div>
                         
                         <div class="text-center">
-                            <button id="view-full-citations" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold">
+                            <button id="view-full-citations" class="px-6 py-3 bg-indigo-600 text-white rounded-sm hover:bg-indigo-700 transition-colors font-semibold">
                                 📖 View Full Citations
                             </button>
                         </div>
@@ -3234,9 +3275,9 @@
                             }
                             
                             .executive-summary {
-                                background: linear-gradient(135deg, var(--bg-2) 0%, var(--bg-2) 100%);
+                                background: var(--bg-2 0%, var(--bg-2) 100%);
                                 padding: 30px;
-                                border-radius: 12px;
+                                border-radius: 2px;
                                 margin: 30px 0;
                                 border-left: 4px solid var(--accent);
                             }
@@ -3261,7 +3302,7 @@
                             .key-findings {
                                 background: var(--bg-2);
                                 padding: 24px;
-                                border-radius: 8px;
+                                border-radius: 2px;
                                 margin: 20px 0;
                             }
                             
@@ -3299,10 +3340,9 @@
                             .cost-item { 
                                 background: var(--bg-1); 
                                 padding: 24px; 
-                                border-radius: 12px; 
+                                border-radius: 2px; 
                                 text-align: center;
-                                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-                                border: 1px solid var(--bg-3);
+border: 1px solid var(--bg-3);
                             }
                             
                             .cost-label { 
@@ -3349,10 +3389,9 @@
                                 border-collapse: collapse;
                                 margin: 20px 0;
                                 background: white;
-                                border-radius: 8px;
+                                border-radius: 2px;
                                 overflow: hidden;
-                                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-                            }
+}
                             
                             .param-table th, .param-table td { 
                                 padding: 16px; 
@@ -3379,9 +3418,9 @@
                             }
                             
                             .methodology { 
-                                background: linear-gradient(135deg, var(--surface-accent) 0%, var(--surface-accent) 100%);
+                                background: var(--surface-accent 0%, var(--surface-accent) 100%);
                                 padding: 30px; 
-                                border-radius: 12px;
+                                border-radius: 2px;
                                 margin: 40px 0;
                                 border: 1px solid var(--accent);
                             }
@@ -3396,7 +3435,7 @@
                                 margin: 16px 0;
                                 padding: 12px 16px;
                                 background: rgba(255, 255, 255, 0.7);
-                                border-radius: 6px;
+                                border-radius: 2px;
                                 border-left: 3px solid var(--accent);
                                 font-size: 14px;
                                 line-height: 1.5;
@@ -3415,7 +3454,7 @@
                             .citation-section {
                                 background: var(--bg-2);
                                 padding: 24px;
-                                border-radius: 8px;
+                                border-radius: 2px;
                                 margin: 30px 0;
                                 border-left: 4px solid var(--c-productivity);
                             }
@@ -3624,13 +3663,13 @@
                 const results = this.calculateTotalEconomicImpact();
                 
                 const embedCode = `<!-- Social Media Cost Calculator Widget -->
-<div id="social-media-calculator-embed" style="border: 1px solid var(--bg-3); border-radius: 12px; padding: 20px; max-width: 400px; font-family: var(--font-body); background: white;">
+<div id="social-media-calculator-embed" style="border: 1px solid var(--bg-3); border-radius: 2px; padding: 20px; max-width: 400px; font-family: var(--font-body); background: white;">
     <div style="text-align: center; margin-bottom: 16px;">
         <h3 style="margin: 0 0 8px 0; color: var(--color); font-size: 18px;">Social Media Economic Impact</h3>
         <div style="font-size: 36px; font-weight: bold; color: var(--c-mortality); margin: 16px 0;">${this.formatLargeNumber(results.total)}</div>
         <p style="margin: 0; color: var(--fg-3); font-size: 14px;">Annual cost to US economy</p>
     </div>
-    <div style="background: var(--bg-2); padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px;">
+    <div style="background: var(--bg-2); padding: 12px; border-radius: 2px; margin-bottom: 16px; font-size: 14px;">
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; text-align: center;">
             <div>
                 <div style="font-weight: bold; color: var(--c-mortality);">${this.formatLargeNumber(results.mortality)}</div>
@@ -3647,7 +3686,7 @@
         </div>
     </div>
     <div style="text-align: center;">
-        <a href="${this.getCurrentShareURL()}" target="_blank" style="display: inline-block; background: var(--accent); color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 500;">View Full Calculator</a>
+        <a href="${this.getCurrentShareURL()}" target="_blank" style="display: inline-block; background: var(--accent); color: white; padding: 8px 16px; border-radius: 2px; text-decoration: none; font-size: 14px; font-weight: 500;">View Full Calculator</a>
     </div>
     <div style="text-align: center; margin-top: 12px;">
         <a href="https://suffering.social" target="_blank" style="color: var(--fg-3); font-size: 12px; text-decoration: none;">Powered by suffering.social</a>
@@ -3657,7 +3696,7 @@
                 this.showExportModal('Embed Widget Code', `
                     <div class="mb-4">
                         <p class="text-gray-600 mb-4">Copy this code to embed the calculator widget on your website:</p>
-                        <div class="bg-gray-50 border rounded-lg p-4 mb-4">
+                        <div class="bg-gray-50 border rounded-sm p-4 mb-4">
                             <textarea readonly class="w-full h-32 text-sm font-mono bg-transparent border-none resize-none" id="embed-code">${embedCode}</textarea>
                         </div>
                         <button onclick="navigator.clipboard.writeText(document.getElementById('embed-code').value).then(() => alert('Embed code copied!'))" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
@@ -3666,7 +3705,7 @@
                     </div>
                     <div class="border-t pt-4">
                         <h4 class="font-semibold mb-2">Preview:</h4>
-                        <div class="border rounded-lg p-4 bg-gray-50">
+                        <div class="border rounded-sm p-4 bg-gray-50">
                             ${embedCode}
                         </div>
                     </div>
@@ -3760,11 +3799,11 @@
                         <div id="modal-description" class="mb-4 text-gray-600"></div>
                         
                         <div class="grid md:grid-cols-2 gap-6 mb-6">
-                            <div class="bg-blue-50 p-4 rounded-lg">
+                            <div class="bg-blue-50 p-4 rounded-sm">
                                 <h3 class="font-semibold text-blue-800 mb-2">Evidence Range</h3>
                                 <div id="modal-evidence-range" class="text-blue-700"></div>
                             </div>
-                            <div class="bg-green-50 p-4 rounded-lg">
+                            <div class="bg-green-50 p-4 rounded-sm">
                                 <h3 class="font-semibold text-green-800 mb-2">Current Value</h3>
                                 <div id="modal-current-value" class="text-green-700 text-lg font-bold"></div>
                             </div>
@@ -3845,16 +3884,12 @@
                     const hasApplicableValue = extractedValue !== null;
                     
                     return `
-                        <div class="border border-gray-200 rounded-lg p-4 study-entry ${hasApplicableValue ? 'cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-colors' : ''}" 
+                        <div class="border border-gray-200 rounded-sm p-4 study-entry ${hasApplicableValue ? 'cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-colors' : ''}" 
                              data-param="${param}" data-study-index="${study.originalIndex}" ${hasApplicableValue ? 'data-clickable="true"' : ''}>
                             <div class="flex justify-between items-start mb-2">
                                 <h4 class="font-semibold text-lg">${study.title}</h4>
                                 <div class="flex items-center space-x-2">
-                                    <span class="px-2 py-1 text-xs rounded-full ${
-                                        study.confidence === 'Very High' ? 'bg-green-100 text-green-800' :
-                                        study.confidence === 'High' ? 'bg-blue-100 text-blue-800' :
-                                        'bg-yellow-100 text-yellow-800'
-                                    }">${study.confidence}</span>
+                                    <span class="px-2 py-1 text-xs rounded-full ${ study.confidence === 'Very High' ? 'bg-green-100 text-green-800' : study.confidence === 'High' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800' }">${study.confidence}</span>
                                     ${hasApplicableValue ? `
                                         <button class="apply-study-btn px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
                                             📊 Apply Value

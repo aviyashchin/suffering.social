@@ -24,3 +24,23 @@
   --surface-productivity:  color-mix(in srgb, var(--c-productivity) 8%, var(--bg-1));
   --surface-accent:        color-mix(in srgb, var(--accent) 8%, var(--bg-1));
 }
+
+/* ------------------------------------------------------------
+   Content reset.
+   DS _base.css styles raw <h1>–<h6> at editorial display sizes
+   (the "one thing violently large" doctrine, intended for the
+   preview garden's full-bleed cards). Tailwind preflight is off
+   to stop it fighting that doctrine on the marketing surfaces,
+   but the calculator authors its heading sizes with utility
+   classes (`text-lg`, `text-2xl`) expecting a normal reset.
+   This brings raw headings back to inherit, so authored sizes
+   win — while DS still owns body type, font, ink and grey.
+   Scoped via `body >` to leave .wordmark, .lede, .head, .mast
+   etc. alone if they ever appear. ------------------------------------------------------------ */
+body h1, body h2, body h3, body h4, body h5, body h6 {
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: normal;
+  margin: 0;
+}
