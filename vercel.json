@@ -7,8 +7,12 @@
       "destination": "/index.html"
     },
     {
-      "source": "/v5", 
+      "source": "/v5",
       "destination": "/social_media_cost_calculatorv5.html"
+    },
+    {
+      "source": "/v2",
+      "destination": "/index-v2.html"
     }
   ],
   "headers": [

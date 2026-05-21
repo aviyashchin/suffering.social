@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What happened to teenagers in 2012? — suffering.social</title>
+<meta name="description" content="U.S. teen major depressive episodes roughly doubled between 2011 and 2021. The inflection point is unusually clean for social science. Here's the evidence — and the harder question: what would have happened otherwise.">
+<meta property="og:title" content="What happened to teenagers in 2012?">
+<meta property="og:description" content="The strongest single time-series chart in modern adolescent mental health, and what causal inference can do with it.">
+<meta property="og:type" content="article">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    corePlugins: { preflight: true },
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+          display: ['Fraunces', 'Georgia', 'serif'],
+        },
+        colors: {
+          ink: '#0a0a0a',
+          paper: '#fafaf7',
+          rule: '#1a1a1a',
+          mute: '#6b6b6b',
+          accent: '#c8102e',
+        },
+        maxWidth: { measure: '38rem' },
+      }
+    }
+  }
+</script>
+
+<style>
+  html { background: #fafaf7; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #0a0a0a;
+    background: #fafaf7;
+    font-feature-settings: "ss01", "cv11";
+  }
+  .display {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+  .num { font-variant-numeric: tabular-nums; }
+  .struck { color: #6b6b6b; text-decoration: line-through; text-decoration-color: #c8102e; text-decoration-thickness: 2px; }
+  .rule { border-top: 1px solid #1a1a1a; }
+  .hair { border-top: 1px solid rgba(0,0,0,0.12); }
+
+  /* Chart */
+  .chart-grid line { stroke: rgba(0,0,0,0.08); stroke-width: 1; }
+  .chart-axis text { fill: #6b6b6b; font-size: 11px; font-family: 'Inter', sans-serif; }
+  .chart-line { fill: none; stroke: #0a0a0a; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .chart-dot { fill: #fafaf7; stroke: #0a0a0a; stroke-width: 2; }
+  .chart-inflection { fill: #c8102e; stroke: #fafaf7; stroke-width: 2; }
+  .chart-anno { fill: #0a0a0a; font-size: 12px; font-family: 'Inter', sans-serif; font-weight: 500; }
+  .chart-anno-mute { fill: #6b6b6b; font-size: 11px; font-family: 'Inter', sans-serif; }
+  .chart-inflection-line { stroke: #c8102e; stroke-width: 1; stroke-dasharray: 4 4; }
+
+  /* Reading rhythm */
+  .lede { font-size: clamp(1.125rem, 2.4vw, 1.375rem); line-height: 1.5; }
+  p { max-width: 38rem; }
+  h2 { font-family: 'Fraunces', Georgia, serif; font-weight: 400; letter-spacing: -0.015em; }
+</style>
+</head>
+
+<body class="antialiased">
+
+<!-- masthead -->
+<header class="max-w-5xl mx-auto px-6 pt-8 pb-2 flex items-baseline justify-between">
+  <a href="/" class="text-sm tracking-tight font-medium">suffering.social</a>
+  <a href="https://subconscious.ai" class="text-sm text-mute hover:text-ink transition-colors">subconscious.ai →</a>
+</header>
+
+<!-- hero: one question, one chart -->
+<section class="max-w-5xl mx-auto px-6 pt-12 pb-20">
+  <p class="text-sm uppercase tracking-widest text-mute mb-6">A natural experiment</p>
+  <h1 class="display text-5xl sm:text-6xl md:text-7xl mb-10">
+    What happened to&nbsp;teenagers<br>
+    in <span class="num">2012</span>?
+  </h1>
+
+  <p class="lede max-w-measure mb-12">
+    The share of U.S. adolescents who had a major depressive episode in the past year was roughly flat from <span class="num">2004</span> to <span class="num">2011</span>. Then it began rising — and didn't stop.
+  </p>
+
+  <!-- chart -->
+  <figure class="my-10">
+    <svg viewBox="0 0 760 420" class="w-full max-w-4xl mx-auto block" role="img" aria-labelledby="chart-title chart-desc">
+      <title id="chart-title">Past-year major depressive episode, U.S. adolescents ages 12-17, 2004-2021</title>
+      <desc id="chart-desc">A time series rising from 9 percent in 2004, holding flat until 2011, then climbing to roughly 20 percent by 2021.</desc>
+
+      <!-- grid -->
+      <g class="chart-grid" transform="translate(60,30)">
+        <line x1="0" x2="660" y1="0" y2="0"></line>
+        <line x1="0" x2="660" y1="60" y2="60"></line>
+        <line x1="0" x2="660" y1="120" y2="120"></line>
+        <line x1="0" x2="660" y1="180" y2="180"></line>
+        <line x1="0" x2="660" y1="240" y2="240"></line>
+        <line x1="0" x2="660" y1="300" y2="300"></line>
+      </g>
+
+      <!-- y-axis labels (0%, 5%, 10%, 15%, 20%, 25%) -->
+      <g class="chart-axis" transform="translate(0,30)">
+        <text x="50" y="304" text-anchor="end">0%</text>
+        <text x="50" y="244" text-anchor="end">5</text>
+        <text x="50" y="184" text-anchor="end">10</text>
+        <text x="50" y="124" text-anchor="end">15</text>
+        <text x="50" y="64" text-anchor="end">20</text>
+        <text x="50" y="4"   text-anchor="end">25</text>
+      </g>
+
+      <!-- inflection marker: 2011 (x ≈ 60 + 660 * (2011-2004)/(2021-2004) = 60 + 660*7/17 ≈ 60+271.8=331.8) -->
+      <line class="chart-inflection-line" x1="331.8" x2="331.8" y1="30" y2="330"></line>
+      <text class="chart-anno" x="338" y="60">2011 inflection</text>
+      <text class="chart-anno-mute" x="338" y="76">smartphone majority</text>
+
+      <!-- data line.
+           Source: SAMHSA NSDUH, past-year MDE, ages 12-17.
+           Note: 2020 redesigned the survey; numbers post-2020 are not strictly comparable.
+           x = 60 + 660*((year-2004)/(2021-2004))
+           y = 30 + 300*(1 - pct/25)  →  y = 330 - 12*pct
+           pts (year, pct):
+           2004 9.0  2005 8.8  2006 7.9  2007 8.2  2008 8.3
+           2009 8.1  2010 8.0  2011 8.2  2012 9.1  2013 10.7
+           2014 11.4 2015 12.5 2016 12.8 2017 13.3 2018 14.4
+           2019 15.7 2020 17.0 2021 20.1
+      -->
+      <polyline class="chart-line" points="
+        60,222
+        98.8,224.4
+        137.6,235.2
+        176.5,231.6
+        215.3,230.4
+        254.1,232.8
+        292.9,234
+        331.8,231.6
+        370.6,220.8
+        409.4,201.6
+        448.2,193.2
+        487.1,180
+        525.9,176.4
+        564.7,170.4
+        603.5,157.2
+        642.4,141.6
+        681.2,126
+        720,88.8
+      "></polyline>
+
+      <!-- inflection dot -->
+      <circle class="chart-inflection" cx="331.8" cy="231.6" r="5"></circle>
+      <!-- endpoint dots -->
+      <circle class="chart-dot" cx="60" cy="222" r="3.5"></circle>
+      <circle class="chart-dot" cx="720" cy="88.8" r="3.5"></circle>
+
+      <!-- endpoint labels -->
+      <text class="chart-anno" x="60" y="208" text-anchor="start">9.0%</text>
+      <text class="chart-anno-mute" x="60" y="350" text-anchor="middle">2004</text>
+      <text class="chart-anno" x="720" y="76" text-anchor="end">20.1%</text>
+      <text class="chart-anno-mute" x="720" y="350" text-anchor="middle">2021</text>
+    </svg>
+    <figcaption class="text-xs text-mute mt-3 text-center">
+      Past-year major depressive episode, U.S. adolescents ages 12–17. Source: SAMHSA National Survey on Drug Use and Health (NSDUH), 2004–2021. NSDUH was redesigned in 2020; pre- and post-2020 figures are not strictly comparable, but the 2011 inflection is robust across surveys and across countries.
+    </figcaption>
+  </figure>
+</section>
+
+<!-- the cross-country replication -->
+<section class="max-w-5xl mx-auto px-6 py-16 rule">
+  <h2 class="text-3xl sm:text-4xl mb-8">It is not only the United States.</h2>
+  <p class="lede max-w-measure mb-6">
+    The same inflection — same direction, same timing, same magnitude — appears in the U.K., Canada, Australia, New Zealand, and the Nordic countries. Every English-speaking democracy that adopted smartphone-based adolescence in the same window saw teenage mental health turn at the same point.
+  </p>
+  <p class="lede max-w-measure text-mute">
+    Six countries do not change in lockstep by accident. The simplest hypothesis that fits the data is that something common to all of them changed in those years. There is one obvious candidate.
+  </p>
+</section>
+
+<!-- correlation is not enough -->
+<section class="max-w-5xl mx-auto px-6 py-16 rule">
+  <h2 class="text-3xl sm:text-4xl mb-2">
+    <span class="struck">A correlation.</span>
+  </h2>
+  <h2 class="text-3xl sm:text-4xl mb-10">A causal claim.</h2>
+
+  <p class="lede max-w-measure mb-8">
+    Many things rose in the 2010s. Smartphone adoption, algorithmic feeds, sleep loss, helicopter parenting, political polarization, climate anxiety. A worldview-shifting chart is not the same as proof.
+  </p>
+
+  <p class="lede max-w-measure mb-8">
+    The strongest causal evidence in this literature is narrower and quieter than the chart above:
+  </p>
+
+  <ul class="space-y-6 max-w-measure">
+    <li class="flex gap-4">
+      <span class="num text-mute text-sm mt-1 shrink-0">01</span>
+      <span><strong class="font-medium">Allcott, Braghieri, Eichmeyer, and Gentzkow (2020).</strong> Randomly paid 2,743 U.S. adults to deactivate Facebook for four weeks. Measured improvements in subjective well-being. A real experiment, not a correlation.</span>
+    </li>
+    <li class="flex gap-4">
+      <span class="num text-mute text-sm mt-1 shrink-0">02</span>
+      <span><strong class="font-medium">Haugen (2021), the Facebook Files.</strong> Meta's own internal research, leaked: Instagram knew it made body image worse for one in three teen girls. Internal causal language. Internal data.</span>
+    </li>
+    <li class="flex gap-4">
+      <span class="num text-mute text-sm mt-1 shrink-0">03</span>
+      <span><strong class="font-medium">Twenge & Haidt (2024).</strong> Cross-country replication: the same generational inflection across the English-speaking world plus the Nordics. Coordinated timing rules out most local explanations.</span>
+    </li>
+  </ul>
+</section>
+
+<!-- counterfactual / subconscious -->
+<section class="max-w-5xl mx-auto px-6 py-20 rule">
+  <h2 class="text-3xl sm:text-4xl mb-10">The question we cannot run.</h2>
+
+  <p class="lede max-w-measure mb-6">
+    What would the curve above look like if smartphone-based adolescence had not happened? If Instagram had shipped with the age gates Meta's own researchers recommended? If TikTok's recommender weighted differently? If schools had banned phones in <span class="num">2014</span>?
+  </p>
+
+  <p class="lede max-w-measure mb-6">
+    These are counterfactuals. You cannot randomize a generation. The human-subjects experiment that would answer the question is the one we are not allowed to run — and the one already running, on every adolescent alive, is the one we cannot undo.
+  </p>
+
+  <p class="lede max-w-measure mb-10">
+    <strong class="font-medium">Subconscious builds AI agents that simulate populations under conditions that did not occur.</strong> Counterfactual evidence at the scale of real markets. The same machinery that lets a brand test a campaign before launch lets a policymaker test an intervention before passing it. We are applying it to the questions human-subjects research will never run.
+  </p>
+
+  <a href="https://subconscious.ai" class="inline-block text-sm tracking-widest uppercase font-medium border-b-2 border-ink pb-1 hover:text-accent hover:border-accent transition-colors">
+    See the research →
+  </a>
+</section>
+
+<!-- sources -->
+<footer class="max-w-5xl mx-auto px-6 py-16 rule">
+  <h2 class="text-sm uppercase tracking-widest text-mute mb-6">Sources</h2>
+  <ol class="text-sm space-y-4 max-w-measure num">
+    <li>
+      <span class="text-mute">[1]</span> Substance Abuse and Mental Health Services Administration (SAMHSA). <em>National Survey on Drug Use and Health (NSDUH)</em>, 2004–2021. Past-year major depressive episode, ages 12–17. <a href="https://www.samhsa.gov/data/release/2021-national-survey-drug-use-and-health-nsduh-releases" class="underline hover:text-accent">samhsa.gov</a>
+    </li>
+    <li>
+      <span class="text-mute">[2]</span> Haidt, J. (2024). <em>The Anxious Generation: How the Great Rewiring of Childhood Is Causing an Epidemic of Mental Illness.</em> Penguin Press.
+    </li>
+    <li>
+      <span class="text-mute">[3]</span> Twenge, J. M., &amp; Haidt, J. (2024). Worldwide increases in adolescent loneliness. <em>Journal of Adolescence</em>, 96(6).
+    </li>
+    <li>
+      <span class="text-mute">[4]</span> Allcott, H., Braghieri, L., Eichmeyer, S., &amp; Gentzkow, M. (2020). The welfare effects of social media. <em>American Economic Review</em>, 110(3), 629–676. <a href="https://doi.org/10.1257/aer.20190658" class="underline hover:text-accent">doi:10.1257/aer.20190658</a>
+    </li>
+    <li>
+      <span class="text-mute">[5]</span> Wells, G., Horwitz, J., &amp; Seetharaman, D. (2021). Facebook knows Instagram is toxic for teen girls, company documents show. <em>The Wall Street Journal</em>, September 14, 2021.
+    </li>
+  </ol>
+
+  <div class="hair mt-16 pt-8 flex flex-col sm:flex-row justify-between gap-4 text-xs text-mute">
+    <span>suffering.social — a research artifact by <a href="https://subconscious.ai" class="underline hover:text-ink">Subconscious</a></span>
+    <span>The earlier calculator is preserved at <a href="/v5" class="underline hover:text-ink">/v5</a>.</span>
+  </div>
+</footer>
+
+</body>
+</html>
