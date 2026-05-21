@@ -145,6 +145,93 @@
   .lede { font-size: clamp(1.125rem, 2.4vw, 1.375rem); line-height: 1.5; }
   p { max-width: 38rem; }
   h2 { font-family: 'Fraunces', Georgia, serif; font-weight: 400; letter-spacing: -0.015em; }
+
+  /* Calculator */
+  .calc-total {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 300;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    font-size: clamp(4rem, 10vw, 8rem);
+    color: #0a0a0a;
+    transition: color 220ms ease;
+  }
+  .calc-total.is-moved { color: #c8102e; }
+  .calc-stream-value { font-variant-numeric: tabular-nums; font-size: 1.125rem; font-weight: 500; color: #0a0a0a; }
+  .calc-stream-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #6b6b6b; }
+
+  .calc-dag { width: 100%; max-width: 760px; margin: 0 auto; display: block; }
+  .calc-dag .edge { stroke: #1a1a1a; stroke-width: 1; opacity: 0.35; transition: stroke-width 180ms ease, stroke 180ms ease, opacity 180ms ease; }
+  .calc-dag .edge.is-active { stroke: #c8102e; opacity: 1; }
+  .calc-dag .node { fill: #fafaf7; stroke: #0a0a0a; stroke-width: 1.25; }
+  .calc-dag .node.out { fill: #0a0a0a; stroke: #0a0a0a; }
+  .calc-dag .node-label { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; fill: #6b6b6b; }
+  .calc-dag .node-label.out { fill: #0a0a0a; }
+
+  /* Slider rail: hairline, signal-red active track */
+  .calc-slider { width: 100%; appearance: none; -webkit-appearance: none; background: transparent; height: 24px; margin: 0; padding: 0; }
+  .calc-slider:focus { outline: none; }
+  .calc-slider::-webkit-slider-runnable-track {
+    height: 1px;
+    background: #1a1a1a;
+    border: 0;
+  }
+  .calc-slider.is-moved::-webkit-slider-runnable-track { background: #c8102e; }
+  .calc-slider::-moz-range-track { height: 1px; background: #1a1a1a; border: 0; }
+  .calc-slider.is-moved::-moz-range-track { background: #c8102e; }
+  .calc-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 0;
+    background: #fafaf7;
+    border: 1.5px solid #0a0a0a;
+    margin-top: -7px;
+    cursor: pointer;
+  }
+  .calc-slider:focus-visible::-webkit-slider-thumb { border-color: #c8102e; }
+  .calc-slider::-moz-range-thumb {
+    width: 14px; height: 14px;
+    border-radius: 0;
+    background: #fafaf7;
+    border: 1.5px solid #0a0a0a;
+    cursor: pointer;
+  }
+
+  .calc-row { display: grid; grid-template-columns: 1fr auto; gap: 0.25rem 1rem; align-items: baseline; }
+  .calc-row .calc-label { font-size: 0.9375rem; color: #0a0a0a; line-height: 1.35; }
+  .calc-row .calc-val { font-variant-numeric: tabular-nums; font-size: 0.9375rem; font-weight: 500; color: #0a0a0a; white-space: nowrap; }
+  .calc-row details { grid-column: 1 / -1; margin-top: 2px; }
+  .calc-row details > summary { font-size: 11px; color: #6b6b6b; cursor: pointer; list-style: none; }
+  .calc-row details > summary::-webkit-details-marker { display: none; }
+  .calc-row details > summary:hover { color: #0a0a0a; }
+  .calc-row details[open] > summary { color: #0a0a0a; }
+  .calc-row details .src { font-size: 11px; color: #6b6b6b; margin-top: 4px; line-height: 1.5; }
+
+  .calc-reset {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #6b6b6b;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid #1a1a1a;
+    padding: 6px 0;
+    cursor: pointer;
+    border-radius: 0;
+  }
+  .calc-reset:hover { color: #0a0a0a; border-bottom-color: #c8102e; }
+  .calc-reset:disabled { color: #6b6b6b; opacity: 0.4; cursor: default; }
+
+  .calc-fixed { font-size: 11px; color: #6b6b6b; line-height: 1.6; }
+  .calc-fixed strong { color: #0a0a0a; font-weight: 500; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .calc-total { transition: none; }
+    .calc-dag .edge { transition: none; }
+  }
 </style>
 </head>
 
@@ -312,6 +399,136 @@
   </a>
 </section>
 
+<!-- the calculator: move the assumptions yourself -->
+<section id="calculator" class="max-w-5xl mx-auto px-6 py-20 rule">
+  <h2 class="text-3xl sm:text-4xl mb-6">Move the assumptions yourself.</h2>
+  <p class="lede max-w-measure mb-10">
+    Every cost estimate in this debate hides five judgment calls. Drag the sliders. Watch the number change. You're now the one making the claim.
+  </p>
+
+  <!-- DAG -->
+  <figure class="my-6">
+    <svg class="calc-dag" viewBox="0 0 760 320" role="img" aria-labelledby="calc-dag-title">
+      <title id="calc-dag-title">Causal diagram: five assumptions flow into three cost streams and one total.</title>
+
+      <!-- edges: input nodes (x=120) -> stream nodes (x=420) -> total (x=680) -->
+      <!-- inputs at y: attribution 50, vsl 110, depression 170, yld 230, duration 290 -->
+      <!-- streams at y: mortality 80, mental 170, economic 260 -->
+      <!-- total at y: 170 -->
+
+      <line data-edge="attribution-mortality" class="edge" x1="124" y1="50" x2="416" y2="80"></line>
+      <line data-edge="vsl-mortality"         class="edge" x1="124" y1="110" x2="416" y2="80"></line>
+
+      <line data-edge="vsl-mental"        class="edge" x1="124" y1="110" x2="416" y2="170"></line>
+      <line data-edge="depression-mental" class="edge" x1="124" y1="170" x2="416" y2="170"></line>
+      <line data-edge="yld-mental"        class="edge" x1="124" y1="230" x2="416" y2="170"></line>
+
+      <line data-edge="depression-economic" class="edge" x1="124" y1="170" x2="416" y2="260"></line>
+      <line data-edge="duration-economic"   class="edge" x1="124" y1="290" x2="416" y2="260"></line>
+
+      <line data-edge="stream-mortality" class="edge" x1="424" y1="80"  x2="672" y2="170"></line>
+      <line data-edge="stream-mental"    class="edge" x1="424" y1="170" x2="672" y2="170"></line>
+      <line data-edge="stream-economic"  class="edge" x1="424" y1="260" x2="672" y2="170"></line>
+
+      <!-- input nodes -->
+      <g>
+        <circle class="node" cx="120" cy="50"  r="5"></circle><text class="node-label" x="110" y="38" text-anchor="end">Attribution</text>
+        <circle class="node" cx="120" cy="110" r="5"></circle><text class="node-label" x="110" y="114" text-anchor="end">VSL</text>
+        <circle class="node" cx="120" cy="170" r="5"></circle><text class="node-label" x="110" y="174" text-anchor="end">Depression</text>
+        <circle class="node" cx="120" cy="230" r="5"></circle><text class="node-label" x="110" y="234" text-anchor="end">Years lost</text>
+        <circle class="node" cx="120" cy="290" r="5"></circle><text class="node-label" x="110" y="294" text-anchor="end">Duration</text>
+      </g>
+
+      <!-- stream nodes -->
+      <g>
+        <circle class="node" cx="420" cy="80"  r="5"></circle><text class="node-label" x="432" y="84" text-anchor="start">Mortality</text>
+        <circle class="node" cx="420" cy="170" r="5"></circle><text class="node-label" x="432" y="174" text-anchor="start">Mental health</text>
+        <circle class="node" cx="420" cy="260" r="5"></circle><text class="node-label" x="432" y="264" text-anchor="start">Economic</text>
+      </g>
+
+      <!-- total -->
+      <circle class="node out" cx="680" cy="170" r="6"></circle>
+      <text class="node-label out" x="680" y="152" text-anchor="middle">Total cost</text>
+    </svg>
+  </figure>
+
+  <!-- total -->
+  <div class="mt-6 mb-10">
+    <div class="calc-stream-label mb-2">Annual cost to the United States</div>
+    <div id="calc-total" class="calc-total num">$0</div>
+    <div class="text-sm text-mute mt-3 max-w-measure">
+      A point estimate from your assumptions. Not a forecast. Not a verdict. A way to see which judgment calls do the work.
+    </div>
+  </div>
+
+  <!-- stream subtotals -->
+  <div class="grid grid-cols-3 gap-4 sm:gap-8 mb-12 max-w-3xl">
+    <div>
+      <div class="calc-stream-label mb-1">Mortality</div>
+      <div id="stream-mortality" class="calc-stream-value">$0</div>
+    </div>
+    <div>
+      <div class="calc-stream-label mb-1">Mental health</div>
+      <div id="stream-mental" class="calc-stream-value">$0</div>
+    </div>
+    <div>
+      <div class="calc-stream-label mb-1">Economic</div>
+      <div id="stream-economic" class="calc-stream-value">$0</div>
+    </div>
+  </div>
+
+  <!-- sliders -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 max-w-3xl">
+    <div class="calc-row" data-param="attribution">
+      <div class="calc-label">How much of the rise do we blame on social media?</div>
+      <div class="calc-val"><span id="val-attribution">18</span>%</div>
+      <input type="range" class="calc-slider" id="sl-attribution" min="0" max="50" step="1" value="18" aria-label="Attribution to social media, percent">
+      <details><summary>Source</summary><div class="src">Twenge &amp; Haidt 2024 argue the share is large. Skeptics like Odgers and Orben argue under 10%. The debate is the point.</div></details>
+    </div>
+
+    <div class="calc-row" data-param="depression">
+      <div class="calc-label">How many U.S. teens and young adults have depression today?</div>
+      <div class="calc-val"><span id="val-depression">5.0</span>M</div>
+      <input type="range" class="calc-slider" id="sl-depression" min="2" max="10" step="0.1" value="5" aria-label="People with depression, millions">
+      <details><summary>Source</summary><div class="src">SAMHSA NSDUH 2021 implies roughly 5M. Survey-based and clinical estimates diverge by a factor of two.</div></details>
+    </div>
+
+    <div class="calc-row" data-param="vsl">
+      <div class="calc-label">What's a statistical life worth?</div>
+      <div class="calc-val">$<span id="val-vsl">13.7</span>M</div>
+      <input type="range" class="calc-slider" id="sl-vsl" min="5" max="20" step="0.1" value="13.7" aria-label="Value of a statistical life, millions of dollars">
+      <details><summary>Source</summary><div class="src">DOT 2024 guidance sets VSL at $13.7M. EPA uses roughly $11M. Academic estimates span $5M to $20M.</div></details>
+    </div>
+
+    <div class="calc-row" data-param="yld">
+      <div class="calc-label">How many years does it last per person?</div>
+      <div class="calc-val"><span id="val-yld">6</span> yrs</div>
+      <input type="range" class="calc-slider" id="sl-yld" min="1" max="15" step="0.5" value="6" aria-label="Years lived with disability">
+      <details><summary>Source</summary><div class="src">Onset-to-recovery in clinical samples runs shorter. Longitudinal cohorts run longer. Both are real.</div></details>
+    </div>
+
+    <div class="calc-row md:col-span-2 md:max-w-md" data-param="duration">
+      <div class="calc-label">How long do treatment costs run?</div>
+      <div class="calc-val"><span id="val-duration">4.5</span> yrs</div>
+      <input type="range" class="calc-slider" id="sl-duration" min="1" max="10" step="0.5" value="4.5" aria-label="Duration of economic costs in years">
+      <details><summary>Source</summary><div class="src">Claims-data studies suggest a few years of elevated cost. The identification problem is the same as on the mortality side.</div></details>
+    </div>
+  </div>
+
+  <div class="mt-10 flex items-center gap-6">
+    <button id="calc-reset" class="calc-reset" type="button">Reset to defaults</button>
+    <span class="text-xs text-mute">Default total. About $2.5T.</span>
+  </div>
+
+  <p class="calc-fixed mt-10 max-w-measure">
+    <strong>Fixed assumptions.</strong> Annual U.S. suicides 110,000 (CDC WONDER, all ages, recent five-year mean). Quality-of-life loss per depression-year 35% (Salomon et al. 2012, GBD disability weights). Healthcare cost $7,000 per person per year and productivity loss $6,000 per person per year (Greenberg et al. 2021, economic burden of major depressive disorder in the U.S.). These are accounting parameters, not causal claims.
+  </p>
+
+  <p class="lede max-w-measure mt-12">
+    These are the numbers the world is arguing about. Subconscious builds the agents that let you stress-test them. <a href="https://subconscious.ai" class="underline hover:text-accent">subconscious.ai</a>
+  </p>
+</section>
+
 <!-- sources -->
 <footer class="max-w-5xl mx-auto px-6 py-16 rule">
   <h2 class="text-sm uppercase tracking-widest text-mute mb-6">Sources</h2>
@@ -338,6 +555,181 @@
     <span>The earlier calculator is preserved at <a href="/v5" class="underline hover:text-ink">/v5</a>.</span>
   </div>
 </footer>
+
+<script>
+(function () {
+  const defaults = {
+    attribution: 18,
+    depression: 5,
+    vsl: 13.7,
+    yld: 6,
+    duration: 4.5,
+  };
+  const fixed = {
+    suicides: 110000,
+    qol: 35,
+    healthcare: 7000,
+    productivity: 6000,
+  };
+
+  const params = ['attribution', 'depression', 'vsl', 'yld', 'duration'];
+  const slEls = {}, valEls = {};
+  params.forEach(p => {
+    slEls[p] = document.getElementById('sl-' + p);
+    valEls[p] = document.getElementById('val-' + p);
+  });
+
+  const totalEl = document.getElementById('calc-total');
+  const streamEls = {
+    mortality: document.getElementById('stream-mortality'),
+    mental: document.getElementById('stream-mental'),
+    economic: document.getElementById('stream-economic'),
+  };
+  const resetBtn = document.getElementById('calc-reset');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // edge mapping: which input param drives which edge
+  const edgeMap = {
+    attribution: ['attribution-mortality', 'stream-mortality'],
+    vsl:         ['vsl-mortality', 'vsl-mental', 'stream-mortality', 'stream-mental'],
+    depression:  ['depression-mental', 'depression-economic', 'stream-mental', 'stream-economic'],
+    yld:         ['yld-mental', 'stream-mental'],
+    duration:    ['duration-economic', 'stream-economic'],
+  };
+  const edgeEls = {};
+  document.querySelectorAll('.calc-dag .edge').forEach(el => {
+    edgeEls[el.getAttribute('data-edge')] = el;
+  });
+
+  function calculateTotal(s) {
+    const vslDollars = s.vsl * 1e6;
+    const depressionPeople = s.depression * 1e6;
+    const mortality = fixed.suicides * (s.attribution / 100) * vslDollars;
+    const annualLifeValue = vslDollars / 75;
+    const mental = depressionPeople * s.yld * (fixed.qol / 100) * annualLifeValue;
+    const economic = depressionPeople * (fixed.healthcare + fixed.productivity) * s.duration;
+    return { mortality, mental, economic, total: mortality + mental + economic };
+  }
+
+  function formatMoney(n) {
+    if (!isFinite(n)) return '$0';
+    const abs = Math.abs(n);
+    if (abs >= 1e12) return '$' + (n / 1e12).toFixed(2).replace(/\.?0+$/, '') + 'T';
+    if (abs >= 1e9)  return '$' + (n / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
+    if (abs >= 1e6)  return '$' + (n / 1e6).toFixed(0) + 'M';
+    return '$' + Math.round(n).toLocaleString();
+  }
+
+  function formatTotal(n) {
+    if (n >= 1e12) return '$' + (n / 1e12).toFixed(2) + 'T';
+    if (n >= 1e9)  return '$' + (n / 1e9).toFixed(0) + 'B';
+    return formatMoney(n);
+  }
+
+  function readState() {
+    const s = {};
+    params.forEach(p => { s[p] = parseFloat(slEls[p].value); });
+    return s;
+  }
+
+  function updateSliderFill(p) {
+    const el = slEls[p];
+    const moved = Math.abs(parseFloat(el.value) - defaults[p]) > 1e-6;
+    el.classList.toggle('is-moved', moved);
+  }
+
+  function updateValueLabels(s) {
+    valEls.attribution.textContent = Math.round(s.attribution);
+    valEls.depression.textContent = s.depression.toFixed(1);
+    valEls.vsl.textContent = s.vsl.toFixed(1);
+    valEls.yld.textContent = (s.yld % 1 === 0) ? s.yld.toFixed(0) : s.yld.toFixed(1);
+    valEls.duration.textContent = (s.duration % 1 === 0) ? s.duration.toFixed(0) : s.duration.toFixed(1);
+  }
+
+  function updateEdges(s) {
+    // distance from default, normalized 0..1
+    const distance = {};
+    params.forEach(p => {
+      const el = slEls[p];
+      const min = parseFloat(el.min), max = parseFloat(el.max);
+      const span = Math.max(defaults[p] - min, max - defaults[p]);
+      distance[p] = span > 0 ? Math.min(1, Math.abs(s[p] - defaults[p]) / span) : 0;
+    });
+    // each edge: figure out which param(s) drive it, take max distance
+    const edgeWeight = {};
+    Object.keys(edgeMap).forEach(p => {
+      edgeMap[p].forEach(edgeId => {
+        edgeWeight[edgeId] = Math.max(edgeWeight[edgeId] || 0, distance[p]);
+      });
+    });
+    Object.keys(edgeEls).forEach(id => {
+      const w = edgeWeight[id] || 0;
+      const el = edgeEls[id];
+      const width = 1 + w * 1.5; // 1px -> 2.5px
+      el.style.strokeWidth = width.toFixed(2);
+      if (w > 0.02) el.classList.add('is-active');
+      else el.classList.remove('is-active');
+    });
+  }
+
+  function isAtDefaults(s) {
+    return params.every(p => Math.abs(s[p] - defaults[p]) < 1e-6);
+  }
+
+  // total animation state
+  let animFrom = null, animTo = null, animStart = 0, animDur = 600, animRaf = 0;
+  function setTotalDisplay(value) { totalEl.textContent = formatTotal(value); }
+  function animateTotal(to) {
+    cancelAnimationFrame(animRaf);
+    if (reducedMotion || animFrom === null) {
+      animFrom = to;
+      setTotalDisplay(to);
+      return;
+    }
+    const from = animFrom;
+    animTo = to;
+    animStart = performance.now();
+    const step = (now) => {
+      const t = Math.min(1, (now - animStart) / animDur);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const v = from + (to - from) * eased;
+      setTotalDisplay(v);
+      if (t < 1) { animRaf = requestAnimationFrame(step); }
+      else { animFrom = to; }
+    };
+    animRaf = requestAnimationFrame(step);
+  }
+
+  function render() {
+    const s = readState();
+    params.forEach(updateSliderFill);
+    updateValueLabels(s);
+    const r = calculateTotal(s);
+    streamEls.mortality.textContent = formatMoney(r.mortality);
+    streamEls.mental.textContent = formatMoney(r.mental);
+    streamEls.economic.textContent = formatMoney(r.economic);
+    animateTotal(r.total);
+    updateEdges(s);
+    const atDefault = isAtDefaults(s);
+    totalEl.classList.toggle('is-moved', !atDefault);
+    resetBtn.disabled = atDefault;
+  }
+
+  params.forEach(p => {
+    slEls[p].addEventListener('input', render);
+  });
+  resetBtn.addEventListener('click', () => {
+    params.forEach(p => { slEls[p].value = defaults[p]; });
+    render();
+  });
+
+  // initial paint: set animFrom directly to default total so first paint snaps
+  const initial = calculateTotal(readState());
+  animFrom = initial.total;
+  setTotalDisplay(initial.total);
+  render();
+})();
+</script>
 
 </body>
 </html>
