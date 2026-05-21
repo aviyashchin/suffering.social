@@ -33,28 +33,48 @@
     <!-- Additional Meta Tags -->
     <meta name="author" content="Suffering.Social Research Team">
     <meta name="keywords" content="social media cost, mental health economics, digital wellness, research calculator, depression statistics, social impact">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="index, follow, max-image-preview:large">
     <link rel="canonical" href="https://suffering.social/">
-    
-    <!-- Schema.org Structured Data -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/favicon.svg">
+
+    <!-- Schema.org Structured Data: Organization + WebSite + WebApplication -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Social Media Cost Calculator",
-      "description": "Research-based calculator estimating the economic and human costs of social media's impact on mental health",
-      "url": "https://suffering.social/",
-      "applicationCategory": "HealthApplication",
-      "operatingSystem": "Web Browser",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "creator": {
-        "@type": "Organization",
-        "name": "Suffering.Social Research Team"
-      }
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://subconscious.ai/#organization",
+          "name": "Subconscious.ai",
+          "url": "https://subconscious.ai",
+          "description": "Behavioral simulation platform using causal AI and digital twins."
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://suffering.social/#website",
+          "name": "suffering.social",
+          "url": "https://suffering.social",
+          "description": "A research artifact on the cost of social media on adolescent mental health.",
+          "publisher": { "@id": "https://subconscious.ai/#organization" }
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "https://suffering.social/#calculator",
+          "name": "Social Media Cost Calculator",
+          "description": "Research-based calculator estimating the economic and human costs of social media's impact on mental health. Based on peer-reviewed studies.",
+          "url": "https://suffering.social/",
+          "applicationCategory": "HealthApplication",
+          "operatingSystem": "Web Browser",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "publisher": { "@id": "https://subconscious.ai/#organization" },
+          "isPartOf": { "@id": "https://suffering.social/#website" }
+        }
+      ]
     }
     </script>
     

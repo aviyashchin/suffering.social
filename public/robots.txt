@@ -1,0 +1,32 @@
+# suffering.social
+# AI crawler list mirrored from @subconscious-ai/kit (causalactions reference, 2026-05).
+
+User-agent: *
+Allow: /
+
+# Explicitly welcome AI crawlers (AIEO)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://suffering.social/sitemap.xml
