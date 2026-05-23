@@ -552,8 +552,9 @@
     </div>
   </div>
 
-  <div class="mt-10 flex items-center gap-6">
+  <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
     <button id="calc-reset" class="calc-reset" type="button">Reset to defaults</button>
+    <button id="calc-share" class="calc-reset" type="button" aria-live="polite">Copy link to this scenario</button>
     <span class="text-xs text-mute">Default total. About $2.5T.</span>
   </div>
 
@@ -638,7 +639,44 @@
     economic: document.getElementById('stream-economic'),
   };
   const resetBtn = document.getElementById('calc-reset');
+  const shareBtn = document.getElementById('calc-share');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // URL state: short keys keep the share link compact and pasteable.
+  // a=attribution d=depression v=vsl y=yld t=duration
+  const urlKey = { attribution: 'a', depression: 'd', vsl: 'v', yld: 'y', duration: 't' };
+
+  function clamp(p, n) {
+    const el = slEls[p];
+    const min = parseFloat(el.min), max = parseFloat(el.max);
+    if (!isFinite(n)) return defaults[p];
+    return Math.min(max, Math.max(min, n));
+  }
+
+  function readURL() {
+    const q = new URLSearchParams(window.location.search);
+    params.forEach(p => {
+      const raw = q.get(urlKey[p]);
+      if (raw === null) return;
+      const v = parseFloat(raw);
+      if (!isFinite(v)) return;
+      slEls[p].value = clamp(p, v);
+    });
+  }
+
+  let urlRaf = 0;
+  function writeURL(s) {
+    cancelAnimationFrame(urlRaf);
+    urlRaf = requestAnimationFrame(() => {
+      const q = new URLSearchParams();
+      params.forEach(p => {
+        if (Math.abs(s[p] - defaults[p]) > 1e-6) q.set(urlKey[p], s[p]);
+      });
+      const qs = q.toString();
+      const newUrl = window.location.pathname + (qs ? '?' + qs : '') + window.location.hash;
+      window.history.replaceState(null, '', newUrl);
+    });
+  }
 
   // edge mapping: which input param drives which edge
   const edgeMap = {
@@ -765,6 +803,7 @@
     const atDefault = isAtDefaults(s);
     totalEl.classList.toggle('is-moved', !atDefault);
     resetBtn.disabled = atDefault;
+    writeURL(s);
   }
 
   params.forEach(p => {
@@ -774,6 +813,37 @@
     params.forEach(p => { slEls[p].value = defaults[p]; });
     render();
   });
+
+  // Share: copy current URL. Text swap, no overlay.
+  const shareLabel = shareBtn.textContent;
+  let shareTimer = 0;
+  shareBtn.addEventListener('click', async () => {
+    const url = window.location.href;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(url);
+      } else {
+        // Fallback for older browsers and iOS Safari without clipboard API.
+        const ta = document.createElement('textarea');
+        ta.value = url;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      shareBtn.textContent = 'Copied';
+    } catch (_e) {
+      shareBtn.textContent = 'Copy failed';
+    }
+    clearTimeout(shareTimer);
+    shareTimer = setTimeout(() => { shareBtn.textContent = shareLabel; }, 1500);
+  });
+
+  // Restore slider state from URL before first render so the initial paint
+  // already reflects the shared scenario.
+  readURL();
 
   // initial paint: set animFrom directly to default total so first paint snaps
   const initial = calculateTotal(readState());
