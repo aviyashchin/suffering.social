@@ -160,6 +160,9 @@
   .calc-total.is-moved { color: #c8102e; }
   .calc-stream-value { font-variant-numeric: tabular-nums; font-size: 1.125rem; font-weight: 500; color: #0a0a0a; }
   .calc-stream-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #6b6b6b; }
+  .calc-stream-math { font-size: 12px; line-height: 1.5; color: #6b6b6b; }
+  .calc-stream-math .var { color: #0a0a0a; font-weight: 500; }
+  .calc-stream-math .op { color: #6b6b6b; padding: 0 0.25em; }
 
   .calc-dag { width: 100%; max-width: 760px; margin: 0 auto; display: block; }
   .calc-dag .edge { stroke: #1a1a1a; stroke-width: 1; opacity: 0.35; transition: stroke-width 180ms ease, stroke 180ms ease, opacity 180ms ease; }
@@ -498,21 +501,30 @@
     </div>
   </div>
 
-  <!-- stream subtotals -->
-  <div class="grid grid-cols-3 gap-4 sm:gap-8 mb-12 max-w-3xl">
+  <!-- stream subtotals: each shows the live multiplication that built it,
+       so the reader can see how a slider's value flows into the dollar
+       figure and finally into the total. -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-y-6 sm:gap-x-8 mb-4 max-w-3xl">
     <div>
       <div class="calc-stream-label mb-1">Mortality</div>
       <div id="stream-mortality" class="calc-stream-value">$0</div>
+      <div id="math-mortality" class="calc-stream-math num mt-2"></div>
     </div>
     <div>
       <div class="calc-stream-label mb-1">Mental health</div>
       <div id="stream-mental" class="calc-stream-value">$0</div>
+      <div id="math-mental" class="calc-stream-math num mt-2"></div>
     </div>
     <div>
       <div class="calc-stream-label mb-1">Economic</div>
       <div id="stream-economic" class="calc-stream-value">$0</div>
+      <div id="math-economic" class="calc-stream-math num mt-2"></div>
     </div>
   </div>
+
+  <p class="text-xs text-mute mb-12 max-w-measure">
+    Read each row as a sentence: number of people, times what fraction is at stake, times what each unit costs. Add the three together for the total above.
+  </p>
 
   <!-- sliders -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 max-w-3xl">
@@ -638,6 +650,15 @@
     mental: document.getElementById('stream-mental'),
     economic: document.getElementById('stream-economic'),
   };
+  const mathEls = {
+    mortality: document.getElementById('math-mortality'),
+    mental: document.getElementById('math-mental'),
+    economic: document.getElementById('math-economic'),
+  };
+
+  function v(value, suffix) { return '<span class="var">' + value + (suffix || '') + '</span>'; }
+  const X = '<span class="op">×</span>';
+  function trim(n) { return (n % 1 === 0) ? n.toFixed(0) : n.toFixed(1); }
   const resetBtn = document.getElementById('calc-reset');
   const shareBtn = document.getElementById('calc-share');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -798,6 +819,18 @@
     streamEls.mortality.textContent = formatMoney(r.mortality);
     streamEls.mental.textContent = formatMoney(r.mental);
     streamEls.economic.textContent = formatMoney(r.economic);
+
+    // Reactive multiplication strings. Each is the exact formula in
+    // calculateTotal(), spelled out in human-readable units so the
+    // reader can see how a slider's value flows into a dollar figure.
+    const annualLifeK = Math.round((s.vsl * 1e6 / 75) / 1000);  // $K per life-year
+    mathEls.mortality.innerHTML =
+      v('110K') + ' suicides' + X + v(Math.round(s.attribution), '%') + X + v('$' + trim(s.vsl) + 'M') + ' per life';
+    mathEls.mental.innerHTML =
+      v(trim(s.depression) + 'M') + ' people' + X + v(trim(s.yld), ' yrs') + X + v('35%') + ' loss' + X + v('$' + annualLifeK + 'K') + ' per year';
+    mathEls.economic.innerHTML =
+      v(trim(s.depression) + 'M') + ' people' + X + v('$13K') + ' per year' + X + v(trim(s.duration), ' yrs');
+
     animateTotal(r.total);
     updateEdges(s);
     const atDefault = isAtDefaults(s);
