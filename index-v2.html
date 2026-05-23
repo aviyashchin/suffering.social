@@ -165,12 +165,38 @@
   .calc-stream-math .op { color: #6b6b6b; padding: 0 0.25em; }
 
   .calc-dag { width: 100%; max-width: 760px; margin: 0 auto; display: block; }
-  .calc-dag .edge { stroke: #1a1a1a; stroke-width: 1; opacity: 0.35; transition: stroke-width 180ms ease, stroke 180ms ease, opacity 180ms ease; }
-  .calc-dag .edge.is-active { stroke: #c8102e; opacity: 1; }
-  .calc-dag .node { fill: #fafaf7; stroke: #0a0a0a; stroke-width: 1.25; }
+  /* Edges are structural, not proportional. Constant hairlines. The dollar
+     proportions are shown honestly in .stream-bar below, where addition
+     is the operation. Multiplicative inputs can't be Sankey'd without lying. */
+  .calc-dag .edge { stroke: #1a1a1a; stroke-width: 1; opacity: 0.35; }
+  .calc-dag .node { fill: #fafaf7; stroke: #0a0a0a; stroke-width: 1.25; transition: fill 180ms ease, stroke 180ms ease; }
+  .calc-dag .node.is-moved { fill: #c8102e; stroke: #c8102e; }
   .calc-dag .node.out { fill: #0a0a0a; stroke: #0a0a0a; }
   .calc-dag .node-label { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; fill: #6b6b6b; }
   .calc-dag .node-label.out { fill: #0a0a0a; }
+
+  /* Proportional stream bar: a true Sankey of the 3 streams summing to the
+     total. Width is the only encoding. Three shades of ink avoid any
+     decorative palette (signal red is reserved for the gap). */
+  .stream-bar-wrap { max-width: 100%; }
+  .stream-bar { display: flex; width: 100%; height: 10px; background: transparent; border: 1px solid #0a0a0a; overflow: hidden; }
+  .stream-seg { height: 100%; transition: flex-basis 360ms cubic-bezier(0.4, 0, 0.2, 1); min-width: 0; }
+  .stream-seg + .stream-seg { border-left: 1px solid #fafaf7; }
+  .stream-seg.mortality { background: #0a0a0a; }
+  .stream-seg.mental    { background: #6b6b6b; }
+  .stream-seg.economic  { background: #c5c5c0; }
+  .stream-bar-legend { display: flex; gap: 1.5rem 2rem; flex-wrap: wrap; font-size: 12px; color: #6b6b6b; }
+  .stream-bar-legend > div { display: flex; align-items: center; gap: 0.5rem; }
+  .stream-bar-legend .dot { width: 10px; height: 10px; border: 1px solid #0a0a0a; display: inline-block; }
+  .stream-bar-legend .dot.mortality { background: #0a0a0a; }
+  .stream-bar-legend .dot.mental    { background: #6b6b6b; }
+  .stream-bar-legend .dot.economic  { background: #c5c5c0; }
+  .stream-bar-legend .pct { color: #0a0a0a; font-weight: 500; font-variant-numeric: tabular-nums; margin-left: 0.4em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stream-seg { transition: none; }
+    .calc-dag .node { transition: none; }
+  }
 
   /* Slider rail: hairline, signal-red active track */
   .calc-slider { width: 100%; appearance: none; -webkit-appearance: none; background: transparent; height: 24px; margin: 0; padding: 0; }
@@ -233,7 +259,6 @@
 
   @media (prefers-reduced-motion: reduce) {
     .calc-total { transition: none; }
-    .calc-dag .edge { transition: none; }
   }
 </style>
 </head>
@@ -470,13 +495,13 @@
       <line data-edge="stream-mental"    class="edge" x1="424" y1="170" x2="672" y2="170"></line>
       <line data-edge="stream-economic"  class="edge" x1="424" y1="260" x2="672" y2="170"></line>
 
-      <!-- input nodes -->
+      <!-- input nodes (data-input drives the .is-moved red marker in JS) -->
       <g>
-        <circle class="node" cx="120" cy="50"  r="5"></circle><text class="node-label" x="110" y="38" text-anchor="end">Attribution</text>
-        <circle class="node" cx="120" cy="110" r="5"></circle><text class="node-label" x="110" y="114" text-anchor="end">VSL</text>
-        <circle class="node" cx="120" cy="170" r="5"></circle><text class="node-label" x="110" y="174" text-anchor="end">Depression</text>
-        <circle class="node" cx="120" cy="230" r="5"></circle><text class="node-label" x="110" y="234" text-anchor="end">Years lost</text>
-        <circle class="node" cx="120" cy="290" r="5"></circle><text class="node-label" x="110" y="294" text-anchor="end">Duration</text>
+        <circle class="node" data-input="attribution" cx="120" cy="50"  r="5"></circle><text class="node-label" x="110" y="38" text-anchor="end">Attribution</text>
+        <circle class="node" data-input="vsl"         cx="120" cy="110" r="5"></circle><text class="node-label" x="110" y="114" text-anchor="end">VSL</text>
+        <circle class="node" data-input="depression"  cx="120" cy="170" r="5"></circle><text class="node-label" x="110" y="174" text-anchor="end">Depression</text>
+        <circle class="node" data-input="yld"         cx="120" cy="230" r="5"></circle><text class="node-label" x="110" y="234" text-anchor="end">Years lost</text>
+        <circle class="node" data-input="duration"    cx="120" cy="290" r="5"></circle><text class="node-label" x="110" y="294" text-anchor="end">Duration</text>
       </g>
 
       <!-- stream nodes -->
@@ -522,8 +547,22 @@
     </div>
   </div>
 
+  <!-- proportional stream bar: addition is the operation, widths are honest -->
+  <div class="stream-bar-wrap mb-3 max-w-3xl">
+    <div class="stream-bar" role="img" aria-label="Cost streams as a share of total">
+      <div id="seg-mortality" class="stream-seg mortality" style="flex-basis: 0%"></div>
+      <div id="seg-mental"    class="stream-seg mental"    style="flex-basis: 0%"></div>
+      <div id="seg-economic"  class="stream-seg economic"  style="flex-basis: 0%"></div>
+    </div>
+  </div>
+  <div class="stream-bar-legend mb-6 max-w-3xl">
+    <div><span class="dot mortality"></span> Mortality <span id="pct-mortality" class="pct">0%</span></div>
+    <div><span class="dot mental"></span> Mental health <span id="pct-mental" class="pct">0%</span></div>
+    <div><span class="dot economic"></span> Economic <span id="pct-economic" class="pct">0%</span></div>
+  </div>
+
   <p class="text-xs text-mute mb-12 max-w-measure">
-    Read each row as a sentence: number of people, times what fraction is at stake, times what each unit costs. Add the three together for the total above.
+    Read each row as a sentence: number of people, times what fraction is at stake, times what each unit costs. Add the three together for the total above. The bar shows each stream's share of that total. Mental health dominates by far. Most readers expect mortality to dominate. It doesn't.
   </p>
 
   <!-- sliders -->
@@ -699,18 +738,26 @@
     });
   }
 
-  // edge mapping: which input param drives which edge
-  const edgeMap = {
-    attribution: ['attribution-mortality', 'stream-mortality'],
-    vsl:         ['vsl-mortality', 'vsl-mental', 'stream-mortality', 'stream-mental'],
-    depression:  ['depression-mental', 'depression-economic', 'stream-mental', 'stream-economic'],
-    yld:         ['yld-mental', 'stream-mental'],
-    duration:    ['duration-economic', 'stream-economic'],
-  };
-  const edgeEls = {};
-  document.querySelectorAll('.calc-dag .edge').forEach(el => {
-    edgeEls[el.getAttribute('data-edge')] = el;
+  // DAG input nodes: marked red when the matching slider has been moved
+  // from its default. The DAG itself is structural; the dollar magnitudes
+  // live in the proportional stream bar below (where addition is the
+  // operation, so width-as-dollars is honest).
+  const inputNodeEls = {};
+  document.querySelectorAll('.calc-dag .node[data-input]').forEach(el => {
+    inputNodeEls[el.getAttribute('data-input')] = el;
   });
+
+  // Stream proportional bar
+  const segEls = {
+    mortality: document.getElementById('seg-mortality'),
+    mental:    document.getElementById('seg-mental'),
+    economic:  document.getElementById('seg-economic'),
+  };
+  const pctEls = {
+    mortality: document.getElementById('pct-mortality'),
+    mental:    document.getElementById('pct-mental'),
+    economic:  document.getElementById('pct-economic'),
+  };
 
   function calculateTotal(s) {
     const vslDollars = s.vsl * 1e6;
@@ -757,29 +804,29 @@
     valEls.duration.textContent = (s.duration % 1 === 0) ? s.duration.toFixed(0) : s.duration.toFixed(1);
   }
 
-  function updateEdges(s) {
-    // distance from default, normalized 0..1
-    const distance = {};
+  function updateInputNodes(s) {
     params.forEach(p => {
-      const el = slEls[p];
-      const min = parseFloat(el.min), max = parseFloat(el.max);
-      const span = Math.max(defaults[p] - min, max - defaults[p]);
-      distance[p] = span > 0 ? Math.min(1, Math.abs(s[p] - defaults[p]) / span) : 0;
+      const node = inputNodeEls[p];
+      if (!node) return;
+      const moved = Math.abs(s[p] - defaults[p]) > 1e-6;
+      node.classList.toggle('is-moved', moved);
     });
-    // each edge: figure out which param(s) drive it, take max distance
-    const edgeWeight = {};
-    Object.keys(edgeMap).forEach(p => {
-      edgeMap[p].forEach(edgeId => {
-        edgeWeight[edgeId] = Math.max(edgeWeight[edgeId] || 0, distance[p]);
-      });
-    });
-    Object.keys(edgeEls).forEach(id => {
-      const w = edgeWeight[id] || 0;
-      const el = edgeEls[id];
-      const width = 1 + w * 1.5; // 1px -> 2.5px
-      el.style.strokeWidth = width.toFixed(2);
-      if (w > 0.02) el.classList.add('is-active');
-      else el.classList.remove('is-active');
+  }
+
+  function updateStreamBar(r) {
+    const t = r.total > 0 ? r.total : 1;
+    const shares = {
+      mortality: r.mortality / t,
+      mental:    r.mental    / t,
+      economic:  r.economic  / t,
+    };
+    ['mortality', 'mental', 'economic'].forEach(k => {
+      const pct = shares[k] * 100;
+      segEls[k].style.flexBasis = pct.toFixed(2) + '%';
+      // Round to whole percent; show '<1%' rather than '0%' when nonzero,
+      // so a tiny segment still has a readable legend.
+      const rounded = Math.round(pct);
+      pctEls[k].textContent = (pct > 0 && rounded === 0) ? '<1%' : rounded + '%';
     });
   }
 
@@ -832,7 +879,8 @@
       v(trim(s.depression) + 'M') + ' people' + X + v('$13K') + ' per year' + X + v(trim(s.duration), ' yrs');
 
     animateTotal(r.total);
-    updateEdges(s);
+    updateInputNodes(s);
+    updateStreamBar(r);
     const atDefault = isAtDefaults(s);
     totalEl.classList.toggle('is-moved', !atDefault);
     resetBtn.disabled = atDefault;
