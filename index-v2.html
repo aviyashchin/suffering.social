@@ -297,20 +297,19 @@
      reading: top segment = mortality, middle = mental, bottom = economic,
      each sized by dollar share, edges fanning in from the left. */
   /* Two-column confection: vertical magnitude bar on the left, total
-     on the right. The formula dependency tree (the old 'DAG' on the
-     leftmost) was dropped because the math strings under each stream
-     already spell out the same dependencies. Bar grows in HEIGHT as
-     the total grows so the magnitude is visible. */
+     on the right. Bar HEIGHT scales with the total (within a readable
+     range, see TOTAL_REF in JS). Total column is fixed width so the
+     dollar text growing or shrinking a digit doesn't reflow anything.
+     Left-aligned with the page body, not centered. */
   .calc-confection {
     display: grid;
-    grid-template-columns: 160px 280px;
+    grid-template-columns: 200px 320px;
     grid-template-areas: "bar total";
     align-items: stretch;
-    column-gap: 2.5rem;
-    margin: 0 auto;
-    max-width: 480px;
+    column-gap: 3rem;
+    margin: 0;
   }
-  .calc-confection .bar-cell { grid-area: bar; min-width: 0; height: 320px; }
+  .calc-confection .bar-cell { grid-area: bar; min-width: 0; height: 340px; display: flex; align-items: flex-end; }
   .calc-confection .total-cell { grid-area: total; align-self: center; text-align: left; overflow: hidden; }
   .calc-confection .total-cell .calc-total { white-space: nowrap; overflow: hidden; text-overflow: clip; }
   .calc-confection .total-cell .calc-stream-label { margin-bottom: 0.25rem; }
@@ -346,11 +345,12 @@
      decorative palette (signal red is reserved for the gap). Now embedded
      inside .calc-confection as the right-hand half of the fused figure;
      its left edge is where the DAG's edges land. */
-  /* Wrap is the full cell height; the bar inside sizes by magnitude and
-     anchors to the BOTTOM so it grows upward like a thermometer as the
-     reader drags sliders to increase total cost. The empty space above
-     reads as 'headroom' relative to the max-cost scenario. */
-  .stream-bar-wrap { width: 100%; height: 100%; display: flex; align-items: flex-end; }
+  /* Bar lives inside .bar-cell which is align-items: flex-end. The bar
+     itself sizes by magnitude (JS sets height) and grows upward as the
+     total grows. Empty space above is 'headroom' to the max-cost
+     scenario, making magnitude visible without sacrificing readable
+     segment labels at default. */
+  .stream-bar-wrap { width: 100%; }
   .stream-bar { display: flex; flex-direction: column; width: 100%; background: transparent; border: 1px solid var(--color); overflow: visible; }
   .stream-seg {
     position: relative;
@@ -361,19 +361,17 @@
     width: 100%;
     min-height: 0;
     overflow: hidden;
-    padding: 4px 6px;
-    /* No transition on flex-basis. Bar segments snap to new heights on
-       every slider input. The calc reads as immediate computation, not
-       as an animation, so cascading transitions don't compound into
-       perceived jitter. */
+    padding: 6px 10px;
+    /* No flex-basis transition: snaps so the bar reads as instant. */
     font-family: 'Inter', sans-serif;
-    font-size: 10px;
+    font-size: 11px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    line-height: 1.25;
+    line-height: 1.3;
     text-align: center;
     white-space: nowrap;
     cursor: pointer;
+    gap: 2px;
   }
   .stream-seg:focus { outline: 2px solid var(--red); outline-offset: 2px; }
   .stream-seg + .stream-seg { border-top: 1px solid var(--backgroundColor); border-left: 0; }
@@ -386,11 +384,13 @@
   /* Narrow segments hide their inline labels and show a dot marker
      plus a hover/tap popover instead, so the readable string never
      gets clipped at small widths. */
-  /* Labels stay visible at every segment size. Tight segments just get
-     smaller font and tighter line-height. */
-  .stream-seg .seg-name,
-  .stream-seg .seg-dollar,
-  .stream-seg .seg-pct { font-size: clamp(8px, 1.6vw, 10px); }
+  /* Labels stay visible at every segment size. Bar is 200px wide so the
+     full 'MORTALITY \$753B 25%' string fits horizontally; segments stack
+     name + dollar + pct vertically when tall enough, collapse to one
+     line when too short. */
+  .stream-seg .seg-name { font-size: 10px; opacity: 0.9; }
+  .stream-seg .seg-dollar { font-size: 13px; font-weight: 600; }
+  .stream-seg .seg-pct { font-size: 10px; opacity: 0.7; }
   .stream-seg .seg-popover {
     position: absolute;
     top: 50%;
@@ -1220,12 +1220,13 @@
   // updateSliderFill).
   function updateInputNodes() { /* no-op */ }
 
-  // Magnitude reference. Max realistic scenario (all sliders maxed) tops
-  // out around $16T. Reference cap of $18T so the bar still has a
-  // little headroom even at the max scenario.
+  // Magnitude reference. Bar always tall enough to render labels
+  // readably (BAR_MIN_PX) and grows visibly toward the cell ceiling
+  // (BAR_MAX_PX) as the total rises. Max realistic total ~\$16T;
+  // reference cap \$18T gives some headroom.
   const TOTAL_REF = 18e12;
-  const BAR_MIN_PX = 36;
-  const BAR_MAX_PX = 320;
+  const BAR_MIN_PX = 220;
+  const BAR_MAX_PX = 340;
 
   function updateStreamBar(r) {
     const t = r.total > 0 ? r.total : 1;
@@ -1234,11 +1235,12 @@
       mental:    r.mental    / t,
       economic:  r.economic  / t,
     };
-    // Bar HEIGHT encodes the total dollar magnitude. Anchored to bottom
-    // by the wrap's align-items: flex-end, so it grows upward as totals
-    // increase. Reader can SEE that maxing the sliders 6x the bar.
+    // Bar HEIGHT encodes the total dollar magnitude. Linear interpolation
+    // between BAR_MIN_PX (always readable) and BAR_MAX_PX (visibly larger
+    // at extreme scenarios). Reader sees magnitude change without losing
+    // readability of segment labels at default.
     const ratio = Math.max(0, Math.min(1, r.total / TOTAL_REF));
-    const barHeight = Math.max(BAR_MIN_PX, ratio * BAR_MAX_PX);
+    const barHeight = BAR_MIN_PX + ratio * (BAR_MAX_PX - BAR_MIN_PX);
     const bar = segEls.mortality.parentElement;
     bar.style.height = barHeight.toFixed(1) + 'px';
     ['mortality', 'mental', 'economic'].forEach(k => {
