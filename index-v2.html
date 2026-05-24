@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="kong" data-mode="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -85,26 +85,34 @@
 }
 </script>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&display=swap" rel="stylesheet">
+<!-- Design-system contract: tokens, fonts, theme registry, 200+ editorial
+     primitives (.head, .lede, .label, .kicker, .meta, .footnote, .struck,
+     .hair, .tabular, .mono, .dag-mark, .proof, ...). Loaded BEFORE
+     Tailwind + page styles so app-side overrides still win. runtime.js
+     intentionally NOT loaded (it binds Space/M to theme cycling which
+     would hijack page scroll on a content page). -->
+<link rel="stylesheet" href="https://subconscious-ai.github.io/design-system/cdn/v1/all.css">
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
+  // Tokens come from the design-system contract loaded above. The Tailwind
+  // colour scale is kept as a thin alias so existing utility classes
+  // (text-mute, bg-ink, border-accent) still resolve. New code should
+  // prefer var(--color) / var(--grey-500) / var(--red) directly.
   tailwind.config = {
     corePlugins: { preflight: true },
     theme: {
       extend: {
         fontFamily: {
-          sans: ['Inter', 'system-ui', 'sans-serif'],
-          display: ['Fraunces', 'Georgia', 'serif'],
+          sans: ['var(--font-body)', 'Inter Tight', 'Inter', 'system-ui', 'sans-serif'],
+          display: ['var(--font-display)', 'Redaction', 'Fraunces', 'Georgia', 'serif'],
         },
         colors: {
-          ink: '#0a0a0a',
-          paper: '#fafaf7',
-          rule: '#1a1a1a',
-          mute: '#6b6b6b',
-          accent: '#c8102e',
+          ink: 'var(--color)',
+          paper: 'var(--backgroundColor)',
+          rule: 'var(--color)',
+          mute: 'var(--grey-500)',
+          accent: 'var(--red)',
         },
         maxWidth: { measure: '38rem' },
       }
@@ -113,33 +121,28 @@
 </script>
 
 <style>
-  html { background: #fafaf7; }
-  body {
-    font-family: 'Inter', system-ui, sans-serif;
-    color: #0a0a0a;
-    background: #fafaf7;
-    font-feature-settings: "ss01", "cv11";
-  }
-  .display {
-    font-family: 'Fraunces', Georgia, serif;
-    font-weight: 300;
-    letter-spacing: -0.02em;
-    line-height: 1.05;
-  }
+  /* Body / typography are inherited from the CDN contract via .head, .lede,
+     .meta, .kicker, .footnote, .struck, .hair, .tabular, .mono, etc.
+     This block only carries page-specific surfaces (chart, sparklines,
+     calculator, sliders, Sankey, verdict bars) and one local utility:
+     .num (tabular-nums alias for .tabular). */
+  body { font-feature-settings: "ss01", "cv11"; }
   .num { font-variant-numeric: tabular-nums; }
-  .struck { color: #6b6b6b; text-decoration: line-through; text-decoration-color: #c8102e; text-decoration-thickness: 2px; }
-  .rule { border-top: 1px solid #1a1a1a; }
-  .hair { border-top: 1px solid rgba(0,0,0,0.12); }
+  /* Local: rule and hair pull from the contract's --color / --hairline so
+     they theme-track. Tailwind .rule / .hair utilities don't exist; these
+     are the in-page class hooks the markup already uses. */
+  .rule { border-top: 1px solid var(--color); }
+  .hair { border-top: 1px solid var(--hairline, rgba(0,0,0,0.12)); }
 
   /* Chart */
   .chart-grid line { stroke: rgba(0,0,0,0.08); stroke-width: 1; }
-  .chart-axis text { fill: #6b6b6b; font-size: 11px; font-family: 'Inter', sans-serif; }
-  .chart-line { fill: none; stroke: #0a0a0a; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
-  .chart-dot { fill: #fafaf7; stroke: #0a0a0a; stroke-width: 2; }
-  .chart-inflection { fill: #c8102e; stroke: #fafaf7; stroke-width: 2; }
-  .chart-anno { fill: #0a0a0a; font-size: 12px; font-family: 'Inter', sans-serif; font-weight: 500; }
-  .chart-anno-mute { fill: #6b6b6b; font-size: 11px; font-family: 'Inter', sans-serif; }
-  .chart-inflection-line { stroke: #c8102e; stroke-width: 1; stroke-dasharray: 4 4; }
+  .chart-axis text { fill: var(--grey-500); font-size: 11px; font-family: 'Inter', sans-serif; }
+  .chart-line { fill: none; stroke: var(--color); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .chart-dot { fill: var(--backgroundColor); stroke: var(--color); stroke-width: 2; }
+  .chart-inflection { fill: var(--red); stroke: var(--backgroundColor); stroke-width: 2; }
+  .chart-anno { fill: var(--color); font-size: 12px; font-family: 'Inter', sans-serif; font-weight: 500; }
+  .chart-anno-mute { fill: var(--grey-500); font-size: 11px; font-family: 'Inter', sans-serif; }
+  .chart-inflection-line { stroke: var(--red); stroke-width: 1; stroke-dasharray: 4 4; }
 
   /* Sparklines (cross-country small multiples) */
   .spark { display: flex; flex-direction: column; gap: 4px; align-items: stretch; }
@@ -148,16 +151,16 @@
     font-size: 11px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #6b6b6b;
+    color: var(--grey-500);
     line-height: 1.2;
   }
-  .spark-svg { width: 100%; height: auto; display: block; background: #fafaf7; }
-  .spark-line { fill: none; stroke: #0a0a0a; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
-  .spark-mark { fill: #c8102e; stroke: none; }
+  .spark-svg { width: 100%; height: auto; display: block; background: var(--backgroundColor); }
+  .spark-line { fill: none; stroke: var(--color); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+  .spark-mark { fill: var(--red); stroke: none; }
   .spark-year {
     font-family: 'Inter', sans-serif;
     font-size: 11px;
-    color: #6b6b6b;
+    color: var(--grey-500);
     font-variant-numeric: tabular-nums;
     line-height: 1.2;
   }
@@ -175,43 +178,43 @@
     letter-spacing: -0.03em;
     line-height: 1;
     font-size: clamp(4rem, 10vw, 8rem);
-    color: #0a0a0a;
+    color: var(--color);
     transition: color 220ms ease;
   }
-  .calc-total.is-moved { color: #c8102e; }
-  .calc-stream-value { font-variant-numeric: tabular-nums; font-size: 1.125rem; font-weight: 500; color: #0a0a0a; }
-  .calc-stream-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #6b6b6b; }
-  .calc-stream-math { font-size: 12px; line-height: 1.5; color: #6b6b6b; }
-  .calc-stream-math .var { color: #0a0a0a; font-weight: 500; }
-  .calc-stream-math .op { color: #6b6b6b; padding: 0 0.25em; }
+  .calc-total.is-moved { color: var(--red); }
+  .calc-stream-value { font-variant-numeric: tabular-nums; font-size: 1.125rem; font-weight: 500; color: var(--color); }
+  .calc-stream-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey-500); }
+  .calc-stream-math { font-size: 12px; line-height: 1.5; color: var(--grey-500); }
+  .calc-stream-math .var { color: var(--color); font-weight: 500; }
+  .calc-stream-math .op { color: var(--grey-500); padding: 0 0.25em; }
 
   .calc-dag { width: 100%; max-width: 760px; margin: 0 auto; display: block; }
   /* Edges are structural, not proportional. Constant hairlines. The dollar
      proportions are shown honestly in .stream-bar below, where addition
      is the operation. Multiplicative inputs can't be Sankey'd without lying. */
-  .calc-dag .edge { stroke: #1a1a1a; stroke-width: 1; opacity: 0.35; }
-  .calc-dag .node { fill: #fafaf7; stroke: #0a0a0a; stroke-width: 1.25; transition: fill 180ms ease, stroke 180ms ease; }
-  .calc-dag .node.is-moved { fill: #c8102e; stroke: #c8102e; }
-  .calc-dag .node.out { fill: #0a0a0a; stroke: #0a0a0a; }
-  .calc-dag .node-label { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; fill: #6b6b6b; }
-  .calc-dag .node-label.out { fill: #0a0a0a; }
+  .calc-dag .edge { stroke: var(--color); stroke-width: 1; opacity: 0.35; }
+  .calc-dag .node { fill: var(--backgroundColor); stroke: var(--color); stroke-width: 1.25; transition: fill 180ms ease, stroke 180ms ease; }
+  .calc-dag .node.is-moved { fill: var(--red); stroke: var(--red); }
+  .calc-dag .node.out { fill: var(--color); stroke: var(--color); }
+  .calc-dag .node-label { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; fill: var(--grey-500); }
+  .calc-dag .node-label.out { fill: var(--color); }
   /* Edge labels carry the operation each edge applies. Mute by default so
      the data (nodes, total) dominates; flip to signal red when the matching
      input has moved. Font bumped to 11px so it stays legible when the
      760px viewBox scales into a ~390px mobile container (~5.6px effective). */
-  .calc-dag .edge-label { font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: 0.05em; fill: #6b6b6b; pointer-events: none; transition: fill 180ms ease; }
-  .calc-dag .edge-label.is-active { fill: #c8102e; font-weight: 500; }
+  .calc-dag .edge-label { font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: 0.05em; fill: var(--grey-500); pointer-events: none; transition: fill 180ms ease; }
+  .calc-dag .edge-label.is-active { fill: var(--red); font-weight: 500; }
 
   /* Proportional stream bar: a true Sankey of the 3 streams summing to the
      total. Width is the only encoding. Three shades of ink avoid any
      decorative palette (signal red is reserved for the gap). */
   .stream-bar-wrap { max-width: 100%; }
-  .stream-bar { display: flex; width: 100%; height: 26px; background: transparent; border: 1px solid #0a0a0a; overflow: hidden; }
+  .stream-bar { display: flex; width: 100%; height: 26px; background: transparent; border: 1px solid var(--color); overflow: hidden; }
   .stream-seg { display: flex; align-items: center; padding: 0 0.6em; height: 100%; transition: flex-basis 360ms cubic-bezier(0.4, 0, 0.2, 1); min-width: 0; overflow: hidden; font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
-  .stream-seg + .stream-seg { border-left: 1px solid #fafaf7; }
-  .stream-seg.mortality { background: #0a0a0a; color: #fafaf7; }
-  .stream-seg.mental    { background: #6b6b6b; color: #fafaf7; }
-  .stream-seg.economic  { background: #c5c5c0; color: #0a0a0a; }
+  .stream-seg + .stream-seg { border-left: 1px solid var(--backgroundColor); }
+  .stream-seg.mortality { background: var(--color); color: var(--backgroundColor); }
+  .stream-seg.mental    { background: var(--grey-500); color: var(--backgroundColor); }
+  .stream-seg.economic  { background: #c5c5c0; color: var(--color); }
   .stream-seg .seg-dollar { font-weight: 500; font-variant-numeric: tabular-nums; }
   .stream-seg .seg-pct { opacity: 0.75; margin-left: 0.4em; font-variant-numeric: tabular-nums; }
   @media (max-width: 480px) {
@@ -228,68 +231,68 @@
   .calc-slider:focus { outline: none; }
   .calc-slider::-webkit-slider-runnable-track {
     height: 1px;
-    background: #1a1a1a;
+    background: var(--color);
     border: 0;
   }
-  .calc-slider.is-moved::-webkit-slider-runnable-track { background: #c8102e; }
-  .calc-slider::-moz-range-track { height: 1px; background: #1a1a1a; border: 0; }
-  .calc-slider.is-moved::-moz-range-track { background: #c8102e; }
+  .calc-slider.is-moved::-webkit-slider-runnable-track { background: var(--red); }
+  .calc-slider::-moz-range-track { height: 1px; background: var(--color); border: 0; }
+  .calc-slider.is-moved::-moz-range-track { background: var(--red); }
   .calc-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 14px; height: 14px;
     border-radius: 0;
-    background: #fafaf7;
-    border: 1.5px solid #0a0a0a;
+    background: var(--backgroundColor);
+    border: 1.5px solid var(--color);
     margin-top: -7px;
     cursor: pointer;
   }
-  .calc-slider:focus-visible::-webkit-slider-thumb { border-color: #c8102e; }
+  .calc-slider:focus-visible::-webkit-slider-thumb { border-color: var(--red); }
   .calc-slider::-moz-range-thumb {
     width: 14px; height: 14px;
     border-radius: 0;
-    background: #fafaf7;
-    border: 1.5px solid #0a0a0a;
+    background: var(--backgroundColor);
+    border: 1.5px solid var(--color);
     cursor: pointer;
   }
 
   .calc-row { display: grid; grid-template-columns: 1fr auto; gap: 0.25rem 1rem; align-items: baseline; }
-  .calc-row .calc-label { font-size: 0.9375rem; color: #0a0a0a; line-height: 1.35; }
-  .calc-row .calc-val { font-variant-numeric: tabular-nums; font-size: 0.9375rem; font-weight: 500; color: #0a0a0a; white-space: nowrap; }
+  .calc-row .calc-label { font-size: 0.9375rem; color: var(--color); line-height: 1.35; }
+  .calc-row .calc-val { font-variant-numeric: tabular-nums; font-size: 0.9375rem; font-weight: 500; color: var(--color); white-space: nowrap; }
   .calc-row details { grid-column: 1 / -1; margin-top: 2px; }
-  .calc-row details > summary { font-size: 11px; color: #6b6b6b; cursor: pointer; list-style: none; }
+  .calc-row details > summary { font-size: 11px; color: var(--grey-500); cursor: pointer; list-style: none; }
   .calc-row details > summary::-webkit-details-marker { display: none; }
-  .calc-row details > summary:hover { color: #0a0a0a; }
-  .calc-row details[open] > summary { color: #0a0a0a; }
-  .calc-row details .src { font-size: 11px; color: #6b6b6b; margin-top: 4px; line-height: 1.5; }
+  .calc-row details > summary:hover { color: var(--color); }
+  .calc-row details[open] > summary { color: var(--color); }
+  .calc-row details .src { font-size: 11px; color: var(--grey-500); margin-top: 4px; line-height: 1.5; }
 
   .calc-reset {
     font-family: 'Inter', sans-serif;
     font-size: 12px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #6b6b6b;
+    color: var(--grey-500);
     background: transparent;
     border: 0;
-    border-bottom: 1px solid #1a1a1a;
+    border-bottom: 1px solid var(--color);
     padding: 6px 0;
     cursor: pointer;
     border-radius: 0;
   }
-  .calc-reset:hover { color: #0a0a0a; border-bottom-color: #c8102e; }
-  .calc-reset:disabled { color: #6b6b6b; opacity: 0.4; cursor: default; }
+  .calc-reset:hover { color: var(--color); border-bottom-color: var(--red); }
+  .calc-reset:disabled { color: var(--grey-500); opacity: 0.4; cursor: default; }
 
-  .calc-fixed { font-size: 11px; color: #6b6b6b; line-height: 1.6; }
-  .calc-fixed strong { color: #0a0a0a; font-weight: 500; }
+  .calc-fixed { font-size: 11px; color: var(--grey-500); line-height: 1.6; }
+  .calc-fixed strong { color: var(--color); font-weight: 500; }
 
   @media (prefers-reduced-motion: reduce) {
     .calc-total { transition: none; }
   }
 
   .verdict-bar-wrap { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem; }
-  .verdict-bar-track { width: 140px; height: 6px; border: 1px solid #0a0a0a; background: transparent; }
-  .verdict-bar-fill { height: 100%; background: #0a0a0a; }
-  .verdict-bar-unknown { color: #6b6b6b; font-size: 14px; line-height: 1; }
+  .verdict-bar-track { width: 140px; height: 6px; border: 1px solid var(--color); background: transparent; }
+  .verdict-bar-fill { height: 100%; background: var(--color); }
+  .verdict-bar-unknown { color: var(--grey-500); font-size: 14px; line-height: 1; }
 </style>
 </head>
 
@@ -304,7 +307,7 @@
 <!-- hero: one question, one chart -->
 <section class="max-w-5xl mx-auto px-6 pt-12 pb-20">
   <p class="text-sm uppercase tracking-widest text-mute mb-6">A natural experiment</p>
-  <h1 class="display text-5xl sm:text-6xl md:text-7xl mb-10">
+  <h1 class="head text-5xl sm:text-6xl md:text-7xl mb-10">
     What happened to&nbsp;teenagers<br>
     in <span class="num">2012</span>?
   </h1>
