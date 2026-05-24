@@ -298,7 +298,11 @@
      each sized by dollar share, edges fanning in from the left. */
   .calc-confection {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 110px auto;
+    /* Total column is a FIXED 280px (not auto) so the displayed text growing
+       from '$2.39T' (6 chars) to '$10.93T' (7 chars) to '$100B' doesn't
+       resize the column. An auto column was reflowing the whole confection
+       on every slider input. Fixed-width = no shake. */
+    grid-template-columns: minmax(0, 1fr) 110px 280px;
     grid-template-areas: "dag bar total";
     align-items: stretch;
     column-gap: 0;
@@ -306,9 +310,10 @@
   }
   .calc-confection .dag-cell { grid-area: dag; min-width: 0; height: 320px; }
   .calc-confection .bar-cell { grid-area: bar; min-width: 0; height: 320px; }
-  .calc-confection .total-cell { grid-area: total; padding-left: 1.5rem; align-self: center; text-align: left; min-width: 9.5ch; }
+  .calc-confection .total-cell { grid-area: total; padding-left: 1.5rem; align-self: center; text-align: left; overflow: hidden; }
+  .calc-confection .total-cell .calc-total { white-space: nowrap; overflow: hidden; text-overflow: clip; }
   .calc-confection .total-cell .calc-stream-label { margin-bottom: 0.25rem; }
-  .calc-confection .calc-total { font-size: clamp(2.75rem, 6.5vw, 5.5rem); }
+  .calc-confection .calc-total { font-size: clamp(2.5rem, 5vw, 4.25rem); }
   .calc-confection .total-cell .total-note { font-size: 11px; color: var(--grey-500); margin-top: 0.4rem; max-width: 18ch; line-height: 1.4; }
   @media (max-width: 720px) {
     .calc-confection {
