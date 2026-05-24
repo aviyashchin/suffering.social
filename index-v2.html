@@ -248,20 +248,24 @@
   .calc-total.is-moved { color: var(--red); }
   .calc-stream-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey-500); }
   .calc-stream-math { font-size: 11px; line-height: 1.4; color: var(--grey-500); }
-  /* Editorial inline links: render a single 1px underline via a
-     background-image so neither the CDN's default link decoration nor
-     Tailwind's .underline can stack a second line under it. Also kill
-     text-decoration entirely on the anchor so the period in "Source."
-     stops creating the descender artifact that read as a dotted line. */
-  a.underline {
-    text-decoration: none;
-    background-image: linear-gradient(currentColor, currentColor);
-    background-size: 100% 1px;
-    background-repeat: no-repeat;
-    background-position: 0 calc(100% - 1px);
-    padding-bottom: 1px;
+  /* The design-system CDN ships a "fuzzy dotted underline" on EVERY <a>
+     via a::after { background-image: radial-gradient(...) } as its default
+     editorial link treatment. On /v2 that reads as a second decoration
+     under links and breaks our crisp editorial aesthetic. Kill the ::after
+     globally and replace with a clean 1px text-decoration underline. */
+  a::after, a.link::after { content: none !important; }
+  a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-skip-ink: auto;
+    text-underline-offset: 2px;
+    padding-bottom: 0 !important;
+    opacity: 1 !important;
   }
-  a.underline:hover { background-image: linear-gradient(var(--red), var(--red)); }
+  a:hover { text-decoration-color: var(--red); color: var(--red); }
+  /* Inline source markers + masthead brand links opt out of underline. */
+  header a, sup a, .calc-cite a { text-decoration: none; }
+  header a:hover { text-decoration: underline; text-decoration-color: var(--red); }
   .calc-stream-math .var {
     color: var(--color);
     font-weight: 500;
@@ -404,37 +408,25 @@
     z-index: 0;
     display: block;
   }
-  /* Active marker on the density tracks the slider's current value so
-     the reader can SEE where their pick sits relative to the published
-     distribution. Always visible (ink at default, red when off-default)
-     and wide enough (2px) to read at a glance. A small triangle pointer
-     at the top reinforces the position. */
-  .calc-density-marker {
-    position: absolute;
-    top: 0;
-    height: 18px;
-    width: 2px;
-    background: var(--color);
-    transform: translateX(-50%);
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.6;
-    transition: background 120ms ease, opacity 120ms ease;
+  /* Two-layer density:
+       .calc-density-static is the published-estimates distribution, anchored
+         to its real peak, faded so the eye reads it as a reference layer.
+       .calc-density-active is the SAME curve, ink-stronger, translated
+         horizontally so its peak sits at the slider's current value.
+     Drag the slider, the active curve slides over the static one. When at
+     default, the two overlap. When far off-evidence, they separate
+     visibly. */
+  .calc-density-static {
+    position: absolute; left: 0; right: 0; top: 0;
+    height: 18px; pointer-events: none; z-index: 0;
+    transition: opacity 120ms ease;
   }
-  .calc-density-marker::before {
-    content: '';
-    position: absolute;
-    top: -4px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0; height: 0;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 5px solid currentColor;
-    color: var(--color);
+  .calc-density-active {
+    position: absolute; left: 0; right: 0; top: 0;
+    height: 18px; pointer-events: none; z-index: 1;
+    transition: transform 120ms ease;
   }
-  .calc-slider-wrap.is-moved .calc-density-marker { background: var(--red); opacity: 1; }
-  .calc-slider-wrap.is-moved .calc-density-marker::before { color: var(--red); }
+  .calc-slider-wrap.is-moved .calc-density-active path { stroke: var(--red); fill: var(--red); }
   .calc-slider-wrap > .calc-slider {
     position: relative;
     z-index: 1;
@@ -1437,11 +1429,13 @@
     params.forEach(p => {
       const m = densityMarkers[p];
       if (!m) return;
-      const pct = ((s[p] - m.min) / (m.max - m.min)) * 100;
-      m.el.style.left = Math.max(0, Math.min(100, pct)).toFixed(2) + '%';
-      // Mark the wrap as moved when slider value diverges from default so
-      // the marker fades in.
-      const wrap = m.el.parentElement;
+      // Translate the ACTIVE curve so its peak sits at the slider value.
+      // The static curve underneath stays anchored to its real peak.
+      // shiftPct = how far (in slider %) the user has dragged from peak.
+      const range = m.max - m.min;
+      const shiftPct = range > 0 ? ((s[p] - m.peak) / range) * 100 : 0;
+      m.svg.style.transform = 'translateX(' + shiftPct.toFixed(2) + '%)';
+      const wrap = m.svg.parentElement;
       if (!wrap) return;
       const moved = Math.abs(s[p] - defaults[p]) > 1e-6;
       wrap.classList.toggle('is-moved', moved);
@@ -1502,34 +1496,41 @@
       for (let i = 1; i < N; i++) lineD += ' L' + pts[i][0].toFixed(1) + ',' + pts[i][1].toFixed(1);
 
       const svgNS = 'http://www.w3.org/2000/svg';
-      const svg = document.createElementNS(svgNS, 'svg');
-      svg.setAttribute('class', 'calc-density');
-      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
-      svg.setAttribute('preserveAspectRatio', 'none');
-      svg.setAttribute('aria-hidden', 'true');
-      const area = document.createElementNS(svgNS, 'path');
-      area.setAttribute('d', areaD);
-      area.setAttribute('fill', 'var(--color)');
-      area.setAttribute('fill-opacity', '0.08');
-      area.setAttribute('stroke', 'none');
-      const line = document.createElementNS(svgNS, 'path');
-      line.setAttribute('d', lineD);
-      line.setAttribute('fill', 'none');
-      line.setAttribute('stroke', 'var(--color)');
-      line.setAttribute('stroke-width', '0.5');
-      line.setAttribute('vector-effect', 'non-scaling-stroke');
-      svg.appendChild(area);
-      svg.appendChild(line);
-      wrap.insertBefore(svg, input);
+      // Two layers:
+      //   1. STATIC published-estimates curve, faded, anchored to its real
+      //      peak position. The reader's reference for "where the evidence
+      //      actually lives."
+      //   2. ACTIVE belief curve, same shape, that TRANSLATES horizontally
+      //      so its peak follows the slider value. Drag the slider, watch
+      //      the curve slide along the track relative to the static one.
+      function makeSvg(cls, lineOpacity, areaOpacity) {
+        const s = document.createElementNS(svgNS, 'svg');
+        s.setAttribute('class', cls);
+        s.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+        s.setAttribute('preserveAspectRatio', 'none');
+        s.setAttribute('aria-hidden', 'true');
+        const ar = document.createElementNS(svgNS, 'path');
+        ar.setAttribute('d', areaD);
+        ar.setAttribute('fill', 'var(--color)');
+        ar.setAttribute('fill-opacity', areaOpacity);
+        ar.setAttribute('stroke', 'none');
+        const ln = document.createElementNS(svgNS, 'path');
+        ln.setAttribute('d', lineD);
+        ln.setAttribute('fill', 'none');
+        ln.setAttribute('stroke', 'var(--color)');
+        ln.setAttribute('stroke-width', '0.5');
+        ln.setAttribute('stroke-opacity', lineOpacity);
+        ln.setAttribute('vector-effect', 'non-scaling-stroke');
+        s.appendChild(ar);
+        s.appendChild(ln);
+        return s;
+      }
+      const staticSvg = makeSvg('calc-density calc-density-static', '0.35', '0.04');
+      const activeSvg = makeSvg('calc-density calc-density-active', '0.9', '0.14');
+      wrap.insertBefore(staticSvg, input);
+      wrap.insertBefore(activeSvg, input);
 
-      // Live value marker: a hairline that tracks the slider's current
-      // value across the density. Hidden at default; appears in signal
-      // red the moment the slider moves.
-      const marker = document.createElement('div');
-      marker.className = 'calc-density-marker';
-      marker.setAttribute('aria-hidden', 'true');
-      wrap.insertBefore(marker, input);
-      densityMarkers[p] = { el: marker, min, max };
+      densityMarkers[p] = { svg: activeSvg, min, max, peak: spec.peak };
 
       // Tick row below the slider. DEFAULT in slider color, MEDIAN
       // PUBLISHED in mute. If they coincide within ~8% of the range
