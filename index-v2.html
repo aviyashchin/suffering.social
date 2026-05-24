@@ -1527,7 +1527,7 @@
       }
       // Static gets more visual weight so the contrast with the moving
       // active curve reads at a glance. Both layers stroke the SAME ink
-      // until the slider moves — only then the active flips red.
+      // until the slider moves. Only then the active flips red.
       const staticSvg = makeSvg('calc-density calc-density-static', '0.5', '0.10');
       const activeSvg = makeSvg('calc-density calc-density-active', '0.95', '0.22');
       wrap.insertBefore(staticSvg, input);
