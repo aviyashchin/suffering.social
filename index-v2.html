@@ -246,7 +246,6 @@
     transition: color 220ms ease;
   }
   .calc-total.is-moved { color: var(--red); }
-  .calc-stream-value { font-variant-numeric: tabular-nums; font-size: 1.125rem; font-weight: 500; color: var(--color); }
   .calc-stream-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey-500); }
   .calc-stream-math { font-size: 12px; line-height: 1.5; color: var(--grey-500); }
   .calc-stream-math .var {
@@ -266,10 +265,40 @@
   .calc-stream-math .var.w-const { /* constants don't change; no reserve */ }
   .calc-stream-math .op { color: var(--grey-500); padding: 0 0.25em; }
 
-  .calc-dag { width: 100%; max-width: 760px; margin: 0 auto; display: block; }
+  /* Fused confection: structural DAG (inputs + multiplicative edges) and
+     proportional Sankey bar (stream magnitudes) in one figure. Inputs
+     fan in from the left, edges carry the operation (×attribution, etc),
+     three stream rectangles in the centre carry the dollar share, and
+     the violently-large total anchors the right. Per Tufte (Visual
+     Explanations ch. 7): one composition that says what three did. */
+  .calc-confection {
+    display: grid;
+    grid-template-columns: minmax(0, 360fr) minmax(0, 320fr) auto;
+    grid-template-areas: "dag bar total";
+    align-items: center;
+    column-gap: 0;
+    margin: 0;
+  }
+  .calc-confection .dag-cell { grid-area: dag; min-width: 0; }
+  .calc-confection .bar-cell { grid-area: bar; min-width: 0; align-self: center; }
+  .calc-confection .total-cell { grid-area: total; padding-left: 1.25rem; align-self: center; text-align: left; }
+  .calc-confection .total-cell .calc-stream-label { margin-bottom: 0.25rem; }
+  .calc-confection .calc-total { font-size: clamp(2.75rem, 6.5vw, 5.5rem); }
+  .calc-confection .total-cell .total-note { font-size: 11px; color: var(--grey-500); margin-top: 0.4rem; max-width: 18ch; line-height: 1.4; }
+  @media (max-width: 720px) {
+    .calc-confection {
+      grid-template-columns: 1fr;
+      grid-template-areas: "dag" "bar" "total";
+      row-gap: 1.25rem;
+    }
+    .calc-confection .total-cell { padding-left: 0; text-align: left; }
+    .calc-confection .calc-total { font-size: clamp(3rem, 14vw, 5rem); }
+  }
+  .calc-dag { width: 100%; aspect-ratio: 420 / 320; display: block; overflow: visible; }
   /* Edges are structural, not proportional. Constant hairlines. The dollar
-     proportions are shown honestly in .stream-bar below, where addition
-     is the operation. Multiplicative inputs can't be Sankey'd without lying. */
+     proportions are shown honestly by the stream rectangles to the right
+     of the DAG, where addition is the operation. Multiplicative inputs
+     can't be Sankey'd without lying. */
   .calc-dag .edge { stroke: var(--color); stroke-width: 1; opacity: 0.35; }
   .calc-dag .node { fill: var(--backgroundColor); stroke: var(--color); stroke-width: 1.25; transition: fill 180ms ease, stroke 180ms ease; }
   .calc-dag .node.is-moved { fill: var(--red); stroke: var(--red); }
@@ -285,9 +314,11 @@
 
   /* Proportional stream bar: a true Sankey of the 3 streams summing to the
      total. Width is the only encoding. Three shades of ink avoid any
-     decorative palette (signal red is reserved for the gap). */
+     decorative palette (signal red is reserved for the gap). Now embedded
+     inside .calc-confection as the right-hand half of the fused figure;
+     its left edge is where the DAG's edges land. */
   .stream-bar-wrap { max-width: 100%; }
-  .stream-bar { display: flex; width: 100%; height: 26px; background: transparent; border: 1px solid var(--color); overflow: visible; }
+  .stream-bar { display: flex; width: 100%; height: 56px; background: transparent; border: 1px solid var(--color); overflow: visible; }
   .stream-seg { position: relative; display: flex; align-items: center; justify-content: flex-start; padding: 0 0.6em; height: 100%; transition: flex-basis 360ms cubic-bezier(0.4, 0, 0.2, 1); min-width: 0; overflow: hidden; font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; cursor: pointer; }
   .stream-seg:focus { outline: 2px solid var(--red); outline-offset: 2px; }
   .stream-seg + .stream-seg { border-left: 1px solid var(--backgroundColor); }
@@ -658,123 +689,104 @@
     For scale: the 1998 tobacco Master Settlement pays states about <span class="num">$8B</span> a year. At the defaults below, the annual social-media externality runs to roughly <span class="num">300×</span> that. <a href="#source-msa" class="underline hover:text-accent">Source.</a>
   </p>
 
-  <!-- DAG -->
-  <figure class="my-6">
-    <svg class="calc-dag" viewBox="0 0 760 320" role="img" aria-labelledby="calc-dag-title">
-      <title id="calc-dag-title">Causal diagram: five assumptions flow into three cost streams and one total.</title>
+  <!-- Fused confection: inputs (left) -> labeled multiplicative edges ->
+       3 stream rectangles sized by dollar share (middle) -> violently
+       large total (right). One figure replaces what was a DAG above a
+       Sankey bar above a row of stream-subtotal numbers. -->
+  <figure class="calc-confection my-6" aria-labelledby="calc-confection-title">
+    <span id="calc-confection-title" class="sr-only">Causal diagram fused with proportional cost-stream bar: five assumptions flow into three streams whose widths show their dollar share, summing to the total annual cost.</span>
 
-      <!-- edges: input nodes (x=120) -> stream nodes (x=420) -> total (x=680) -->
-      <!-- inputs at y: attribution 50, vsl 110, depression 170, yld 230, duration 290 -->
-      <!-- streams at y: mortality 80, mental 170, economic 260 -->
-      <!-- total at y: 170 -->
+    <div class="dag-cell">
+      <svg class="calc-dag" viewBox="0 0 420 320" preserveAspectRatio="xMaxYMid meet" role="img" aria-labelledby="calc-confection-title">
+        <!-- inputs at x=120, y: attribution 50, vsl 110, depression 170, yld 230, duration 290.
+             Edges fan to the right edge of the SVG (x=420), landing at the
+             3 entry-points of the adjacent stream bar:
+                mortality y=140, mental y=170, economic y=200
+             which sit inside the bar's 56px vertical span centred on y=170. -->
+        <line data-edge="attribution-mortality" class="edge" x1="124" y1="50"  x2="420" y2="140"></line>
+        <line data-edge="vsl-mortality"         class="edge" x1="124" y1="110" x2="420" y2="140"></line>
 
-      <line data-edge="attribution-mortality" class="edge" x1="124" y1="50" x2="416" y2="80"></line>
-      <line data-edge="vsl-mortality"         class="edge" x1="124" y1="110" x2="416" y2="80"></line>
+        <line data-edge="vsl-mental"        class="edge" x1="124" y1="110" x2="420" y2="170"></line>
+        <line data-edge="depression-mental" class="edge" x1="124" y1="170" x2="420" y2="170"></line>
+        <line data-edge="yld-mental"        class="edge" x1="124" y1="230" x2="420" y2="170"></line>
 
-      <line data-edge="vsl-mental"        class="edge" x1="124" y1="110" x2="416" y2="170"></line>
-      <line data-edge="depression-mental" class="edge" x1="124" y1="170" x2="416" y2="170"></line>
-      <line data-edge="yld-mental"        class="edge" x1="124" y1="230" x2="416" y2="170"></line>
+        <line data-edge="depression-economic" class="edge" x1="124" y1="170" x2="420" y2="200"></line>
+        <line data-edge="duration-economic"   class="edge" x1="124" y1="290" x2="420" y2="200"></line>
 
-      <line data-edge="depression-economic" class="edge" x1="124" y1="170" x2="416" y2="260"></line>
-      <line data-edge="duration-economic"   class="edge" x1="124" y1="290" x2="416" y2="260"></line>
+        <!-- edge labels: each multiplicative edge carries the operation it
+             applies. Labels go red when the matching slider has moved. -->
+        <g>
+          <text class="edge-label" data-source="attribution" x="272" y="86"  text-anchor="middle">×attribution</text>
+          <text class="edge-label" data-source="vsl"         x="272" y="117" text-anchor="middle">×$/life</text>
+          <text class="edge-label" data-source="vsl"         x="272" y="135" text-anchor="middle">×$/life</text>
+          <text class="edge-label" data-source="depression"  x="272" y="166" text-anchor="middle">×people</text>
+          <text class="edge-label" data-source="yld"         x="240" y="206" text-anchor="middle">×yld</text>
+          <text class="edge-label" data-source="depression"  x="300" y="186" text-anchor="middle">×people</text>
+          <text class="edge-label" data-source="duration"    x="272" y="254" text-anchor="middle">×duration</text>
+        </g>
 
-      <line data-edge="stream-mortality" class="edge" x1="424" y1="80"  x2="672" y2="170"></line>
-      <line data-edge="stream-mental"    class="edge" x1="424" y1="170" x2="672" y2="170"></line>
-      <line data-edge="stream-economic"  class="edge" x1="424" y1="260" x2="672" y2="170"></line>
+        <!-- input nodes -->
+        <g>
+          <circle class="node" data-input="attribution" cx="120" cy="50"  r="5"></circle><text class="node-label" x="110" y="38" text-anchor="end">Attribution</text>
+          <circle class="node" data-input="vsl"         cx="120" cy="110" r="5"></circle><text class="node-label" x="110" y="114" text-anchor="end">VSL</text>
+          <circle class="node" data-input="depression"  cx="120" cy="170" r="5"></circle><text class="node-label" x="110" y="174" text-anchor="end">Depression</text>
+          <circle class="node" data-input="yld"         cx="120" cy="230" r="5"></circle><text class="node-label" x="110" y="234" text-anchor="end">Years lost</text>
+          <circle class="node" data-input="duration"    cx="120" cy="290" r="5"></circle><text class="node-label" x="110" y="294" text-anchor="end">Duration</text>
+        </g>
+      </svg>
+    </div>
 
-      <!-- edge labels: the operation each multiplicative edge carries.
-           Stream-to-total edges are additions (visible in the stream bar
-           below) so they carry no label here. Labels go red when the
-           matching slider has moved (see updateInputNodes in JS). -->
-      <g>
-        <text class="edge-label" data-source="attribution" x="270" y="61" text-anchor="middle">×attribution</text>
-        <text class="edge-label" data-source="vsl"         x="270" y="91" text-anchor="middle">×$/life</text>
-        <text class="edge-label" data-source="vsl"         x="270" y="136" text-anchor="middle">×$/life</text>
-        <text class="edge-label" data-source="depression"  x="270" y="166" text-anchor="middle">×people</text>
-        <text class="edge-label" data-source="yld"         x="230" y="196" text-anchor="middle">×yld</text>
-        <text class="edge-label" data-source="depression"  x="310" y="211" text-anchor="middle">×people</text>
-        <text class="edge-label" data-source="duration"    x="270" y="271" text-anchor="middle">×duration</text>
-      </g>
+    <div class="bar-cell">
+      <div class="stream-bar-wrap">
+        <div class="stream-bar" role="img" aria-label="Cost streams as a share of total">
+          <div id="seg-mortality" class="stream-seg mortality" style="flex-basis: 0%" role="button" tabindex="0" aria-label="Mortality">
+            <span class="seg-name">Mortality</span>
+            <span class="seg-dollar">&nbsp;<span id="seg-dollar-mortality">$0</span></span>
+            <span class="seg-pct" id="seg-pct-mortality">0%</span>
+            <span class="seg-popover" id="seg-pop-mortality" aria-hidden="true"></span>
+          </div>
+          <div id="seg-mental" class="stream-seg mental" style="flex-basis: 0%" role="button" tabindex="0" aria-label="Mental">
+            <span class="seg-name">Mental</span>
+            <span class="seg-dollar">&nbsp;<span id="seg-dollar-mental">$0</span></span>
+            <span class="seg-pct" id="seg-pct-mental">0%</span>
+            <span class="seg-popover" id="seg-pop-mental" aria-hidden="true"></span>
+          </div>
+          <div id="seg-economic" class="stream-seg economic" style="flex-basis: 0%" role="button" tabindex="0" aria-label="Economic">
+            <span class="seg-name">Economic</span>
+            <span class="seg-dollar">&nbsp;<span id="seg-dollar-economic">$0</span></span>
+            <span class="seg-pct" id="seg-pct-economic">0%</span>
+            <span class="seg-popover" id="seg-pop-economic" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <!-- input nodes (data-input drives the .is-moved red marker in JS) -->
-      <g>
-        <circle class="node" data-input="attribution" cx="120" cy="50"  r="5"></circle><text class="node-label" x="110" y="38" text-anchor="end">Attribution</text>
-        <circle class="node" data-input="vsl"         cx="120" cy="110" r="5"></circle><text class="node-label" x="110" y="114" text-anchor="end">VSL</text>
-        <circle class="node" data-input="depression"  cx="120" cy="170" r="5"></circle><text class="node-label" x="110" y="174" text-anchor="end">Depression</text>
-        <circle class="node" data-input="yld"         cx="120" cy="230" r="5"></circle><text class="node-label" x="110" y="234" text-anchor="end">Years lost</text>
-        <circle class="node" data-input="duration"    cx="120" cy="290" r="5"></circle><text class="node-label" x="110" y="294" text-anchor="end">Duration</text>
-      </g>
-
-      <!-- stream nodes: r=6 (one step larger than inputs) -->
-      <g>
-        <circle class="node" cx="420" cy="80"  r="6"></circle><text class="node-label" x="432" y="84" text-anchor="start">Mortality</text>
-        <circle class="node" cx="420" cy="170" r="6"></circle><text class="node-label" x="432" y="174" text-anchor="start">Mental health</text>
-        <circle class="node" cx="420" cy="260" r="6"></circle><text class="node-label" x="432" y="264" text-anchor="start">Economic</text>
-      </g>
-
-      <!-- total: r=8. Visual-weight gradient (5 -> 6 -> 8) carries the eye
-           left to right without arrowheads, keeping the diagram hairline. -->
-      <circle class="node out" cx="680" cy="170" r="8"></circle>
-      <text class="node-label out" x="680" y="150" text-anchor="middle">Total cost</text>
-    </svg>
+    <div class="total-cell">
+      <div class="calc-stream-label">Annual cost</div>
+      <div id="calc-total" class="calc-total num">$0</div>
+      <div class="total-note">Sum of the three stream rectangles to the left.</div>
+    </div>
   </figure>
 
-  <!-- total -->
-  <div class="mt-6 mb-10">
-    <div class="calc-stream-label mb-2">Annual cost to the United States</div>
-    <div id="calc-total" class="calc-total num">$0</div>
-    <div class="text-sm text-mute mt-3 max-w-measure">
-      A point estimate from your assumptions. Not a forecast. Not a verdict. A way to see which judgment calls do the work.
-    </div>
-  </div>
-
-  <!-- stream subtotals: each shows the live multiplication that built it,
-       so the reader can see how a slider's value flows into the dollar
-       figure and finally into the total. -->
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-y-6 sm:gap-x-8 mb-4 max-w-3xl">
+  <!-- live multiplication strings: how each stream rectangle is built from
+       the sliders. Three columns line up under the stream bar above. -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-y-4 sm:gap-x-8 mt-2 mb-8 max-w-3xl">
     <div>
       <div class="calc-stream-label mb-1">Mortality</div>
-      <div id="stream-mortality" class="calc-stream-value">$0</div>
-      <div id="math-mortality" class="calc-stream-math num mt-2"></div>
+      <div id="math-mortality" class="calc-stream-math num"></div>
     </div>
     <div>
       <div class="calc-stream-label mb-1">Mental health</div>
-      <div id="stream-mental" class="calc-stream-value">$0</div>
-      <div id="math-mental" class="calc-stream-math num mt-2"></div>
+      <div id="math-mental" class="calc-stream-math num"></div>
     </div>
     <div>
       <div class="calc-stream-label mb-1">Economic</div>
-      <div id="stream-economic" class="calc-stream-value">$0</div>
-      <div id="math-economic" class="calc-stream-math num mt-2"></div>
-    </div>
-  </div>
-
-  <!-- proportional stream bar: addition is the operation, widths are honest -->
-  <div class="stream-bar-wrap mb-3 max-w-3xl">
-    <div class="stream-bar" role="img" aria-label="Cost streams as a share of total">
-      <div id="seg-mortality" class="stream-seg mortality" style="flex-basis: 0%" role="button" tabindex="0" aria-label="Mortality">
-        <span class="seg-name">Mortality</span>
-        <span class="seg-dollar">&nbsp;<span id="seg-dollar-mortality">$0</span></span>
-        <span class="seg-pct" id="seg-pct-mortality">0%</span>
-        <span class="seg-popover" id="seg-pop-mortality" aria-hidden="true"></span>
-      </div>
-      <div id="seg-mental" class="stream-seg mental" style="flex-basis: 0%" role="button" tabindex="0" aria-label="Mental">
-        <span class="seg-name">Mental</span>
-        <span class="seg-dollar">&nbsp;<span id="seg-dollar-mental">$0</span></span>
-        <span class="seg-pct" id="seg-pct-mental">0%</span>
-        <span class="seg-popover" id="seg-pop-mental" aria-hidden="true"></span>
-      </div>
-      <div id="seg-economic" class="stream-seg economic" style="flex-basis: 0%" role="button" tabindex="0" aria-label="Economic">
-        <span class="seg-name">Economic</span>
-        <span class="seg-dollar">&nbsp;<span id="seg-dollar-economic">$0</span></span>
-        <span class="seg-pct" id="seg-pct-economic">0%</span>
-        <span class="seg-popover" id="seg-pop-economic" aria-hidden="true"></span>
-      </div>
+      <div id="math-economic" class="calc-stream-math num"></div>
     </div>
   </div>
 
   <p class="text-xs text-mute mb-12 max-w-measure">
-    Read each row as a sentence: number of people, times what fraction is at stake, times what each unit costs. Add the three together for the total above. The bar shows each stream's share of that total. Mental health dominates by far. Most readers expect mortality to dominate. It doesn't.
+    Read each stream as a sentence: number of people, times what fraction is at stake, times what each unit costs. The bar's three widths add to the total on the right. Mental health dominates by far. Most readers expect mortality to dominate. It doesn't.
   </p>
 
   <!-- sliders -->
@@ -1005,11 +1017,8 @@
   });
 
   const totalEl = document.getElementById('calc-total');
-  const streamEls = {
-    mortality: document.getElementById('stream-mortality'),
-    mental: document.getElementById('stream-mental'),
-    economic: document.getElementById('stream-economic'),
-  };
+  // Stream dollar values no longer live in a separate subtotals row; they
+  // are inline-labeled inside the stream rectangles by updateStreamBar.
   const mathEls = {
     mortality: document.getElementById('math-mortality'),
     mental: document.getElementById('math-mental'),
@@ -1237,9 +1246,6 @@
     params.forEach(updateSliderFill);
     updateValueLabels(s);
     const r = calculateTotal(s);
-    streamEls.mortality.textContent = formatMoney(r.mortality);
-    streamEls.mental.textContent = formatMoney(r.mental);
-    streamEls.economic.textContent = formatMoney(r.economic);
 
     // Reactive multiplication strings. Each is the exact formula in
     // calculateTotal(), spelled out in human-readable units so the
