@@ -795,9 +795,9 @@
     </div>
 
     <div class="total-cell">
-      <div class="calc-stream-label">Annual cost</div>
+      <div class="calc-stream-label">Implied annual cost at your assumptions</div>
       <div id="calc-total" class="calc-total num">$0</div>
-      <div class="total-note">Sum of the three stacked stream rectangles to the left. Top to bottom: mortality, mental health, economic.</div>
+      <div class="total-note" id="calc-total-range">Range with attribution ±50%: ...</div>
     </div>
   </figure>
 
@@ -1296,6 +1296,18 @@
     updateInputNodes(s);
     updateStreamBar(r);
     updateDensityMarkers(s);
+
+    // Range: vary the most-contested slider (attribution) by +/- 50% and
+    // show the resulting band so the reader sees the headline number is
+    // a function of contestable judgment, not a finding.
+    const lowS = Object.assign({}, s, { attribution: Math.max(0, s.attribution * 0.5) });
+    const highS = Object.assign({}, s, { attribution: Math.min(50, s.attribution * 1.5) });
+    const low = calculateTotal(lowS).total;
+    const high = calculateTotal(highS).total;
+    const rangeEl = document.getElementById('calc-total-range');
+    if (rangeEl) {
+      rangeEl.textContent = 'Range with attribution ±50%: ' + formatTotal(low) + ' to ' + formatTotal(high);
+    }
     const atDefault = isAtDefaults(s);
     totalEl.classList.toggle('is-moved', !atDefault);
     resetBtn.disabled = atDefault;
