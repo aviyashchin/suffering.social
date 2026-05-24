@@ -4,7 +4,7 @@
   "redirects": [
     {
       "source": "/calculator",
-      "destination": "/index.html"
+      "destination": "/calculator.html"
     },
     {
       "source": "/v5",
@@ -12,7 +12,13 @@
     },
     {
       "source": "/v2",
-      "destination": "/index-v2.html"
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/index-v2",
+      "destination": "/",
+      "permanent": true
     }
   ],
   "headers": [
@@ -24,7 +30,7 @@
           "value": "nosniff"
         },
         {
-          "key": "X-Frame-Options", 
+          "key": "X-Frame-Options",
           "value": "DENY"
         },
         {
@@ -38,4 +44,4 @@
       ]
     }
   ]
-} 
+}

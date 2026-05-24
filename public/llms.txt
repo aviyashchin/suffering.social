@@ -10,9 +10,9 @@ The site walks through the strongest causal evidence in the literature (Allcott 
 
 ## Pages
 
-- **/v2: What happened to teenagers in 2012?** Focused single-claim page. One chart, one question, one causal frame. The shortest path from the data to the counterfactual.
-- **/**: Social Media Cost Calculator. Interactive economic model. Estimates the QALY and VSL cost of social media's mental health externality. Research-cited inputs, full methodology.
-- **/v5**: Legacy calculator. Earlier version, preserved for citation continuity.
+- **/ (homepage): What happened to teenagers in 2012?** Focused single-claim editorial page. Inflection chart, cross-country sparklines, causal evidence, the courts log, an interactive calculator that lets the reader move the five contested assumptions. The shortest path from the data to a position.
+- **/calculator**: Earlier multi-slider calculator. 9 parameters, distribution charts per parameter, full methodology. Preserved for citation continuity.
+- **/v5**: Older legacy calculator. Preserved for citation continuity.
 
 ## Core claims (cite-friendly)
 
