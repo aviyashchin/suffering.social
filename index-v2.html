@@ -289,30 +289,38 @@
      three stream rectangles in the centre carry the dollar share, and
      the violently-large total anchors the right. Per Tufte (Visual
      Explanations ch. 7): one composition that says what three did. */
+  /* Vertical bar layout: DAG-cell and bar-cell share the same pixel
+     height (320px), and edges from inputs in the DAG land at the actual
+     Y of their target stream segment in the bar. As stream proportions
+     change, JS recomputes the edge endpoints. This gives a true Sankey
+     reading: top segment = mortality, middle = mental, bottom = economic,
+     each sized by dollar share, edges fanning in from the left. */
   .calc-confection {
     display: grid;
-    grid-template-columns: minmax(0, 360fr) minmax(0, 320fr) auto;
+    grid-template-columns: minmax(0, 1fr) 110px auto;
     grid-template-areas: "dag bar total";
-    align-items: center;
+    align-items: stretch;
     column-gap: 0;
     margin: 0;
   }
-  .calc-confection .dag-cell { grid-area: dag; min-width: 0; }
-  .calc-confection .bar-cell { grid-area: bar; min-width: 0; align-self: center; }
-  .calc-confection .total-cell { grid-area: total; padding-left: 1.25rem; align-self: center; text-align: left; min-width: 9.5ch; }
+  .calc-confection .dag-cell { grid-area: dag; min-width: 0; height: 320px; }
+  .calc-confection .bar-cell { grid-area: bar; min-width: 0; height: 320px; }
+  .calc-confection .total-cell { grid-area: total; padding-left: 1.5rem; align-self: center; text-align: left; min-width: 9.5ch; }
   .calc-confection .total-cell .calc-stream-label { margin-bottom: 0.25rem; }
   .calc-confection .calc-total { font-size: clamp(2.75rem, 6.5vw, 5.5rem); }
   .calc-confection .total-cell .total-note { font-size: 11px; color: var(--grey-500); margin-top: 0.4rem; max-width: 18ch; line-height: 1.4; }
   @media (max-width: 720px) {
     .calc-confection {
-      grid-template-columns: 1fr;
-      grid-template-areas: "dag" "bar" "total";
+      grid-template-columns: minmax(0, 1fr) 90px;
+      grid-template-areas: "dag bar" "total total";
       row-gap: 1.25rem;
+      column-gap: 0;
     }
-    .calc-confection .total-cell { padding-left: 0; text-align: left; }
+    .calc-confection .total-cell { padding-left: 0; text-align: left; margin-top: 1rem; }
     .calc-confection .calc-total { font-size: clamp(3rem, 14vw, 5rem); }
+    .calc-confection .dag-cell, .calc-confection .bar-cell { height: 280px; }
   }
-  .calc-dag { width: 100%; aspect-ratio: 420 / 320; display: block; overflow: visible; }
+  .calc-dag { width: 100%; height: 100%; display: block; overflow: visible; }
   /* Edges are structural, not proportional. Constant hairlines. The dollar
      proportions are shown honestly by the stream rectangles to the right
      of the DAG, where addition is the operation. Multiplicative inputs
@@ -332,16 +340,36 @@
      decorative palette (signal red is reserved for the gap). Now embedded
      inside .calc-confection as the right-hand half of the fused figure;
      its left edge is where the DAG's edges land. */
-  .stream-bar-wrap { max-width: 100%; }
-  .stream-bar { display: flex; width: 100%; height: 56px; background: transparent; border: 1px solid var(--color); overflow: visible; }
-  .stream-seg { position: relative; display: flex; align-items: center; justify-content: flex-start; padding: 0 0.6em; height: 100%; transition: flex-basis 360ms cubic-bezier(0.4, 0, 0.2, 1); min-width: 0; overflow: hidden; font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; cursor: pointer; }
+  .stream-bar-wrap { width: 100%; height: 100%; }
+  .stream-bar { display: flex; flex-direction: column; width: 100%; height: 100%; background: transparent; border: 1px solid var(--color); overflow: visible; }
+  .stream-seg {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 0;
+    overflow: hidden;
+    padding: 4px 6px;
+    transition: flex-basis 360ms cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.25;
+    text-align: center;
+    white-space: nowrap;
+    cursor: pointer;
+  }
   .stream-seg:focus { outline: 2px solid var(--red); outline-offset: 2px; }
-  .stream-seg + .stream-seg { border-left: 1px solid var(--backgroundColor); }
+  .stream-seg + .stream-seg { border-top: 1px solid var(--backgroundColor); border-left: 0; }
   .stream-seg.mortality { background: var(--color); color: var(--backgroundColor); }
   .stream-seg.mental    { background: var(--grey-500); color: var(--backgroundColor); }
   .stream-seg.economic  { background: #c5c5c0; color: var(--color); }
-  .stream-seg .seg-dollar { font-weight: 500; font-variant-numeric: tabular-nums; display: inline-block; min-width: 4ch; }
-  .stream-seg .seg-pct { opacity: 0.75; margin-left: 0.4em; font-variant-numeric: tabular-nums; display: inline-block; min-width: 3ch; text-align: right; }
+  .stream-seg .seg-name { font-weight: 500; }
+  .stream-seg .seg-dollar { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .stream-seg .seg-pct { opacity: 0.7; font-variant-numeric: tabular-nums; }
   /* Narrow segments hide their inline labels and show a dot marker
      plus a hover/tap popover instead, so the readable string never
      gets clipped at small widths. */
@@ -356,9 +384,9 @@
   }
   .stream-seg .seg-popover {
     position: absolute;
-    bottom: calc(100% + 6px);
-    left: 50%;
-    transform: translateX(-50%);
+    top: 50%;
+    left: calc(100% + 8px);
+    transform: translateY(-50%);
     background: var(--color);
     color: var(--backgroundColor);
     padding: 0.4em 0.8em;
@@ -372,10 +400,10 @@
     transition: opacity 120ms ease;
     z-index: 5;
   }
-  /* Edge segments clamp the popover horizontally so it can't slip off
-     the bar. Mortality is leftmost; economic is rightmost. */
-  #seg-mortality .seg-popover { left: 0; transform: translateX(0); }
-  #seg-economic  .seg-popover { left: auto; right: 0; transform: translateX(0); }
+  /* Edge segments clamp the popover vertically so it can't slip off the
+     top or bottom of the bar. */
+  #seg-mortality .seg-popover { top: 0; transform: translateY(0); }
+  #seg-economic  .seg-popover { top: auto; bottom: 0; transform: translateY(0); }
   .stream-seg:hover .seg-popover,
   .stream-seg:focus .seg-popover,
   .stream-seg.is-tapped .seg-popover { opacity: 1; }
@@ -797,21 +825,22 @@
     <span id="calc-confection-title" class="sr-only">Causal diagram fused with proportional cost-stream bar: five assumptions flow into three streams whose widths show their dollar share, summing to the total annual cost.</span>
 
     <div class="dag-cell">
-      <svg class="calc-dag" viewBox="0 0 420 320" preserveAspectRatio="xMaxYMid meet" role="img" aria-labelledby="calc-confection-title">
-        <!-- inputs at x=120, y: attribution 50, vsl 110, depression 170, yld 230, duration 290.
-             Edges fan to the right edge of the SVG (x=420), landing at the
-             3 entry-points of the adjacent stream bar:
-                mortality y=140, mental y=170, economic y=200
-             which sit inside the bar's 56px vertical span centred on y=170. -->
-        <line data-edge="attribution-mortality" class="edge" x1="124" y1="50"  x2="420" y2="140"></line>
-        <line data-edge="vsl-mortality"         class="edge" x1="124" y1="110" x2="420" y2="140"></line>
+      <svg class="calc-dag" viewBox="0 0 420 320" preserveAspectRatio="none" role="img" aria-labelledby="calc-confection-title">
+        <!-- Inputs at x=120, y: attribution 50, vsl 110, depression 170, yld 230, duration 290.
+             Edges fan to the right edge of the SVG (x=420), landing on the
+             LEFT edge of the adjacent vertical stream bar at the y-center
+             of each segment. The y2 values are recomputed by JS on every
+             slider change so the edges follow segment height transitions
+             (the y values below are start-state defaults at ~11/77/12). -->
+        <line data-edge="attribution-mortality" class="edge" x1="124" y1="50"  x2="420" y2="18"></line>
+        <line data-edge="vsl-mortality"         class="edge" x1="124" y1="110" x2="420" y2="18"></line>
 
-        <line data-edge="vsl-mental"        class="edge" x1="124" y1="110" x2="420" y2="170"></line>
-        <line data-edge="depression-mental" class="edge" x1="124" y1="170" x2="420" y2="170"></line>
-        <line data-edge="yld-mental"        class="edge" x1="124" y1="230" x2="420" y2="170"></line>
+        <line data-edge="vsl-mental"        class="edge" x1="124" y1="110" x2="420" y2="158"></line>
+        <line data-edge="depression-mental" class="edge" x1="124" y1="170" x2="420" y2="158"></line>
+        <line data-edge="yld-mental"        class="edge" x1="124" y1="230" x2="420" y2="158"></line>
 
-        <line data-edge="depression-economic" class="edge" x1="124" y1="170" x2="420" y2="200"></line>
-        <line data-edge="duration-economic"   class="edge" x1="124" y1="290" x2="420" y2="200"></line>
+        <line data-edge="depression-economic" class="edge" x1="124" y1="170" x2="420" y2="301"></line>
+        <line data-edge="duration-economic"   class="edge" x1="124" y1="290" x2="420" y2="301"></line>
 
         <!-- edge labels: each multiplicative edge carries the operation it
              applies. Labels go red when the matching slider has moved. -->
@@ -857,7 +886,7 @@
     <div class="total-cell">
       <div class="calc-stream-label">Annual cost</div>
       <div id="calc-total" class="calc-total num">$0</div>
-      <div class="total-note">Sum of the three stream rectangles to the left.</div>
+      <div class="total-note">Sum of the three stacked stream rectangles to the left. Top to bottom: mortality, mental health, economic.</div>
     </div>
   </figure>
 
@@ -1293,24 +1322,46 @@
       mental:    r.mental    / t,
       economic:  r.economic  / t,
     };
-    const barWidth = segEls.mortality.parentElement.getBoundingClientRect().width || 0;
+    // Bar is vertical now: measure HEIGHT (not width) for narrow detection.
+    const barHeight = segEls.mortality.parentElement.getBoundingClientRect().height || 0;
     ['mortality', 'mental', 'economic'].forEach(k => {
       const pct = shares[k] * 100;
       segEls[k].style.flexBasis = pct.toFixed(2) + '%';
-      // Round to whole percent; show '<1%' rather than '0%' when nonzero,
-      // so a tiny segment still reads honestly.
       const rounded = Math.round(pct);
       const pctText = (pct > 0 && rounded === 0) ? '<1%' : rounded + '%';
       segPctEls[k].textContent = pctText;
       const dollarText = formatMoney(r[k]);
       segDollarEls[k].textContent = dollarText;
-      // Narrow rule: below 20% share OR below 100px effective width.
-      const effPx = barWidth * shares[k];
-      const narrow = shares[k] < NARROW_SHARE || (barWidth > 0 && effPx < NARROW_PX);
+      // Narrow rule for vertical bar: below 18% share OR below ~50px tall.
+      const effPx = barHeight * shares[k];
+      const narrow = shares[k] < 0.18 || (barHeight > 0 && effPx < 50);
       segEls[k].classList.toggle('is-narrow', narrow);
       const label = segNames[k] + ' · ' + dollarText + ' · ' + pctText;
       segPopEls[k].textContent = label;
       segEls[k].setAttribute('aria-label', segNames[k] + ', ' + dollarText + ', ' + pctText);
+    });
+
+    // Vertical-bar edge alignment: each input edge's y2 lands at the
+    // VERTICAL CENTER of its target stream segment, in the DAG SVG's
+    // coordinate space (viewBox height = 320). As the segments resize,
+    // the edges follow so the bar reads as a true Sankey destination
+    // for the DAG inputs.
+    const H = 320;
+    const yMortality = (shares.mortality / 2) * H;
+    const yMental    = shares.mortality * H + (shares.mental / 2) * H;
+    const yEconomic  = (shares.mortality + shares.mental) * H + (shares.economic / 2) * H;
+    const edgeTargets = {
+      'attribution-mortality': yMortality,
+      'vsl-mortality':         yMortality,
+      'vsl-mental':            yMental,
+      'depression-mental':     yMental,
+      'yld-mental':            yMental,
+      'depression-economic':   yEconomic,
+      'duration-economic':     yEconomic,
+    };
+    Object.keys(edgeTargets).forEach(id => {
+      const e = document.querySelector('[data-edge="' + id + '"]');
+      if (e) e.setAttribute('y2', edgeTargets[id].toFixed(1));
     });
   }
 
