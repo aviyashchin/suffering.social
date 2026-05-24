@@ -8,9 +8,9 @@ https://suffering.social/
 
 Send the same short note (below). Pick one person for each role. Aim for honest, fast reactions, not deep critique.
 
-1. **A policy staffer** — someone who works in or near a legislative office or AG's office, ideally on tech/youth topics. The page is built for them.
-2. **A journalist who covers tech or adolescent mental health** — Casey Newton, Kashmir Hill, anyone on the IG Files beat. The page makes a sharable argument.
-3. **A layperson** — someone with no investment in social-media debates and no economics background. The control case. If they understand it, anyone will.
+1. **A policy staffer.** Someone who works in or near a legislative office or AG's office, ideally on tech/youth topics. The page is built for them.
+2. **A journalist who covers tech or adolescent mental health.** Casey Newton, Kashmir Hill, anyone on the IG Files beat. The page makes a sharable argument.
+3. **A layperson.** Someone with no investment in social-media debates and no economics background. The control case. If they understand it, anyone will.
 
 ## The note
 
@@ -42,8 +42,8 @@ Body:
 
 ## After
 
-If 2/3 say "yes, I understood and I would share with X" — promote the URL more aggressively (LinkedIn, Subconscious.ai homepage link, press kit).
+If 2/3 say "yes, I understood and I would share with X": promote the URL more aggressively (LinkedIn, Subconscious.ai homepage link, press kit).
 
-If 2/3 bounce or say "I didn't get the calculator" — that's a copy or structure problem on the page, not a polish problem. Iterate the lede.
+If 2/3 bounce or say "I didn't get the calculator": that's a copy or structure problem on the page, not a polish problem. Iterate the lede.
 
-If reactions are split — share the URLs they bounced at and the slider state they ended on. Both are debuggable signals.
+If reactions are split: share the URLs they bounced at and the slider state they ended on. Both are debuggable signals.
