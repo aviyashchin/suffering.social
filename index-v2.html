@@ -247,7 +247,10 @@
   }
   .calc-total.is-moved { color: var(--red); }
   .calc-stream-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey-500); }
-  .calc-stream-math { font-size: 12px; line-height: 1.5; color: var(--grey-500); }
+  .calc-stream-math { font-size: 11px; line-height: 1.4; color: var(--grey-500); }
+  /* Editorial inline links: declare ONE explicit underline so the CDN's
+     default link decoration doesn't stack with Tailwind's .underline. */
+  a.underline { text-decoration: underline; text-decoration-style: solid; text-decoration-thickness: 1px; text-underline-offset: 2px; }
   .calc-stream-math .var {
     color: var(--color);
     font-weight: 500;
@@ -281,7 +284,7 @@
   }
   .calc-confection .dag-cell { grid-area: dag; min-width: 0; }
   .calc-confection .bar-cell { grid-area: bar; min-width: 0; align-self: center; }
-  .calc-confection .total-cell { grid-area: total; padding-left: 1.25rem; align-self: center; text-align: left; }
+  .calc-confection .total-cell { grid-area: total; padding-left: 1.25rem; align-self: center; text-align: left; min-width: 9.5ch; }
   .calc-confection .total-cell .calc-stream-label { margin-bottom: 0.25rem; }
   .calc-confection .calc-total { font-size: clamp(2.75rem, 6.5vw, 5.5rem); }
   .calc-confection .total-cell .total-note { font-size: 11px; color: var(--grey-500); margin-top: 0.4rem; max-width: 18ch; line-height: 1.4; }
@@ -305,12 +308,9 @@
   .calc-dag .node.out { fill: var(--color); stroke: var(--color); }
   .calc-dag .node-label { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; fill: var(--grey-500); }
   .calc-dag .node-label.out { fill: var(--color); }
-  /* Edge labels carry the operation each edge applies. Mute by default so
-     the data (nodes, total) dominates; flip to signal red when the matching
-     input has moved. Font bumped to 11px so it stays legible when the
-     760px viewBox scales into a ~390px mobile container (~5.6px effective). */
-  .calc-dag .edge-label { font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: 0.05em; fill: var(--grey-500); pointer-events: none; transition: fill 180ms ease; }
-  .calc-dag .edge-label.is-active { fill: var(--red); font-weight: 500; }
+  /* Edge labels removed in the polish pass. The operations are already
+     spelled out in the stream subtotal formulas below the figure. Edges
+     stay pure hairline connections, the math lives in one place. */
 
   /* Proportional stream bar: a true Sankey of the 3 streams summing to the
      total. Width is the only encoding. Three shades of ink avoid any
@@ -393,6 +393,22 @@
     z-index: 0;
     display: block;
   }
+  /* Hairline marker on the density tracks the slider's current value so
+     the reader can see where their pick sits relative to the published
+     distribution. Updates on every slider input. */
+  .calc-density-marker {
+    position: absolute;
+    top: 0;
+    height: 18px;
+    width: 1px;
+    background: var(--red);
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 120ms ease;
+  }
+  .calc-slider-wrap.is-moved .calc-density-marker { opacity: 0.9; }
   .calc-slider-wrap > .calc-slider {
     position: relative;
     z-index: 1;
@@ -782,13 +798,6 @@
         <!-- edge labels: each multiplicative edge carries the operation it
              applies. Labels go red when the matching slider has moved. -->
         <g>
-          <text class="edge-label" data-source="attribution" x="272" y="86"  text-anchor="middle">×attribution</text>
-          <text class="edge-label" data-source="vsl"         x="272" y="117" text-anchor="middle">×$/life</text>
-          <text class="edge-label" data-source="vsl"         x="272" y="135" text-anchor="middle">×$/life</text>
-          <text class="edge-label" data-source="depression"  x="272" y="166" text-anchor="middle">×people</text>
-          <text class="edge-label" data-source="yld"         x="240" y="206" text-anchor="middle">×yld</text>
-          <text class="edge-label" data-source="depression"  x="300" y="186" text-anchor="middle">×people</text>
-          <text class="edge-label" data-source="duration"    x="272" y="254" text-anchor="middle">×duration</text>
         </g>
 
         <!-- input nodes -->
@@ -1256,11 +1265,6 @@
       const node = inputNodeEls[p];
       const moved = Math.abs(s[p] - defaults[p]) > 1e-6;
       if (node) node.classList.toggle('is-moved', moved);
-      // Edge labels share the same is-active state as the node they
-      // originate from, so the formula on the diagram lights up the same
-      // way the slider does.
-      document.querySelectorAll('.calc-dag .edge-label[data-source="' + p + '"]')
-        .forEach(el => el.classList.toggle('is-active', moved));
     });
   }
 
@@ -1330,16 +1334,19 @@
     // calculateTotal(), spelled out in human-readable units so the
     // reader can see how a slider's value flows into a dollar figure.
     const annualLifeK = Math.round((s.vsl * 1e6 / 75) / 1000);  // $K per life-year
+    // Compressed: units carried by .calc-stream-label above, formula stays
+    // one line. Operator span keeps the "×" visually quiet.
     mathEls.mortality.innerHTML =
-      v('110K', '', 'w-const') + ' suicides' + X + v(Math.round(s.attribution), '%', 'w-pct') + X + v('$' + trim(s.vsl) + 'M', '', 'w-vslm') + ' per life';
+      v('110K', '', 'w-const') + X + v(Math.round(s.attribution), '%', 'w-pct') + X + v('$' + trim(s.vsl) + 'M', '', 'w-vslm');
     mathEls.mental.innerHTML =
-      v(trim(s.depression) + 'M', '', 'w-popm') + ' people' + X + v(trim(s.yld), ' yrs', 'w-yrs') + X + v('35%', '', 'w-const') + ' loss' + X + v('$' + annualLifeK + 'K', '', 'w-annk') + ' per year';
+      v(trim(s.depression) + 'M', '', 'w-popm') + X + v(trim(s.yld), 'y', 'w-yrs') + X + v('35%', '', 'w-const') + X + v('$' + annualLifeK + 'K/y', '', 'w-annk');
     mathEls.economic.innerHTML =
-      v(trim(s.depression) + 'M', '', 'w-popm') + ' people' + X + v('$13K', '', 'w-const') + ' per year' + X + v(trim(s.duration), ' yrs', 'w-yrs');
+      v(trim(s.depression) + 'M', '', 'w-popm') + X + v('$13K/y', '', 'w-const') + X + v(trim(s.duration), 'y', 'w-yrs');
 
     animateTotal(r.total);
     updateInputNodes(s);
     updateStreamBar(r);
+    updateDensityMarkers(s);
     const atDefault = isAtDefaults(s);
     totalEl.classList.toggle('is-moved', !atDefault);
     resetBtn.disabled = atDefault;
@@ -1395,6 +1402,25 @@
     yld:         { peak: 5,  half: [3, 8] },
     duration:    { peak: 3.5, half: [2, 6] },
   };
+
+  // Per-slider marker registry. Populated by renderDensities, read by
+  // updateDensityMarkers on every slider input.
+  const densityMarkers = {};
+
+  function updateDensityMarkers(s) {
+    params.forEach(p => {
+      const m = densityMarkers[p];
+      if (!m) return;
+      const pct = ((s[p] - m.min) / (m.max - m.min)) * 100;
+      m.el.style.left = Math.max(0, Math.min(100, pct)).toFixed(2) + '%';
+      // Mark the wrap as moved when slider value diverges from default so
+      // the marker fades in.
+      const wrap = m.el.parentElement;
+      if (!wrap) return;
+      const moved = Math.abs(s[p] - defaults[p]) > 1e-6;
+      wrap.classList.toggle('is-moved', moved);
+    });
+  }
 
   function renderDensities() {
     const LN2_SQRT = Math.sqrt(Math.log(2));
@@ -1470,19 +1496,31 @@
       svg.appendChild(line);
       wrap.insertBefore(svg, input);
 
+      // Live value marker: a hairline that tracks the slider's current
+      // value across the density. Hidden at default; appears in signal
+      // red the moment the slider moves.
+      const marker = document.createElement('div');
+      marker.className = 'calc-density-marker';
+      marker.setAttribute('aria-hidden', 'true');
+      wrap.insertBefore(marker, input);
+      densityMarkers[p] = { el: marker, min, max };
+
       // Tick row below the slider. DEFAULT in slider color, MEDIAN
-      // PUBLISHED in mute. If they coincide within ~2% of the range,
-      // drop the median label to avoid overlap.
+      // PUBLISHED in mute. If they coincide within ~8% of the range
+      // (labels are ~14ch wide and otherwise collide visually),
+      // collapse into a single 'Default and median' label.
       const ticks = document.createElement('div');
       ticks.className = 'calc-ticks';
       const pctDefault = ((def - min) / (max - min)) * 100;
       const pctPeak = ((spec.peak - min) / (max - min)) * 100;
-      const closeEnough = Math.abs(pctDefault - pctPeak) < 2;
+      const closeEnough = Math.abs(pctDefault - pctPeak) < 8;
 
       const tDef = document.createElement('div');
       tDef.className = 'calc-tick is-default';
       tDef.style.left = pctDefault.toFixed(2) + '%';
-      tDef.innerHTML = '<i></i><span>Default</span>';
+      tDef.innerHTML = closeEnough
+        ? '<i></i><span>Default and median</span>'
+        : '<i></i><span>Default</span>';
       ticks.appendChild(tDef);
 
       if (!closeEnough) {
