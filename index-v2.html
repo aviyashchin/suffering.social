@@ -209,20 +209,60 @@
      total. Width is the only encoding. Three shades of ink avoid any
      decorative palette (signal red is reserved for the gap). */
   .stream-bar-wrap { max-width: 100%; }
-  .stream-bar { display: flex; width: 100%; height: 26px; background: transparent; border: 1px solid var(--color); overflow: hidden; }
-  .stream-seg { display: flex; align-items: center; padding: 0 0.6em; height: 100%; transition: flex-basis 360ms cubic-bezier(0.4, 0, 0.2, 1); min-width: 0; overflow: hidden; font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+  .stream-bar { display: flex; width: 100%; height: 26px; background: transparent; border: 1px solid var(--color); overflow: visible; }
+  .stream-seg { position: relative; display: flex; align-items: center; justify-content: flex-start; padding: 0 0.6em; height: 100%; transition: flex-basis 360ms cubic-bezier(0.4, 0, 0.2, 1); min-width: 0; overflow: hidden; font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; cursor: pointer; }
+  .stream-seg:focus { outline: 2px solid var(--red); outline-offset: 2px; }
   .stream-seg + .stream-seg { border-left: 1px solid var(--backgroundColor); }
   .stream-seg.mortality { background: var(--color); color: var(--backgroundColor); }
   .stream-seg.mental    { background: var(--grey-500); color: var(--backgroundColor); }
   .stream-seg.economic  { background: #c5c5c0; color: var(--color); }
   .stream-seg .seg-dollar { font-weight: 500; font-variant-numeric: tabular-nums; }
   .stream-seg .seg-pct { opacity: 0.75; margin-left: 0.4em; font-variant-numeric: tabular-nums; }
+  /* Narrow segments hide their inline labels and show a dot marker
+     plus a hover/tap popover instead, so the readable string never
+     gets clipped at small widths. */
+  .stream-seg.is-narrow { justify-content: center; padding: 0; overflow: visible; }
+  .stream-seg.is-narrow .seg-name,
+  .stream-seg.is-narrow .seg-dollar,
+  .stream-seg.is-narrow .seg-pct { display: none; }
+  .stream-seg.is-narrow::before {
+    content: '';
+    width: 4px; height: 4px; border-radius: 50%;
+    background: currentColor; opacity: 0.7;
+  }
+  .stream-seg .seg-popover {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color);
+    color: var(--backgroundColor);
+    padding: 0.4em 0.8em;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 120ms ease;
+    z-index: 5;
+  }
+  /* Edge segments clamp the popover horizontally so it can't slip off
+     the bar. Mortality is leftmost; economic is rightmost. */
+  #seg-mortality .seg-popover { left: 0; transform: translateX(0); }
+  #seg-economic  .seg-popover { left: auto; right: 0; transform: translateX(0); }
+  .stream-seg:hover .seg-popover,
+  .stream-seg:focus .seg-popover,
+  .stream-seg.is-tapped .seg-popover { opacity: 1; }
   @media (max-width: 480px) {
     .stream-seg { font-size: 10px; padding: 0 0.4em; letter-spacing: 0.04em; }
+    .stream-seg.is-narrow { padding: 0; }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .stream-seg { transition: none; }
+    .stream-seg .seg-popover { transition: none; }
     .calc-dag .node { transition: none; }
   }
 
@@ -663,20 +703,23 @@
   <!-- proportional stream bar: addition is the operation, widths are honest -->
   <div class="stream-bar-wrap mb-3 max-w-3xl">
     <div class="stream-bar" role="img" aria-label="Cost streams as a share of total">
-      <div id="seg-mortality" class="stream-seg mortality" style="flex-basis: 0%">
+      <div id="seg-mortality" class="stream-seg mortality" style="flex-basis: 0%" role="button" tabindex="0" aria-label="Mortality">
         <span class="seg-name">Mortality</span>
         <span class="seg-dollar">&nbsp;<span id="seg-dollar-mortality">$0</span></span>
         <span class="seg-pct" id="seg-pct-mortality">0%</span>
+        <span class="seg-popover" id="seg-pop-mortality" aria-hidden="true"></span>
       </div>
-      <div id="seg-mental" class="stream-seg mental" style="flex-basis: 0%">
+      <div id="seg-mental" class="stream-seg mental" style="flex-basis: 0%" role="button" tabindex="0" aria-label="Mental">
         <span class="seg-name">Mental</span>
         <span class="seg-dollar">&nbsp;<span id="seg-dollar-mental">$0</span></span>
         <span class="seg-pct" id="seg-pct-mental">0%</span>
+        <span class="seg-popover" id="seg-pop-mental" aria-hidden="true"></span>
       </div>
-      <div id="seg-economic" class="stream-seg economic" style="flex-basis: 0%">
+      <div id="seg-economic" class="stream-seg economic" style="flex-basis: 0%" role="button" tabindex="0" aria-label="Economic">
         <span class="seg-name">Economic</span>
         <span class="seg-dollar">&nbsp;<span id="seg-dollar-economic">$0</span></span>
         <span class="seg-pct" id="seg-pct-economic">0%</span>
+        <span class="seg-popover" id="seg-pop-economic" aria-hidden="true"></span>
       </div>
     </div>
   </div>
@@ -883,6 +926,36 @@
     mental:    document.getElementById('seg-pct-mental'),
     economic:  document.getElementById('seg-pct-economic'),
   };
+  const segPopEls = {
+    mortality: document.getElementById('seg-pop-mortality'),
+    mental:    document.getElementById('seg-pop-mental'),
+    economic:  document.getElementById('seg-pop-economic'),
+  };
+  const segNames = { mortality: 'Mortality', mental: 'Mental', economic: 'Economic' };
+  const NARROW_SHARE = 0.20;
+  const NARROW_PX = 100;
+
+  // Tap-to-toggle popover on touch. Tap outside or tap another segment
+  // closes the prior one. Hover still works on desktop via CSS.
+  Object.values(segEls).forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const wasTapped = el.classList.contains('is-tapped');
+      Object.values(segEls).forEach(s => s.classList.remove('is-tapped'));
+      if (!wasTapped) el.classList.add('is-tapped');
+    });
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        el.click();
+      } else if (e.key === 'Escape') {
+        el.classList.remove('is-tapped');
+      }
+    });
+  });
+  document.addEventListener('click', () => {
+    Object.values(segEls).forEach(s => s.classList.remove('is-tapped'));
+  });
 
   function calculateTotal(s) {
     const vslDollars = s.vsl * 1e6;
@@ -949,14 +1022,24 @@
       mental:    r.mental    / t,
       economic:  r.economic  / t,
     };
+    const barWidth = segEls.mortality.parentElement.getBoundingClientRect().width || 0;
     ['mortality', 'mental', 'economic'].forEach(k => {
       const pct = shares[k] * 100;
       segEls[k].style.flexBasis = pct.toFixed(2) + '%';
       // Round to whole percent; show '<1%' rather than '0%' when nonzero,
       // so a tiny segment still reads honestly.
       const rounded = Math.round(pct);
-      segPctEls[k].textContent = (pct > 0 && rounded === 0) ? '<1%' : rounded + '%';
-      segDollarEls[k].textContent = formatMoney(r[k]);
+      const pctText = (pct > 0 && rounded === 0) ? '<1%' : rounded + '%';
+      segPctEls[k].textContent = pctText;
+      const dollarText = formatMoney(r[k]);
+      segDollarEls[k].textContent = dollarText;
+      // Narrow rule: below 20% share OR below 100px effective width.
+      const effPx = barWidth * shares[k];
+      const narrow = shares[k] < NARROW_SHARE || (barWidth > 0 && effPx < NARROW_PX);
+      segEls[k].classList.toggle('is-narrow', narrow);
+      const label = segNames[k] + ' · ' + dollarText + ' · ' + pctText;
+      segPopEls[k].textContent = label;
+      segEls[k].setAttribute('aria-label', segNames[k] + ', ' + dollarText + ', ' + pctText);
     });
   }
 
