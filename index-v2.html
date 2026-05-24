@@ -174,6 +174,12 @@
   .calc-dag .node.out { fill: #0a0a0a; stroke: #0a0a0a; }
   .calc-dag .node-label { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; fill: #6b6b6b; }
   .calc-dag .node-label.out { fill: #0a0a0a; }
+  /* Edge labels carry the operation each edge applies. Mute by default so
+     the data (nodes, total) dominates; flip to signal red when the matching
+     input has moved. Font bumped to 11px so it stays legible when the
+     760px viewBox scales into a ~390px mobile container (~5.6px effective). */
+  .calc-dag .edge-label { font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: 0.05em; fill: #6b6b6b; pointer-events: none; transition: fill 180ms ease; }
+  .calc-dag .edge-label.is-active { fill: #c8102e; font-weight: 500; }
 
   /* Proportional stream bar: a true Sankey of the 3 streams summing to the
      total. Width is the only encoding. Three shades of ink avoid any
@@ -495,6 +501,20 @@
       <line data-edge="stream-mental"    class="edge" x1="424" y1="170" x2="672" y2="170"></line>
       <line data-edge="stream-economic"  class="edge" x1="424" y1="260" x2="672" y2="170"></line>
 
+      <!-- edge labels: the operation each multiplicative edge carries.
+           Stream-to-total edges are additions (visible in the stream bar
+           below) so they carry no label here. Labels go red when the
+           matching slider has moved (see updateInputNodes in JS). -->
+      <g>
+        <text class="edge-label" data-source="attribution" x="270" y="61" text-anchor="middle">×attribution</text>
+        <text class="edge-label" data-source="vsl"         x="270" y="91" text-anchor="middle">×$/life</text>
+        <text class="edge-label" data-source="vsl"         x="270" y="136" text-anchor="middle">×$/life</text>
+        <text class="edge-label" data-source="depression"  x="270" y="166" text-anchor="middle">×people</text>
+        <text class="edge-label" data-source="yld"         x="230" y="196" text-anchor="middle">×yld</text>
+        <text class="edge-label" data-source="depression"  x="310" y="211" text-anchor="middle">×people</text>
+        <text class="edge-label" data-source="duration"    x="270" y="271" text-anchor="middle">×duration</text>
+      </g>
+
       <!-- input nodes (data-input drives the .is-moved red marker in JS) -->
       <g>
         <circle class="node" data-input="attribution" cx="120" cy="50"  r="5"></circle><text class="node-label" x="110" y="38" text-anchor="end">Attribution</text>
@@ -504,16 +524,17 @@
         <circle class="node" data-input="duration"    cx="120" cy="290" r="5"></circle><text class="node-label" x="110" y="294" text-anchor="end">Duration</text>
       </g>
 
-      <!-- stream nodes -->
+      <!-- stream nodes: r=6 (one step larger than inputs) -->
       <g>
-        <circle class="node" cx="420" cy="80"  r="5"></circle><text class="node-label" x="432" y="84" text-anchor="start">Mortality</text>
-        <circle class="node" cx="420" cy="170" r="5"></circle><text class="node-label" x="432" y="174" text-anchor="start">Mental health</text>
-        <circle class="node" cx="420" cy="260" r="5"></circle><text class="node-label" x="432" y="264" text-anchor="start">Economic</text>
+        <circle class="node" cx="420" cy="80"  r="6"></circle><text class="node-label" x="432" y="84" text-anchor="start">Mortality</text>
+        <circle class="node" cx="420" cy="170" r="6"></circle><text class="node-label" x="432" y="174" text-anchor="start">Mental health</text>
+        <circle class="node" cx="420" cy="260" r="6"></circle><text class="node-label" x="432" y="264" text-anchor="start">Economic</text>
       </g>
 
-      <!-- total -->
-      <circle class="node out" cx="680" cy="170" r="6"></circle>
-      <text class="node-label out" x="680" y="152" text-anchor="middle">Total cost</text>
+      <!-- total: r=8. Visual-weight gradient (5 -> 6 -> 8) carries the eye
+           left to right without arrowheads, keeping the diagram hairline. -->
+      <circle class="node out" cx="680" cy="170" r="8"></circle>
+      <text class="node-label out" x="680" y="150" text-anchor="middle">Total cost</text>
     </svg>
   </figure>
 
@@ -807,9 +828,13 @@
   function updateInputNodes(s) {
     params.forEach(p => {
       const node = inputNodeEls[p];
-      if (!node) return;
       const moved = Math.abs(s[p] - defaults[p]) > 1e-6;
-      node.classList.toggle('is-moved', moved);
+      if (node) node.classList.toggle('is-moved', moved);
+      // Edge labels share the same is-active state as the node they
+      // originate from, so the formula on the diagram lights up the same
+      // way the slider does.
+      document.querySelectorAll('.calc-dag .edge-label[data-source="' + p + '"]')
+        .forEach(el => el.classList.toggle('is-active', moved));
     });
   }
 
