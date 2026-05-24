@@ -185,7 +185,21 @@
   .calc-stream-value { font-variant-numeric: tabular-nums; font-size: 1.125rem; font-weight: 500; color: var(--color); }
   .calc-stream-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey-500); }
   .calc-stream-math { font-size: 12px; line-height: 1.5; color: var(--grey-500); }
-  .calc-stream-math .var { color: var(--color); font-weight: 500; }
+  .calc-stream-math .var {
+    color: var(--color);
+    font-weight: 500;
+    display: inline-block;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  /* Per-slot min-widths sized to the longest possible variable in that
+     position so the math line stops twitching mid-drag. */
+  .calc-stream-math .var.w-pct   { min-width: 3ch;   } /* "50%" */
+  .calc-stream-math .var.w-vslm  { min-width: 5.5ch; } /* "$13.7M" */
+  .calc-stream-math .var.w-popm  { min-width: 4ch;   } /* "10.0M" */
+  .calc-stream-math .var.w-yrs   { min-width: 5.5ch; } /* "15 yrs" */
+  .calc-stream-math .var.w-annk  { min-width: 5ch;   } /* "$267K" */
+  .calc-stream-math .var.w-const { /* constants don't change; no reserve */ }
   .calc-stream-math .op { color: var(--grey-500); padding: 0 0.25em; }
 
   .calc-dag { width: 100%; max-width: 760px; margin: 0 auto; display: block; }
@@ -215,8 +229,8 @@
   .stream-seg.mortality { background: var(--color); color: var(--backgroundColor); }
   .stream-seg.mental    { background: var(--grey-500); color: var(--backgroundColor); }
   .stream-seg.economic  { background: #c5c5c0; color: var(--color); }
-  .stream-seg .seg-dollar { font-weight: 500; font-variant-numeric: tabular-nums; }
-  .stream-seg .seg-pct { opacity: 0.75; margin-left: 0.4em; font-variant-numeric: tabular-nums; }
+  .stream-seg .seg-dollar { font-weight: 500; font-variant-numeric: tabular-nums; display: inline-block; min-width: 4ch; }
+  .stream-seg .seg-pct { opacity: 0.75; margin-left: 0.4em; font-variant-numeric: tabular-nums; display: inline-block; min-width: 3ch; text-align: right; }
   @media (max-width: 480px) {
     .stream-seg { font-size: 10px; padding: 0 0.4em; letter-spacing: 0.04em; }
   }
@@ -259,6 +273,19 @@
   .calc-row { display: grid; grid-template-columns: 1fr auto; gap: 0.25rem 1rem; align-items: baseline; }
   .calc-row .calc-label { font-size: 0.9375rem; color: var(--color); line-height: 1.35; }
   .calc-row .calc-val { font-variant-numeric: tabular-nums; font-size: 0.9375rem; font-weight: 500; color: var(--color); white-space: nowrap; }
+  /* Stop slider value reflow: reserve the longest digit count per slot so
+     the unit suffix and row layout stay put while dragging. Widths sized
+     to the longest formatted value at each slider's max. */
+  .calc-row .calc-val > span[id^="val-"] {
+    display: inline-block;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  #val-attribution { min-width: 2ch; }   /* "50" */
+  #val-depression  { min-width: 3.2ch; } /* "10.0" */
+  #val-vsl         { min-width: 3.2ch; } /* "20.0" */
+  #val-yld         { min-width: 3.2ch; } /* "15" or "1.5" */
+  #val-duration    { min-width: 3.2ch; } /* "10" or "1.5" */
   .calc-row details { grid-column: 1 / -1; margin-top: 2px; }
   .calc-row details > summary { font-size: 11px; color: var(--grey-500); cursor: pointer; list-style: none; }
   .calc-row details > summary::-webkit-details-marker { display: none; }
@@ -815,7 +842,10 @@
     economic: document.getElementById('math-economic'),
   };
 
-  function v(value, suffix) { return '<span class="var">' + value + (suffix || '') + '</span>'; }
+  function v(value, suffix, w) {
+    const cls = 'var' + (w ? ' ' + w : '');
+    return '<span class="' + cls + '">' + value + (suffix || '') + '</span>';
+  }
   const X = '<span class="op">×</span>';
   function trim(n) { return (n % 1 === 0) ? n.toFixed(0) : n.toFixed(1); }
   const resetBtn = document.getElementById('calc-reset');
@@ -1002,11 +1032,11 @@
     // reader can see how a slider's value flows into a dollar figure.
     const annualLifeK = Math.round((s.vsl * 1e6 / 75) / 1000);  // $K per life-year
     mathEls.mortality.innerHTML =
-      v('110K') + ' suicides' + X + v(Math.round(s.attribution), '%') + X + v('$' + trim(s.vsl) + 'M') + ' per life';
+      v('110K', '', 'w-const') + ' suicides' + X + v(Math.round(s.attribution), '%', 'w-pct') + X + v('$' + trim(s.vsl) + 'M', '', 'w-vslm') + ' per life';
     mathEls.mental.innerHTML =
-      v(trim(s.depression) + 'M') + ' people' + X + v(trim(s.yld), ' yrs') + X + v('35%') + ' loss' + X + v('$' + annualLifeK + 'K') + ' per year';
+      v(trim(s.depression) + 'M', '', 'w-popm') + ' people' + X + v(trim(s.yld), ' yrs', 'w-yrs') + X + v('35%', '', 'w-const') + ' loss' + X + v('$' + annualLifeK + 'K', '', 'w-annk') + ' per year';
     mathEls.economic.innerHTML =
-      v(trim(s.depression) + 'M') + ' people' + X + v('$13K') + ' per year' + X + v(trim(s.duration), ' yrs');
+      v(trim(s.depression) + 'M', '', 'w-popm') + ' people' + X + v('$13K', '', 'w-const') + ' per year' + X + v(trim(s.duration), ' yrs', 'w-yrs');
 
     animateTotal(r.total);
     updateInputNodes(s);
