@@ -757,7 +757,7 @@
   </p>
 
   <p class="lede max-w-measure mb-10 text-mute">
-    For scale: the 1998 tobacco Master Settlement pays states about <span class="num">$8B</span> a year. At the defaults below, the annual social-media externality runs to roughly <span class="num">300×</span> that. <a href="#source-msa" class="underline hover:text-accent">Source.</a>
+    For scale: the 1998 tobacco Master Settlement pays states about <span class="num">$8B</span> a year. At the defaults below, the annual social-media externality runs to roughly <span class="num">290×</span> that. <a href="#source-msa" class="underline hover:text-accent">Source.</a>
   </p>
 
   <!-- Vertical bar + total. The bar's HEIGHT scales with the dollar total
@@ -863,11 +863,11 @@
   <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
     <button id="calc-reset" class="calc-reset" type="button">Reset to defaults</button>
     <button id="calc-share" class="calc-reset" type="button" aria-live="polite">Copy link to this scenario</button>
-    <span class="text-xs text-mute">Default total. About $2.5T.</span>
+    <span class="text-xs text-mute">Default total. About $2.3T.</span>
   </div>
 
   <p class="calc-fixed mt-10 max-w-measure">
-    <strong>Fixed assumptions.</strong> Annual U.S. suicides 110,000 (<a href="https://wonder.cdc.gov/" class="underline hover:text-accent">CDC WONDER</a>, all ages, recent five-year mean). Quality-of-life loss per depression-year 35% (<a href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(12)61680-8/fulltext" class="underline hover:text-accent">Salomon et al. 2012</a>, <a href="https://www.healthdata.org/research-analysis/gbd" class="underline hover:text-accent">GBD disability weights</a>). Healthcare cost $7,000 per person per year and productivity loss $6,000 per person per year (<a href="https://www.psychiatrist.com/jcp/economic-burden-adults-major-depressive-disorder-united/" class="underline hover:text-accent">Greenberg et al. 2021</a>, economic burden of major depressive disorder in the U.S.). These are accounting parameters, not causal claims.
+    <strong>Fixed assumptions.</strong> Annual U.S. suicides 49,500 (<a href="https://wonder.cdc.gov/" class="underline hover:text-accent">CDC WONDER</a>, all ages, 2022). Quality-of-life loss per depression-year 35% (<a href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(12)61680-8/fulltext" class="underline hover:text-accent">Salomon et al. 2012</a>, <a href="https://www.healthdata.org/research-analysis/gbd" class="underline hover:text-accent">GBD disability weights</a>). Healthcare cost $7,000 per person per year and productivity loss $6,000 per person per year (<a href="https://www.psychiatrist.com/jcp/economic-burden-adults-major-depressive-disorder-united/" class="underline hover:text-accent">Greenberg et al. 2021</a>, economic burden of major depressive disorder in the U.S.). These are accounting parameters, not causal claims.
   </p>
 
   <p class="lede max-w-measure mt-12">
@@ -1049,7 +1049,7 @@
     duration: 4.5,
   };
   const fixed = {
-    suicides: 110000,
+    suicides: 49500,
     qol: 35,
     healthcare: 7000,
     productivity: 6000,
@@ -1286,7 +1286,7 @@
     // Compressed: units carried by .calc-stream-label above, formula stays
     // one line. Operator span keeps the "×" visually quiet.
     mathEls.mortality.innerHTML =
-      v('110K', '', 'w-const') + X + v(Math.round(s.attribution), '%', 'w-pct') + X + v('$' + trim(s.vsl) + 'M', '', 'w-vslm');
+      v('49.5K', '', 'w-const') + X + v(Math.round(s.attribution), '%', 'w-pct') + X + v('$' + trim(s.vsl) + 'M', '', 'w-vslm');
     mathEls.mental.innerHTML =
       v(trim(s.depression) + 'M', '', 'w-popm') + X + v(trim(s.yld), 'y', 'w-yrs') + X + v('35%', '', 'w-const') + X + v('$' + annualLifeK + 'K/y', '', 'w-annk');
     mathEls.economic.innerHTML =
