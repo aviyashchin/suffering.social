@@ -420,10 +420,52 @@
     .calc-total { transition: none; }
   }
 
-  .verdict-bar-wrap { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem; }
-  .verdict-bar-track { width: 140px; height: 6px; border: 1px solid var(--color); background: transparent; }
-  .verdict-bar-fill { height: 100%; background: var(--color); }
-  .verdict-bar-unknown { color: var(--grey-500); font-size: 14px; line-height: 1; }
+  /* Verdicts table: a two-column dl. The amount column is tabular and
+     right-aligned so the scale gap ($375M vs $6M) reads naturally without
+     a chart or 'log scale' caption. Cases with no published amount carry
+     the case type (ruling / settled) in mute mono caps instead of a $. */
+  .verdicts { display: flex; flex-direction: column; gap: 0; max-width: 100%; }
+  .verdict-row {
+    display: grid;
+    grid-template-columns: minmax(7ch, auto) minmax(0, 1fr);
+    gap: 0 2rem;
+    padding: var(--sp-5, 1.25rem) 0;
+    border-top: 1px solid var(--color);
+    align-items: baseline;
+  }
+  .verdict-row:last-child { border-bottom: 1px solid var(--color); }
+  .verdict-amount {
+    font-family: var(--font-display, 'Fraunces', Georgia, serif);
+    font-weight: 400;
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    text-align: right;
+    color: var(--color);
+    font-variant-numeric: tabular-nums;
+  }
+  .verdict-amount--text {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--grey-500);
+    font-weight: 500;
+    padding-top: 0.5em;
+  }
+  .verdict-body { margin: 0; max-width: 56ch; line-height: 1.5; }
+  .verdict-meta {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--grey-500);
+    margin-bottom: 0.5em;
+  }
+  .verdict-where { color: var(--color); font-weight: 500; }
+  @media (max-width: 640px) {
+    .verdict-row { grid-template-columns: 1fr; gap: 0.5em 0; }
+    .verdict-amount { text-align: left; }
+  }
 </style>
 </head>
 
@@ -860,30 +902,36 @@
     A page like this used to live in the academic frame. Then twelve jurors started putting numbers on the externality. In ten weeks: a <span class="num">$375M</span> verdict in New Mexico, a negligent-design verdict in California, a state supreme court greenlighting Massachusetts, and Meta's first settlement with a school district.
   </p>
 
-  <ol class="space-y-6 max-w-measure">
-    <li class="hair pt-6">
-      <div class="text-xs uppercase tracking-widest text-mute mb-1 num">Mar 24, 2026 &nbsp;·&nbsp; New Mexico</div>
-      <div class="verdict-bar-wrap" aria-hidden="true"><div class="verdict-bar-track"><div class="verdict-bar-fill" style="width: 86%"></div></div></div>
-      <div class="mt-2"><strong class="font-medium">Jury orders Meta to pay <span class="num">$375M</span></strong> for failing to protect young users from predators on Facebook and Instagram. State AG case under consumer-protection statute. <a href="https://www.npr.org/2026/03/25/nx-s1-5746125/meta-youtube-social-media-trial-verdict" class="underline hover:text-accent">NPR</a></div>
-    </li>
-    <li class="hair pt-6">
-      <div class="text-xs uppercase tracking-widest text-mute mb-1 num">Mar 25, 2026 &nbsp;·&nbsp; California</div>
-      <div class="verdict-bar-wrap" aria-hidden="true"><div class="verdict-bar-track"><div class="verdict-bar-fill" style="width: 26%"></div></div></div>
-      <div class="mt-2"><strong class="font-medium">Los Angeles jury finds Meta and Google negligent in design</strong>, awards <span class="num">$6M</span> (<span class="num">$3M</span> compensatory, <span class="num">$3M</span> punitive). First bellwether verdict in California's consolidated docket of ~1,600 plaintiffs. Meta on the hook for 70%. <a href="https://www.pbs.org/newshour/nation/jury-finds-metas-platforms-are-harmful-to-children-in-1st-wave-of-social-media-addiction-lawsuits" class="underline hover:text-accent">PBS</a></div>
-    </li>
-    <li class="hair pt-6">
-      <div class="text-xs uppercase tracking-widest text-mute mb-1 num">Apr 10, 2026 &nbsp;·&nbsp; Massachusetts</div>
-      <div class="verdict-bar-wrap" aria-hidden="true"><span class="verdict-bar-unknown" title="no dollar amount: ruling, not a verdict">?</span></div>
-      <div class="mt-2"><strong class="font-medium">SJC rules Meta must face the AG's youth-addiction lawsuit.</strong> One of <span class="num">40+</span> state AG cases now active. <a href="https://www.cnbc.com/2026/04/10/meta-must-face-youth-addiction-lawsuit-by-massachusetts-court-rules.html" class="underline hover:text-accent">CNBC</a></div>
-    </li>
-    <li class="hair pt-6">
-      <div class="text-xs uppercase tracking-widest text-mute mb-1 num">May 21, 2026 &nbsp;·&nbsp; Kentucky</div>
-      <div class="verdict-bar-wrap" aria-hidden="true"><span class="verdict-bar-unknown" title="settlement terms undisclosed">?</span></div>
-      <div class="mt-2"><strong class="font-medium">Meta settles the first U.S. school-district case.</strong> School districts had argued the platforms drove a mental-health crisis they were forced to absorb the cost of. Terms undisclosed. <a href="https://www.cnbc.com/2026/05/21/meta-settles-first-us-case-over-school-costs-tied-to-youth-mental-health-filing.html" class="underline hover:text-accent">CNBC</a></div>
-    </li>
-  </ol>
-
-  <p class="text-xs text-mute mt-4 num">Bars are log scale, because verdicts span three orders of magnitude ($1M at left, $1B at right). A '?' means no dollar amount in the record.</p>
+  <dl class="verdicts">
+    <div class="verdict-row">
+      <dt class="verdict-amount num">$375M</dt>
+      <dd class="verdict-body">
+        <div class="verdict-meta"><span class="verdict-where">New Mexico</span> &nbsp;·&nbsp; <span class="num">Mar 24, 2026</span></div>
+        Jury orders Meta to pay for failing to protect young users from predators on Facebook and Instagram. State AG case under consumer-protection statute. <a href="https://www.npr.org/2026/03/25/nx-s1-5746125/meta-youtube-social-media-trial-verdict" class="underline hover:text-accent">NPR</a>
+      </dd>
+    </div>
+    <div class="verdict-row">
+      <dt class="verdict-amount num">$6M</dt>
+      <dd class="verdict-body">
+        <div class="verdict-meta"><span class="verdict-where">California</span> &nbsp;·&nbsp; <span class="num">Mar 25, 2026</span></div>
+        Los Angeles jury finds Meta and Google negligent in design. <span class="num">$3M</span> compensatory, <span class="num">$3M</span> punitive. First bellwether verdict in California's consolidated docket of ~<span class="num">1,600</span> plaintiffs. Meta on the hook for <span class="num">70%</span>. <a href="https://www.pbs.org/newshour/nation/jury-finds-metas-platforms-are-harmful-to-children-in-1st-wave-of-social-media-addiction-lawsuits" class="underline hover:text-accent">PBS</a>
+      </dd>
+    </div>
+    <div class="verdict-row">
+      <dt class="verdict-amount verdict-amount--text">ruling</dt>
+      <dd class="verdict-body">
+        <div class="verdict-meta"><span class="verdict-where">Massachusetts</span> &nbsp;·&nbsp; <span class="num">Apr 10, 2026</span></div>
+        SJC rules Meta must face the state AG's youth-addiction lawsuit. One of <span class="num">40+</span> state AG cases now active. <a href="https://www.cnbc.com/2026/04/10/meta-must-face-youth-addiction-lawsuit-by-massachusetts-court-rules.html" class="underline hover:text-accent">CNBC</a>
+      </dd>
+    </div>
+    <div class="verdict-row">
+      <dt class="verdict-amount verdict-amount--text">settled</dt>
+      <dd class="verdict-body">
+        <div class="verdict-meta"><span class="verdict-where">Kentucky</span> &nbsp;·&nbsp; <span class="num">May 21, 2026</span></div>
+        Meta settles the first U.S. school-district case. School districts had argued the platforms drove a mental-health crisis they were forced to absorb the cost of. Terms undisclosed. <a href="https://www.cnbc.com/2026/05/21/meta-settles-first-us-case-over-school-costs-tied-to-youth-mental-health-filing.html" class="underline hover:text-accent">CNBC</a>
+      </dd>
+    </div>
+  </dl>
 
   <p class="lede max-w-measure mt-12 text-mute">
     The federal MDL has <span class="num">2,400+</span> active cases. The CA consolidated docket has ~<span class="num">1,600</span> plaintiffs. The externality the page above argues for is the externality a jury just put a dollar amount on a piece of.
