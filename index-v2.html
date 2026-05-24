@@ -397,7 +397,7 @@
      slider track. Range-frame plus a quiet second data layer. The curve
      and its two ticks render once on load and never animate, so the
      slider input keeps its existing focus and drag behaviour. */
-  .calc-slider-wrap { position: relative; grid-column: 1 / -1; }
+  .calc-slider-wrap { position: relative; grid-column: 1 / -1; overflow: hidden; padding: 0 8px; margin: 0 -8px; }
   .calc-density {
     position: absolute;
     left: 0;
@@ -1525,8 +1525,11 @@
         s.appendChild(ln);
         return s;
       }
-      const staticSvg = makeSvg('calc-density calc-density-static', '0.35', '0.04');
-      const activeSvg = makeSvg('calc-density calc-density-active', '0.9', '0.14');
+      // Static gets more visual weight so the contrast with the moving
+      // active curve reads at a glance. Both layers stroke the SAME ink
+      // until the slider moves — only then the active flips red.
+      const staticSvg = makeSvg('calc-density calc-density-static', '0.5', '0.10');
+      const activeSvg = makeSvg('calc-density calc-density-active', '0.95', '0.22');
       wrap.insertBefore(staticSvg, input);
       wrap.insertBefore(activeSvg, input);
 
