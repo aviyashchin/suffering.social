@@ -248,9 +248,20 @@
   .calc-total.is-moved { color: var(--red); }
   .calc-stream-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey-500); }
   .calc-stream-math { font-size: 11px; line-height: 1.4; color: var(--grey-500); }
-  /* Editorial inline links: declare ONE explicit underline so the CDN's
-     default link decoration doesn't stack with Tailwind's .underline. */
-  a.underline { text-decoration: underline; text-decoration-style: solid; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  /* Editorial inline links: render a single 1px underline via a
+     background-image so neither the CDN's default link decoration nor
+     Tailwind's .underline can stack a second line under it. Also kill
+     text-decoration entirely on the anchor so the period in "Source."
+     stops creating the descender artifact that read as a dotted line. */
+  a.underline {
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 100% 1px;
+    background-repeat: no-repeat;
+    background-position: 0 calc(100% - 1px);
+    padding-bottom: 1px;
+  }
+  a.underline:hover { background-image: linear-gradient(var(--red), var(--red)); }
   .calc-stream-math .var {
     color: var(--color);
     font-weight: 500;
@@ -393,22 +404,37 @@
     z-index: 0;
     display: block;
   }
-  /* Hairline marker on the density tracks the slider's current value so
-     the reader can see where their pick sits relative to the published
-     distribution. Updates on every slider input. */
+  /* Active marker on the density tracks the slider's current value so
+     the reader can SEE where their pick sits relative to the published
+     distribution. Always visible (ink at default, red when off-default)
+     and wide enough (2px) to read at a glance. A small triangle pointer
+     at the top reinforces the position. */
   .calc-density-marker {
     position: absolute;
     top: 0;
     height: 18px;
-    width: 1px;
-    background: var(--red);
+    width: 2px;
+    background: var(--color);
     transform: translateX(-50%);
     pointer-events: none;
     z-index: 0;
-    opacity: 0;
-    transition: opacity 120ms ease;
+    opacity: 0.6;
+    transition: background 120ms ease, opacity 120ms ease;
   }
-  .calc-slider-wrap.is-moved .calc-density-marker { opacity: 0.9; }
+  .calc-density-marker::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid currentColor;
+    color: var(--color);
+  }
+  .calc-slider-wrap.is-moved .calc-density-marker { background: var(--red); opacity: 1; }
+  .calc-slider-wrap.is-moved .calc-density-marker::before { color: var(--red); }
   .calc-slider-wrap > .calc-slider {
     position: relative;
     z-index: 1;
@@ -1513,7 +1539,10 @@
       ticks.className = 'calc-ticks';
       const pctDefault = ((def - min) / (max - min)) * 100;
       const pctPeak = ((spec.peak - min) / (max - min)) * 100;
-      const closeEnough = Math.abs(pctDefault - pctPeak) < 8;
+      // Labels are ~16ch wide on the calc-tick row. At a typical slider
+      // width (~340px desktop, ~360px mobile) that is roughly 30% of the
+      // track. Anything closer than ~25% collapses the labels into one.
+      const closeEnough = Math.abs(pctDefault - pctPeak) < 25;
 
       const tDef = document.createElement('div');
       tDef.className = 'calc-tick is-default';
