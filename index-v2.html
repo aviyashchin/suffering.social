@@ -377,6 +377,58 @@
 
   /* Slider rail: hairline, signal-red active track */
   .calc-slider { width: 100%; appearance: none; -webkit-appearance: none; background: transparent; height: 24px; margin: 0; padding: 0; }
+
+  /* Density curve: a hairline KDE of published estimates sits BEHIND the
+     slider track. Range-frame plus a quiet second data layer. The curve
+     and its two ticks render once on load and never animate, so the
+     slider input keeps its existing focus and drag behaviour. */
+  .calc-slider-wrap { position: relative; grid-column: 1 / -1; }
+  .calc-density {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 18px;
+    pointer-events: none;
+    z-index: 0;
+    display: block;
+  }
+  .calc-slider-wrap > .calc-slider {
+    position: relative;
+    z-index: 1;
+  }
+  .calc-ticks {
+    grid-column: 1 / -1;
+    position: relative;
+    height: 16px;
+    margin-top: -4px;
+    pointer-events: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--grey-500);
+  }
+  .calc-tick {
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1;
+  }
+  .calc-tick > i {
+    display: block;
+    width: 1px;
+    height: 3px;
+    background: var(--grey-500);
+  }
+  .calc-tick.is-default > i { background: var(--color); height: 4px; width: 1px; }
+  .calc-tick > span { margin-top: 2px; white-space: nowrap; }
+  @media (max-width: 480px) {
+    .calc-tick > span { display: none; }
+  }
   .calc-slider:focus { outline: none; }
   .calc-slider::-webkit-slider-runnable-track {
     height: 1px;
@@ -1324,6 +1376,123 @@
     clearTimeout(shareTimer);
     shareTimer = setTimeout(() => { shareBtn.textContent = shareLabel; }, 1500);
   });
+
+  // Density curves: one hairline KDE per slider, sitting BEHIND the input
+  // track. Shape is the load-bearing claim, not digit-level precision, so
+  // a closed-form bell f(x) = exp(-((x-peak)/sigma)^2) is enough. Sigma
+  // derives from the half-max range: at the band edge density is 0.5,
+  // so sigma = halfWidth / sqrt(ln 2).
+  // Peaks and half-max bands come from the published source clusters
+  // documented in issue #25.
+  const densitySpecs = {
+    attribution: { peak: 18, half: [12, 25] },
+    depression:  { peak: 5,  half: [4, 6] },
+    vsl:         { peak: 11.5, half: [9, 14] },
+    yld:         { peak: 5,  half: [3, 8] },
+    duration:    { peak: 3.5, half: [2, 6] },
+  };
+
+  function renderDensities() {
+    const LN2_SQRT = Math.sqrt(Math.log(2));
+    params.forEach(p => {
+      const input = slEls[p];
+      if (!input) return;
+      const spec = densitySpecs[p];
+      if (!spec) return;
+      const row = input.closest('.calc-row');
+      if (!row) return;
+
+      // Wrap the input so the SVG can sit absolutely behind it.
+      let wrap = input.parentElement;
+      if (!wrap || !wrap.classList.contains('calc-slider-wrap')) {
+        wrap = document.createElement('div');
+        wrap.className = 'calc-slider-wrap';
+        input.parentNode.insertBefore(wrap, input);
+        wrap.appendChild(input);
+      }
+
+      const min = parseFloat(input.min);
+      const max = parseFloat(input.max);
+      const def = parseFloat(input.value);
+      const halfWidth = Math.max(
+        Math.abs(spec.peak - spec.half[0]),
+        Math.abs(spec.half[1] - spec.peak)
+      );
+      const sigma = halfWidth / LN2_SQRT;
+      const density = (x) => {
+        const z = (x - spec.peak) / sigma;
+        return Math.exp(-z * z);
+      };
+
+      // Sample 41 points across the value range. Map value to x in [0,1]
+      // and density to y where top = peak. Leave a 1px top and 1px bottom
+      // breathing margin inside the 18px svg viewBox.
+      const W = 1000, H = 100, TOP = 6, BOT = H - 2;
+      const N = 41;
+      const pts = [];
+      for (let i = 0; i < N; i++) {
+        const t = i / (N - 1);
+        const x = min + t * (max - min);
+        const d = density(x);
+        const px = t * W;
+        const py = BOT - d * (BOT - TOP);
+        pts.push([px, py]);
+      }
+      // Filled area path: walk the curve, then close along the baseline.
+      let areaD = 'M' + pts[0][0].toFixed(1) + ',' + BOT;
+      for (let i = 0; i < N; i++) areaD += ' L' + pts[i][0].toFixed(1) + ',' + pts[i][1].toFixed(1);
+      areaD += ' L' + pts[N - 1][0].toFixed(1) + ',' + BOT + ' Z';
+      let lineD = 'M' + pts[0][0].toFixed(1) + ',' + pts[0][1].toFixed(1);
+      for (let i = 1; i < N; i++) lineD += ' L' + pts[i][0].toFixed(1) + ',' + pts[i][1].toFixed(1);
+
+      const svgNS = 'http://www.w3.org/2000/svg';
+      const svg = document.createElementNS(svgNS, 'svg');
+      svg.setAttribute('class', 'calc-density');
+      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+      svg.setAttribute('preserveAspectRatio', 'none');
+      svg.setAttribute('aria-hidden', 'true');
+      const area = document.createElementNS(svgNS, 'path');
+      area.setAttribute('d', areaD);
+      area.setAttribute('fill', 'var(--color)');
+      area.setAttribute('fill-opacity', '0.08');
+      area.setAttribute('stroke', 'none');
+      const line = document.createElementNS(svgNS, 'path');
+      line.setAttribute('d', lineD);
+      line.setAttribute('fill', 'none');
+      line.setAttribute('stroke', 'var(--color)');
+      line.setAttribute('stroke-width', '0.5');
+      line.setAttribute('vector-effect', 'non-scaling-stroke');
+      svg.appendChild(area);
+      svg.appendChild(line);
+      wrap.insertBefore(svg, input);
+
+      // Tick row below the slider. DEFAULT in slider color, MEDIAN
+      // PUBLISHED in mute. If they coincide within ~2% of the range,
+      // drop the median label to avoid overlap.
+      const ticks = document.createElement('div');
+      ticks.className = 'calc-ticks';
+      const pctDefault = ((def - min) / (max - min)) * 100;
+      const pctPeak = ((spec.peak - min) / (max - min)) * 100;
+      const closeEnough = Math.abs(pctDefault - pctPeak) < 2;
+
+      const tDef = document.createElement('div');
+      tDef.className = 'calc-tick is-default';
+      tDef.style.left = pctDefault.toFixed(2) + '%';
+      tDef.innerHTML = '<i></i><span>Default</span>';
+      ticks.appendChild(tDef);
+
+      if (!closeEnough) {
+        const tMed = document.createElement('div');
+        tMed.className = 'calc-tick is-median';
+        tMed.style.left = pctPeak.toFixed(2) + '%';
+        tMed.innerHTML = '<i></i><span>Median published</span>';
+        ticks.appendChild(tMed);
+      }
+      row.insertBefore(ticks, wrap.nextSibling);
+    });
+  }
+
+  renderDensities();
 
   // Restore slider state from URL before first render so the initial paint
   // already reflects the shared scenario.
