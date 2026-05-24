@@ -243,7 +243,8 @@
     line-height: 1;
     font-size: clamp(4rem, 10vw, 8rem);
     color: var(--color);
-    transition: color 220ms ease;
+    /* No color transition. Total color flips instantly when value moves
+       from default so the change reads as decisive, not animated. */
   }
   .calc-total.is-moved { color: var(--red); }
   .calc-stream-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey-500); }
@@ -326,7 +327,7 @@
      of the DAG, where addition is the operation. Multiplicative inputs
      can't be Sankey'd without lying. */
   .calc-dag .edge { stroke: var(--color); stroke-width: 1; opacity: 0.35; }
-  .calc-dag .node { fill: var(--backgroundColor); stroke: var(--color); stroke-width: 1.25; transition: fill 180ms ease, stroke 180ms ease; }
+  .calc-dag .node { fill: var(--backgroundColor); stroke: var(--color); stroke-width: 1.25; }
   .calc-dag .node.is-moved { fill: var(--red); stroke: var(--red); }
   .calc-dag .node.out { fill: var(--color); stroke: var(--color); }
   .calc-dag .node-label { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; fill: var(--grey-500); }
@@ -352,7 +353,10 @@
     min-height: 0;
     overflow: hidden;
     padding: 4px 6px;
-    transition: flex-basis 360ms cubic-bezier(0.4, 0, 0.2, 1);
+    /* No transition on flex-basis. Bar segments snap to new heights on
+       every slider input. The calc reads as immediate computation, not
+       as an animation, so cascading transitions don't compound into
+       perceived jitter. */
     font-family: 'Inter', sans-serif;
     font-size: 10px;
     letter-spacing: 0.06em;
@@ -425,72 +429,6 @@
      slider track. Range-frame plus a quiet second data layer. The curve
      and its two ticks render once on load and never animate, so the
      slider input keeps its existing focus and drag behaviour. */
-  .calc-slider-wrap { position: relative; grid-column: 1 / -1; overflow: hidden; padding: 0 8px; margin: 0 -8px; }
-  .calc-density {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    height: 18px;
-    pointer-events: none;
-    z-index: 0;
-    display: block;
-  }
-  /* Two-layer density:
-       .calc-density-static is the published-estimates distribution, anchored
-         to its real peak, faded so the eye reads it as a reference layer.
-       .calc-density-active is the SAME curve, ink-stronger, translated
-         horizontally so its peak sits at the slider's current value.
-     Drag the slider, the active curve slides over the static one. When at
-     default, the two overlap. When far off-evidence, they separate
-     visibly. */
-  .calc-density-static {
-    position: absolute; left: 0; right: 0; top: 0;
-    height: 18px; pointer-events: none; z-index: 0;
-    transition: opacity 120ms ease;
-  }
-  .calc-density-active {
-    position: absolute; left: 0; right: 0; top: 0;
-    height: 18px; pointer-events: none; z-index: 1;
-    transition: transform 120ms ease;
-  }
-  .calc-slider-wrap.is-moved .calc-density-active path { stroke: var(--red); fill: var(--red); }
-  .calc-slider-wrap > .calc-slider {
-    position: relative;
-    z-index: 1;
-  }
-  .calc-ticks {
-    grid-column: 1 / -1;
-    position: relative;
-    height: 16px;
-    margin-top: -4px;
-    pointer-events: none;
-    font-family: 'Inter', sans-serif;
-    font-size: 8px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--grey-500);
-  }
-  .calc-tick {
-    position: absolute;
-    top: 0;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    line-height: 1;
-  }
-  .calc-tick > i {
-    display: block;
-    width: 1px;
-    height: 3px;
-    background: var(--grey-500);
-  }
-  .calc-tick.is-default > i { background: var(--color); height: 4px; width: 1px; }
-  .calc-tick > span { margin-top: 2px; white-space: nowrap; }
-  @media (max-width: 480px) {
-    .calc-tick > span { display: none; }
-  }
   .calc-slider:focus { outline: none; }
   .calc-slider::-webkit-slider-runnable-track {
     height: 1px;
@@ -1369,29 +1307,13 @@
     return params.every(p => Math.abs(s[p] - defaults[p]) < 1e-6);
   }
 
-  // total animation state
-  let animFrom = null, animTo = null, animStart = 0, animDur = 600, animRaf = 0;
+  // Total: snap to value. The tween was a major jitter source because it
+  // changed the rendered text dozens of times per second while bar
+  // segments transitioned independently. The reader gets immediate, stable
+  // feedback now: slider moves, total snaps, bar snaps, done.
+  let animFrom = null;
   function setTotalDisplay(value) { totalEl.textContent = formatTotal(value); }
-  function animateTotal(to) {
-    cancelAnimationFrame(animRaf);
-    if (reducedMotion || animFrom === null) {
-      animFrom = to;
-      setTotalDisplay(to);
-      return;
-    }
-    const from = animFrom;
-    animTo = to;
-    animStart = performance.now();
-    const step = (now) => {
-      const t = Math.min(1, (now - animStart) / animDur);
-      const eased = 1 - Math.pow(1 - t, 3);
-      const v = from + (to - from) * eased;
-      setTotalDisplay(v);
-      if (t < 1) { animRaf = requestAnimationFrame(step); }
-      else { animFrom = to; }
-    };
-    animRaf = requestAnimationFrame(step);
-  }
+  function animateTotal(to) { animFrom = to; setTotalDisplay(to); }
 
   function render() {
     const s = readState();
@@ -1457,166 +1379,14 @@
     shareTimer = setTimeout(() => { shareBtn.textContent = shareLabel; }, 1500);
   });
 
-  // Density curves: one hairline KDE per slider, sitting BEHIND the input
-  // track. Shape is the load-bearing claim, not digit-level precision, so
-  // a closed-form bell f(x) = exp(-((x-peak)/sigma)^2) is enough. Sigma
-  // derives from the half-max range: at the band edge density is 0.5,
-  // so sigma = halfWidth / sqrt(ln 2).
-  // Peaks and half-max bands come from the published source clusters
-  // documented in issue #25.
-  const densitySpecs = {
-    attribution: { peak: 18, half: [12, 25] },
-    depression:  { peak: 5,  half: [4, 6] },
-    vsl:         { peak: 11.5, half: [9, 14] },
-    yld:         { peak: 5,  half: [3, 8] },
-    duration:    { peak: 3.5, half: [2, 6] },
-  };
-
-  // Per-slider marker registry. Populated by renderDensities, read by
-  // updateDensityMarkers on every slider input.
-  const densityMarkers = {};
-
-  function updateDensityMarkers(s) {
-    params.forEach(p => {
-      const m = densityMarkers[p];
-      if (!m) return;
-      // Translate the ACTIVE curve so its peak sits at the slider value.
-      // The static curve underneath stays anchored to its real peak.
-      // shiftPct = how far (in slider %) the user has dragged from peak.
-      const range = m.max - m.min;
-      const shiftPct = range > 0 ? ((s[p] - m.peak) / range) * 100 : 0;
-      m.svg.style.transform = 'translateX(' + shiftPct.toFixed(2) + '%)';
-      const wrap = m.svg.parentElement;
-      if (!wrap) return;
-      const moved = Math.abs(s[p] - defaults[p]) > 1e-6;
-      wrap.classList.toggle('is-moved', moved);
-    });
-  }
-
-  function renderDensities() {
-    const LN2_SQRT = Math.sqrt(Math.log(2));
-    params.forEach(p => {
-      const input = slEls[p];
-      if (!input) return;
-      const spec = densitySpecs[p];
-      if (!spec) return;
-      const row = input.closest('.calc-row');
-      if (!row) return;
-
-      // Wrap the input so the SVG can sit absolutely behind it.
-      let wrap = input.parentElement;
-      if (!wrap || !wrap.classList.contains('calc-slider-wrap')) {
-        wrap = document.createElement('div');
-        wrap.className = 'calc-slider-wrap';
-        input.parentNode.insertBefore(wrap, input);
-        wrap.appendChild(input);
-      }
-
-      const min = parseFloat(input.min);
-      const max = parseFloat(input.max);
-      const def = parseFloat(input.value);
-      const halfWidth = Math.max(
-        Math.abs(spec.peak - spec.half[0]),
-        Math.abs(spec.half[1] - spec.peak)
-      );
-      const sigma = halfWidth / LN2_SQRT;
-      const density = (x) => {
-        const z = (x - spec.peak) / sigma;
-        return Math.exp(-z * z);
-      };
-
-      // Sample 41 points across the value range. Map value to x in [0,1]
-      // and density to y where top = peak. Leave a 1px top and 1px bottom
-      // breathing margin inside the 18px svg viewBox.
-      const W = 1000, H = 100, TOP = 6, BOT = H - 2;
-      const N = 41;
-      const pts = [];
-      for (let i = 0; i < N; i++) {
-        const t = i / (N - 1);
-        const x = min + t * (max - min);
-        const d = density(x);
-        const px = t * W;
-        const py = BOT - d * (BOT - TOP);
-        pts.push([px, py]);
-      }
-      // Filled area path: walk the curve, then close along the baseline.
-      let areaD = 'M' + pts[0][0].toFixed(1) + ',' + BOT;
-      for (let i = 0; i < N; i++) areaD += ' L' + pts[i][0].toFixed(1) + ',' + pts[i][1].toFixed(1);
-      areaD += ' L' + pts[N - 1][0].toFixed(1) + ',' + BOT + ' Z';
-      let lineD = 'M' + pts[0][0].toFixed(1) + ',' + pts[0][1].toFixed(1);
-      for (let i = 1; i < N; i++) lineD += ' L' + pts[i][0].toFixed(1) + ',' + pts[i][1].toFixed(1);
-
-      const svgNS = 'http://www.w3.org/2000/svg';
-      // Two layers:
-      //   1. STATIC published-estimates curve, faded, anchored to its real
-      //      peak position. The reader's reference for "where the evidence
-      //      actually lives."
-      //   2. ACTIVE belief curve, same shape, that TRANSLATES horizontally
-      //      so its peak follows the slider value. Drag the slider, watch
-      //      the curve slide along the track relative to the static one.
-      function makeSvg(cls, lineOpacity, areaOpacity) {
-        const s = document.createElementNS(svgNS, 'svg');
-        s.setAttribute('class', cls);
-        s.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
-        s.setAttribute('preserveAspectRatio', 'none');
-        s.setAttribute('aria-hidden', 'true');
-        const ar = document.createElementNS(svgNS, 'path');
-        ar.setAttribute('d', areaD);
-        ar.setAttribute('fill', 'var(--color)');
-        ar.setAttribute('fill-opacity', areaOpacity);
-        ar.setAttribute('stroke', 'none');
-        const ln = document.createElementNS(svgNS, 'path');
-        ln.setAttribute('d', lineD);
-        ln.setAttribute('fill', 'none');
-        ln.setAttribute('stroke', 'var(--color)');
-        ln.setAttribute('stroke-width', '0.5');
-        ln.setAttribute('stroke-opacity', lineOpacity);
-        ln.setAttribute('vector-effect', 'non-scaling-stroke');
-        s.appendChild(ar);
-        s.appendChild(ln);
-        return s;
-      }
-      // Static gets more visual weight so the contrast with the moving
-      // active curve reads at a glance. Both layers stroke the SAME ink
-      // until the slider moves. Only then the active flips red.
-      const staticSvg = makeSvg('calc-density calc-density-static', '0.5', '0.10');
-      const activeSvg = makeSvg('calc-density calc-density-active', '0.95', '0.22');
-      wrap.insertBefore(staticSvg, input);
-      wrap.insertBefore(activeSvg, input);
-
-      densityMarkers[p] = { svg: activeSvg, min, max, peak: spec.peak };
-
-      // Tick row below the slider. DEFAULT in slider color, MEDIAN
-      // PUBLISHED in mute. If they coincide within ~8% of the range
-      // (labels are ~14ch wide and otherwise collide visually),
-      // collapse into a single 'Default and median' label.
-      const ticks = document.createElement('div');
-      ticks.className = 'calc-ticks';
-      const pctDefault = ((def - min) / (max - min)) * 100;
-      const pctPeak = ((spec.peak - min) / (max - min)) * 100;
-      // Labels are ~16ch wide on the calc-tick row. At a typical slider
-      // width (~340px desktop, ~360px mobile) that is roughly 30% of the
-      // track. Anything closer than ~25% collapses the labels into one.
-      const closeEnough = Math.abs(pctDefault - pctPeak) < 25;
-
-      const tDef = document.createElement('div');
-      tDef.className = 'calc-tick is-default';
-      tDef.style.left = pctDefault.toFixed(2) + '%';
-      tDef.innerHTML = closeEnough
-        ? '<i></i><span>Default and median</span>'
-        : '<i></i><span>Default</span>';
-      ticks.appendChild(tDef);
-
-      if (!closeEnough) {
-        const tMed = document.createElement('div');
-        tMed.className = 'calc-tick is-median';
-        tMed.style.left = pctPeak.toFixed(2) + '%';
-        tMed.innerHTML = '<i></i><span>Median published</span>';
-        ticks.appendChild(tMed);
-      }
-      row.insertBefore(ticks, wrap.nextSibling);
-    });
-  }
+  // Density curves removed in the polish pass. They were decorative
+  // chartjunk (per Tufte): faded layers and sliding markers added visual
+  // noise without changing the reader's mental model of the math. The
+  // sources for each parameter live in the <details> Source block under
+  // each slider and in the inline [N] superscripts; that's documentation
+  // enough. Less ink, more signal.
+  function renderDensities() { /* no-op: densities removed for Tufte cleanup */ }
+  function updateDensityMarkers() { /* no-op: densities removed for Tufte cleanup */ }
 
   renderDensities();
 
