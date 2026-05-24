@@ -397,6 +397,20 @@
   .calc-row details[open] > summary { color: var(--color); }
   .calc-row details .src { font-size: 11px; color: var(--grey-500); margin-top: 4px; line-height: 1.5; }
 
+  .calc-cite {
+    font-size: 9px;
+    vertical-align: super;
+    margin-left: 0.25em;
+    font-variant-numeric: tabular-nums;
+  }
+  .calc-cite a {
+    color: var(--grey-500);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .calc-cite a:hover,
+  .calc-cite a:focus { color: var(--red); text-decoration: underline; }
+
   .calc-reset {
     font-family: 'Inter', sans-serif;
     font-size: 12px;
@@ -781,35 +795,35 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 max-w-3xl">
     <div class="calc-row" data-param="attribution">
       <div class="calc-label">How much of the rise do we blame on social media?</div>
-      <div class="calc-val"><span id="val-attribution">18</span>%</div>
+      <div class="calc-val"><span id="val-attribution">18</span>%<sup class="calc-cite"><a href="#cite-3">3</a></sup></div>
       <input type="range" class="calc-slider" id="sl-attribution" min="0" max="50" step="1" value="18" aria-label="Attribution to social media, percent">
       <details><summary>Source</summary><div class="src">Twenge &amp; Haidt 2024 argue the share is large. Skeptics like Odgers and Orben argue under 10%. The debate is the point. <a href="https://doi.org/10.1257/aer.20190658" class="underline hover:text-accent">Allcott et al. 2020</a> · <a href="https://doi.org/10.1016/j.adolescence.2024.07.010" class="underline hover:text-accent">Twenge &amp; Haidt 2024</a></div></details>
     </div>
 
     <div class="calc-row" data-param="depression">
       <div class="calc-label">How many U.S. teens and young adults have depression today?</div>
-      <div class="calc-val"><span id="val-depression">5.0</span>M</div>
+      <div class="calc-val"><span id="val-depression">5.0</span>M<sup class="calc-cite"><a href="#cite-1">1</a></sup></div>
       <input type="range" class="calc-slider" id="sl-depression" min="2" max="10" step="0.1" value="5" aria-label="People with depression, millions">
       <details><summary>Source</summary><div class="src">SAMHSA NSDUH 2021 past-year major depressive episode prevalence applied to U.S. teen and young-adult population. Survey-based and clinical estimates diverge by a factor of two. <a href="https://www.samhsa.gov/data/release/2021-national-survey-drug-use-and-health-nsduh-releases" class="underline hover:text-accent">samhsa.gov</a></div></details>
     </div>
 
     <div class="calc-row" data-param="vsl">
       <div class="calc-label">What's a statistical life worth?</div>
-      <div class="calc-val">$<span id="val-vsl">13.7</span>M</div>
+      <div class="calc-val">$<span id="val-vsl">13.7</span>M<sup class="calc-cite"><a href="#cite-11">11</a></sup></div>
       <input type="range" class="calc-slider" id="sl-vsl" min="5" max="20" step="0.1" value="13.7" aria-label="Value of a statistical life, millions of dollars">
       <details><summary>Source</summary><div class="src">DOT 2024 guidance sets VSL at \$13.7M. EPA uses roughly \$11M. Academic meta-analyses span \$5M to \$20M. <a href="https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-on-valuation-of-a-statistical-life-in-economic-analysis" class="underline hover:text-accent">DOT VSL 2024</a> · <a href="https://www.epa.gov/environmental-economics/mortality-risk-valuation" class="underline hover:text-accent">EPA</a></div></details>
     </div>
 
     <div class="calc-row" data-param="yld">
       <div class="calc-label">How many years does it last per person?</div>
-      <div class="calc-val"><span id="val-yld">6</span> yrs</div>
+      <div class="calc-val"><span id="val-yld">6</span> yrs<sup class="calc-cite"><a href="#cite-12">12</a></sup></div>
       <input type="range" class="calc-slider" id="sl-yld" min="1" max="15" step="0.5" value="6" aria-label="Years lived with disability">
       <details><summary>Source</summary><div class="src">Onset-to-recovery in clinical samples runs shorter. Longitudinal cohorts run longer. Both are real. <a href="https://www.healthdata.org/research-analysis/gbd" class="underline hover:text-accent">GBD disability weights</a></div></details>
     </div>
 
     <div class="calc-row md:col-span-2 md:max-w-md" data-param="duration">
       <div class="calc-label">How long do treatment costs run?</div>
-      <div class="calc-val"><span id="val-duration">4.5</span> yrs</div>
+      <div class="calc-val"><span id="val-duration">4.5</span> yrs<sup class="calc-cite"><a href="#cite-13">13</a></sup></div>
       <input type="range" class="calc-slider" id="sl-duration" min="1" max="10" step="0.5" value="4.5" aria-label="Duration of economic costs in years">
       <details><summary>Source</summary><div class="src">Claims-data studies suggest a few years of elevated treatment cost per episode. The identification problem is the same as on the mortality side: you're estimating a counterfactual you can't run. <a href="https://www.ahrq.gov/data/meps.html" class="underline hover:text-accent">AHRQ MEPS</a></div></details>
     </div>
@@ -943,35 +957,44 @@
 <footer class="max-w-5xl mx-auto px-6 py-16 rule">
   <h2 class="text-sm uppercase tracking-widest text-mute mb-6">Sources</h2>
   <ol class="text-sm space-y-4 max-w-measure num">
-    <li>
+    <li id="cite-1">
       <span class="text-mute">[1]</span> Substance Abuse and Mental Health Services Administration (SAMHSA). <em>National Survey on Drug Use and Health (NSDUH)</em>, 2004 to 2021. Past-year major depressive episode, ages 12 to 17. <a href="https://www.samhsa.gov/data/release/2021-national-survey-drug-use-and-health-nsduh-releases" class="underline hover:text-accent">samhsa.gov</a>
     </li>
-    <li>
+    <li id="cite-2">
       <span class="text-mute">[2]</span> Haidt, J. (2024). <em>The Anxious Generation: How the Great Rewiring of Childhood Is Causing an Epidemic of Mental Illness.</em> Penguin Press.
     </li>
-    <li>
+    <li id="cite-3">
       <span class="text-mute">[3]</span> Twenge, J. M., &amp; Haidt, J. (2024). Worldwide increases in adolescent loneliness. <em>Journal of Adolescence</em>, 96(6).
     </li>
-    <li>
+    <li id="cite-4">
       <span class="text-mute">[4]</span> Allcott, H., Braghieri, L., Eichmeyer, S., &amp; Gentzkow, M. (2020). The welfare effects of social media. <em>American Economic Review</em>, 110(3), 629–676. <a href="https://doi.org/10.1257/aer.20190658" class="underline hover:text-accent">doi:10.1257/aer.20190658</a>
     </li>
-    <li>
+    <li id="cite-5">
       <span class="text-mute">[5]</span> Wells, G., Horwitz, J., &amp; Seetharaman, D. (2021). Facebook knows Instagram is toxic for teen girls, company documents show. <em>The Wall Street Journal</em>, September 14, 2021.
     </li>
-    <li>
+    <li id="cite-6">
       <span class="text-mute">[6]</span> <em>NM v. Meta Platforms, Inc.</em>, jury verdict, New Mexico, March 24, 2026. <a href="https://www.npr.org/2026/03/25/nx-s1-5746125/meta-youtube-social-media-trial-verdict" class="underline hover:text-accent">npr.org</a>
     </li>
-    <li>
+    <li id="cite-7">
       <span class="text-mute">[7]</span> California social-media addiction bellwether verdict, Los Angeles County Superior Court, March 25, 2026. <a href="https://www.pbs.org/newshour/nation/jury-finds-metas-platforms-are-harmful-to-children-in-1st-wave-of-social-media-addiction-lawsuits" class="underline hover:text-accent">pbs.org</a>
     </li>
-    <li>
+    <li id="cite-8">
       <span class="text-mute">[8]</span> <em>Commonwealth of Massachusetts v. Meta Platforms, Inc.</em>, Supreme Judicial Court of Massachusetts, April 10, 2026. <a href="https://www.cnbc.com/2026/04/10/meta-must-face-youth-addiction-lawsuit-by-massachusetts-court-rules.html" class="underline hover:text-accent">cnbc.com</a>
     </li>
-    <li>
+    <li id="cite-9">
       <span class="text-mute">[9]</span> Meta school-district settlement, first U.S. case, Kentucky, May 21, 2026. <a href="https://www.cnbc.com/2026/05/21/meta-settles-first-us-case-over-school-costs-tied-to-youth-mental-health-filing.html" class="underline hover:text-accent">cnbc.com</a>
     </li>
     <li id="source-msa">
       <span class="text-mute">[10]</span> National Association of Attorneys General, <em>Master Settlement Agreement</em>, 1998. \$206B paid by tobacco companies to 46 states over 25 years (~\$8B/year). <a href="https://www.naag.org/our-work/naag-center-for-tobacco-and-public-health/the-master-settlement-agreement/" class="underline hover:text-accent">naag.org</a>
+    </li>
+    <li id="cite-11">
+      <span class="text-mute">[11]</span> U.S. Department of Transportation, <em>Revised Departmental Guidance on Valuation of a Statistical Life in Economic Analysis</em>, 2024. \$13.7M central estimate. <a href="https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-on-valuation-of-a-statistical-life-in-economic-analysis" class="underline hover:text-accent">transportation.gov</a>
+    </li>
+    <li id="cite-12">
+      <span class="text-mute">[12]</span> Salomon, J. A., et al. (2012). Common values in assessing health outcomes from disease and injury: disability weights measurement study for the Global Burden of Disease Study 2010. <em>The Lancet</em>, 380(9859), 2129–2143. <a href="https://doi.org/10.1016/S0140-6736(12)61680-8" class="underline hover:text-accent">doi:10.1016/S0140-6736(12)61680-8</a>
+    </li>
+    <li id="cite-13">
+      <span class="text-mute">[13]</span> Agency for Healthcare Research and Quality, <em>Medical Expenditure Panel Survey</em>. <a href="https://www.ahrq.gov/data/meps.html" class="underline hover:text-accent">ahrq.gov</a>
     </li>
   </ol>
 
