@@ -1522,5 +1522,120 @@
 })();
 </script>
 
+<!-- Theme picker: mirrors the design-system's preview/theme-switcher.js
+     visual contract (toggle button bottom-right, panel with 8 theme tiles
+     + light/dark toggle) but omits the Space/M keybinds which would
+     hijack page scroll on a long editorial page. Themes resolve through
+     cdn/v1/all.css's [data-theme=...] rules loaded in <head>. -->
+<script>
+(function () {
+  const THEMES = [
+    { id: 'kong',    label: 'Kong',    d: '#1b165b', l: '#ffffff' },
+    { id: 'zyg',     label: 'Zyg',     d: '#813294', l: '#c1d88b' },
+    { id: 'bontu',   label: 'Bontu',   d: '#0d0403', l: '#00ffff' },
+    { id: 'jones',   label: 'Jones',   d: '#150800', l: '#eda557' },
+    { id: 'peacock', label: 'Peacock', d: '#0a2e1f', l: '#f97316' },
+    { id: 'figma',   label: 'Figma',   d: '#1e1e24', l: '#0acf83' },
+    { id: 'stripe',  label: 'Stripe',  d: '#0a2540', l: '#f6f9fc' },
+    { id: 'floral',  label: 'Floral',  d: '#2a1854', l: '#f8f2dc' },
+  ];
+  const STORE = 'sc-design-theme';
+  const html = document.documentElement;
+  let state;
+  try {
+    const raw = JSON.parse(localStorage.getItem(STORE) || '{}');
+    state = { id: THEMES.some(t => t.id === raw.id) ? raw.id : 'kong',
+              mode: raw.mode === 'dark' ? 'dark' : 'light' };
+  } catch (_) { state = { id: 'kong', mode: 'light' }; }
+
+  function apply() {
+    html.setAttribute('data-theme', state.id);
+    html.setAttribute('data-mode', state.mode);
+    try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (_) {}
+    paint();
+  }
+
+  const mono = '"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace';
+
+  const btn = document.createElement('button');
+  Object.assign(btn.style, {
+    position: 'fixed', bottom: '18px', right: '18px', zIndex: '99998',
+    width: '36px', height: '36px', padding: '0',
+    border: '1px solid currentColor', borderRadius: '0',
+    background: 'var(--backgroundColor)', color: 'var(--color)',
+    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+  });
+  btn.title = 'Theme picker';
+  btn.setAttribute('aria-label', 'Open theme picker');
+  const swatch = document.createElement('span');
+  Object.assign(swatch.style, {
+    display: 'inline-block', width: '14px', height: '14px',
+    background: 'linear-gradient(135deg, var(--color) 50%, var(--backgroundColor) 50%)',
+    border: '1px solid currentColor',
+  });
+  btn.appendChild(swatch);
+
+  const panel = document.createElement('div');
+  Object.assign(panel.style, {
+    position: 'fixed', bottom: '64px', right: '18px', zIndex: '99999',
+    width: '300px', padding: '18px 20px 20px',
+    background: 'var(--backgroundColor)', color: 'var(--color)',
+    border: '1px solid currentColor',
+    fontFamily: mono, fontSize: '10px',
+    letterSpacing: '0.14em', textTransform: 'uppercase',
+    display: 'none',
+  });
+  panel.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;"><span style="opacity:.55">Theme</span><button data-close style="background:none;border:0;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;opacity:.5;">close ×</button></div><div data-themes style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;margin-bottom:16px;"></div><div style="display:flex;border:1px solid currentColor;"><button data-mode="light" style="flex:1;padding:8px 0;background:none;border:0;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;">Light</button><button data-mode="dark" style="flex:1;padding:8px 0;background:none;border:0;border-left:1px solid currentColor;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;">Dark</button></div>';
+
+  const grid = panel.querySelector('[data-themes]');
+  THEMES.forEach(t => {
+    const b = document.createElement('button');
+    b.dataset.id = t.id;
+    Object.assign(b.style, {
+      display: 'flex', alignItems: 'center', gap: '8px',
+      padding: '6px 8px', background: 'transparent',
+      border: '1px solid transparent', color: 'inherit', font: 'inherit',
+      letterSpacing: 'inherit', textTransform: 'inherit',
+      cursor: 'pointer', textAlign: 'left',
+    });
+    const sw = document.createElement('span');
+    Object.assign(sw.style, {
+      flex: '0 0 auto', width: '16px', height: '16px',
+      border: '1px solid currentColor',
+      background: 'linear-gradient(135deg,' + t.d + ' 50%,' + t.l + ' 50%)',
+    });
+    const nm = document.createElement('span');
+    nm.textContent = t.label;
+    nm.style.flex = '1 1 auto';
+    b.appendChild(sw);
+    b.appendChild(nm);
+    b.addEventListener('click', () => { state.id = t.id; apply(); });
+    grid.appendChild(b);
+  });
+  panel.querySelector('[data-close]').addEventListener('click', () => { panel.style.display = 'none'; });
+  panel.querySelectorAll('[data-mode]').forEach(b => {
+    b.addEventListener('click', () => { state.mode = b.dataset.mode; apply(); });
+  });
+  btn.addEventListener('click', () => {
+    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+  });
+
+  function paint() {
+    panel.querySelectorAll('[data-themes] button').forEach(b => {
+      b.style.borderColor = b.dataset.id === state.id ? 'currentColor' : 'transparent';
+    });
+    panel.querySelectorAll('[data-mode]').forEach(b => {
+      const on = b.dataset.mode === state.mode;
+      b.style.background = on ? 'currentColor' : 'transparent';
+      b.style.color = on ? 'var(--backgroundColor)' : 'inherit';
+    });
+  }
+
+  document.body.appendChild(btn);
+  document.body.appendChild(panel);
+  apply();
+})();
+</script>
+
 </body>
 </html>
