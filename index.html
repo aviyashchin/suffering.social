@@ -267,6 +267,27 @@
   /* Inline source markers + masthead brand links opt out of underline. */
   header a, sup a, .calc-cite a { text-decoration: none; }
   header a:hover { text-decoration: underline; text-decoration-color: var(--red); }
+  /* Masthead CTA: bold, signal-red link to the legacy multi-slider
+     calculator. Foregrounded so the reader can pick the editorial
+     argument (this page) or the dramatized ticker (/calculator) without
+     hunting. */
+  .masthead-cta {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--red);
+    padding: 6px 12px;
+    border: 1.5px solid var(--red);
+    background: var(--backgroundColor);
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .masthead-cta:hover { background: var(--red); color: var(--backgroundColor); text-decoration: none !important; }
+  @media (max-width: 520px) {
+    .masthead-cta { font-size: 11px; padding: 5px 9px; letter-spacing: 0.1em; }
+  }
   .calc-stream-math .var {
     color: var(--color);
     font-weight: 500;
@@ -574,9 +595,10 @@
 <body class="antialiased">
 
 <!-- masthead -->
-<header class="max-w-5xl mx-auto px-6 pt-8 pb-2 flex items-baseline justify-between">
-  <a href="/" class="text-sm tracking-tight font-medium">suffering.social</a>
-  <a href="https://subconscious.ai" class="text-sm text-mute hover:text-ink transition-colors">subconscious.ai →</a>
+<header class="max-w-5xl mx-auto px-6 pt-8 pb-2 flex items-baseline justify-between gap-4">
+  <a href="/" class="text-sm tracking-tight font-medium shrink-0">suffering.social</a>
+  <a href="/calculator" class="masthead-cta" aria-label="Open the legacy multi-slider cost calculator">CALCULATOR&nbsp;→</a>
+  <a href="https://subconscious.ai" class="text-sm text-mute hover:text-ink transition-colors shrink-0">subconscious.ai →</a>
 </header>
 
 <!-- hero: one question, one chart -->
