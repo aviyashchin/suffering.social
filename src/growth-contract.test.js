@@ -40,7 +40,7 @@ describe('SEO and telemetry build contract', () => {
     );
     expect(vercel.rewrites).toEqual(
       expect.arrayContaining([
-        { source: '/v5', destination: '/social_media_cost_calculatorv5.html' },
+        { source: '/v5', destination: '/social_media_cost_calculatorv5' },
       ])
     );
   });

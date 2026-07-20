@@ -16,7 +16,7 @@
   "rewrites": [
     {
       "source": "/v5",
-      "destination": "/social_media_cost_calculatorv5.html"
+      "destination": "/social_media_cost_calculatorv5"
     }
   ],
   "headers": [
