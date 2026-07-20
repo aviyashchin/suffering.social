@@ -1,5 +1,17 @@
 # Growth and Observability Operations
 
+## Live discovery status — July 20, 2026
+
+`/robots.txt`, `/sitemap.xml`, and `/llms.txt` are merged and return HTTP 200
+from `https://www.suffering.social`. The sitemap contains only the four
+canonical `www` routes, and `robots.txt` points to that sitemap.
+
+The domain property is already DNS-verified with Google. Sitemap submission and
+the 2026-04-20 through 2026-07-19 query baseline are not yet confirmed: the
+local `gcloud` user credential requires interactive reauthentication, while the
+available application-default credential lacks the Search Console scope. Do
+not report submission or baseline data until Search Console read-back succeeds.
+
 ## Permanent policy
 
 `suffering.social` is a sensitive-topic research site. RB2B, Vector, Leadsy, advertising tags, session replay, autocapture, and person-level identification are prohibited. The site has no lead form, CRM route, newsletter signup, or email automation. Keep `VITE_TELEMETRY_ENABLED=false` unless a provider is being deliberately promoted.
@@ -38,6 +50,26 @@ Submit `https://www.suffering.social/sitemap.xml` to the existing Search Console
 
 `llms.txt` is supporting documentation, not a Google ranking control. Prioritize crawlability, canonical consistency, visible primary evidence, and page experience.
 
-## Deferred email readiness
+## Email DNS readiness
 
-DNS currently supports forwarding, not an authenticated sending program. Before any future email workflow, separately approve a sending domain/provider, configure DKIM and DMARC, define consent and unsubscribe handling, and test deliverability. This rollout makes no DNS changes and sends no email.
+DNS currently uses Namecheap forwarding MX plus
+`include:spf.efwd.registrar-servers.com`; no DKIM or DMARC record is published.
+This is receiving/forwarding infrastructure, not an authenticated outbound
+mailbox. Do not start Lemlist or lemwarm on it.
+
+Safe activation order:
+
+1. Choose a real outbound mailbox provider, preferably on a dedicated sending
+   subdomain or adjacent domain so outreach reputation cannot harm the research
+   site.
+2. Publish the provider's single combined SPF record and generated DKIM record.
+3. Create and validate a monitored `dmarc@suffering.social` forwarding address,
+   then publish exactly one Namecheap TXT record at `_dmarc` with
+   `v=DMARC1; p=none; pct=100; rua=mailto:dmarc@suffering.social`. Monitor before
+   moving to `quarantine` or `reject`.
+4. In Lemlist, copy the account-generated custom tracking domain records. Add
+   the exact CNAME host/target and unique TXT verification value in Namecheap;
+   never guess or reuse another team's values.
+5. Validate SPF, DKIM, DMARC, the custom tracking domain, and a real test
+   message before warming. Define consent, unsubscribe, and suppression rules
+   before campaigns.

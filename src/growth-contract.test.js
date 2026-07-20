@@ -45,6 +45,66 @@ describe('SEO and telemetry build contract', () => {
     );
   });
 
+  test('both facethecost hosts permanently redirect every path to the canonical host', () => {
+    const vercel = JSON.parse(readFileSync('vercel.json', 'utf8'));
+
+    for (const host of ['facethecost.com', 'www.facethecost.com']) {
+      expect(vercel.redirects).toEqual(
+        expect.arrayContaining([
+          {
+            source: '/:path*',
+            has: [{ type: 'host', value: host }],
+            destination: 'https://www.suffering.social/:path*',
+            permanent: true,
+          },
+        ])
+      );
+    }
+  });
+
+  test('the telemetry entrypoint projects only its explicit public configuration', () => {
+    const entrypoint = readFileSync('src/telemetry.js', 'utf8');
+
+    expect(entrypoint).not.toContain('environment: import.meta.env');
+    expect(entrypoint).not.toMatch(/\.\.\.import\.meta\.env/);
+    for (const key of [
+      'MODE',
+      'VITE_TELEMETRY_ENABLED',
+      'VITE_GA4_ENABLED',
+      'VITE_GA_MEASUREMENT_ID',
+      'VITE_GTM_ENABLED',
+      'VITE_GTM_CONTAINER_ID',
+      'VITE_POSTHOG_ENABLED',
+      'VITE_POSTHOG_KEY',
+      'VITE_POSTHOG_HOST',
+      'VITE_SENTRY_ENABLED',
+      'VITE_SENTRY_DSN',
+    ]) {
+      expect(entrypoint).toContain(`${key}: import.meta.env.${key}`);
+    }
+  });
+
+  test('CI enforces the repository-owned validation gates', () => {
+    const workflow = readFileSync('.github/workflows/verify.yml', 'utf8');
+
+    for (const command of [
+      'npm ci',
+      'npm run verify:fast',
+      'npm run lint',
+      'npm audit --omit=dev',
+    ]) {
+      expect(workflow).toContain(`run: ${command}`);
+    }
+  });
+
+  test('privacy copy describes providers as conditional', () => {
+    const privacy = readFileSync('privacy.html', 'utf8');
+
+    expect(privacy).toContain('If enabled, these providers may be used');
+    expect(privacy).not.toContain('provides aggregate traffic measurement');
+    expect(privacy).not.toContain('provides aggregate product analytics');
+  });
+
   test('active pages contain no person-level identification vendors', () => {
     const activeSource = pages
       .filter(([file]) => existsSync(file))

@@ -3,6 +3,28 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "facethecost.com"
+        }
+      ],
+      "destination": "https://www.suffering.social/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.facethecost.com"
+        }
+      ],
+      "destination": "https://www.suffering.social/:path*",
+      "permanent": true
+    },
+    {
       "source": "/v2",
       "destination": "/",
       "permanent": true
