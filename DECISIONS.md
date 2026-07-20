@@ -69,8 +69,11 @@ Implementation invariants future agents should preserve:
   them. Browser bundles must not publish `.map` files.
 - Provider SDKs stay behind dynamic imports. With all flags off, the normal
   browser path makes no telemetry requests and loads no telemetry SDK chunks.
-- `/v5` is a clean Vercel rewrite to the legacy calculator file. Vite preview
-  does not emulate this rewrite, so validate that route on a Vercel preview.
+- `/v5` is a clean Vercel rewrite to the legacy calculator. Because
+  `cleanUrls` is enabled, its rewrite destination must be the extensionless
+  emitted route (`/social_media_cost_calculatorv5`), not the `.html` filename.
+  Vite preview does not emulate this rewrite, so validate it on Vercel and then
+  recheck the public production URL after promotion.
 
 The remaining Tailwind Play CDN warning and legacy CSS parser warnings predate
 observability. They are known static-site debt, not telemetry regressions. See
