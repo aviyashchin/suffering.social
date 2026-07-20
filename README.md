@@ -143,3 +143,7 @@ Help spread awareness by starring this repository!
 **Together, we can build technology that enhances human wellbeing instead of exploiting it.**
 
 *A [Subconscious.ai](https://subconscious.ai) research project*
+
+## Autonomous maintenance
+
+Small, bounded repository changes may be delivered through the shared Symphony marketing lane.
