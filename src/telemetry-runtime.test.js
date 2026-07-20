@@ -78,7 +78,7 @@ describe('browser telemetry runtime', () => {
     expect(controller.enabledProviders).toEqual(['sentry', 'ga4', 'posthog', 'gtm']);
     expect(document.querySelectorAll('script[data-telemetry-provider="ga4"]')).toHaveLength(1);
     expect(document.querySelectorAll('script[data-telemetry-provider="gtm"]')).toHaveLength(1);
-    expect(window.dataLayer).toContainEqual([
+    expect(window.dataLayer.map((entry) => Array.from(entry))).toContainEqual([
       'consent',
       'default',
       {
@@ -88,7 +88,7 @@ describe('browser telemetry runtime', () => {
         analytics_storage: 'granted',
       },
     ]);
-    expect(window.dataLayer).toContainEqual([
+    expect(window.dataLayer.map((entry) => Array.from(entry))).toContainEqual([
       'config',
       'G-ABC1234',
       {
@@ -171,10 +171,10 @@ describe('browser telemetry runtime', () => {
       })
     );
     expect(
-      window.dataLayer.filter((entry) => Array.isArray(entry) && entry[0] === 'event')
+      window.dataLayer.filter((entry) => entry[0] === 'event')
     ).toHaveLength(2);
     expect(
-      window.dataLayer.filter((entry) => Array.isArray(entry) && entry[0] === 'event')[0]
+      Array.from(window.dataLayer.filter((entry) => entry[0] === 'event')[0])
     ).toEqual([
       'event',
       'page_view',

@@ -19,9 +19,9 @@ function installConsentDefaults(windowObject) {
   windowObject.dataLayer = windowObject.dataLayer || [];
   windowObject.gtag =
     windowObject.gtag ||
-    ((...args) => {
-      windowObject.dataLayer.push(args);
-    });
+    function gtag() {
+      windowObject.dataLayer.push(arguments);
+    };
   windowObject.gtag('consent', 'default', {
     ad_storage: 'denied',
     ad_user_data: 'denied',

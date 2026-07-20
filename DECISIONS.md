@@ -26,7 +26,7 @@ Chart.js + d3 + nouislider + gsap). It does **not** convert to the
 forward stack without a full React rewrite, which isn't worth doing for
 one calculator.
 
-State after tonight's work (branch `ds-converge`, mergeable):
+State after the 2026-05-19 design-system convergence:
 
 | | before | after |
 |---|---|---|
@@ -44,6 +44,38 @@ State after tonight's work (branch `ds-converge`, mergeable):
 
 Site is locked at this state. Any future visual changes happen in
 a React rewrite, not in `index.html`.
+
+## 2026-07-19 — privacy-first observability baseline
+
+This is a sensitive-topic satellite, so observability is deliberately
+aggregate and fail-closed. The permanent exclusions are identity resolution
+(RB2B, Vector, Leadsy), ad tags, session replay, autocapture, user profiles,
+form capture, and raw calculator inputs. The only product events are canonical
+`page_view` and allowlisted `cta_clicked` events.
+
+Implementation invariants future agents should preserve:
+
+- Every provider requires both `VITE_TELEMETRY_ENABLED=true` and its own valid
+  enable flag/identifier. A missing or malformed value loads nothing.
+- URLs are reduced to canonical paths or allowlisted destination hosts before
+  dispatch. GA4 referrers are blanked; PostHog URL/referrer defaults are
+  removed; Sentry drops PII, query strings, request metadata, and non-navigation
+  breadcrumbs.
+- PostHog `advanced_disable_flags` is intentional for the pinned SDK; it is the
+  SDK's external flags/remote-config kill switch. Do not replace it based on
+  older option names without checking the installed version.
+- Sentry activation requires release-specific source-map upload credentials;
+  production builds fail closed if runtime error reporting is enabled without
+  them. Browser bundles must not publish `.map` files.
+- Provider SDKs stay behind dynamic imports. With all flags off, the normal
+  browser path makes no telemetry requests and loads no telemetry SDK chunks.
+- `/v5` is a clean Vercel rewrite to the legacy calculator file. Vite preview
+  does not emulate this rewrite, so validate that route on a Vercel preview.
+
+The remaining Tailwind Play CDN warning and legacy CSS parser warnings predate
+observability. They are known static-site debt, not telemetry regressions. See
+`docs/GROWTH_OPERATIONS.md` for activation, evidence, rollback, and SEO/GEO
+operations.
 
 ## Reverse-migrate into `~/marketing/design-system/`
 

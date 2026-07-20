@@ -75,6 +75,8 @@ export function buildTelemetryConfig(environment = {}) {
 }
 
 export function canonicalPathname(value = '/') {
+  if (!value) return '/';
+
   let pathname;
   try {
     pathname = new URL(value, 'https://www.suffering.social').pathname;
@@ -89,6 +91,8 @@ export function canonicalPathname(value = '/') {
 }
 
 function destinationHost(value) {
+  if (!value) return '';
+
   try {
     const host = new URL(value, 'https://www.suffering.social').hostname;
     return DESTINATION_HOSTS.has(host) ? host : '';
@@ -133,6 +137,8 @@ export function sanitizePostHogProperties(properties) {
 }
 
 function stripUrlQuery(value) {
+  if (!value) return undefined;
+
   try {
     const url = new URL(value, 'https://www.suffering.social');
     return `${url.origin}${url.pathname}`;

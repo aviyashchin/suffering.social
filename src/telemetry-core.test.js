@@ -64,6 +64,8 @@ describe('canonical analytics events', () => {
     ['/social_media_cost_calculatorv5.html?share=1', '/v5'],
     ['/calculator.html', '/calculator'],
     ['/?utm_source=test', '/'],
+    [null, '/'],
+    ['', '/'],
   ])('maps %s to the canonical pathname %s', (input, expected) => {
     expect(typeof telemetry.canonicalPathname).toBe('function');
     expect(telemetry.canonicalPathname(input)).toBe(expected);
@@ -114,6 +116,14 @@ describe('canonical analytics events', () => {
         pathname: '/',
         ctaId: 'free-form-value',
         destination: 'https://tracker.example.com/person@example.com',
+      })
+    ).toBeNull();
+
+    expect(
+      telemetry.buildEvent('cta_clicked', {
+        pathname: '/',
+        ctaId: 'calculator_open',
+        destination: null,
       })
     ).toBeNull();
   });
@@ -171,5 +181,11 @@ describe('Sentry privacy scrubbing', () => {
     expect(scrubbed.breadcrumbs).toEqual([
       { category: 'navigation', data: { from: '/', to: '/calculator' } },
     ]);
+  });
+
+  test('does not synthesize a request URL from a missing value', () => {
+    const scrubbed = telemetry.scrubSentryEvent({ request: { url: null } });
+
+    expect(scrubbed.request).toEqual({});
   });
 });
