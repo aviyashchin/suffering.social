@@ -31,7 +31,7 @@ We don't claim the chart proves causation. We claim it's strong enough to take s
 
 Subconscious.ai. Behavioral simulation platform using causal AI and digital twins. We build agents that simulate populations under conditions that did not occur. Counterfactual evidence at the scale of real markets.
 
-- Home: https://subconscious.ai
+- Home: https://www.subconscious.ai
 - Sister microsites:
   - https://www.intentionality.ai
   - https://www.causalmodel.ai

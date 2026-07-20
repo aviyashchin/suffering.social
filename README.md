@@ -8,7 +8,7 @@
 
 A research-based calculator that estimates the economic impact of social media on mental health, using peer-reviewed studies and government data.
 
-🔗 **Live Calculator**: [suffering.social](https://suffering.social)
+🔗 **Live Calculator**: [suffering.social](https://www.suffering.social)
 
 ## 📊 What This Calculator Does
 
@@ -23,7 +23,7 @@ This tool quantifies the hidden economic costs of social media's impact on menta
 ## 🚀 Quick Start
 
 ### Option 1: Just View the Calculator
-Simply visit [suffering.social](https://suffering.social) - no installation needed!
+Simply visit [suffering.social](https://www.suffering.social) - no installation needed!
 
 ### Option 2: Run Locally
 ```bash
@@ -38,6 +38,16 @@ npm install
 npm run dev
 # Opens at http://localhost:3000
 ```
+
+### Privacy-safe telemetry
+
+Telemetry fails closed and is disabled by default. Copy `.env.example` to a local `.env` only when validating a provider in preview, and enable one provider at a time. The shared runtime emits only canonical `page_view` and allowlisted `cta_clicked` events. It excludes calculator inputs, query strings, page text, session replay, and person-level identities.
+
+```bash
+npm run verify:fast
+```
+
+This runs the Jest contracts, production build, and built-output privacy/SEO checks. Production rollout and rollback steps live in `docs/GROWTH_OPERATIONS.md`.
 
 ### Option 3: Fork and Customize
 1. Click the **Fork** button on GitHub
@@ -132,4 +142,4 @@ Help spread awareness by starring this repository!
 
 **Together, we can build technology that enhances human wellbeing instead of exploiting it.**
 
-*A [Subconscious.ai](https://subconscious.ai) research project* 
+*A [Subconscious.ai](https://subconscious.ai) research project*
