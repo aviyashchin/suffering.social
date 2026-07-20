@@ -29,4 +29,4 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
-Sitemap: https://suffering.social/sitemap.xml
+Sitemap: https://www.suffering.social/sitemap.xml

@@ -8,21 +8,26 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "lint": "eslint js/**/*.js",
-    "lint:fix": "eslint js/**/*.js --fix",
+    "validate:growth": "node scripts/validate-growth.mjs dist",
+    "verify:fast": "npm test -- --runInBand && npm run build && npm run validate:growth",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "lint": "eslint src/telemetry*.js src/sentry*.js src/*validator.test.js src/growth-contract.test.js scripts/validate-growth.mjs",
+    "lint:fix": "npm run lint -- --fix",
     "format": "prettier --write js/**/*.js css/**/*.css",
     "bundle-analyze": "vite-bundle-analyzer dist",
     "lighthouse": "lighthouse http://localhost:3000 --output=html --output-path=./lighthouse-report.html"
   },
   "dependencies": {
+    "@sentry/browser": "^10.66.0",
     "chart.js": "^3.9.1",
     "nouislider": "^15.7.1",
+    "posthog-js": "^1.404.1",
     "tippy.js": "^6.3.7"
   },
   "devDependencies": {
+    "@sentry/vite-plugin": "^5.4.0",
     "@testing-library/dom": "^8.19.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/user-event": "^14.4.3",
@@ -41,7 +46,7 @@
     "setupFilesAfterEnv": [
       "@testing-library/jest-dom"
     ],
-    "moduleNameMapping": {
+    "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/js/$1"
     },
     "collectCoverageFrom": [

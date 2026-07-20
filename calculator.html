@@ -10,20 +10,20 @@
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://suffering.social/">
+    <meta property="og:url" content="https://www.suffering.social/calculator">
     <meta property="og:title" content="Social Media Costs Society $3.2T Annually - Interactive Research Calculator">
     <meta property="og:description" content="Peer-reviewed analysis: Each hour of social media increases depression by 0.23 points. Calculate the true economic cost with interactive research tool.">
-    <meta property="og:image" content="https://suffering.social/social-preview.png">
+    <meta property="og:image" content="https://www.suffering.social/social-preview.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="Suffering.Social">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://suffering.social/">
+    <meta name="twitter:url" content="https://www.suffering.social/calculator">
     <meta property="twitter:title" content="Social Media Costs Society $3.2T Annually">
     <meta property="twitter:description" content="Interactive calculator shows social media's hidden economic cost. Research-based analysis with full citations.">
-    <meta property="twitter:image" content="https://suffering.social/social-preview.png">
+    <meta property="twitter:image" content="https://www.suffering.social/social-preview.png">
     <meta property="twitter:creator" content="@suffering_social">
     
     <!-- LinkedIn -->
@@ -34,7 +34,8 @@
     <meta name="author" content="Suffering.Social Research Team">
     <meta name="keywords" content="social media cost, mental health economics, digital wellness, research calculator, depression statistics, social impact">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <link rel="canonical" href="https://suffering.social/">
+    <link rel="canonical" href="https://www.suffering.social/calculator">
+    <script type="module" src="/src/telemetry.js"></script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="apple-touch-icon" href="/favicon.svg">
 
@@ -52,18 +53,18 @@
         },
         {
           "@type": "WebSite",
-          "@id": "https://suffering.social/#website",
+          "@id": "https://www.suffering.social/#website",
           "name": "suffering.social",
-          "url": "https://suffering.social",
+          "url": "https://www.suffering.social",
           "description": "A research artifact on the cost of social media on adolescent mental health.",
           "publisher": { "@id": "https://subconscious.ai/#organization" }
         },
         {
           "@type": "WebApplication",
-          "@id": "https://suffering.social/#calculator",
+          "@id": "https://www.suffering.social/calculator#application",
           "name": "Social Media Cost Calculator",
           "description": "Research-based calculator estimating the economic and human costs of social media's impact on mental health. Based on peer-reviewed studies.",
-          "url": "https://suffering.social/",
+          "url": "https://www.suffering.social/calculator",
           "applicationCategory": "HealthApplication",
           "operatingSystem": "Web Browser",
           "offers": {
@@ -72,7 +73,7 @@
             "priceCurrency": "USD"
           },
           "publisher": { "@id": "https://subconscious.ai/#organization" },
-          "isPartOf": { "@id": "https://suffering.social/#website" }
+          "isPartOf": { "@id": "https://www.suffering.social/#website" }
         }
       ]
     }
@@ -1371,6 +1372,9 @@ cursor: grab !important;
                 <p class="text-gray-400 text-sm mt-2">
                     &copy; 2024 Social Media Cost Calculator. Open source research project.
                 </p>
+                <p class="text-gray-400 text-sm mt-2">
+                    <a href="/privacy" data-telemetry-cta="privacy_open" class="underline">Privacy</a>
+                </p>
             </div>
         </div>
     </footer>
@@ -1492,7 +1496,7 @@ cursor: grab !important;
     <div id="floating-branding" class="fixed bottom-4 left-4 z-40 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-sm p-3 max-w-xs">
         <div class="text-center">
             <div class="text-xs text-gray-600 mb-2">Powered by</div>
-            <a href="http://www.subconscious.ai" target="_blank" class="block text-blue-600 hover:text-blue-800 font-semibold text-sm mb-2">
+            <a href="https://www.subconscious.ai" data-telemetry-cta="subconscious_open" target="_blank" class="block text-blue-600 hover:text-blue-800 font-semibold text-sm mb-2">
                 subconscious.ai
             </a>
             <a href="https://discord.gg/3bgj4ZhABz" target="_blank" class="inline-flex items-center gap-1 px-2 py-1 bg-indigo-100 text-indigo-700 rounded text-xs hover:bg-indigo-200 transition-colors">
@@ -2926,7 +2930,7 @@ cursor: grab !important;
                 const costT = (results.total / 1e12).toFixed(1);
                 const costPerPerson = Math.round(results.total / 330000000); // US population
                 const gdpPercent = ((results.total / 24e12) * 100).toFixed(1);
-                const siteUrl = "https://suffering.social";
+                const siteUrl = "https://www.suffering.social";
                 
                 // Targeted content for influencers like Scott Galloway & Jonathan Haidt
                 const gallowayTargeted = [
@@ -3709,7 +3713,7 @@ border: 1px solid var(--bg-3);
         <a href="${this.getCurrentShareURL()}" target="_blank" style="display: inline-block; background: var(--accent); color: white; padding: 8px 16px; border-radius: 2px; text-decoration: none; font-size: 14px; font-weight: 500;">View Full Calculator</a>
     </div>
     <div style="text-align: center; margin-top: 12px;">
-        <a href="https://suffering.social" target="_blank" style="color: var(--fg-3); font-size: 12px; text-decoration: none;">Powered by suffering.social</a>
+        <a href="https://www.suffering.social" target="_blank" style="color: var(--fg-3); font-size: 12px; text-decoration: none;">Powered by suffering.social</a>
     </div>
 </div>`;
                 
@@ -5800,28 +5804,5 @@ border: 1px solid var(--bg-3);
         });
     </script>
 
-    <!-- Enhanced Analytics for Modular System -->
-    <script>
-      // Track modular system performance
-      if (typeof gtag !== 'undefined') {
-        gtag('config', 'G-RQ28MDK57K', {
-          custom_map: {
-            'system_type': 'modular',
-            'version': '2.1'
-          }
-        });
-        
-        // Track system initialization
-        window.addEventListener('load', () => {
-          gtag('event', 'modular_system_loaded', {
-            'event_category': 'performance',
-            'file_size_reduction': '95%',
-            'architecture': 'modular_enhanced'
-          });
-        });
-      }
-    </script>
-    
-    <!-- Google tag (gtag.js) -->
 </body>
-</html> 
+</html>

@@ -8,15 +8,16 @@
 <meta name="author" content="Subconscious.ai">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="keywords" content="adolescent mental health, teen depression, social media harm, 2012 inflection, smartphone adolescence, causal inference, counterfactual">
-<link rel="canonical" href="https://suffering.social/">
+<link rel="canonical" href="https://www.suffering.social/">
+<script type="module" src="/src/telemetry.js"></script>
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="suffering.social">
-<meta property="og:url" content="https://suffering.social/">
+<meta property="og:url" content="https://www.suffering.social/">
 <meta property="og:title" content="What happened to teenagers in 2012?">
 <meta property="og:description" content="U.S. teen major depressive episodes roughly doubled between 2011 and 2021. One chart, one question, one causal frame. A research artifact by Subconscious.ai.">
-<meta property="og:image" content="https://suffering.social/social-preview.png">
+<meta property="og:image" content="https://www.suffering.social/social-preview.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="suffering.social: the 2011 inflection in U.S. teen depression">
@@ -25,10 +26,10 @@
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://suffering.social/">
+<meta name="twitter:url" content="https://www.suffering.social/">
 <meta name="twitter:title" content="What happened to teenagers in 2012?">
 <meta name="twitter:description" content="U.S. teen major depressive episodes roughly doubled between 2011 and 2021. One chart, one question, one causal frame.">
-<meta name="twitter:image" content="https://suffering.social/social-preview.png">
+<meta name="twitter:image" content="https://www.suffering.social/social-preview.png">
 <meta name="twitter:image:alt" content="suffering.social: the 2011 inflection in U.S. teen depression">
 <meta name="twitter:creator" content="@subconsciousai">
 <meta name="twitter:site" content="@subconsciousai">
@@ -50,24 +51,24 @@
     },
     {
       "@type": "WebSite",
-      "@id": "https://suffering.social/#website",
+      "@id": "https://www.suffering.social/#website",
       "name": "suffering.social",
-      "url": "https://suffering.social",
+      "url": "https://www.suffering.social",
       "description": "A research artifact on the cost of social media on adolescent mental health.",
       "publisher": { "@id": "https://subconscious.ai/#organization" }
     },
     {
       "@type": "Article",
-      "@id": "https://suffering.social/#article",
+      "@id": "https://www.suffering.social/#article",
       "headline": "What happened to teenagers in 2012?",
       "description": "U.S. teen major depressive episodes roughly doubled between 2011 and 2021. The inflection point is unusually clean for social science. The harder question is what would have happened otherwise.",
-      "image": "https://suffering.social/social-preview.png",
+      "image": "https://www.suffering.social/social-preview.png",
       "datePublished": "2026-05-21",
       "dateModified": "2026-05-21",
       "author": { "@id": "https://subconscious.ai/#organization" },
       "publisher": { "@id": "https://subconscious.ai/#organization" },
-      "isPartOf": { "@id": "https://suffering.social/#website" },
-      "mainEntityOfPage": "https://suffering.social/",
+      "isPartOf": { "@id": "https://www.suffering.social/#website" },
+      "mainEntityOfPage": "https://www.suffering.social/",
       "about": [
         "Adolescent mental health",
         "Social media externalities",
@@ -597,8 +598,8 @@
 <!-- masthead -->
 <header class="max-w-5xl mx-auto px-6 pt-8 pb-2 flex items-baseline justify-between gap-4">
   <a href="/" class="text-sm tracking-tight font-medium shrink-0">suffering.social</a>
-  <a href="/calculator" class="masthead-cta" aria-label="Open the legacy multi-slider cost calculator">CALCULATOR&nbsp;→</a>
-  <a href="https://subconscious.ai" class="text-sm text-mute hover:text-ink transition-colors shrink-0">subconscious.ai →</a>
+  <a href="/calculator" data-telemetry-cta="calculator_open" class="masthead-cta" aria-label="Open the legacy multi-slider cost calculator">CALCULATOR&nbsp;→</a>
+  <a href="https://subconscious.ai" data-telemetry-cta="subconscious_open" class="text-sm text-mute hover:text-ink transition-colors shrink-0">subconscious.ai →</a>
 </header>
 
 <!-- hero: one question, one chart -->
@@ -1057,7 +1058,7 @@
 
   <div class="hair mt-16 pt-8 flex flex-col sm:flex-row justify-between gap-4 text-xs text-mute">
     <span>suffering.social, a research artifact by <a href="https://subconscious.ai" class="underline hover:text-ink">Subconscious</a></span>
-    <span>The earlier calculator is preserved at <a href="/v5" class="underline hover:text-ink">/v5</a>.</span>
+    <span><a href="/privacy" data-telemetry-cta="privacy_open" class="underline hover:text-ink">Privacy</a> · The earlier calculator is preserved at <a href="/v5" data-telemetry-cta="legacy_calculator_open" class="underline hover:text-ink">/v5</a>.</span>
   </div>
 </footer>
 
