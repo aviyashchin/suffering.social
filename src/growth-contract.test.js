@@ -45,7 +45,7 @@ describe('SEO and telemetry build contract', () => {
     );
   });
 
-  test('active pages contain no person-level identification vendors', () => {
+  test('active pages use only the approved identification vendor', () => {
     const activeSource = pages
       .filter(([file]) => existsSync(file))
       .map(([file]) => readFileSync(file, 'utf8'))
@@ -54,6 +54,16 @@ describe('SEO and telemetry build contract', () => {
     expect(activeSource).not.toMatch(
       /<script[^>]+src=["'][^"']*(?:rb2b|retention\.com|vector\.co|leadsy)/i
     );
+  });
+
+  test('every active page loads GTM and the Lemlist visitor tracker', () => {
+    const active = pages.filter(([file]) => existsSync(file));
+    expect(active.length).toBeGreaterThan(0);
+    for (const [file] of active) {
+      const source = readFileSync(file, 'utf8');
+      expect(source).toContain('GTM-WXSLXHDB');
+      expect(source).toMatch(/app\.lemlist\.com\/api\/visitors\/tracking/);
+    }
   });
 
   test('uses the slim PostHog browser entrypoint', () => {
