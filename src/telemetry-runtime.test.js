@@ -8,7 +8,6 @@ beforeAll(async () => {
 
 function enabledEnvironment() {
   return {
-    MODE: 'production',
     VITE_TELEMETRY_ENABLED: 'true',
     VITE_GA4_ENABLED: 'true',
     VITE_GA_MEASUREMENT_ID: 'G-ABC1234',
@@ -16,9 +15,10 @@ function enabledEnvironment() {
     VITE_GTM_CONTAINER_ID: 'GTM-ABC123',
     VITE_SENTRY_ENABLED: 'true',
     VITE_SENTRY_DSN: 'https://public@example.ingest.sentry.io/123',
-    VITE_SENTRY_RELEASE: 'abc123',
   };
 }
+
+const buildInfo = { release: 'abc123', environment: 'production' };
 
 describe('browser telemetry runtime', () => {
   beforeEach(() => {
@@ -34,7 +34,10 @@ describe('browser telemetry runtime', () => {
     });
   });
 
-  afterEach(() => window.__sufferingTelemetry?.destroy());
+  afterEach(() => {
+    window.__sufferingTelemetry?.destroy();
+    jest.restoreAllMocks();
+  });
 
   test('loads nothing when deployment configuration is absent', async () => {
     expect(typeof runtime.initialiseTelemetry).toBe('function');
@@ -43,6 +46,7 @@ describe('browser telemetry runtime', () => {
 
     const controller = await runtime.initialiseTelemetry({
       environment: {},
+      buildInfo: {},
       windowObject: window,
       documentObject: document,
       loadPostHog,
@@ -58,16 +62,37 @@ describe('browser telemetry runtime', () => {
   test('initialises GTM once with every Google consent category denied', async () => {
     expect(typeof runtime.initialiseTelemetry).toBe('function');
     const sentry = { init: jest.fn() };
+    let dataLayerAtGtmAppend;
+    const originalAppendChild = document.head.appendChild.bind(document.head);
+    jest.spyOn(document.head, 'appendChild').mockImplementation((node) => {
+      if (node.dataset?.telemetryProvider === 'gtm') {
+        dataLayerAtGtmAppend = window.dataLayer.map((entry) => Array.from(entry));
+      }
+      return originalAppendChild(node);
+    });
 
     const controller = await runtime.initialiseTelemetry({
       environment: enabledEnvironment(),
+      buildInfo,
       windowObject: window,
       documentObject: document,
       loadPostHog: jest.fn(),
       loadSentry: async () => sentry,
     });
+    expect(dataLayerAtGtmAppend).toContainEqual([
+      'consent',
+      'default',
+      {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+      },
+    ]);
+
     const second = await runtime.initialiseTelemetry({
       environment: enabledEnvironment(),
+      buildInfo,
       windowObject: window,
       documentObject: document,
       loadPostHog: jest.fn(),
@@ -89,7 +114,9 @@ describe('browser telemetry runtime', () => {
         analytics_storage: 'denied',
       },
     ]);
-    expect(sentry.init).toHaveBeenCalledWith(
+    expect(sentry.init).toHaveBeenCalledTimes(1);
+    const sentryOptions = sentry.init.mock.calls[0][0];
+    expect(sentryOptions).toEqual(
       expect.objectContaining({
         dsn: 'https://public@example.ingest.sentry.io/123',
         environment: 'production',
@@ -100,6 +127,15 @@ describe('browser telemetry runtime', () => {
         replaysOnErrorSampleRate: 0,
         beforeSend: expect.any(Function),
       })
+    );
+    expect(sentryOptions.integrations).toBeUndefined();
+    expect(sentryOptions.tracePropagationTargets).toBeUndefined();
+    expect(Object.keys(sentryOptions)).not.toEqual(
+      expect.arrayContaining([
+        'browserTracingIntegration',
+        'replayIntegration',
+        'replayCanvasIntegration',
+      ])
     );
   });
 
@@ -114,6 +150,7 @@ describe('browser telemetry runtime', () => {
 
     const first = await runtime.initialiseTelemetry({
       environment: enabledEnvironment(),
+      buildInfo,
       windowObject: window,
       documentObject: document,
       loadPostHog: jest.fn(),
@@ -121,6 +158,7 @@ describe('browser telemetry runtime', () => {
     });
     const second = await runtime.initialiseTelemetry({
       environment: enabledEnvironment(),
+      buildInfo,
       windowObject: window,
       documentObject: document,
       loadPostHog: jest.fn(),
@@ -177,8 +215,18 @@ describe('browser telemetry runtime', () => {
         },
       ],
     ]);
-    expect(JSON.stringify(events)).not.toMatch(
-      /person@example\.com|private|utm_source|scenario|cookie|text/i
-    );
+    const serializedEvents = JSON.stringify(events);
+    for (const forbidden of [
+      'person@example.com',
+      'private',
+      'utm_source',
+      'scenarioValue',
+      'data-scenario',
+      'cookie',
+      'domText',
+      'textContent',
+    ]) {
+      expect(serializedEvents).not.toContain(forbidden);
+    }
   });
 });

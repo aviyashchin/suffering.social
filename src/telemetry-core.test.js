@@ -3,7 +3,6 @@ import * as telemetry from './telemetry-core.js';
 const validEnvironment = {
   DEV: false,
   PROD: true,
-  MODE: 'production',
   VITE_TELEMETRY_ENABLED: 'true',
   VITE_GA4_ENABLED: 'true',
   VITE_GA_MEASUREMENT_ID: 'G-ABC1234',
@@ -11,14 +10,14 @@ const validEnvironment = {
   VITE_GTM_CONTAINER_ID: 'GTM-ABC123',
   VITE_SENTRY_ENABLED: 'true',
   VITE_SENTRY_DSN: 'https://public@example.ingest.sentry.io/123',
-  VITE_SENTRY_RELEASE: 'abc123',
 };
+const validBuildInfo = { release: 'abc123', environment: 'production' };
 
 describe('telemetry configuration', () => {
   test('fails closed when deployment flags and identifiers are absent', () => {
     expect(typeof telemetry.buildTelemetryConfig).toBe('function');
 
-    expect(telemetry.buildTelemetryConfig({})).toEqual({
+    expect(telemetry.buildTelemetryConfig({}, {})).toEqual({
       environment: 'development',
       ga4: { enabled: false, measurementId: '' },
       gtm: { enabled: false, containerId: '' },
@@ -30,7 +29,7 @@ describe('telemetry configuration', () => {
   test('enables only aggregate GTM and release-bound Sentry', () => {
     expect(typeof telemetry.buildTelemetryConfig).toBe('function');
 
-    const config = telemetry.buildTelemetryConfig(validEnvironment);
+    const config = telemetry.buildTelemetryConfig(validEnvironment, validBuildInfo);
 
     expect(config.ga4.enabled).toBe(false);
     expect(config.gtm.enabled).toBe(true);
@@ -41,32 +40,36 @@ describe('telemetry configuration', () => {
   });
 
   test('keeps Sentry disabled without both a release and an explicit environment', () => {
-    const withoutRelease = telemetry.buildTelemetryConfig({
-      ...validEnvironment,
-      VITE_SENTRY_RELEASE: '',
+    const withoutRelease = telemetry.buildTelemetryConfig(validEnvironment, {
+      ...validBuildInfo,
+      release: '',
     });
-    const withoutEnvironment = telemetry.buildTelemetryConfig({
-      ...validEnvironment,
-      MODE: '',
+    const withoutEnvironment = telemetry.buildTelemetryConfig(validEnvironment, {
+      ...validBuildInfo,
+      environment: '',
     });
 
     expect(withoutRelease.sentry.enabled).toBe(false);
     expect(withoutEnvironment.sentry.enabled).toBe(false);
+    expect(validEnvironment).not.toHaveProperty('VITE_SENTRY_RELEASE');
+    expect(validEnvironment).not.toHaveProperty('MODE');
   });
 
   test('rejects malformed identifiers, direct PostHog, and Sentry without a release', () => {
     expect(typeof telemetry.buildTelemetryConfig).toBe('function');
 
-    const config = telemetry.buildTelemetryConfig({
-      ...validEnvironment,
-      VITE_GA_MEASUREMENT_ID: 'UA-legacy',
-      VITE_GTM_CONTAINER_ID: 'not-gtm',
-      VITE_POSTHOG_ENABLED: 'true',
-      VITE_POSTHOG_KEY: 'phc_abc123',
-      VITE_POSTHOG_HOST: 'http://collector.example.com',
-      VITE_SENTRY_DSN: 'javascript:alert(1)',
-      VITE_SENTRY_RELEASE: '',
-    });
+    const config = telemetry.buildTelemetryConfig(
+      {
+        ...validEnvironment,
+        VITE_GA_MEASUREMENT_ID: 'UA-legacy',
+        VITE_GTM_CONTAINER_ID: 'not-gtm',
+        VITE_POSTHOG_ENABLED: 'true',
+        VITE_POSTHOG_KEY: 'phc_abc123',
+        VITE_POSTHOG_HOST: 'http://collector.example.com',
+        VITE_SENTRY_DSN: 'javascript:alert(1)',
+      },
+      validBuildInfo
+    );
 
     expect(config.ga4.enabled).toBe(false);
     expect(config.gtm.enabled).toBe(false);
