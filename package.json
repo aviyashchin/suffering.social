@@ -13,6 +13,7 @@
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
     "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "test:e2e": "playwright test",
     "lint": "eslint src/telemetry*.js src/sentry*.js src/*validator.test.js src/growth-contract.test.js scripts/validate-growth.mjs",
     "lint:fix": "npm run lint -- --fix",
     "format": "prettier --write js/**/*.js css/**/*.css",
@@ -27,6 +28,7 @@
     "tippy.js": "^6.3.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.0",
     "@sentry/vite-plugin": "^5.4.0",
     "@testing-library/dom": "^8.19.0",
     "@testing-library/jest-dom": "^5.16.5",
@@ -50,9 +52,9 @@
       "^@/(.*)$": "<rootDir>/js/$1"
     },
     "collectCoverageFrom": [
-      "js/**/*.js",
-      "!js/**/*.test.js",
-      "!js/vendor/**"
+      "src/telemetry-core.js",
+      "src/telemetry-runtime.js",
+      "src/sentry-build-config.js"
     ]
   },
   "prettier": {

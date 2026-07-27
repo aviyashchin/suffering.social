@@ -45,6 +45,18 @@ describe('SEO and telemetry build contract', () => {
     );
   });
 
+  test('legacy facethecost hosts permanently redirect every path before route redirects', () => {
+    const vercel = JSON.parse(readFileSync('vercel.json', 'utf8'));
+    const hostRedirects = ['facethecost.com', 'www.facethecost.com'].map((host) => ({
+      source: '/:path*',
+      has: [{ type: 'host', value: host }],
+      destination: 'https://www.suffering.social/:path*',
+      permanent: true,
+    }));
+
+    expect(vercel.redirects.slice(0, 2)).toEqual(hostRedirects);
+  });
+
   test('active pages contain no direct analytics or identification vendor loader', () => {
     const active = pages.filter(([file]) => existsSync(file));
     expect(active.length).toBeGreaterThan(0);
@@ -80,10 +92,48 @@ describe('SEO and telemetry build contract', () => {
 
   test('the shared entrypoint delegates all browser telemetry to the local runtime', () => {
     const entrypoint = readFileSync('src/telemetry.js', 'utf8');
+    const projectedVariables = [
+      'VITE_TELEMETRY_ENABLED',
+      'VITE_GTM_ENABLED',
+      'VITE_GTM_CONTAINER_ID',
+      'VITE_SENTRY_ENABLED',
+      'VITE_SENTRY_DSN',
+    ];
 
     expect(entrypoint).toContain("import { initialiseTelemetry } from './telemetry-runtime.js'");
+    for (const variable of projectedVariables) {
+      expect(entrypoint).toContain(`${variable}: import.meta.env.${variable}`);
+    }
+    expect(entrypoint.match(/import\.meta\.env\.VITE_[A-Z0-9_]+/g)?.sort()).toEqual(
+      projectedVariables.map((variable) => `import.meta.env.${variable}`).sort()
+    );
+    expect(entrypoint).not.toMatch(/\.\.\.\s*import\.meta\.env|environment\s*:\s*import\.meta\.env/);
+    expect(entrypoint).not.toMatch(
+      /VERCEL_|SENTRY_AUTH_TOKEN|SENTRY_ORG|SENTRY_PROJECT|VITE_GA4_ENABLED|VITE_GA_MEASUREMENT_ID|VITE_POSTHOG/
+    );
     expect(entrypoint).not.toMatch(
       /googletagmanager|google-analytics|googletagservices|gtag\s*\(|lemlist|clarity|posthog|r[e]?b2b|leadsy/i
     );
+  });
+
+  test('coverage targets active telemetry modules and Playwright has a real e2e entrypoint', () => {
+    const packageJson = JSON.parse(readFileSync('package.json', 'utf8'));
+
+    expect(packageJson.jest.collectCoverageFrom).toEqual([
+      'src/telemetry-core.js',
+      'src/telemetry-runtime.js',
+      'src/sentry-build-config.js',
+    ]);
+    expect(packageJson.scripts['test:e2e']).toBe('playwright test');
+    expect(packageJson.devDependencies['@playwright/test']).toBeTruthy();
+    expect(existsSync('playwright.config.js')).toBe(true);
+
+    if (existsSync('playwright.config.js')) {
+      const config = readFileSync('playwright.config.js', 'utf8');
+      expect(config).toContain('PLAYWRIGHT_BASE_URL');
+      expect(config).toContain('http://127.0.0.1:4173');
+      expect(config).toContain('chromium');
+      expect(config).toContain('vite preview --host 127.0.0.1 --port 4173');
+    }
   });
 });
