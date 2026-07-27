@@ -19,6 +19,10 @@ export default defineConfig(({ command, mode }) => {
   const sentryBuild = resolveSentryBuildConfig(environment, command);
 
   return {
+    define: {
+      __APP_RELEASE__: JSON.stringify(environment.VERCEL_GIT_COMMIT_SHA || ''),
+      __APP_ENVIRONMENT__: JSON.stringify(environment.VERCEL_ENV || ''),
+    },
     plugins: sentryBuild.enabled
       ? [
           sentryVitePlugin({

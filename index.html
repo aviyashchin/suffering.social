@@ -86,41 +86,6 @@
 }
 </script>
 
-<!-- Design-system contract: tokens, fonts, theme registry, 200+ editorial
-     primitives (.head, .lede, .label, .kicker, .meta, .footnote, .struck,
-     .hair, .tabular, .mono, .dag-mark, .proof, ...). Loaded BEFORE
-     Tailwind + page styles so app-side overrides still win. runtime.js
-     intentionally NOT loaded (it binds Space/M to theme cycling which
-     would hijack page scroll on a content page). -->
-<link rel="stylesheet" href="https://subconscious-ai.github.io/design-system/cdn/v1/all.css">
-
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  // Tokens come from the design-system contract loaded above. The Tailwind
-  // colour scale is kept as a thin alias so existing utility classes
-  // (text-mute, bg-ink, border-accent) still resolve. New code should
-  // prefer var(--color) / var(--grey-500) / var(--red) directly.
-  tailwind.config = {
-    corePlugins: { preflight: true },
-    theme: {
-      extend: {
-        fontFamily: {
-          sans: ['var(--font-body)', 'Inter Tight', 'Inter', 'system-ui', 'sans-serif'],
-          display: ['var(--font-display)', 'Redaction', 'Fraunces', 'Georgia', 'serif'],
-        },
-        colors: {
-          ink: 'var(--color)',
-          paper: 'var(--backgroundColor)',
-          rule: 'var(--color)',
-          mute: 'var(--grey-500)',
-          accent: 'var(--red)',
-        },
-        maxWidth: { measure: '38rem' },
-      }
-    }
-  }
-</script>
-
 <style>
   /* Body / typography are inherited from the CDN contract via .head, .lede,
      .meta, .kicker, .footnote, .struck, .hair, .tabular, .mono, etc.
@@ -591,14 +556,6 @@
     .verdict-amount { text-align: left; }
   }
 </style>
-<!-- Portfolio Google Tag Manager: owns GA4, PostHog, Clarity, Ads -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-WXSLXHDB');</script>
-<!-- Lemlist visitor tracking: person-level identification, see /privacy -->
-<script type="text/javascript" src="https://app.lemlist.com/api/visitors/tracking?k=MbcYUtr0KKF0sl3pFZ%2Bn%2BT2oOPlP5TGNOyTtG7KCfi0%3D&t=tea_7cuzS3c76tnoanS4m"></script>
 </head>
 
 <body class="antialiased">

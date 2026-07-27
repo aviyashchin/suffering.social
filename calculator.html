@@ -79,57 +79,6 @@
     }
     </script>
     
-    <!-- External Dependencies with Fallbacks -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tailwind Play CDN reads tailwind.config AFTER its script loads.
-         - preflight off: design-system all.css already styles base elements.
-         - palette: every Tailwind colour resolves through a DS token, so
-           the utility classes in the HTML render in brand, not Tailwind defaults. -->
-    <script>
-      tailwind.config = {
-        corePlugins: { preflight: false },
-        theme: { extend: { colors: (() => {
-          // Ramp anchor -> 50..900 via the DS color-mix() recipe.
-          //   light end mixes anchor into --bg-1; dark end mixes anchor into --fg-1.
-          //   This preserves Tailwind's 50->900 depth (which buttons & hover states
-          //   rely on) while every step still resolves through DS tokens.
-          const ramp = (anchor) => ({
-            50:  `color-mix(in srgb, ${anchor}  6%, var(--bg-1))`,
-            100: `color-mix(in srgb, ${anchor} 12%, var(--bg-1))`,
-            200: `color-mix(in srgb, ${anchor} 22%, var(--bg-1))`,
-            300: `color-mix(in srgb, ${anchor} 38%, var(--bg-1))`,
-            400: `color-mix(in srgb, ${anchor} 62%, var(--bg-1))`,
-            500: anchor,
-            600: `color-mix(in srgb, ${anchor} 88%, var(--fg-1))`,
-            700: `color-mix(in srgb, ${anchor} 72%, var(--fg-1))`,
-            800: `color-mix(in srgb, ${anchor} 55%, var(--fg-1))`,
-            900: `color-mix(in srgb, ${anchor} 40%, var(--fg-1))`,
-          });
-          const greyRamp = {
-            50: 'var(--bg-1)', 100: 'var(--bg-2)', 200: 'var(--bg-3)',
-            300: 'var(--grey-300)', 400: 'var(--grey-500)', 500: 'var(--grey-500)',
-            600: 'var(--grey-700)', 700: 'var(--grey-700)',
-            800: 'var(--fg-2)', 900: 'var(--fg-1)',
-          };
-          return {
-            gray: greyRamp, slate: greyRamp, neutral: greyRamp, zinc: greyRamp, stone: greyRamp,
-            blue:   ramp('var(--accent)'),
-            indigo: ramp('var(--c-productivity)'),
-            purple: ramp('var(--c-productivity)'),
-            violet: ramp('var(--c-productivity)'),
-            red:    ramp('var(--red)'),
-            rose:   ramp('var(--red)'),
-            green:  ramp('var(--chart-2)'),
-            emerald:ramp('var(--chart-2)'),
-            yellow: ramp('var(--chart-5)'),
-            amber:  ramp('var(--chart-5)'),
-            orange: ramp('var(--chart-1)'),
-            black: 'var(--fg-1)', white: 'var(--bg-1)',
-          };
-        })() } }
-      };
-    </script>
-    
     <!-- noUiSlider - Professional Range Sliders -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css">
     <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
@@ -144,12 +93,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     
-    <!-- Subconscious design system — CDN bundle (fonts, tokens, theme
-         registry, primitive classes). Loaded before the site's own CSS so
-         the site's element rules still win on layout. See ADOPTING.md
-         Option B. runtime.js is intentionally NOT loaded: it binds a global
-         Space/M keydown for theme cycling, which would hijack page scroll. -->
-    <link rel="stylesheet" href="https://subconscious-ai.github.io/design-system/cdn/v1/all.css">
     <link rel="stylesheet" href="src/styles/site-tokens.css">
 
     <!-- Resolves a design-system token to its computed colour. CSS var()
@@ -668,14 +611,6 @@ cursor: grab !important;
             border: none;
 }
     </style>
-<!-- Portfolio Google Tag Manager: owns GA4, PostHog, Clarity, Ads -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-WXSLXHDB');</script>
-<!-- Lemlist visitor tracking: person-level identification, see /privacy -->
-<script type="text/javascript" src="https://app.lemlist.com/api/visitors/tracking?k=MbcYUtr0KKF0sl3pFZ%2Bn%2BT2oOPlP5TGNOyTtG7KCfi0%3D&t=tea_7cuzS3c76tnoanS4m"></script>
 </head>
 
 <body class="bg-gray-50">

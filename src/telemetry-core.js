@@ -2,21 +2,10 @@ const SITE_KEY = 'suffering_social';
 const CANONICAL_HOST = 'www.suffering.social';
 const CTA_IDS = new Set([
   'calculator_open',
-  'legacy_calculator_open',
-  'privacy_open',
-  'share_open',
-  'subconscious_open',
-]);
-const DESTINATION_HOSTS = new Set([
-  'www.suffering.social',
-  'suffering.social',
-  'www.subconscious.ai',
-  'subconscious.ai',
-  'x.com',
-  'twitter.com',
-  'www.linkedin.com',
-  'www.facebook.com',
-  'www.reddit.com',
+  'scenario_copy',
+  'scenario_share',
+  'source_inspect',
+  'research_exit',
 ]);
 
 function isTrue(value) {
@@ -31,21 +20,20 @@ function isHttpsUrl(value) {
   }
 }
 
-export function buildTelemetryConfig(environment = {}) {
+export function buildTelemetryConfig(environment = {}, buildInfo = {}) {
   const globallyEnabled = isTrue(environment.VITE_TELEMETRY_ENABLED);
   const measurementId = environment.VITE_GA_MEASUREMENT_ID || '';
   const containerId = environment.VITE_GTM_CONTAINER_ID || '';
   const posthogKey = environment.VITE_POSTHOG_KEY || '';
   const posthogHost = environment.VITE_POSTHOG_HOST || '';
   const sentryDsn = environment.VITE_SENTRY_DSN || '';
+  const release = buildInfo.release || '';
+  const deploymentEnvironment = buildInfo.environment || '';
 
   return {
-    environment: environment.MODE || 'development',
+    environment: deploymentEnvironment || 'development',
     ga4: {
-      enabled:
-        globallyEnabled &&
-        isTrue(environment.VITE_GA4_ENABLED) &&
-        /^G-[A-Z0-9]+$/.test(measurementId),
+      enabled: false,
       measurementId,
     },
     gtm: {
@@ -56,11 +44,7 @@ export function buildTelemetryConfig(environment = {}) {
       containerId,
     },
     posthog: {
-      enabled:
-        globallyEnabled &&
-        isTrue(environment.VITE_POSTHOG_ENABLED) &&
-        /^phc_[A-Za-z0-9_-]+$/.test(posthogKey) &&
-        isHttpsUrl(posthogHost),
+      enabled: false,
       key: posthogKey,
       host: posthogHost,
     },
@@ -68,8 +52,11 @@ export function buildTelemetryConfig(environment = {}) {
       enabled:
         globallyEnabled &&
         isTrue(environment.VITE_SENTRY_ENABLED) &&
-        isHttpsUrl(sentryDsn),
+        isHttpsUrl(sentryDsn) &&
+        Boolean(release) &&
+        Boolean(deploymentEnvironment),
       dsn: sentryDsn,
+      release,
     },
   };
 }
@@ -90,17 +77,6 @@ export function canonicalPathname(value = '/') {
   return pathname || '/';
 }
 
-function destinationHost(value) {
-  if (!value) return '';
-
-  try {
-    const host = new URL(value, 'https://www.suffering.social').hostname;
-    return DESTINATION_HOSTS.has(host) ? host : '';
-  } catch {
-    return '';
-  }
-}
-
 export function buildEvent(name, input = {}) {
   if (name !== 'page_view' && name !== 'cta_clicked') return null;
 
@@ -109,31 +85,20 @@ export function buildEvent(name, input = {}) {
     environment: input.environment || 'production',
     canonical_host: CANONICAL_HOST,
     pathname: canonicalPathname(input.pathname),
+    page_location: `https://${CANONICAL_HOST}${canonicalPathname(input.pathname)}`,
+    page_referrer: stripUrlQuery(input.referrer) || '',
   };
 
   if (name === 'cta_clicked') {
-    const host = destinationHost(input.destination);
-    if (!CTA_IDS.has(input.ctaId) || !host) return null;
+    if (!CTA_IDS.has(input.ctaId)) return null;
     properties.cta_id = input.ctaId;
-    properties.destination_host = host;
   }
 
   return { name, properties };
 }
 
 export function sanitizePostHogProperties(properties) {
-  const sanitized = { ...properties };
-  for (const property of [
-    '$current_url',
-    '$initial_current_url',
-    '$referrer',
-    '$initial_referrer',
-    '$referring_domain',
-    '$initial_referring_domain',
-  ]) {
-    delete sanitized[property];
-  }
-  return sanitized;
+  return properties?.site_key ? { site_key: properties.site_key } : {};
 }
 
 function stripUrlQuery(value) {
@@ -141,7 +106,7 @@ function stripUrlQuery(value) {
 
   try {
     const url = new URL(value, 'https://www.suffering.social');
-    return `${url.origin}${url.pathname}`;
+    return `https://${url.host}${url.pathname}`;
   } catch {
     return undefined;
   }
@@ -154,20 +119,50 @@ function redactText(value) {
     .replace(/https?:\/\/[^\s?]+(?:\?[^\s]*)?/g, (url) => stripUrlQuery(url) || '[redacted-url]');
 }
 
-export function scrubSentryEvent(event) {
-  const scrubbed = { ...event };
-  delete scrubbed.user;
-  delete scrubbed.extra;
-  delete scrubbed.contexts;
-  delete scrubbed.fingerprint;
+function scrubStacktrace(stacktrace) {
+  if (!stacktrace?.frames) return undefined;
 
-  if (scrubbed.message) scrubbed.message = redactText(scrubbed.message);
+  return {
+    frames: stacktrace.frames.map((frame) => ({
+      filename: stripUrlQuery(frame.filename) || redactText(frame.filename),
+      function: redactText(frame.function),
+      lineno: frame.lineno,
+      colno: frame.colno,
+      in_app: frame.in_app,
+    })),
+  };
+}
+
+export function scrubSentryEvent(event) {
+  const scrubbed = {};
+  for (const property of [
+    'event_id',
+    'timestamp',
+    'platform',
+    'level',
+    'logger',
+    'release',
+    'environment',
+    'dist',
+    'sdk',
+  ]) {
+    if (event[property] !== undefined) scrubbed[property] = event[property];
+  }
+
+  if (event.message) scrubbed.message = redactText(event.message);
   if (event.exception?.values) {
     scrubbed.exception = {
       ...event.exception,
       values: event.exception.values.map((exception) => ({
-        ...exception,
+        type: exception.type,
         value: redactText(exception.value),
+        mechanism: exception.mechanism
+          ? {
+              type: exception.mechanism.type,
+              handled: exception.mechanism.handled,
+            }
+          : undefined,
+        stacktrace: scrubStacktrace(exception.stacktrace),
       })),
     };
   }
