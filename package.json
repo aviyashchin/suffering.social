@@ -52,9 +52,9 @@
       "^@/(.*)$": "<rootDir>/js/$1"
     },
     "collectCoverageFrom": [
-      "src/telemetry-core.js",
-      "src/telemetry-runtime.js",
-      "src/sentry-build-config.js"
+      "src/**/*.js",
+      "!src/**/*.test.js",
+      "!src/d3-distribution-sliders.js"
     ]
   },
   "prettier": {

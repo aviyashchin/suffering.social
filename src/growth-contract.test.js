@@ -120,9 +120,9 @@ describe('SEO and telemetry build contract', () => {
     const packageJson = JSON.parse(readFileSync('package.json', 'utf8'));
 
     expect(packageJson.jest.collectCoverageFrom).toEqual([
-      'src/telemetry-core.js',
-      'src/telemetry-runtime.js',
-      'src/sentry-build-config.js',
+      'src/**/*.js',
+      '!src/**/*.test.js',
+      '!src/d3-distribution-sliders.js',
     ]);
     expect(packageJson.scripts['test:e2e']).toBe('playwright test');
     expect(packageJson.devDependencies['@playwright/test']).toBeTruthy();
