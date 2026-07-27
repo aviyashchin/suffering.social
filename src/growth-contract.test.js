@@ -8,19 +8,19 @@ const pages = [
 ];
 
 describe('SEO and telemetry build contract', () => {
-  test.each(pages)('%s uses its canonical URL and shared telemetry entrypoint', (file, canonical) => {
+  test.each(pages)('%s uses its canonical URL and one shared telemetry entrypoint', (file, canonical) => {
     expect(existsSync(file)).toBe(true);
     const html = readFileSync(file, 'utf8');
 
     expect(html).toContain(`<link rel="canonical" href="${canonical}">`);
     expect(html).toContain(`<meta property="og:url" content="${canonical}">`);
     expect(html).toContain(`<meta name="twitter:url" content="${canonical}">`);
-    expect(html).toContain('<script type="module" src="/src/telemetry.js"></script>');
+    expect(
+      html.match(
+        /<script\b(?=[^>]*\btype=["']module["'])(?=[^>]*\bsrc=["']\/src\/telemetry\.js["'])[^>]*><\/script>/gi
+      )
+    ).toHaveLength(1);
     expect(html).toMatch(/href="\/privacy"/);
-    expect(html).not.toMatch(/G-RQ28MDK57K|gtag\s*\(/);
-    expect(html).not.toMatch(
-      /<link[^>]+rel="(?:preconnect|dns-prefetch)"[^>]+googletagmanager\.com/i
-    );
   });
 
   test('sitemap and robots expose only the canonical www routes', () => {
@@ -45,32 +45,41 @@ describe('SEO and telemetry build contract', () => {
     );
   });
 
-  test('active pages use only the approved identification vendor', () => {
-    const activeSource = pages
-      .filter(([file]) => existsSync(file))
-      .map(([file]) => readFileSync(file, 'utf8'))
-      .join('\n');
-
-    expect(activeSource).not.toMatch(
-      /<script[^>]+src=["'][^"']*(?:rb2b|retention\.com|vector\.co|leadsy)/i
-    );
-  });
-
-  test('every active page loads GTM and the Lemlist visitor tracker', () => {
+  test('active pages contain no direct analytics or identification vendor loader', () => {
     const active = pages.filter(([file]) => existsSync(file));
     expect(active.length).toBeGreaterThan(0);
+
     for (const [file] of active) {
       const source = readFileSync(file, 'utf8');
-      expect(source).toContain('GTM-WXSLXHDB');
-      expect(source).toMatch(/app\.lemlist\.com\/api\/visitors\/tracking/);
+      expect(source).not.toMatch(/googletagmanager\.com\/(?:gtm|gtag)\.js/i);
+      expect(source).not.toMatch(/\bgtag\s*\(/i);
+      expect(source).not.toMatch(
+        /<script[^>]+(?:src|data-domain|data-key)=["'][^"']*(?:lemlist|clarity|rb2b|retention\.com|vector\.co|leadsy|fullstory|hotjar|session[-_.]?replay)/i
+      );
+      expect(source).not.toMatch(
+        /app\.lemlist\.com|clarity\.ms|rb2b|retention\.com|vector\.co|leadsy|fullstory|hotjar/i
+      );
+      expect(source).not.toMatch(/clarity\s*\(\s*["']set["']/i);
+      expect(source).not.toMatch(/\b(?:RB2B|Leadsy)\b\s*[.=]/);
     }
   });
 
-  test('uses the slim PostHog browser entrypoint', () => {
+  test('active pages use repository-owned styles rather than runtime design CDNs', () => {
+    const active = pages.filter(([file]) => existsSync(file));
+
+    for (const [file] of active) {
+      const source = readFileSync(file, 'utf8');
+      expect(source).not.toMatch(/cdn\.tailwindcss\.com|cdn\.jsdelivr\.net\/npm\/tailwindcss/i);
+      expect(source).not.toMatch(
+        /<link[^>]+href=["']https:\/\/subconscious-ai\.github\.io\/design-system\//i
+      );
+    }
+  });
+
+  test('the shared entrypoint delegates all browser telemetry to the local runtime', () => {
     const entrypoint = readFileSync('src/telemetry.js', 'utf8');
-    expect(entrypoint).toContain(
-      "import('posthog-js/dist/module.slim.js')"
-    );
-    expect(entrypoint).toContain("import('./sentry-loader.js')");
+
+    expect(entrypoint).toContain("import { initialiseTelemetry } from './telemetry-runtime.js'");
+    expect(entrypoint).not.toMatch(/googletagmanager|gtag\s*\(|lemlist|clarity|rb2b|leadsy/i);
   });
 });

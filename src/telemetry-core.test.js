@@ -9,11 +9,9 @@ const validEnvironment = {
   VITE_GA_MEASUREMENT_ID: 'G-ABC1234',
   VITE_GTM_ENABLED: 'true',
   VITE_GTM_CONTAINER_ID: 'GTM-ABC123',
-  VITE_POSTHOG_ENABLED: 'true',
-  VITE_POSTHOG_KEY: 'phc_abc123',
-  VITE_POSTHOG_HOST: 'https://us.i.posthog.com',
   VITE_SENTRY_ENABLED: 'true',
   VITE_SENTRY_DSN: 'https://public@example.ingest.sentry.io/123',
+  VITE_SENTRY_RELEASE: 'abc123',
 };
 
 describe('telemetry configuration', () => {
@@ -25,31 +23,49 @@ describe('telemetry configuration', () => {
       ga4: { enabled: false, measurementId: '' },
       gtm: { enabled: false, containerId: '' },
       posthog: { enabled: false, key: '', host: '' },
-      sentry: { enabled: false, dsn: '' },
+      sentry: { enabled: false, dsn: '', release: '' },
     });
   });
 
-  test('enables only providers with an explicit global flag and valid identifiers', () => {
+  test('enables only aggregate GTM and release-bound Sentry', () => {
     expect(typeof telemetry.buildTelemetryConfig).toBe('function');
 
     const config = telemetry.buildTelemetryConfig(validEnvironment);
 
-    expect(config.ga4.enabled).toBe(true);
+    expect(config.ga4.enabled).toBe(false);
     expect(config.gtm.enabled).toBe(true);
-    expect(config.posthog.enabled).toBe(true);
+    expect(config.posthog.enabled).toBe(false);
     expect(config.sentry.enabled).toBe(true);
+    expect(config.sentry.release).toBe('abc123');
     expect(config.environment).toBe('production');
   });
 
-  test('rejects malformed identifiers and non-https collector URLs', () => {
+  test('keeps Sentry disabled without both a release and an explicit environment', () => {
+    const withoutRelease = telemetry.buildTelemetryConfig({
+      ...validEnvironment,
+      VITE_SENTRY_RELEASE: '',
+    });
+    const withoutEnvironment = telemetry.buildTelemetryConfig({
+      ...validEnvironment,
+      MODE: '',
+    });
+
+    expect(withoutRelease.sentry.enabled).toBe(false);
+    expect(withoutEnvironment.sentry.enabled).toBe(false);
+  });
+
+  test('rejects malformed identifiers, direct PostHog, and Sentry without a release', () => {
     expect(typeof telemetry.buildTelemetryConfig).toBe('function');
 
     const config = telemetry.buildTelemetryConfig({
       ...validEnvironment,
       VITE_GA_MEASUREMENT_ID: 'UA-legacy',
       VITE_GTM_CONTAINER_ID: 'not-gtm',
+      VITE_POSTHOG_ENABLED: 'true',
+      VITE_POSTHOG_KEY: 'phc_abc123',
       VITE_POSTHOG_HOST: 'http://collector.example.com',
       VITE_SENTRY_DSN: 'javascript:alert(1)',
+      VITE_SENTRY_RELEASE: '',
     });
 
     expect(config.ga4.enabled).toBe(false);
@@ -71,12 +87,18 @@ describe('canonical analytics events', () => {
     expect(telemetry.canonicalPathname(input)).toBe(expected);
   });
 
-  test('builds a page view without query strings or arbitrary properties', () => {
+  test('builds a page view with HTTPS pathname-only location and referrer', () => {
     expect(typeof telemetry.buildEvent).toBe('function');
 
     expect(
       telemetry.buildEvent('page_view', {
-        pathname: '/calculator?email=person@example.com',
+        pathname: '/calculator?scenario=maximum#results',
+        location: 'http://www.suffering.social/calculator?email=person@example.com#results',
+        referrer: 'http://search.example.com/research?q=private#answer',
+        scenario: { mortality: 0.42 },
+        email: 'person@example.com',
+        cookie: 'session=secret',
+        domText: 'private calculator result',
         ignored: 'sensitive input',
       })
     ).toEqual({
@@ -86,18 +108,32 @@ describe('canonical analytics events', () => {
         environment: 'production',
         canonical_host: 'www.suffering.social',
         pathname: '/calculator',
+        page_location: 'https://www.suffering.social/calculator',
+        page_referrer: 'https://search.example.com/research',
       },
     });
   });
 
-  test('accepts only allowlisted CTA identifiers and destination hosts', () => {
+  test.each([
+    'calculator_open',
+    'scenario_copy',
+    'scenario_share',
+    'source_inspect',
+    'research_exit',
+  ])('accepts the approved aggregate CTA identifier %s', (ctaId) => {
     expect(typeof telemetry.buildEvent).toBe('function');
 
     expect(
       telemetry.buildEvent('cta_clicked', {
-        pathname: '/',
-        ctaId: 'calculator_open',
-        destination: 'https://www.suffering.social/calculator?utm_source=home',
+        pathname: '/calculator?scenario=high',
+        location: 'https://www.suffering.social/calculator?email=person@example.com',
+        referrer: 'https://search.example.com/?q=private',
+        ctaId,
+        destination: 'https://tracker.example.com/person@example.com?result=private',
+        scenarioValue: 42,
+        email: 'person@example.com',
+        cookie: 'secret',
+        domText: 'private result',
       })
     ).toEqual({
       name: 'cta_clicked',
@@ -105,25 +141,26 @@ describe('canonical analytics events', () => {
         site_key: 'suffering_social',
         environment: 'production',
         canonical_host: 'www.suffering.social',
-        pathname: '/',
-        cta_id: 'calculator_open',
-        destination_host: 'www.suffering.social',
+        pathname: '/calculator',
+        page_location: 'https://www.suffering.social/calculator',
+        page_referrer: 'https://search.example.com/',
+        cta_id: ctaId,
       },
     });
+  });
 
+  test.each([
+    'legacy_calculator_open',
+    'privacy_open',
+    'share_open',
+    'subconscious_open',
+    'free-form-value',
+  ])('drops the unapproved CTA identifier %s', (ctaId) => {
     expect(
       telemetry.buildEvent('cta_clicked', {
         pathname: '/',
-        ctaId: 'free-form-value',
-        destination: 'https://tracker.example.com/person@example.com',
-      })
-    ).toBeNull();
-
-    expect(
-      telemetry.buildEvent('cta_clicked', {
-        pathname: '/',
-        ctaId: 'calculator_open',
-        destination: null,
+        ctaId,
+        destination: 'https://www.suffering.social/calculator',
       })
     ).toBeNull();
   });
@@ -133,7 +170,7 @@ describe('canonical analytics events', () => {
     expect(telemetry.buildEvent('slider_changed', { value: 42 })).toBeNull();
   });
 
-  test('removes PostHog URL and referrer defaults at the SDK boundary', () => {
+  test('removes PostHog identity, URL, referrer, and arbitrary defaults at the SDK boundary', () => {
     expect(typeof telemetry.sanitizePostHogProperties).toBe('function');
 
     expect(
@@ -142,6 +179,11 @@ describe('canonical analytics events', () => {
         $current_url: 'https://www.suffering.social/calculator?email=person@example.com',
         $referrer: 'https://search.example.com/?q=sensitive',
         $referring_domain: 'search.example.com',
+        $user_id: 'person@example.com',
+        distinct_id: 'person@example.com',
+        email: 'person@example.com',
+        calculator_value: 42,
+        arbitrary_dom_text: 'private result',
       })
     ).toEqual({ site_key: 'suffering_social' });
   });
@@ -156,6 +198,7 @@ describe('Sentry privacy scrubbing', () => {
       message: 'Invalid value for person@example.com at https://www.suffering.social/?token=secret',
       exception: { values: [{ type: 'Error', value: 'Rejected person@example.com' }] },
       extra: { calculatorInput: 'person@example.com' },
+      tags: { scenario: 'maximum', calculator_value: 42 },
       contexts: { custom: { raw: 'sensitive input' } },
       request: {
         url: 'https://www.suffering.social/calculator?email=person@example.com',
@@ -164,6 +207,7 @@ describe('Sentry privacy scrubbing', () => {
         headers: { authorization: 'secret' },
         data: { note: 'sensitive input' },
       },
+      replay_id: 'replay-secret',
       breadcrumbs: [
         { category: 'console', message: 'person@example.com' },
         { category: 'navigation', data: { from: '/?secret=1', to: '/calculator?secret=2' } },
@@ -172,7 +216,9 @@ describe('Sentry privacy scrubbing', () => {
 
     expect(scrubbed.user).toBeUndefined();
     expect(scrubbed.extra).toBeUndefined();
+    expect(scrubbed.tags).toBeUndefined();
     expect(scrubbed.contexts).toBeUndefined();
+    expect(scrubbed.replay_id).toBeUndefined();
     expect(scrubbed.message).toBe(
       'Invalid value for [redacted-email] at https://www.suffering.social/'
     );
