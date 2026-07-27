@@ -56,10 +56,10 @@ describe('SEO and telemetry build contract', () => {
       );
       expect(source).not.toMatch(/\bgtag\s*\(/i);
       expect(source).not.toMatch(
-        /<script[^>]+(?:src|data-domain|data-key)=["'][^"']*(?:lemlist|clarity|posthog|r[e]?b2b|retention\.com|vector\.co|leadsy|fullstory|hotjar|session[-_.]?replay)/i
+        /<script[^>]+(?:src|data-domain|data-key)=["'][^"']*(?:lemlist|clarity|posthog|sentry-cdn|ravenjs|r[e]?b2b|retention\.com|vector\.co|leadsy|fullstory|hotjar|session[-_.]?replay)/i
       );
       expect(source).not.toMatch(
-        /app\.lemlist\.com|clarity\.ms|(?:app|[a-z]{2}\.i)\.posthog\.com|posthog-js|r[e]?b2b\.com|s3-us-west-2\.amazonaws\.com\/b2bjsstore|ddwl4m2hdecbv\.cloudfront\.net|retention\.com|vector\.co|leadsy|fullstory|hotjar/i
+        /app\.lemlist\.com|clarity\.ms|(?:app|[a-z]{2}\.i)\.posthog\.com|posthog-js|(?:browser|js)\.sentry-cdn\.com|cdn\.ravenjs\.com|r[e]?b2b\.com|s3-us-west-2\.amazonaws\.com\/b2bjsstore|ddwl4m2hdecbv\.cloudfront\.net|retention\.com|vector\.co|leadsy|fullstory|hotjar/i
       );
       expect(source).not.toMatch(/clarity\s*\(\s*["']set["']/i);
       expect(source).not.toMatch(/\b(?:R?EB2B|RB2B|PostHog|Leadsy)\b\s*[.=]/i);
