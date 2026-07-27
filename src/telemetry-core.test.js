@@ -90,6 +90,45 @@ describe('canonical analytics events', () => {
     expect(telemetry.canonicalPathname(input)).toBe(expected);
   });
 
+  test('redacts email-bearing path segments, including percent-encoded forms', () => {
+    expect(
+      telemetry.buildEvent('page_view', {
+        pathname: '/research/person%40example.com/results?value=42',
+        referrer:
+          'http://search.example.com/users/person%2540example.com/results?q=private',
+      })
+    ).toEqual({
+      name: 'page_view',
+      properties: {
+        site_key: 'suffering_social',
+        environment: 'production',
+        canonical_host: 'www.suffering.social',
+        pathname: '/research/redacted/results',
+        page_location: 'https://www.suffering.social/research/redacted/results',
+        page_referrer: 'https://search.example.com/users/redacted/results',
+      },
+    });
+  });
+
+  test.each(['javascript:alert(person@example.com)', 'mailto:person@example.com'])(
+    'rejects non-HTTP URL input %s',
+    (input) => {
+      expect(telemetry.canonicalPathname(input)).toBe('/');
+      expect(
+        telemetry.buildEvent('page_view', {
+          pathname: input,
+          referrer: input,
+        }).properties
+      ).toEqual(
+        expect.objectContaining({
+          pathname: '/',
+          page_location: 'https://www.suffering.social/',
+          page_referrer: '',
+        })
+      );
+    }
+  );
+
   test('builds a page view with HTTPS pathname-only location and referrer', () => {
     expect(typeof telemetry.buildEvent).toBe('function');
 
@@ -200,6 +239,7 @@ describe('Sentry privacy scrubbing', () => {
       user: { email: 'person@example.com' },
       message: 'Invalid scenario maximum value 42',
       exception: {
+        calculator_state: { scenario: 'maximum', value: 42 },
         values: [
           {
             type: 'Error',
@@ -219,6 +259,7 @@ describe('Sentry privacy scrubbing', () => {
         ],
       },
       extra: { calculatorInput: 'person@example.com' },
+      logger: 'person@example.com',
       tags: { scenario: 'maximum', calculator_value: 42 },
       contexts: { custom: { raw: 'sensitive input' } },
       request: {
@@ -232,6 +273,13 @@ describe('Sentry privacy scrubbing', () => {
       breadcrumbs: [
         { category: 'console', message: 'person@example.com' },
         { category: 'navigation', data: { from: '/?secret=1', to: '/calculator?secret=2' } },
+        {
+          category: 'navigation',
+          data: {
+            from: 'javascript:alert(person@example.com)',
+            to: 'javascript:maximum42',
+          },
+        },
       ],
     });
 
@@ -240,6 +288,7 @@ describe('Sentry privacy scrubbing', () => {
     expect(scrubbed.tags).toBeUndefined();
     expect(scrubbed.contexts).toBeUndefined();
     expect(scrubbed.replay_id).toBeUndefined();
+    expect(scrubbed.logger).toBeUndefined();
     expect(scrubbed.message).toBeUndefined();
     expect(scrubbed.exception.values[0]).toEqual({
       type: 'Error',
@@ -259,8 +308,11 @@ describe('Sentry privacy scrubbing', () => {
     expect(scrubbed.request).toEqual({ url: 'https://www.suffering.social/calculator' });
     expect(scrubbed.breadcrumbs).toEqual([
       { category: 'navigation', data: { from: '/', to: '/calculator' } },
+      { category: 'navigation', data: { from: '/', to: '/' } },
     ]);
-    expect(JSON.stringify(scrubbed)).not.toMatch(/maximum|42|person@example\.com/);
+    expect(JSON.stringify(scrubbed)).not.toMatch(
+      /maximum|42|person@example\.com|javascript|calculator_state/
+    );
   });
 
   test('does not synthesize a request URL from a missing value', () => {

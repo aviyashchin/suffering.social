@@ -64,12 +64,9 @@ export function buildTelemetryConfig(environment = {}, buildInfo = {}) {
 export function canonicalPathname(value = '/') {
   if (!value) return '/';
 
-  let pathname;
-  try {
-    pathname = new URL(value, 'https://www.suffering.social').pathname;
-  } catch {
-    return '/';
-  }
+  const url = parseHttpUrl(value);
+  if (!url) return '/';
+  const pathname = sanitizePathname(url.pathname);
 
   if (pathname === '/social_media_cost_calculatorv5.html') return '/v5';
   if (pathname === '/calculator.html') return '/calculator';
@@ -102,21 +99,39 @@ export function sanitizePostHogProperties(properties) {
 }
 
 function stripUrlQuery(value) {
-  if (!value) return undefined;
+  const url = parseHttpUrl(value);
+  if (!url) return undefined;
+  return `https://${url.host}${sanitizePathname(url.pathname)}`;
+}
 
+function parseHttpUrl(value) {
+  if (typeof value !== 'string' || !value.trim()) return undefined;
   try {
     const url = new URL(value, 'https://www.suffering.social');
-    return `https://${url.host}${url.pathname}`;
+    return url.protocol === 'http:' || url.protocol === 'https:' ? url : undefined;
   } catch {
     return undefined;
   }
 }
 
-function redactText(value) {
-  if (typeof value !== 'string') return value;
-  return value
-    .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, '[redacted-email]')
-    .replace(/https?:\/\/[^\s?]+(?:\?[^\s]*)?/g, (url) => stripUrlQuery(url) || '[redacted-url]');
+function sanitizePathname(pathname) {
+  const segments = pathname.split('/').map((segment) => {
+    let decoded = segment;
+    for (let index = 0; index < 3; index += 1) {
+      try {
+        const next = decodeURIComponent(decoded);
+        if (next === decoded) break;
+        decoded = next;
+      } catch {
+        break;
+      }
+    }
+
+    return /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(decoded)
+      ? 'redacted'
+      : segment;
+  });
+  return segments.join('/') || '/';
 }
 
 function scrubStacktrace(stacktrace) {
@@ -124,7 +139,7 @@ function scrubStacktrace(stacktrace) {
 
   return {
     frames: stacktrace.frames.map((frame) => ({
-      filename: stripUrlQuery(frame.filename) || redactText(frame.filename),
+      filename: stripUrlQuery(frame.filename),
       lineno: frame.lineno,
       colno: frame.colno,
       in_app: frame.in_app,
@@ -139,7 +154,6 @@ export function scrubSentryEvent(event) {
     'timestamp',
     'platform',
     'level',
-    'logger',
     'release',
     'environment',
     'dist',
@@ -150,7 +164,6 @@ export function scrubSentryEvent(event) {
 
   if (event.exception?.values) {
     scrubbed.exception = {
-      ...event.exception,
       values: event.exception.values.map((exception) => ({
         type: exception.type,
         value: '[redacted-error]',

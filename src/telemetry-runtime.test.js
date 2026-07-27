@@ -101,7 +101,7 @@ describe('browser telemetry runtime', () => {
 
     expect(second).toBe(controller);
     expect(controller.globalPrivacyControl).toBe(false);
-    expect(controller.enabledProviders).toEqual(['sentry', 'gtm']);
+    expect(controller.enabledProviders).toEqual(['gtm', 'sentry']);
     expect(document.querySelectorAll('script[data-telemetry-provider="ga4"]')).toHaveLength(0);
     expect(document.querySelectorAll('script[data-telemetry-provider="gtm"]')).toHaveLength(1);
     expect(window.dataLayer.map((entry) => Array.from(entry))).toContainEqual([
@@ -149,6 +149,33 @@ describe('browser telemetry runtime', () => {
         'replayCanvasIntegration',
       ])
     );
+  });
+
+  test('starts GTM and interaction capture before a stalled Sentry loader resolves', () => {
+    document.body.innerHTML = `
+      <button data-telemetry-cta="scenario_copy">Copy scenario</button>
+    `;
+    const loadSentry = jest.fn(() => new Promise(() => {}));
+
+    void runtime.initialiseTelemetry({
+      environment: enabledEnvironment(),
+      buildInfo,
+      windowObject: window,
+      documentObject: document,
+      loadSentry,
+    });
+
+    expect(loadSentry).toHaveBeenCalledTimes(1);
+    expect(window.__sufferingTelemetry.enabledProviders).toEqual(['gtm']);
+    expect(document.querySelectorAll('script[data-telemetry-provider="gtm"]')).toHaveLength(1);
+    expect(window.dataLayer.filter((entry) => entry?.event === 'page_view')).toHaveLength(1);
+
+    document.querySelector('[data-telemetry-cta="scenario_copy"]').click();
+    expect(
+      window.dataLayer.filter(
+        (entry) => entry?.event === 'cta_clicked' && entry?.cta_id === 'scenario_copy'
+      )
+    ).toHaveLength(1);
   });
 
   test('pushes one private canonical page view and only approved CTA clicks to dataLayer', async () => {

@@ -69,6 +69,27 @@ export async function initialiseTelemetry({
   };
   windowObject.__sufferingTelemetry = controller;
 
+  if (config.gtm.enabled) {
+    installConsentDefaults(windowObject);
+    windowObject.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+    appendProviderScript(
+      documentObject,
+      'gtm',
+      `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(config.gtm.containerId)}`
+    );
+    enabledProviders.push('gtm');
+  }
+
+  controller.capture('page_view');
+  clickHandler = (event) => {
+    const target = event.target.closest?.('[data-telemetry-cta]');
+    if (!target) return;
+    controller.capture('cta_clicked', {
+      ctaId: target.dataset.telemetryCta,
+    });
+  };
+  documentObject.addEventListener('click', clickHandler);
+
   if (config.sentry.enabled) {
     try {
       const sentryModule = await loadSentry();
@@ -93,27 +114,6 @@ export async function initialiseTelemetry({
       // A blocked or unavailable vendor must not break the site.
     }
   }
-
-  if (config.gtm.enabled) {
-    installConsentDefaults(windowObject);
-    windowObject.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
-    appendProviderScript(
-      documentObject,
-      'gtm',
-      `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(config.gtm.containerId)}`
-    );
-    enabledProviders.push('gtm');
-  }
-
-  controller.capture('page_view');
-  clickHandler = (event) => {
-    const target = event.target.closest?.('[data-telemetry-cta]');
-    if (!target) return;
-    controller.capture('cta_clicked', {
-      ctaId: target.dataset.telemetryCta,
-    });
-  };
-  documentObject.addEventListener('click', clickHandler);
 
   return controller;
 }
