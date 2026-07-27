@@ -63,7 +63,7 @@ export async function initialiseTelemetry({
       if (!event) return;
 
       if (config.gtm.enabled) {
-        windowObject.dataLayer.push(['event', event.name, event.properties]);
+        windowObject.dataLayer.push({ event: event.name, ...event.properties });
       }
     },
   };
@@ -81,6 +81,11 @@ export async function initialiseTelemetry({
         tracesSampleRate: 0,
         replaysSessionSampleRate: 0,
         replaysOnErrorSampleRate: 0,
+        integrations(defaultIntegrations) {
+          return defaultIntegrations.filter(
+            (integration) => !/(?:replay|browser.?tracing|tracing)/i.test(integration.name || '')
+          );
+        },
         beforeSend: scrubSentryEvent,
       });
       enabledProviders.push('sentry');

@@ -198,8 +198,26 @@ describe('Sentry privacy scrubbing', () => {
 
     const scrubbed = telemetry.scrubSentryEvent({
       user: { email: 'person@example.com' },
-      message: 'Invalid value for person@example.com at https://www.suffering.social/?token=secret',
-      exception: { values: [{ type: 'Error', value: 'Rejected person@example.com' }] },
+      message: 'Invalid scenario maximum value 42',
+      exception: {
+        values: [
+          {
+            type: 'Error',
+            value: 'Invalid scenario maximum value 42 for person@example.com',
+            stacktrace: {
+              frames: [
+                {
+                  filename: 'https://www.suffering.social/calculator?scenario=maximum&value=42',
+                  function: 'calculateMaximum42',
+                  lineno: 17,
+                  colno: 7,
+                  in_app: true,
+                },
+              ],
+            },
+          },
+        ],
+      },
       extra: { calculatorInput: 'person@example.com' },
       tags: { scenario: 'maximum', calculator_value: 42 },
       contexts: { custom: { raw: 'sensitive input' } },
@@ -222,14 +240,27 @@ describe('Sentry privacy scrubbing', () => {
     expect(scrubbed.tags).toBeUndefined();
     expect(scrubbed.contexts).toBeUndefined();
     expect(scrubbed.replay_id).toBeUndefined();
-    expect(scrubbed.message).toBe(
-      'Invalid value for [redacted-email] at https://www.suffering.social/'
-    );
-    expect(scrubbed.exception.values[0].value).toBe('Rejected [redacted-email]');
+    expect(scrubbed.message).toBeUndefined();
+    expect(scrubbed.exception.values[0]).toEqual({
+      type: 'Error',
+      value: '[redacted-error]',
+      mechanism: undefined,
+      stacktrace: {
+        frames: [
+          {
+            filename: 'https://www.suffering.social/calculator',
+            lineno: 17,
+            colno: 7,
+            in_app: true,
+          },
+        ],
+      },
+    });
     expect(scrubbed.request).toEqual({ url: 'https://www.suffering.social/calculator' });
     expect(scrubbed.breadcrumbs).toEqual([
       { category: 'navigation', data: { from: '/', to: '/calculator' } },
     ]);
+    expect(JSON.stringify(scrubbed)).not.toMatch(/maximum|42|person@example\.com/);
   });
 
   test('does not synthesize a request URL from a missing value', () => {

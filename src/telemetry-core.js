@@ -125,7 +125,6 @@ function scrubStacktrace(stacktrace) {
   return {
     frames: stacktrace.frames.map((frame) => ({
       filename: stripUrlQuery(frame.filename) || redactText(frame.filename),
-      function: redactText(frame.function),
       lineno: frame.lineno,
       colno: frame.colno,
       in_app: frame.in_app,
@@ -149,13 +148,12 @@ export function scrubSentryEvent(event) {
     if (event[property] !== undefined) scrubbed[property] = event[property];
   }
 
-  if (event.message) scrubbed.message = redactText(event.message);
   if (event.exception?.values) {
     scrubbed.exception = {
       ...event.exception,
       values: event.exception.values.map((exception) => ({
         type: exception.type,
-        value: redactText(exception.value),
+        value: '[redacted-error]',
         mechanism: exception.mechanism
           ? {
               type: exception.mechanism.type,

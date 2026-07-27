@@ -125,10 +125,22 @@ describe('browser telemetry runtime', () => {
         tracesSampleRate: 0,
         replaysSessionSampleRate: 0,
         replaysOnErrorSampleRate: 0,
+        integrations: expect.any(Function),
         beforeSend: expect.any(Function),
       })
     );
-    expect(sentryOptions.integrations).toBeUndefined();
+    const globalHandlers = { name: 'GlobalHandlers' };
+    const dedupe = { name: 'Dedupe' };
+    expect(
+      sentryOptions.integrations([
+        globalHandlers,
+        { name: 'Replay' },
+        { name: 'BrowserTracing' },
+        { name: 'ReplayCanvas' },
+        { name: 'CustomTracingIntegration' },
+        dedupe,
+      ])
+    ).toEqual([globalHandlers, dedupe]);
     expect(sentryOptions.tracePropagationTargets).toBeUndefined();
     expect(Object.keys(sentryOptions)).not.toEqual(
       expect.arrayContaining([
@@ -172,48 +184,39 @@ describe('browser telemetry runtime', () => {
     document.querySelector('[data-telemetry-cta="privacy_open"]').click();
     document.querySelector('a:not([data-telemetry-cta])').click();
 
-    const events = window.dataLayer
-      .filter((entry) => entry[0] === 'event')
-      .map((entry) => Array.from(entry));
+    const events = window.dataLayer.filter(
+      (entry) => entry?.event === 'page_view' || entry?.event === 'cta_clicked'
+    );
     expect(events).toEqual([
-      [
-        'event',
-        'page_view',
-        {
-          site_key: 'suffering_social',
-          environment: 'production',
-          canonical_host: 'www.suffering.social',
-          pathname: '/calculator',
-          page_location: 'https://www.suffering.social/calculator',
-          page_referrer: 'https://search.example.com/research',
-        },
-      ],
-      [
-        'event',
-        'cta_clicked',
-        {
-          site_key: 'suffering_social',
-          environment: 'production',
-          canonical_host: 'www.suffering.social',
-          pathname: '/calculator',
-          page_location: 'https://www.suffering.social/calculator',
-          page_referrer: 'https://search.example.com/research',
-          cta_id: 'calculator_open',
-        },
-      ],
-      [
-        'event',
-        'cta_clicked',
-        {
-          site_key: 'suffering_social',
-          environment: 'production',
-          canonical_host: 'www.suffering.social',
-          pathname: '/calculator',
-          page_location: 'https://www.suffering.social/calculator',
-          page_referrer: 'https://search.example.com/research',
-          cta_id: 'scenario_copy',
-        },
-      ],
+      {
+        event: 'page_view',
+        site_key: 'suffering_social',
+        environment: 'production',
+        canonical_host: 'www.suffering.social',
+        pathname: '/calculator',
+        page_location: 'https://www.suffering.social/calculator',
+        page_referrer: 'https://search.example.com/research',
+      },
+      {
+        event: 'cta_clicked',
+        site_key: 'suffering_social',
+        environment: 'production',
+        canonical_host: 'www.suffering.social',
+        pathname: '/calculator',
+        page_location: 'https://www.suffering.social/calculator',
+        page_referrer: 'https://search.example.com/research',
+        cta_id: 'calculator_open',
+      },
+      {
+        event: 'cta_clicked',
+        site_key: 'suffering_social',
+        environment: 'production',
+        canonical_host: 'www.suffering.social',
+        pathname: '/calculator',
+        page_location: 'https://www.suffering.social/calculator',
+        page_referrer: 'https://search.example.com/research',
+        cta_id: 'scenario_copy',
+      },
     ]);
     const serializedEvents = JSON.stringify(events);
     for (const forbidden of [
