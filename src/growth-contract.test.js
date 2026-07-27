@@ -51,16 +51,18 @@ describe('SEO and telemetry build contract', () => {
 
     for (const [file] of active) {
       const source = readFileSync(file, 'utf8');
-      expect(source).not.toMatch(/googletagmanager\.com\/(?:gtm|gtag)\.js/i);
+      expect(source).not.toMatch(
+        /googletagmanager\.com\/(?:gtm\.js|gtag\/js)|google-analytics\.com\/(?:analytics|ga|urchin)\.js|googletagservices\.com|googleadservices\.com|googlesyndication\.com\/pagead/i
+      );
       expect(source).not.toMatch(/\bgtag\s*\(/i);
       expect(source).not.toMatch(
-        /<script[^>]+(?:src|data-domain|data-key)=["'][^"']*(?:lemlist|clarity|rb2b|retention\.com|vector\.co|leadsy|fullstory|hotjar|session[-_.]?replay)/i
+        /<script[^>]+(?:src|data-domain|data-key)=["'][^"']*(?:lemlist|clarity|posthog|r[e]?b2b|retention\.com|vector\.co|leadsy|fullstory|hotjar|session[-_.]?replay)/i
       );
       expect(source).not.toMatch(
-        /app\.lemlist\.com|clarity\.ms|rb2b|retention\.com|vector\.co|leadsy|fullstory|hotjar/i
+        /app\.lemlist\.com|clarity\.ms|(?:app|[a-z]{2}\.i)\.posthog\.com|posthog-js|r[e]?b2b\.com|s3-us-west-2\.amazonaws\.com\/b2bjsstore|ddwl4m2hdecbv\.cloudfront\.net|retention\.com|vector\.co|leadsy|fullstory|hotjar/i
       );
       expect(source).not.toMatch(/clarity\s*\(\s*["']set["']/i);
-      expect(source).not.toMatch(/\b(?:RB2B|Leadsy)\b\s*[.=]/);
+      expect(source).not.toMatch(/\b(?:R?EB2B|RB2B|PostHog|Leadsy)\b\s*[.=]/i);
     }
   });
 
@@ -80,6 +82,8 @@ describe('SEO and telemetry build contract', () => {
     const entrypoint = readFileSync('src/telemetry.js', 'utf8');
 
     expect(entrypoint).toContain("import { initialiseTelemetry } from './telemetry-runtime.js'");
-    expect(entrypoint).not.toMatch(/googletagmanager|gtag\s*\(|lemlist|clarity|rb2b|leadsy/i);
+    expect(entrypoint).not.toMatch(
+      /googletagmanager|google-analytics|googletagservices|gtag\s*\(|lemlist|clarity|posthog|r[e]?b2b|leadsy/i
+    );
   });
 });
