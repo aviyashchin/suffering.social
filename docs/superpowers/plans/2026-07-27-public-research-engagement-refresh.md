@@ -8,14 +8,13 @@
 
 **Boundaries:** No form, lead capture, CRM, email workflow, new analytics abstraction, framework migration, calculator-model rewrite, or unsupported causal claim. Lemlist, Clarity, replay, advertising, and person-level identification are prohibited.
 
-**Execution status (2026-07-28):** PR #35 merged as
-`4af590a4ae1da095ecaa2ee43443877de5cdfb6d`; production serves that revision.
-Repository validation, routing/discovery files, the direct legacy-host 308,
-and a scrubbed release-bound Sentry canary are proven. Vercel environment
-values were normalized to remove provider-added newlines. GTM remains disabled:
-published container version 17 still starts PostHog on the later `page_view`
-event despite its `gtm.js` hostname block. Search Console sitemap readback and
-the monitoring failure/recovery drill remain release-closeout gates. The task
+**Execution status (2026-07-28):** Complete. PRs #35–#37 merged; production
+serves revision `29acaab21ff8140f1a113100bbc8c0959b47ef04`. Repository,
+routing, discovery, browser, Lighthouse, Sentry, and monitoring-drill evidence
+is recorded on issue #34. GTM container version 18 adds the required Custom
+Event hostname exception to PostHog; production traces show GA4 and Sentry with
+zero prohibited providers. Search Console accepted and successfully read
+`https://www.suffering.social/sitemap.xml`, discovering four pages. The task
 checkboxes below preserve the original execution recipe rather than serving as
 a live status board.
 

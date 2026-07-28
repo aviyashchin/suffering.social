@@ -60,10 +60,12 @@ the repository-owned `src/styles/` modules.
   previously identified the project as generic static output and are not a
   reliable source of build truth.
 - The published portfolio GTM container is an independent enforcement surface.
-  Version 17 blocks Clarity and PostHog only during `gtm.js` initialization.
-  Its later allowlisted `page_view` rule still starts PostHog, so production
-  GTM is disabled until the PostHog tag has a hostname exception on every
-  trigger. RB2B remains scoped to `subconscious.ai`; no Lemlist tag exists.
+  A Page View exception does not block a tag fired by a Custom Event, even when
+  both represent a page view. Version 18 therefore keeps the Page View
+  hostname exception for Clarity and adds a separate wildcard Custom Event
+  hostname exception to PostHog. The compiled container rule and production
+  network trace, not the GTM dashboard label, are the acceptance evidence.
+  RB2B remains scoped to `subconscious.ai`; no Lemlist tag exists.
 - Preview intentionally omits shared GTM. Its generated hostnames do not match
   the production-host exclusions. Sentry may run in Preview after a scrubbed,
   symbolicated canary.
@@ -94,6 +96,9 @@ the repository-owned `src/styles/` modules.
 - Production proof is revision-specific: local tests, a green PR, and a ready
   Vercel deployment are not interchangeable with a served `build-revision`
   readback plus production Playwright and Lighthouse results.
+- Search Console's submission dialog can report success before the processing
+  row does. Require the later sitemap-table readback (`Success`, last-read date,
+  and discovered-page count) and separately verify the public XML response.
 
 ## 2026-07-19 — privacy-first observability baseline
 

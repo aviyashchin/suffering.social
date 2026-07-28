@@ -11,6 +11,8 @@ discovery files in `public/`, build checks in `scripts/`, deployment rules in
 
 The unlisted `/v5` route is legacy reference material. Do not extend it when the
 active calculator or support page can satisfy the change.
+Use the ignored `.worktrees/<branch>` directory for isolated feature work, and
+remove the worktree after its branch merges.
 
 ## Build, Test, and Development Commands
 
