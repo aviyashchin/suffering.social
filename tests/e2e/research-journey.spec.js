@@ -18,7 +18,19 @@ function observePage(page) {
   const requests = [];
 
   page.on('pageerror', (error) => pageErrors.push(error.message));
-  page.on('request', (request) => requests.push(request.url()));
+  page.on('request', (request) => {
+    const headers = request.headers();
+    requests.push({
+      url: request.url(),
+      method: request.method(),
+      postData: request.postData() || '',
+      headers: Object.fromEntries(
+        ['content-type', 'origin', 'referer'].flatMap((name) =>
+          headers[name] ? [[name, headers[name]]] : []
+        )
+      ),
+    });
+  });
   page.on('requestfailed', (request) => {
     const url = new URL(request.url());
     if (url.origin === new URL(page.url()).origin) {
@@ -52,12 +64,13 @@ async function expectHealthyPage(page, observations) {
   expect(overflow).toBeLessThanOrEqual(1);
   expect(observations.pageErrors).toEqual([]);
   expect(observations.failedFirstPartyRequests).toEqual([]);
+  const prohibitedHosts = observations.requests
+    .filter((request) => prohibitedProviderPattern.test(request.url))
+    .map((request) => new URL(request.url).hostname);
+  expect(prohibitedHosts).toEqual([]);
   expect(
-    observations.requests.filter((url) => prohibitedProviderPattern.test(url))
-  ).toEqual([]);
-  expect(
-    observations.requests.filter((url) =>
-      /googletagmanager\.com\/gtm\.js/i.test(url)
+    observations.requests.filter((request) =>
+      /googletagmanager\.com\/gtm\.js/i.test(request.url)
     )
   ).toHaveLength(1);
 }
@@ -92,6 +105,19 @@ async function tabTo(locator, page, maximumTabs = 12) {
   throw new Error(
     `Target did not receive focus within ${maximumTabs} Tab presses`
   );
+}
+
+async function expectVisibleFocus(locator) {
+  await expect(locator).toBeFocused();
+  const focusStyle = await locator.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      outlineStyle: style.outlineStyle,
+      outlineWidth: style.outlineWidth,
+    };
+  });
+  expect(focusStyle.outlineStyle).not.toBe('none');
+  expect(focusStyle.outlineWidth).not.toBe('0px');
 }
 
 test.describe('public research journey', () => {
@@ -165,18 +191,51 @@ test.describe('public research journey', () => {
     );
     await page.waitForFunction(() => Boolean(window.__sufferingTelemetry));
 
-    const providerRequests = observations.requests.filter((url) =>
-      providerPattern.test(url)
+    await page.getByRole('button', { name: 'U.S. DOT guidance' }).click();
+
+    const providerRequests = observations.requests.filter((request) =>
+      providerPattern.test(request.url)
     );
     expect(providerRequests.length).toBeGreaterThan(0);
 
-    const providerAndDataLayer = JSON.stringify({
-      providerRequests,
-      dataLayer: await page.evaluate(() => window.dataLayer),
-    }).toLowerCase();
+    const dataLayer = await page.evaluate(() => window.dataLayer);
+    const providerEvidence = JSON.stringify(providerRequests).toLowerCase();
+    const leakLocations = [];
     for (const token of privateTokens) {
-      expect(providerAndDataLayer).not.toContain(token.toLowerCase());
+      if (providerEvidence.includes(token.toLowerCase())) {
+        leakLocations.push('provider request URL, body, or allowlisted header');
+      }
+      if (
+        JSON.stringify(dataLayer).toLowerCase().includes(token.toLowerCase())
+      ) {
+        leakLocations.push('dataLayer');
+      }
     }
+    expect([...new Set(leakLocations)]).toEqual([]);
+
+    const normalizedEvents = dataLayer.filter(
+      (entry) => entry?.site_key === 'suffering_social'
+    );
+    const pageViews = normalizedEvents.filter(
+      (entry) => entry.event === 'page_view'
+    );
+    expect(pageViews).toHaveLength(1);
+    expect(pageViews[0]).toEqual({
+      event: 'page_view',
+      site_key: 'suffering_social',
+      environment: 'development',
+      canonical_host: 'www.suffering.social',
+      pathname: '/calculator',
+      page_location: 'https://www.suffering.social/calculator',
+      page_referrer: '',
+    });
+    expect(normalizedEvents.map((entry) => entry.event).sort()).toEqual([
+      'cta_clicked',
+      'page_view',
+    ]);
+    expect(
+      normalizedEvents.find((entry) => entry.event === 'cta_clicked')
+    ).toMatchObject({ cta_id: 'source_inspect', pathname: '/calculator' });
 
     await expectHealthyPage(page, observations);
   });
@@ -203,17 +262,8 @@ test.describe('public research journey', () => {
     const scenario = page.getByRole('button', {
       name: 'Load lower-bound assumptions',
     });
-    await scenario.focus();
-    await expect(scenario).toBeFocused();
-    const focusStyle = await scenario.evaluate((element) => {
-      const style = getComputedStyle(element);
-      return {
-        outlineStyle: style.outlineStyle,
-        outlineWidth: style.outlineWidth,
-      };
-    });
-    expect(focusStyle.outlineStyle).not.toBe('none');
-    expect(focusStyle.outlineWidth).not.toBe('0px');
+    await tabTo(scenario, page);
+    await expectVisibleFocus(scenario);
 
     const baselineEstimate = await page
       .locator('#hero-total-cost')
@@ -233,8 +283,27 @@ test.describe('public research journey', () => {
       await expect(slider).toHaveAttribute('aria-valuetext', /.+/);
     }
 
+    const firstSlider = sliders.first();
+    await tabTo(firstSlider, page);
+    await expectVisibleFocus(firstSlider);
+    const sliderValueBefore = Number(
+      await firstSlider.getAttribute('aria-valuenow')
+    );
+    await page.keyboard.press('ArrowRight');
+    await expect(firstSlider).not.toHaveAttribute(
+      'aria-valuenow',
+      String(sliderValueBefore)
+    );
+    const sliderValueAfter = Number(
+      await firstSlider.getAttribute('aria-valuenow')
+    );
+    await expect
+      .poll(() => page.evaluate(() => window.calculator.parameters.vsl))
+      .toBe(sliderValueAfter);
+
     const source = page.getByRole('button', { name: 'U.S. DOT guidance' });
-    await source.focus();
+    await tabTo(source, page);
+    await expectVisibleFocus(source);
     await page.keyboard.press('Enter');
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
@@ -253,6 +322,25 @@ test.describe('public research journey', () => {
     await page.keyboard.press('Escape');
     await expect(dialog).toBeHidden();
     await expect(source).toBeFocused();
+
+    await page.keyboard.press('Shift+Tab');
+    await expect(firstSlider).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(source).toBeFocused();
+
+    const methodology = page.getByRole('button', {
+      name: 'Read methodology',
+    });
+    await tabTo(methodology, page, 40);
+    await expectVisibleFocus(methodology);
+    await page.keyboard.press('Enter');
+    await expect(dialog).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Calculation methodology' })
+    ).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeHidden();
+    await expect(methodology).toBeFocused();
 
     await expectSequentialHeadings(page);
     await expectHealthyPage(page, observations);
