@@ -44,6 +44,14 @@ jobs:
         run: |
           echo "Intentional monitoring drill requested."
           exit 1
+      - name: Upload required Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: playwright-report/
+          if-no-files-found: error
+          retention-days: 30
       - name: Upload production evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -53,7 +61,6 @@ jobs:
             artifacts/
             .lighthouseci/
             .lighthouseci-production/
-            playwright-report/
             test-results/
           if-no-files-found: ignore
           retention-days: 30

@@ -9,6 +9,10 @@ const usesLocalPreview =
 
 export default defineConfig({
   testDir: './tests/e2e',
+  reporter: [
+    ['list'],
+    ['html', { outputFolder: 'playwright-report', open: 'never' }],
+  ],
   use: {
     baseURL,
     trace: 'retain-on-failure',

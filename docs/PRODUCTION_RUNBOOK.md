@@ -70,7 +70,9 @@ setTimeout(() => {
 
 Read the event back in Sentry. Confirm its release and environment, one
 redacted error, a query-free canonical URL, and no user, cookie, body, extras,
-calculator state, tracing, or replay data. Resolve the canary after
+calculator state, tracing, or replay data. Require source-map symbolication:
+the stack must show the readable repository source file and line tied to the
+deployed release, not a minified bundle location. Resolve the canary after
 verification.
 
 ## Event vocabulary

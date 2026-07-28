@@ -1,5 +1,6 @@
 /* global process */
 import { mkdirSync, writeFileSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 export function extractBuildRevision(html) {
@@ -13,6 +14,34 @@ export function extractBuildRevision(html) {
     throw new Error('Production response has no build-revision metadata.');
   }
   return match[1];
+}
+
+export function verifyRevision({
+  expectedRevision,
+  observedRevision,
+  productionUrl,
+  checkedAt = new Date().toISOString(),
+  proofPath = 'artifacts/production-proof.txt',
+}) {
+  const status = observedRevision === expectedRevision ? 'pass' : 'fail';
+  mkdirSync(dirname(proofPath), { recursive: true });
+  writeFileSync(
+    proofPath,
+    [
+      `checked_at_utc=${checkedAt}`,
+      `url=${productionUrl}`,
+      `status=${status}`,
+      `expected_revision=${expectedRevision}`,
+      `observed_revision=${observedRevision}`,
+      '',
+    ].join('\n')
+  );
+
+  if (status === 'fail') {
+    throw new Error(
+      `Production revision ${observedRevision} does not match expected ${expectedRevision}.`
+    );
+  }
 }
 
 async function main() {
@@ -33,24 +62,13 @@ async function main() {
   }
 
   const observedRevision = extractBuildRevision(await response.text());
-  if (observedRevision !== expectedRevision) {
-    throw new Error(
-      `Production revision ${observedRevision} does not match expected ${expectedRevision}.`
-    );
-  }
-
   const checkedAt = new Date().toISOString();
-  mkdirSync('artifacts', { recursive: true });
-  writeFileSync(
-    'artifacts/production-proof.txt',
-    [
-      `checked_at_utc=${checkedAt}`,
-      `url=${productionUrl}`,
-      `expected_revision=${expectedRevision}`,
-      `observed_revision=${observedRevision}`,
-      '',
-    ].join('\n')
-  );
+  verifyRevision({
+    expectedRevision,
+    observedRevision,
+    productionUrl,
+    checkedAt,
+  });
   process.stdout.write(
     `Verified production revision ${observedRevision} at ${checkedAt}\n`
   );

@@ -1,5 +1,6 @@
 /* global process */
-import { readFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const root = process.cwd();
@@ -7,9 +8,9 @@ const read = (path) => readFileSync(join(root, path), 'utf8');
 
 describe('continuous verification contract', () => {
   test('production revision parser reads generated metadata and rejects missing metadata', async () => {
-    const revision = await import('../scripts/verify-production-revision.mjs').catch(
-      () => ({})
-    );
+    const revision = await import(
+      '../scripts/verify-production-revision.mjs'
+    ).catch(() => ({}));
 
     expect(typeof revision.extractBuildRevision).toBe('function');
     expect(
@@ -20,6 +21,71 @@ describe('continuous verification contract', () => {
     expect(() => revision.extractBuildRevision('<head></head>')).toThrow(
       'build-revision'
     );
+  });
+
+  test.each([
+    ['matching', 'same-sha', 'same-sha', 'pass', false],
+    ['mismatched', 'expected-sha', 'observed-sha', 'fail', true],
+  ])(
+    'writes a %s revision artifact before returning or throwing',
+    async (
+      _case,
+      expectedRevision,
+      observedRevision,
+      expectedStatus,
+      shouldThrow
+    ) => {
+      const revision = await import(
+        '../scripts/verify-production-revision.mjs'
+      );
+      const directory = mkdtempSync(join(tmpdir(), 'suffering-proof-'));
+      const proofPath = join(directory, 'production-proof.txt');
+      const verify = () =>
+        revision.verifyRevision({
+          expectedRevision,
+          observedRevision,
+          productionUrl: 'https://www.suffering.social/calculator',
+          checkedAt: '2026-07-28T03:00:00.000Z',
+          proofPath,
+        });
+
+      try {
+        if (shouldThrow) {
+          expect(verify).toThrow(/does not match/);
+        } else {
+          expect(verify).not.toThrow();
+        }
+
+        expect(readFileSync(proofPath, 'utf8')).toBe(
+          [
+            'checked_at_utc=2026-07-28T03:00:00.000Z',
+            'url=https://www.suffering.social/calculator',
+            `status=${expectedStatus}`,
+            `expected_revision=${expectedRevision}`,
+            `observed_revision=${observedRevision}`,
+            '',
+          ].join('\n')
+        );
+      } finally {
+        rmSync(directory, { recursive: true, force: true });
+      }
+    }
+  );
+
+  test('Playwright emits a non-opening HTML report that CI requires', () => {
+    const config = read('playwright.config.js');
+    expect(config).toMatch(
+      /reporter:\s*\[[\s\S]*\['html',\s*\{\s*outputFolder:\s*'playwright-report',\s*open:\s*'never'\s*\}\]/
+    );
+
+    for (const path of [
+      '.github/workflows/verify.yml',
+      '.github/workflows/production-smoke.yml',
+    ]) {
+      const workflow = read(path);
+      expect(workflow).toContain('path: playwright-report/');
+      expect(workflow).toContain('if-no-files-found: error');
+    }
   });
 
   test('package scripts expose bounded local and production Lighthouse checks', () => {
@@ -36,10 +102,7 @@ describe('continuous verification contract', () => {
 
   test.each([
     ['lighthouserc.json', 'http://127.0.0.1:4175/calculator'],
-    [
-      'lighthouserc.production.json',
-      'https://www.suffering.social/calculator',
-    ],
+    ['lighthouserc.production.json', 'https://www.suffering.social/calculator'],
   ])('%s enforces the launch thresholds', (path, url) => {
     const config = JSON.parse(read(path));
     const assertions = config.ci.assert.assertions;
@@ -57,10 +120,7 @@ describe('continuous verification contract', () => {
       'error',
       { minScore: 1 },
     ]);
-    expect(assertions['categories:seo']).toEqual([
-      'error',
-      { minScore: 0.98 },
-    ]);
+    expect(assertions['categories:seo']).toEqual(['error', { minScore: 0.98 }]);
     expect(assertions['cumulative-layout-shift']).toEqual([
       'error',
       { maxNumericValue: 0.02 },

@@ -31,14 +31,21 @@ jobs:
       - run: npm audit --audit-level=high
       - run: npm run test:e2e
       - run: npm run lighthouse:ci
-      - name: Upload browser and Lighthouse evidence
+      - name: Upload required Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: playwright-report/
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload remaining verification evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: verify-${{ github.run_id }}
           path: |
             .lighthouseci/
-            playwright-report/
             test-results/
           if-no-files-found: ignore
           retention-days: 14
