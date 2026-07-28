@@ -28,19 +28,19 @@ one calculator.
 
 State after the 2026-05-19 design-system convergence:
 
-| | before | after |
-|---|---|---|
-| design-system tokens consumed | 0 | ~180 `var()` refs |
-| broken/orphaned `var()` refs | 72 | 0 |
-| CSS `box-shadow` rules | 53 | 0 |
-| CSS `border-radius` ≥ 12px | 24 | 0 |
-| CSS decorative `linear-gradient` | 45 | 0 |
-| HTML `shadow-*` utility classes | 10 | 0 |
-| HTML `bg-gradient-to-*` utility classes | 4 | 0 (collapsed to `bg-from-color`) |
-| HTML `rounded-{md,lg,xl,2xl,3xl}` classes | 63 | 0 (collapsed to `rounded-sm` = 2px) |
-| Tailwind utility palette | Tailwind defaults | every step resolves through DS via `tailwind.config` ramp |
-| Tailwind preflight competing with `_base.css` | yes | off |
-| heading scale inside content areas | DS display sizes overrode authored utilities | content reset in `site-tokens.css` |
+|                                               | before                                       | after                                                     |
+| --------------------------------------------- | -------------------------------------------- | --------------------------------------------------------- |
+| design-system tokens consumed                 | 0                                            | ~180 `var()` refs                                         |
+| broken/orphaned `var()` refs                  | 72                                           | 0                                                         |
+| CSS `box-shadow` rules                        | 53                                           | 0                                                         |
+| CSS `border-radius` ≥ 12px                    | 24                                           | 0                                                         |
+| CSS decorative `linear-gradient`              | 45                                           | 0                                                         |
+| HTML `shadow-*` utility classes               | 10                                           | 0                                                         |
+| HTML `bg-gradient-to-*` utility classes       | 4                                            | 0 (collapsed to `bg-from-color`)                          |
+| HTML `rounded-{md,lg,xl,2xl,3xl}` classes     | 63                                           | 0 (collapsed to `rounded-sm` = 2px)                       |
+| Tailwind utility palette                      | Tailwind defaults                            | every step resolves through DS via `tailwind.config` ramp |
+| Tailwind preflight competing with `_base.css` | yes                                          | off                                                       |
+| heading scale inside content areas            | DS display sizes overrode authored utilities | content reset in `site-tokens.css`                        |
 
 The May 2026 convergence table below is historical evidence, not a prohibition
 on incremental work. The July 2026 research refresh proved that the static Vite
@@ -60,8 +60,10 @@ the repository-owned `src/styles/` modules.
   previously identified the project as generic static output and are not a
   reliable source of build truth.
 - The published portfolio GTM container is an independent enforcement surface.
-  Version 17 excludes the canonical hosts from Clarity and PostHog; RB2B remains
-  scoped to `subconscious.ai`; no Lemlist tag exists.
+  Version 17 blocks Clarity and PostHog only during `gtm.js` initialization.
+  Its later allowlisted `page_view` rule still starts PostHog, so production
+  GTM is disabled until the PostHog tag has a hostname exception on every
+  trigger. RB2B remains scoped to `subconscious.ai`; no Lemlist tag exists.
 - Preview intentionally omits shared GTM. Its generated hostnames do not match
   the production-host exclusions. Sentry may run in Preview after a scrubbed,
   symbolicated canary.
@@ -69,6 +71,14 @@ the repository-owned `src/styles/` modules.
   `debug_meta.images` fields in Sentry events. Removing all debug metadata
   improves apparent minimization but silently destroys readable production
   stacks.
+- `sendDefaultPii: false`, a client scrubber, and Sentry's project-level IP
+  scrubber do not by themselves prevent Relay from attaching connection-derived
+  geography. The client sends the non-routable `0.0.0.0` sentinel before Relay
+  processing; production canaries must still read back the stored event.
+- Vercel environment values are byte-exact. Values previously added through a
+  newline-producing shell path were stored as `true\n`, so strict fail-closed
+  flags silently disabled both providers. Update values from stdin without a
+  newline and verify the browser's enabled-provider list after redeployment.
 - Analytics referrers stop at HTTPS origin, but Sentry stack and source-map URLs
   retain a query-free pathname. Reusing one scrubber for both boundaries either
   collects too much analytics detail or destroys symbolication.
@@ -139,7 +149,10 @@ Step weights: 6, 12, 22, 38, 62, 100, 88→fg, 72, 55, 40.
 Static consumer integration becomes one line:
 
 ```html
-<script src="https://subconscious-ai.github.io/design-system/cdn/v1/tailwind.js" defer></script>
+<script
+  src="https://subconscious-ai.github.io/design-system/cdn/v1/tailwind.js"
+  defer
+></script>
 ```
 
 ### 2. `scripts/editorial-surgery.mjs` — doctrine enforcer
@@ -167,9 +180,17 @@ Document the static-site adoption recipe end-to-end:
   classes (`text-lg`, `text-2xl`) to drive heading sizes, they need:
 
   ```css
-  body h1, body h2, body h3, body h4, body h5, body h6 {
-    font-size: inherit; font-weight: inherit; line-height: inherit;
-    letter-spacing: normal; margin: 0;
+  body h1,
+  body h2,
+  body h3,
+  body h4,
+  body h5,
+  body h6 {
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    letter-spacing: normal;
+    margin: 0;
   }
   ```
 

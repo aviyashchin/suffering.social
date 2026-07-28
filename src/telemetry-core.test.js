@@ -29,7 +29,10 @@ describe('telemetry configuration', () => {
   test('enables only aggregate GTM and release-bound Sentry', () => {
     expect(typeof telemetry.buildTelemetryConfig).toBe('function');
 
-    const config = telemetry.buildTelemetryConfig(validEnvironment, validBuildInfo);
+    const config = telemetry.buildTelemetryConfig(
+      validEnvironment,
+      validBuildInfo
+    );
 
     expect(config.ga4.enabled).toBe(false);
     expect(config.gtm.enabled).toBe(true);
@@ -44,10 +47,13 @@ describe('telemetry configuration', () => {
       ...validBuildInfo,
       release: '',
     });
-    const withoutEnvironment = telemetry.buildTelemetryConfig(validEnvironment, {
-      ...validBuildInfo,
-      environment: '',
-    });
+    const withoutEnvironment = telemetry.buildTelemetryConfig(
+      validEnvironment,
+      {
+        ...validBuildInfo,
+        environment: '',
+      }
+    );
 
     expect(withoutRelease.sentry.enabled).toBe(false);
     expect(withoutEnvironment.sentry.enabled).toBe(false);
@@ -93,8 +99,7 @@ describe('canonical analytics events', () => {
   test('redacts deeply encoded email path segments and reduces referrers to origins', () => {
     expect(
       telemetry.buildEvent('page_view', {
-        pathname:
-          '/research/person%2525252540example.com/results?value=42',
+        pathname: '/research/person%2525252540example.com/results?value=42',
         referrer:
           'http://search.example.com/users/person%2540example.com/results?q=private',
       })
@@ -111,24 +116,24 @@ describe('canonical analytics events', () => {
     });
   });
 
-  test.each(['javascript:alert(person@example.com)', 'mailto:person@example.com'])(
-    'rejects non-HTTP URL input %s',
-    (input) => {
-      expect(telemetry.canonicalPathname(input)).toBe('/');
-      expect(
-        telemetry.buildEvent('page_view', {
-          pathname: input,
-          referrer: input,
-        }).properties
-      ).toEqual(
-        expect.objectContaining({
-          pathname: '/',
-          page_location: 'https://www.suffering.social/',
-          page_referrer: '',
-        })
-      );
-    }
-  );
+  test.each([
+    'javascript:alert(person@example.com)',
+    'mailto:person@example.com',
+  ])('rejects non-HTTP URL input %s', (input) => {
+    expect(telemetry.canonicalPathname(input)).toBe('/');
+    expect(
+      telemetry.buildEvent('page_view', {
+        pathname: input,
+        referrer: input,
+      }).properties
+    ).toEqual(
+      expect.objectContaining({
+        pathname: '/',
+        page_location: 'https://www.suffering.social/',
+        page_referrer: '',
+      })
+    );
+  });
 
   test('builds a page view with an HTTPS pathname-only location and origin-only referrer', () => {
     expect(typeof telemetry.buildEvent).toBe('function');
@@ -136,7 +141,8 @@ describe('canonical analytics events', () => {
     expect(
       telemetry.buildEvent('page_view', {
         pathname: '/calculator?scenario=maximum#results',
-        location: 'http://www.suffering.social/calculator?email=person@example.com#results',
+        location:
+          'http://www.suffering.social/calculator?email=person@example.com#results',
         referrer: 'http://search.example.com/research?q=private#answer',
         scenario: { mortality: 0.42 },
         email: 'person@example.com',
@@ -169,10 +175,12 @@ describe('canonical analytics events', () => {
     expect(
       telemetry.buildEvent('cta_clicked', {
         pathname: '/calculator?scenario=high',
-        location: 'https://www.suffering.social/calculator?email=person@example.com',
+        location:
+          'https://www.suffering.social/calculator?email=person@example.com',
         referrer: 'https://search.example.com/?q=private',
         ctaId,
-        destination: 'https://tracker.example.com/person@example.com?result=private',
+        destination:
+          'https://tracker.example.com/person@example.com?result=private',
         scenarioValue: 42,
         email: 'person@example.com',
         cookie: 'secret',
@@ -219,7 +227,8 @@ describe('canonical analytics events', () => {
     expect(
       telemetry.sanitizePostHogProperties({
         site_key: 'suffering_social',
-        $current_url: 'https://www.suffering.social/calculator?email=person@example.com',
+        $current_url:
+          'https://www.suffering.social/calculator?email=person@example.com',
         $referrer: 'https://search.example.com/?q=sensitive',
         $referring_domain: 'search.example.com',
         $user_id: 'person@example.com',
@@ -248,7 +257,8 @@ describe('Sentry privacy scrubbing', () => {
             stacktrace: {
               frames: [
                 {
-                  filename: 'https://www.suffering.social/calculator?scenario=maximum&value=42',
+                  filename:
+                    'https://www.suffering.social/calculator?scenario=maximum&value=42',
                   function: 'calculateMaximum42',
                   lineno: 17,
                   colno: 7,
@@ -273,7 +283,10 @@ describe('Sentry privacy scrubbing', () => {
       replay_id: 'replay-secret',
       breadcrumbs: [
         { category: 'console', message: 'person@example.com' },
-        { category: 'navigation', data: { from: '/?secret=1', to: '/calculator?secret=2' } },
+        {
+          category: 'navigation',
+          data: { from: '/?secret=1', to: '/calculator?secret=2' },
+        },
         {
           category: 'navigation',
           data: {
@@ -284,7 +297,7 @@ describe('Sentry privacy scrubbing', () => {
       ],
     });
 
-    expect(scrubbed.user).toBeUndefined();
+    expect(scrubbed.user).toEqual({ ip_address: '0.0.0.0' });
     expect(scrubbed.extra).toBeUndefined();
     expect(scrubbed.tags).toBeUndefined();
     expect(scrubbed.contexts).toBeUndefined();
@@ -306,7 +319,9 @@ describe('Sentry privacy scrubbing', () => {
         ],
       },
     });
-    expect(scrubbed.request).toEqual({ url: 'https://www.suffering.social/calculator' });
+    expect(scrubbed.request).toEqual({
+      url: 'https://www.suffering.social/calculator',
+    });
     expect(scrubbed.breadcrumbs).toEqual([
       { category: 'navigation', data: { from: '/', to: '/calculator' } },
       { category: 'navigation', data: { from: '/', to: '/' } },
@@ -352,6 +367,8 @@ describe('Sentry privacy scrubbing', () => {
         },
       ],
     });
-    expect(JSON.stringify(scrubbed)).not.toMatch(/person@example\.com|private|javascript/);
+    expect(JSON.stringify(scrubbed)).not.toMatch(
+      /person@example\.com|private|javascript/
+    );
   });
 });

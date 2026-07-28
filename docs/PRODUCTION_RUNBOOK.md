@@ -66,14 +66,18 @@ all four Google consent categories default to `denied` before GTM loads.
 Current provider baseline (2026-07-28):
 
 - Vercel project: `aviyashchins-projects/v0-suffering-social`. Production owns
-  both approved providers; Preview owns Sentry only so preview hostnames cannot
-  bypass the shared GTM container's production-host exceptions.
+  both approved provider settings; Preview owns Sentry only. Environment values
+  must not contain a trailing newline: `true\n` fails the strict runtime flag
+  check while still appearing configured in the provider dashboard.
 - GTM container version 17, `Suffering.social aggregate-only exclusions`, is
-  published. It excludes both canonical hosts from Clarity and PostHog; RB2B
-  remains scoped to `subconscious.ai`; no Lemlist tag exists.
+  published, but its hostname block applies only to the `gtm.js` event. The
+  allowlisted `page_view` trigger still starts PostHog. Keep
+  `VITE_GTM_ENABLED=false` in Production until every PostHog trigger has the
+  canonical-host exception and a production network trace shows zero prohibited
+  requests. RB2B remains scoped to `subconscious.ai`; no Lemlist tag exists.
 - Sentry project: `subconsciousai/suffering-social`. Browser DSN and source-map
   upload credentials are projected through Vercel; credentials never belong in
-  `VITE_*` variables.
+  `VITE_*` variables. Project data scrubbing and IP scrubbing are enabled.
 
 These facts are a configuration baseline, not ongoing proof. Re-read the
 published container, deployed environment names, and Sentry event before each
@@ -99,8 +103,9 @@ The thrown `dataLayer.push` fault originates inside the compiled
 `src/telemetry-runtime.js` handler, while the `finally` block restores the page
 immediately. Read the captured `event_id` back in Sentry. Confirm its release
 and environment, one
-redacted error, a query-free canonical URL, and no user, cookie, body, extras,
-calculator state, tracing, or replay data. Require source-map symbolication:
+redacted error, a query-free canonical URL, no derived geography, and no real
+user, cookie, body, extras, calculator state, tracing, or replay data. Require
+source-map symbolication:
 the stack must resolve to the readable `src/telemetry-runtime.js` source file and
 line tied to the deployed release, not an anonymous console callback or a
 minified bundle location. Resolve the canary after verification.
