@@ -11,6 +11,9 @@ discovery files in `public/`, build checks in `scripts/`, deployment rules in
 
 The unlisted `/v5` route is legacy reference material. Do not extend it when the
 active calculator or support page can satisfy the change.
+When `HERDR_ENV=1`, create and remove worktrees through Herdr so its ledger stays
+accurate. Otherwise use the ignored `.worktrees/<branch>` directory and remove
+the worktree after its branch merges.
 
 ## Build, Test, and Development Commands
 

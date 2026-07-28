@@ -2,7 +2,7 @@
 
 ## Permanent policy
 
-`suffering.social` is a sensitive-topic public research site. Person-level identification, lead capture, advertising tags, session replay, autocapture, and calculator-state collection are prohibited. GTM-managed GA4 and scrubbed Sentry are the only approved providers. Keep `VITE_TELEMETRY_ENABLED=false` unless a provider is being deliberately promoted.
+`suffering.social` is a sensitive-topic public research site. Person-level identification, lead capture, advertising tags, session replay, autocapture, and calculator-state collection are prohibited. GTM-managed GA4 and scrubbed Sentry are the only approved providers. Provider flags fail closed and may be enabled only after the evidence gate below passes.
 
 ## Preview rollout
 
@@ -21,12 +21,12 @@ Expected normal-browser state: one GTM container, one GTM-managed GA4 configurat
 
 The portfolio GTM container must exclude `www.suffering.social` and `suffering.social` from Lemlist, Clarity, PostHog, identity, replay, advertising, and cross-domain tags. Verify those exclusions after every container publication.
 
-As of 2026-07-28, published GTM container version 17 blocks Clarity and PostHog
-only on its `gtm.js` trigger. The later `page_view` rule still starts PostHog.
-Production and Preview therefore keep GTM disabled until the PostHog tag has a
-canonical-host exception on every trigger and a production trace proves zero
-prohibited requests. RB2B is separately restricted to `subconscious.ai`, and no
-Lemlist tag is installed.
+As of 2026-07-28, GTM container version 18 is live. Its new wildcard custom-event
+exception combines the canonical-host regex with `.*` and blocks PostHog on the
+same event that fires the tag. The existing page-view exception remains for
+Clarity. Production GTM is enabled; a live trace proved GTM-managed GA4 and
+scrubbed Sentry with zero PostHog, Clarity, RB2B, Lemlist, Vector, or Leadsy
+requests. Preview still omits the production-host-only shared container.
 
 ## Search baseline
 
@@ -44,6 +44,12 @@ Submit `https://www.suffering.social/sitemap.xml` to the existing Search Console
 - social media externalities calculator
 
 `llms.txt` is supporting documentation, not a Google ranking control. Prioritize crawlability, canonical consistency, visible primary evidence, and page experience.
+
+The sitemap was submitted and read successfully on 2026-07-28 with four
+discovered pages. The live three-month baseline ending 2026-07-26 was 3 clicks,
+175 impressions, 1.7% CTR, and average position 8.1. Search Console exposed two
+query rows: `social impact calculator` and `social calculator`, each with one
+impression and no clicks.
 
 ## Deferred email readiness
 
