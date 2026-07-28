@@ -165,14 +165,14 @@
                         <div class="assumption-copy"><label for="vsl-nouislider">Value of a statistical life</label><p>Societal willingness to reduce mortality risk; not the price of a person.</p></div>
                         <strong id="vsl-value">$13.7M</strong>
                         <div id="vsl-nouislider" class="research-slider"></div>
-                        <p class="evidence">Evidence range $5M–$20M · <button class="source-link info-btn" type="button" data-param="vsl" data-telemetry-cta="source_inspect">U.S. DOT guidance</button></p>
+                        <p class="evidence">Evidence range $7M–$14M · <button class="source-link info-btn" type="button" data-param="vsl" data-telemetry-cta="source_inspect">U.S. DOT guidance</button></p>
                         <svg id="vsl-distribution" class="engine-chart" aria-hidden="true"></svg><span id="vsl-stats" hidden></span>
                     </article>
                     <article class="assumption">
                         <div class="assumption-copy"><label for="suicides-nouislider">Excess deaths since 2009</label><p>Change in deaths represented in the mortality component.</p></div>
                         <strong id="suicides-value">49.5K</strong>
                         <div id="suicides-nouislider" class="research-slider"></div>
-                        <p class="evidence">Evidence range 35K–65K · <button class="source-link info-btn" type="button" data-param="suicides" data-telemetry-cta="source_inspect">CDC WONDER</button></p>
+                        <p class="evidence">Evidence range 30K–70K deaths · <button class="source-link info-btn" type="button" data-param="suicides" data-telemetry-cta="source_inspect">CDC WONDER</button></p>
                         <svg id="suicides-distribution" class="engine-chart" aria-hidden="true"></svg><span id="suicides-stats" hidden></span>
                     </article>
                     <article class="assumption">
@@ -907,7 +907,7 @@
                             <h3>${research.name}</h3>
                             <p>${research.description}</p>
                             <dl class="modal-facts">
-                                <div><dt>Evidence range</dt><dd>${research.evidenceRange.min}–${research.evidenceRange.max} ${research.unit}</dd></div>
+                                <div><dt>Evidence range</dt><dd>${this.formatEvidenceRange(param, research)}</dd></div>
                                 <div><dt>Confidence</dt><dd>${research.evidenceRange.confidence}</dd></div>
                             </dl>
                             <ol class="modal-study-list">${studies}</ol>
@@ -2635,41 +2635,45 @@ border: 1px solid var(--bg-3);
                 }
             }
 
+            formatEvidenceRange(param, research) {
+                const ranges = {
+                    vsl: `$${research.evidenceRange.min}M–$${research.evidenceRange.max}M`,
+                    suicides: `${research.evidenceRange.min / 1000}K–${research.evidenceRange.max / 1000}K deaths`,
+                    attribution: `${research.evidenceRange.min}%–${research.evidenceRange.max}%`,
+                    depression: `${research.evidenceRange.min}M–${research.evidenceRange.max}M people`,
+                    yld: `${research.evidenceRange.min}–${research.evidenceRange.max} years`,
+                    qol: `${research.evidenceRange.min}%–${research.evidenceRange.max}%`,
+                    healthcare: `$${research.evidenceRange.min}K–$${research.evidenceRange.max}K per person annually`,
+                    productivity: `$${research.evidenceRange.min}K–$${research.evidenceRange.max}K per person annually`,
+                    duration: `${research.evidenceRange.min}–${research.evidenceRange.max} years`
+                };
+                return ranges[param];
+            }
+
             showResearchModal(param) {
                 const research = RESEARCH_CITATIONS[param];
                 if (!research) return;
 
                 const modalBody = document.getElementById('modal-body');
-                const rangeDisplay = param === 'depression'
-                    ? `${research.evidenceRange.min}–${research.evidenceRange.max} million`
-                    : `${research.evidenceRange.min}–${research.evidenceRange.max} ${research.unit}`;
                 const sortedStudies = research.studies
                     .map((study, index) => ({ ...study, originalIndex: index }))
                     .sort((a, b) => {
-                        const aHasValue = this.extractValueFromStudy(a, param) !== null;
-                        const bHasValue = this.extractValueFromStudy(b, param) !== null;
                         const confidenceRank = { 'Very High': 2, High: 1 };
-                        const aRank = (confidenceRank[a.confidence] || 0) * 2 + Number(aHasValue);
-                        const bRank = (confidenceRank[b.confidence] || 0) * 2 + Number(bHasValue);
+                        const aRank = confidenceRank[a.confidence] || 0;
+                        const bRank = confidenceRank[b.confidence] || 0;
                         return bRank - aRank || a.originalIndex - b.originalIndex;
                     });
 
                 const studies = sortedStudies.map((study) => {
-                    const extractedValue = this.extractValueFromStudy(study, param);
-                    const canApply = extractedValue !== null;
                     return `
                         <li>
-                            <article class="modal-study study-entry" data-param="${param}" data-study-index="${study.originalIndex}" ${canApply ? 'data-clickable="true"' : ''}>
+                            <article class="modal-study">
                                 <header class="modal-study-header">
                                     <h4>${study.title}</h4>
                                     <span class="confidence-label">${study.confidence} confidence</span>
                                 </header>
                                 <p class="study-authors">${study.authors}</p>
                                 <p><strong>Finding:</strong> ${study.value}</p>
-                                ${canApply ? `
-                                    <p class="applicable-value">Applicable setting: ${this.formatParameter(param, extractedValue)}</p>
-                                    <button type="button" class="apply-study-btn">Apply this study’s value</button>
-                                ` : ''}
                                 <blockquote>${study.quote}</blockquote>
                                 <a href="${study.url}" target="_blank" rel="noopener">Open study</a>
                             </article>
@@ -2682,7 +2686,7 @@ border: 1px solid var(--bg-3);
                     <div class="modal-document parameter-document">
                         <p class="modal-intro">${research.description}</p>
                         <dl class="modal-facts">
-                            <div><dt>Evidence range</dt><dd>${rangeDisplay}</dd></div>
+                            <div><dt>Evidence range</dt><dd>${this.formatEvidenceRange(param, research)}</dd></div>
                             <div><dt>Confidence</dt><dd>${research.evidenceRange.confidence}</dd></div>
                             <div><dt>Current setting</dt><dd>${this.formatParameter(param, this.parameters[param])}</dd></div>
                         </dl>
@@ -2692,7 +2696,6 @@ border: 1px solid var(--bg-3);
                         </section>
                     </div>
                 `;
-                this.addStudyClickHandlers(param);
                 this.openResearchDialog();
             }
             extractValueFromStudy(study, param) {
