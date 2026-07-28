@@ -17,16 +17,26 @@ export default defineConfig({
   webServer: usesLocalPreview
     ? {
         command:
-          'npm run build && npx vite preview --host 127.0.0.1 --port 4174',
+          'VITE_TELEMETRY_ENABLED=true VITE_GTM_ENABLED=true VITE_GTM_CONTAINER_ID=GTM-TEST123 npm run build && npx vite preview --host 127.0.0.1 --port 4174',
         url: localBaseURL,
         reuseExistingServer: false,
       }
     : undefined,
   projects: [
     {
-      name: 'chromium',
+      name: 'desktop-chromium',
       use: {
         browserName: 'chromium',
+        viewport: { width: 1440, height: 900 },
+      },
+    },
+    {
+      name: 'mobile-chromium',
+      use: {
+        browserName: 'chromium',
+        viewport: { width: 390, height: 844 },
+        isMobile: true,
+        hasTouch: true,
       },
     },
   ],
