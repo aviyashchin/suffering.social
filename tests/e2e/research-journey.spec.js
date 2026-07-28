@@ -11,6 +11,20 @@ const privateTokens = [
   'privacy@example.com',
   'privacy%40example.com',
 ];
+const defaultBaseURL = 'http://127.0.0.1:4174';
+
+function telemetryEnvironmentForBaseURL(baseURL) {
+  const target = new URL(baseURL);
+  return ['127.0.0.1', 'localhost'].includes(target.hostname)
+    ? 'development'
+    : 'production';
+}
+
+function expectedTelemetryEnvironment() {
+  return telemetryEnvironmentForBaseURL(
+    process.env.PLAYWRIGHT_BASE_URL || defaultBaseURL
+  );
+}
 
 function observePage(page) {
   const pageErrors = [];
@@ -68,11 +82,10 @@ async function expectHealthyPage(page, observations) {
     .filter((request) => prohibitedProviderPattern.test(request.url))
     .map((request) => new URL(request.url).hostname);
   expect(prohibitedHosts).toEqual([]);
-  expect(
-    observations.requests.filter((request) =>
-      /googletagmanager\.com\/gtm\.js/i.test(request.url)
-    )
-  ).toHaveLength(1);
+  const gtmRequestCount = observations.requests.filter((request) =>
+    /googletagmanager\.com\/gtm\.js/i.test(request.url)
+  ).length;
+  expect(gtmRequestCount).toBe(1);
 }
 
 async function expectSequentialHeadings(page) {
@@ -93,8 +106,13 @@ async function expectSequentialHeadings(page) {
   }
 }
 
-async function tabTo(locator, page, maximumTabs = 12) {
-  for (let index = 0; index < maximumTabs; index += 1) {
+async function tabTo(locator, page) {
+  const focusableCount = await page
+    .locator(
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )
+    .count();
+  for (let index = 0; index <= focusableCount; index += 1) {
     await page.keyboard.press('Tab');
     if (
       await locator.evaluate((element) => element === document.activeElement)
@@ -103,7 +121,7 @@ async function tabTo(locator, page, maximumTabs = 12) {
     }
   }
   throw new Error(
-    `Target did not receive focus within ${maximumTabs} Tab presses`
+    `Target did not receive focus within one traversal of ${focusableCount} controls`
   );
 }
 
@@ -121,6 +139,13 @@ async function expectVisibleFocus(locator) {
 }
 
 test.describe('public research journey', () => {
+  test('maps local and production targets to their exact telemetry environment', () => {
+    expect(telemetryEnvironmentForBaseURL(defaultBaseURL)).toBe('development');
+    expect(telemetryEnvironmentForBaseURL('https://www.suffering.social')).toBe(
+      'production'
+    );
+  });
+
   test('moves from the support page through scenario, copy, source, and methodology', async ({
     context,
     page,
@@ -182,14 +207,46 @@ test.describe('public research journey', () => {
     page,
   }) => {
     const observations = observePage(page);
+    const syntheticProviderURL = 'https://www.google-analytics.com/g/collect';
+    await page.route(syntheticProviderURL, (route) =>
+      route.fulfill({
+        status: 204,
+        headers: { 'access-control-allow-origin': '*' },
+        body: '',
+      })
+    );
     await page.route(/googletagmanager\.com\/gtm\.js/i, (route) =>
-      route.abort('blockedbyclient')
+      route.fulfill({
+        status: 200,
+        contentType: 'application/javascript',
+        body: `
+          setTimeout(() => {
+            const pageView = window.dataLayer.find(
+              (entry) => entry && entry.event === 'page_view' && entry.site_key === 'suffering_social'
+            );
+            if (!pageView) return;
+            void fetch('${syntheticProviderURL}', {
+              method: 'POST',
+              headers: { 'content-type': 'text/plain' },
+              body: JSON.stringify(pageView)
+            }).catch(() => {});
+          }, 0);
+        `,
+      })
     );
 
     await page.goto(
       '/calculator?utm_source=private-query-canary&scenario=private-scenario-canary&email=privacy%40example.com#private-fragment-canary'
     );
     await page.waitForFunction(() => Boolean(window.__sufferingTelemetry));
+    await expect
+      .poll(
+        () =>
+          observations.requests.filter(
+            (request) => request.url === syntheticProviderURL
+          ).length
+      )
+      .toBe(1);
 
     await page.getByRole('button', { name: 'U.S. DOT guidance' }).click();
 
@@ -219,16 +276,17 @@ test.describe('public research journey', () => {
     const pageViews = normalizedEvents.filter(
       (entry) => entry.event === 'page_view'
     );
-    expect(pageViews).toHaveLength(1);
-    expect(pageViews[0]).toEqual({
+    const expectedPageView = {
       event: 'page_view',
       site_key: 'suffering_social',
-      environment: 'development',
+      environment: expectedTelemetryEnvironment(),
       canonical_host: 'www.suffering.social',
       pathname: '/calculator',
       page_location: 'https://www.suffering.social/calculator',
       page_referrer: '',
-    });
+    };
+    expect(pageViews).toHaveLength(1);
+    expect(pageViews[0]).toEqual(expectedPageView);
     expect(normalizedEvents.map((entry) => entry.event).sort()).toEqual([
       'cta_clicked',
       'page_view',
@@ -237,13 +295,30 @@ test.describe('public research journey', () => {
       normalizedEvents.find((entry) => entry.event === 'cta_clicked')
     ).toMatchObject({ cta_id: 'source_inspect', pathname: '/calculator' });
 
+    // This is a separate, deterministic test-only stand-in for a GTM-managed
+    // downstream tag. It proves the provider request receives only the
+    // repository's normalized page-view object.
+    const syntheticProviderRequests = providerRequests.filter(
+      (request) => request.url === syntheticProviderURL
+    );
+    expect(syntheticProviderRequests.length).toBe(1);
+    expect(syntheticProviderRequests[0].method).toBe('POST');
+    expect(JSON.parse(syntheticProviderRequests[0].postData)).toEqual(
+      expectedPageView
+    );
+    expect(syntheticProviderRequests[0].headers['content-type']).toContain(
+      'text/plain'
+    );
+
     await expectHealthyPage(page, observations);
   });
 
   test('supports a keyboard-only mobile journey without overflow or a focus trap', async ({
+    context,
     page,
   }, testInfo) => {
     test.skip(testInfo.project.name !== 'mobile-chromium');
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     const observations = observePage(page);
 
     await page.goto('/');
@@ -259,10 +334,31 @@ test.describe('public research journey', () => {
     await expect(page).toHaveURL(/\/calculator$/);
     await page.waitForFunction(() => Boolean(window.calculator));
 
-    const scenario = page.getByRole('button', {
-      name: 'Load lower-bound assumptions',
-    });
-    await tabTo(scenario, page);
+    const scenarioNames = [
+      'Load research baseline assumptions',
+      'Load lower-bound assumptions',
+      'Load platform-disclosures assumptions',
+      'Load upper-bound assumptions',
+    ];
+    const scenarios = scenarioNames.map((name) =>
+      page.getByRole('button', { name })
+    );
+    await tabTo(scenarios[0], page);
+    for (let index = 0; index < scenarios.length; index += 1) {
+      await expectVisibleFocus(scenarios[index]);
+      await expect(scenarios[index]).toHaveAccessibleName(scenarioNames[index]);
+      await expect(scenarios[index]).toHaveAttribute(
+        'aria-pressed',
+        index === 0 ? 'true' : 'false'
+      );
+      if (index < scenarios.length - 1) {
+        await page.keyboard.press('Tab');
+      }
+    }
+
+    await page.keyboard.press('Shift+Tab');
+    await page.keyboard.press('Shift+Tab');
+    const scenario = scenarios[1];
     await expectVisibleFocus(scenario);
 
     const baselineEstimate = await page
@@ -270,6 +366,9 @@ test.describe('public research journey', () => {
       .textContent();
     await page.keyboard.press('Enter');
     await expect(scenario).toHaveAttribute('aria-pressed', 'true');
+    for (const inactiveScenario of [scenarios[0], scenarios[2], scenarios[3]]) {
+      await expect(inactiveScenario).toHaveAttribute('aria-pressed', 'false');
+    }
     await expect(page.locator('#hero-total-cost')).not.toHaveText(
       baselineEstimate || ''
     );
@@ -328,10 +427,23 @@ test.describe('public research journey', () => {
     await page.keyboard.press('Tab');
     await expect(source).toBeFocused();
 
+    const copyScenario = page.getByRole('button', {
+      name: 'Copy this scenario',
+    });
+    await tabTo(copyScenario, page);
+    await expectVisibleFocus(copyScenario);
+    await page.keyboard.press('Enter');
+    await expect(page.locator('.research-toast[role="status"]')).toHaveText(
+      'Scenario link copied to the clipboard.'
+    );
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toContain('/calculator?');
+
     const methodology = page.getByRole('button', {
       name: 'Read methodology',
     });
-    await tabTo(methodology, page, 40);
+    await tabTo(methodology, page);
     await expectVisibleFocus(methodology);
     await page.keyboard.press('Enter');
     await expect(dialog).toBeVisible();

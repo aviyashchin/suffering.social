@@ -49,6 +49,10 @@ pids
 coverage/
 *.lcov
 
+# Browser test artifacts
+test-results/
+playwright-report/
+
 # Temporary folders
 tmp/
 temp/
