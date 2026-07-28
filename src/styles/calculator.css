@@ -414,6 +414,9 @@
 }
 
 .research-modal-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
   width: min(100%, 48rem);
   max-height: 90vh;
   overflow: auto;
@@ -434,6 +437,187 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   margin: 1.5rem 0;
+}
+
+.research-modal-panel > h2 {
+  grid-column: 1;
+  grid-row: 1;
+  max-width: 18ch;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.modal-close,
+.modal-secondary-action,
+.apply-study-btn {
+  min-height: 44px;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  color: var(--ink);
+  background: transparent;
+  font: 700 0.75rem var(--font-body);
+  cursor: pointer;
+}
+
+.modal-close {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: start;
+}
+
+.modal-body {
+  grid-column: 1 / -1;
+  clear: both;
+  padding-top: 2rem;
+}
+
+.modal-intro {
+  max-width: 42rem;
+  margin-bottom: 2rem;
+  color: var(--ink-muted);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  line-height: 1.55;
+}
+
+.modal-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 1.5rem 0 2.5rem;
+  border-block: 1px solid var(--rule);
+}
+
+.modal-facts > div {
+  padding: 1rem;
+  border-right: 1px solid var(--rule);
+}
+
+.modal-facts > div:last-child {
+  border-right: 0;
+}
+
+.modal-facts dt,
+.method-step-index {
+  color: var(--research-red);
+  font: 700 0.68rem var(--font-data);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.modal-facts dd {
+  margin: 0.35rem 0 0;
+  color: var(--ink);
+  font: 0.78rem/1.45 var(--font-data);
+}
+
+.citation-group,
+.modal-studies-section,
+.modal-caveat {
+  padding: 2rem 0;
+  border-top: 1px solid var(--ink);
+}
+
+.citation-group > h3,
+.modal-studies-section > h3,
+.modal-caveat > h3,
+.evidence-summary-list h3,
+.method-step h3 {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 400;
+}
+
+.modal-study-list {
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.modal-study {
+  padding: 1.4rem 0;
+  border-top: 1px solid var(--rule);
+}
+
+.modal-study-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.modal-study h4 {
+  max-width: 36rem;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+}
+
+.confidence-label {
+  flex: 0 0 auto;
+  color: var(--research-red);
+  font: 0.65rem var(--font-data);
+  text-transform: uppercase;
+}
+
+.study-authors,
+.applicable-value {
+  color: var(--ink-muted);
+  font: 0.72rem/1.5 var(--font-data);
+}
+
+.modal-study blockquote {
+  margin: 1rem 0;
+  padding-left: 1rem;
+  border-left: 2px solid var(--rule-strong);
+  color: var(--ink-muted);
+  font-family: var(--font-display);
+  font-style: italic;
+}
+
+.apply-study-btn {
+  margin-bottom: 0.75rem;
+}
+
+.method-step {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 1rem;
+  padding: 1.75rem 0;
+  border-top: 1px solid var(--rule);
+}
+
+.formula-line {
+  margin: 0.75rem 0;
+  color: var(--ink);
+  font: 0.78rem/1.6 var(--font-data);
+}
+
+.evidence-summary-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  margin-bottom: 2rem;
+  border-top: 1px solid var(--rule);
+}
+
+.evidence-summary-list section {
+  padding: 1.5rem;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.modal-close:focus-visible,
+.modal-secondary-action:focus-visible,
+.apply-study-btn:focus-visible,
+.research-modal a:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
 }
 
 .research-footer {

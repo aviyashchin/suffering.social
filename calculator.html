@@ -172,14 +172,14 @@
                         <div class="assumption-copy"><label for="suicides-nouislider">Excess deaths since 2009</label><p>Change in deaths represented in the mortality component.</p></div>
                         <strong id="suicides-value">49.5K</strong>
                         <div id="suicides-nouislider" class="research-slider"></div>
-                        <p class="evidence">Evidence range 35K–65K · <button class="source-link info-btn" type="button" data-param="suicides">CDC WONDER</button></p>
+                        <p class="evidence">Evidence range 35K–65K · <button class="source-link info-btn" type="button" data-param="suicides" data-telemetry-cta="source_inspect">CDC WONDER</button></p>
                         <svg id="suicides-distribution" class="engine-chart" aria-hidden="true"></svg><span id="suicides-stats" hidden></span>
                     </article>
                     <article class="assumption">
                         <div class="assumption-copy"><label for="attribution-nouislider">Share attributed to social media</label><p>The model’s counterfactual attribution, not an observed fraction.</p></div>
                         <strong id="attribution-value">18%</strong>
                         <div id="attribution-nouislider" class="research-slider"></div>
-                        <p class="evidence">Evidence range 7%–30% · <button class="source-link info-btn" type="button" data-param="attribution">Natural-experiment literature</button></p>
+                        <p class="evidence">Evidence range 7%–30% · <button class="source-link info-btn" type="button" data-param="attribution" data-telemetry-cta="source_inspect">Natural-experiment literature</button></p>
                         <svg id="attribution-distribution" class="engine-chart" aria-hidden="true"></svg><span id="attribution-stats" hidden></span>
                     </article>
                 </div>
@@ -196,21 +196,21 @@
                         <div class="assumption-copy"><label for="depression-nouislider">People with induced depression</label><p>People represented in the modeled counterfactual.</p></div>
                         <strong id="depression-value">5.0M</strong>
                         <div id="depression-nouislider" class="research-slider"></div>
-                        <p class="evidence">Evidence range 2M–8M · <button class="source-link info-btn" type="button" data-param="depression">PNAS longitudinal evidence</button></p>
+                        <p class="evidence">Evidence range 2M–8M · <button class="source-link info-btn" type="button" data-param="depression" data-telemetry-cta="source_inspect">PNAS longitudinal evidence</button></p>
                         <svg id="depression-distribution" class="engine-chart" aria-hidden="true"></svg><span id="depression-stats" hidden></span>
                     </article>
                     <article class="assumption">
                         <div class="assumption-copy"><label for="yld-nouislider">Years lived with disability</label><p>Average duration of the modeled health burden.</p></div>
                         <strong id="yld-value">6.0 years</strong>
                         <div id="yld-nouislider" class="research-slider"></div>
-                        <p class="evidence">Evidence range 3–8 years · <button class="source-link info-btn" type="button" data-param="yld">Global Burden of Disease</button></p>
+                        <p class="evidence">Evidence range 3–8 years · <button class="source-link info-btn" type="button" data-param="yld" data-telemetry-cta="source_inspect">Global Burden of Disease</button></p>
                         <svg id="yld-distribution" class="engine-chart" aria-hidden="true"></svg><span id="yld-stats" hidden></span>
                     </article>
                     <article class="assumption">
                         <div class="assumption-copy"><label for="qol-nouislider">Quality-of-life reduction</label><p>Disability weight applied during affected years.</p></div>
                         <strong id="qol-value">35%</strong>
                         <div id="qol-nouislider" class="research-slider"></div>
-                        <p class="evidence">Evidence range 30%–50% · <button class="source-link info-btn" type="button" data-param="qol">WHO disability weights</button></p>
+                        <p class="evidence">Evidence range 30%–50% · <button class="source-link info-btn" type="button" data-param="qol" data-telemetry-cta="source_inspect">WHO disability weights</button></p>
                         <svg id="qol-distribution" class="engine-chart" aria-hidden="true"></svg><span id="qol-stats" hidden></span>
                     </article>
                 </div>
@@ -227,21 +227,21 @@
                         <div class="assumption-copy"><label for="healthcare-nouislider">Annual healthcare cost per person</label><p>Incremental treatment and care expenditure.</p></div>
                         <strong id="healthcare-value">$8K</strong>
                         <div id="healthcare-nouislider" class="research-slider"></div>
-                        <p class="evidence">Evidence range $6.5K–$12K · <button class="source-link info-btn" type="button" data-param="healthcare">Greenberg et al.</button></p>
+                        <p class="evidence">Evidence range $6.5K–$12K · <button class="source-link info-btn" type="button" data-param="healthcare" data-telemetry-cta="source_inspect">Greenberg et al.</button></p>
                         <svg id="healthcare-distribution" class="engine-chart" aria-hidden="true"></svg><span id="healthcare-stats" hidden></span>
                     </article>
                     <article class="assumption">
                         <div class="assumption-copy"><label for="productivity-nouislider">Annual productivity loss per person</label><p>Modeled absence and reduced participation in paid work.</p></div>
                         <strong id="productivity-value">$6K</strong>
                         <div id="productivity-nouislider" class="research-slider"></div>
-                        <p class="evidence">Evidence range $4K–$10K · <button class="source-link info-btn" type="button" data-param="productivity">Economic burden study</button></p>
+                        <p class="evidence">Evidence range $4K–$10K · <button class="source-link info-btn" type="button" data-param="productivity" data-telemetry-cta="source_inspect">Economic burden study</button></p>
                         <svg id="productivity-distribution" class="engine-chart" aria-hidden="true"></svg><span id="productivity-stats" hidden></span>
                     </article>
                     <article class="assumption">
                         <div class="assumption-copy"><label for="duration-nouislider">Average duration of economic costs</label><p>Years in which care and productivity effects are counted.</p></div>
                         <strong id="duration-value">4.5 years</strong>
                         <div id="duration-nouislider" class="research-slider"></div>
-                        <p class="evidence">Evidence range 0.25–6.8 years · <button class="source-link info-btn" type="button" data-param="duration">Longitudinal treatment evidence</button></p>
+                        <p class="evidence">Evidence range 0.25–6.8 years · <button class="source-link info-btn" type="button" data-param="duration" data-telemetry-cta="source_inspect">Longitudinal treatment evidence</button></p>
                         <svg id="duration-distribution" class="engine-chart" aria-hidden="true"></svg><span id="duration-stats" hidden></span>
                     </article>
                 </div>
@@ -288,17 +288,11 @@
         </aside>
     </main>
 
-    <div id="research-modal" class="research-modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div id="research-modal" class="research-modal hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modal-title">
         <div class="research-modal-panel">
             <button type="button" id="modal-close" class="modal-close" aria-label="Close research details">Close</button>
-            <h2 id="modal-title">Parameter research</h2>
-            <div id="modal-description"></div>
-            <dl class="modal-summary">
-                <div><dt>Evidence range</dt><dd id="modal-evidence-range"></dd></div>
-                <div><dt>Current value</dt><dd id="modal-current-value"></dd></div>
-            </dl>
-            <div id="modal-studies"></div>
-            <button type="button" id="view-full-citations">View full citations</button>
+            <h2 id="modal-title" tabindex="-1">Research detail</h2>
+            <div class="modal-body" id="modal-body"></div>
         </div>
     </div>
 
@@ -888,272 +882,111 @@
             
             showComprehensiveCitations() {
                 const allParams = ['vsl', 'suicides', 'attribution', 'depression', 'yld', 'qol', 'healthcare', 'productivity', 'duration'];
-                
-                let citationsHTML = `
-                    <div class="space-y-6">
-                        <div class="text-center mb-6">
-                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Complete Research Citations</h3>
-                            <p class="text-gray-600">All peer-reviewed studies and data sources used in this calculator</p>
-                        </div>
-                `;
-                
-                allParams.forEach((param, index) => {
+                const modalBody = document.getElementById('modal-body');
+                const sections = allParams.map((param) => {
                     const research = RESEARCH_CITATIONS[param];
-                    if (!research) return;
-                    
-                    const colors = {
-                        vsl: 'red', suicides: 'red', attribution: 'red',
-                        depression: 'purple', yld: 'purple', qol: 'purple',
-                        healthcare: 'green', productivity: 'green', duration: 'green'
-                    };
-                    
-                    const color = colors[param] || 'gray';
-                    
-                    citationsHTML += `
-                        <div class="border border-${color}-200 rounded-sm p-4 bg-${color}-50">
-                            <h4 class="text-lg font-semibold text-${color}-800 mb-2">${research.name}</h4>
-                            <p class="text-sm text-gray-600 mb-3">${research.description}</p>
-                            <div class="text-sm text-${color}-700 mb-3">
-                                <strong>Evidence Range:</strong> ${research.evidenceRange.min} - ${research.evidenceRange.max} ${research.unit} 
-                                (Confidence: ${research.evidenceRange.confidence})
-                            </div>
-                            <div class="space-y-3">
+                    if (!research) return '';
+
+                    const studies = research.studies.map((study) => `
+                        <li>
+                            <article class="modal-study">
+                                <header class="modal-study-header">
+                                    <h4>${study.title}</h4>
+                                    <span class="confidence-label">${study.confidence} confidence</span>
+                                </header>
+                                <p class="study-authors">${study.authors}</p>
+                                <p><strong>Finding:</strong> ${study.value}</p>
+                                <blockquote>${study.quote}</blockquote>
+                                <a href="${study.url}" target="_blank" rel="noopener">Open study</a>
+                            </article>
+                        </li>
+                    `).join('');
+
+                    return `
+                        <section class="citation-group">
+                            <h3>${research.name}</h3>
+                            <p>${research.description}</p>
+                            <dl class="modal-facts">
+                                <div><dt>Evidence range</dt><dd>${research.evidenceRange.min}–${research.evidenceRange.max} ${research.unit}</dd></div>
+                                <div><dt>Confidence</dt><dd>${research.evidenceRange.confidence}</dd></div>
+                            </dl>
+                            <ol class="modal-study-list">${studies}</ol>
+                        </section>
                     `;
-                    
-                    research.studies.forEach((study, studyIndex) => {
-                        citationsHTML += `
-                            <div class="bg-white border border-${color}-200 rounded p-3">
-                                <div class="flex justify-between items-start mb-2">
-                                    <h5 class="font-semibold text-gray-900 text-sm">${study.title}</h5>
-                                    <span class="px-2 py-1 text-xs rounded-full ${ study.confidence === 'Very High' ? `bg-green-100 text-green-800` : study.confidence === 'High' ? `bg-blue-100 text-blue-800` : 'bg-yellow-100 text-yellow-800' }">${study.confidence}</span>
-                                </div>
-                                <p class="text-xs text-gray-600 mb-2">${study.authors}</p>
-                                <p class="text-sm font-medium text-gray-800 mb-2">Finding: ${study.value}</p>
-                                <blockquote class="text-xs italic text-gray-600 border-l-2 border-${color}-300 pl-2 mb-2">
-                                    "${study.quote}"
-                                </blockquote>
-                                <a href="${study.url}" target="_blank" class="text-xs text-blue-600 hover:underline">
-                                    📄 View Study →
-                                </a>
-                            </div>
-                        `;
-                    });
-                    
-                    citationsHTML += `
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                citationsHTML += `</div>`;
-                
-                // Show in modal
-                const modal = document.getElementById('research-modal');
-                const modalTitle = document.getElementById('modal-title');
-                const modalBody = document.querySelector('#research-modal .modal-body');
-                
-                modalTitle.textContent = 'Complete Research Citations';
-                modalBody.innerHTML = citationsHTML;
-                modal.classList.remove('hidden');
+                }).join('');
+
+                document.getElementById('modal-title').textContent = 'Complete research citations';
+                modalBody.innerHTML = `
+                    <div class="modal-document">
+                        <p class="modal-intro">Peer-reviewed studies and public-agency sources used by the nine model assumptions.</p>
+                        ${sections}
+                    </div>
+                `;
+                this.openResearchDialog();
             }
-            
+
             showMethodologyModal() {
                 const results = this.calculateTotalEconomicImpact();
                 const { suicides, attribution, vsl, depression, yld, qol, healthcare, productivity, duration } = this.parameters;
-                
-                const methodologyHTML = `
-                    <div class="space-y-8">
-                        <div class="text-center mb-6">
-                            <h3 class="text-2xl font-bold text-gray-900 mb-2">🔬 Calculation Methodology</h3>
-                            <p class="text-gray-600">How we calculate the economic impact of social media</p>
-                        </div>
-                        
-                        <div class="bg-red-50 border border-red-200 rounded-sm p-6">
-                            <h4 class="text-lg font-bold text-red-800 mb-4 flex items-center gap-2">
-                                ☠️ Mortality Costs
-                            </h4>
-                            <div class="space-y-3">
-                                <div class="bg-white rounded p-4 border border-red-200">
-                                    <div class="font-mono text-lg text-center mb-2">
-                                        ${Math.round(suicides/1000)}K deaths × ${attribution}% attribution × $${vsl}M VSL = <span class="font-bold text-red-700">${this.formatLargeNumber(results.mortality)}</span>
-                                    </div>
-                                    <div class="text-sm text-gray-600 text-center">
-                                        Excess suicides since 2009 × Social media attribution % × Value of Statistical Life
-                                    </div>
-                                </div>
-                                <div class="text-sm text-gray-700">
-                                    <strong>Data Sources:</strong> CDC Youth Suicide Surveillance, DOT Value of Statistical Life guidance, 
-                                    natural experiments using Facebook college rollout as quasi-experimental variation.
-                                </div>
+                const modalBody = document.getElementById('modal-body');
+
+                document.getElementById('modal-title').textContent = 'Calculation methodology';
+                modalBody.innerHTML = `
+                    <div class="modal-document">
+                        <p class="modal-intro">The estimate combines three components. Every input remains editable because uncertainty compounds.</p>
+                        <section class="method-step">
+                            <p class="method-step-index">01</p>
+                            <div>
+                                <h3>Mortality</h3>
+                                <p class="formula-line">${Math.round(suicides / 1000)}K deaths × ${attribution}% attribution × $${vsl}M value of statistical life = <strong>${this.formatLargeNumber(results.mortality)}</strong></p>
+                                <p>Uses CDC mortality surveillance, U.S. DOT valuation guidance, and attribution ranges informed by natural experiments.</p>
                             </div>
-                        </div>
-                        
-                        <div class="bg-purple-50 border border-purple-200 rounded-sm p-6">
-                            <h4 class="text-lg font-bold text-purple-800 mb-4 flex items-center gap-2">
-                                🧠 Mental Health Quality-of-Life Costs
-                            </h4>
-                            <div class="space-y-3">
-                                <div class="bg-white rounded p-4 border border-purple-200">
-                                    <div class="font-mono text-lg text-center mb-2">
-                                        ${(depression/1000000).toFixed(1)}M people × ${yld} years × ${qol}% × $${Math.round(vsl * 1000000 / 75 / 1000)}K = <span class="font-bold text-purple-700">${this.formatLargeNumber(results.mental)}</span>
-                                    </div>
-                                    <div class="text-sm text-gray-600 text-center">
-                                        Affected population × Years lived with disability × Quality reduction × Annual life value
-                                    </div>
-                                </div>
-                                <div class="text-sm text-gray-700">
-                                    <strong>Methodology:</strong> WHO Global Burden of Disease framework, QALY (Quality-Adjusted Life Years) valuation, 
-                                    health utility assessments from Singapore SF-6D studies.
-                                </div>
+                        </section>
+                        <section class="method-step">
+                            <p class="method-step-index">02</p>
+                            <div>
+                                <h3>Mental health</h3>
+                                <p class="formula-line">${(depression / 1000000).toFixed(1)}M people × ${yld} years × ${qol}% disability weight × $${Math.round(vsl * 1000000 / 75 / 1000)}K annual life value = <strong>${this.formatLargeNumber(results.mental)}</strong></p>
+                                <p>Adapts the WHO burden-of-disease framework and health-utility literature. This is a modeled comparison, not a diagnosis.</p>
                             </div>
-                        </div>
-                        
-                        <div class="bg-green-50 border border-green-200 rounded-sm p-6">
-                            <h4 class="text-lg font-bold text-green-800 mb-4 flex items-center gap-2">
-                                💰 Direct Economic Costs
-                            </h4>
-                            <div class="space-y-3">
-                                <div class="bg-white rounded p-4 border border-green-200">
-                                    <div class="font-mono text-lg text-center mb-2">
-                                        ${(depression/1000000).toFixed(1)}M people × ($${Math.round(healthcare/1000)}K + $${Math.round(productivity/1000)}K) × ${duration} years = <span class="font-bold text-green-700">${this.formatLargeNumber(results.productivity)}</span>
-                                    </div>
-                                    <div class="text-sm text-gray-600 text-center">
-                                        Affected population × (Healthcare + Productivity loss) × Treatment duration
-                                    </div>
-                                </div>
-                                <div class="text-sm text-gray-700">
-                                    <strong>Components:</strong> Medical expenditure panel surveys, workplace absence studies, 
-                                    WHO productivity loss estimates ($1T global cost), clinical episode duration research.
-                                </div>
+                        </section>
+                        <section class="method-step">
+                            <p class="method-step-index">03</p>
+                            <div>
+                                <h3>Economic effects</h3>
+                                <p class="formula-line">${(depression / 1000000).toFixed(1)}M people × ($${Math.round(healthcare / 1000)}K care + $${Math.round(productivity / 1000)}K productivity) × ${duration} years = <strong>${this.formatLargeNumber(results.productivity)}</strong></p>
+                                <p>Combines treatment expenditure and productivity estimates over the selected duration.</p>
                             </div>
-                        </div>
-                        
-                        <div class="bg-blue-50 border border-blue-200 rounded-sm p-6">
-                            <h4 class="text-lg font-bold text-blue-800 mb-4">🔬 Key Methodological Principles</h4>
-                            <ul class="space-y-2 text-sm text-gray-700">
-                                <li class="flex items-start gap-2">
-                                    <span class="text-blue-600 mt-1">•</span>
-                                    <div><strong>Causal Identification:</strong> Uses natural experiments and quasi-experimental variation (Facebook college rollout) to establish causality, not just correlation.</div>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <span class="text-blue-600 mt-1">•</span>
-                                    <div><strong>Conservative Estimates:</strong> Parameter ranges based on peer-reviewed literature. Default values use consensus estimates, not extreme values.</div>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <span class="text-blue-600 mt-1">•</span>
-                                    <div><strong>Federal Standards:</strong> Value of Statistical Life from DOT/EPA guidance used across federal agencies for regulatory analysis.</div>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <span class="text-blue-600 mt-1">•</span>
-                                    <div><strong>Transparency:</strong> All parameters adjustable with evidence ranges clearly displayed. No "black box" calculations.</div>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <span class="text-blue-600 mt-1">•</span>
-                                    <div><strong>Dose-Response:</strong> Based on established relationship: each hour of social media → 0.23-point increase in depression symptoms.</div>
-                                </li>
-                            </ul>
-                        </div>
-                        
-                        <div class="text-center text-sm text-gray-500">
-                            All calculations follow standard health economics methodology used by WHO, CDC, EPA, and academic researchers.
-                        </div>
+                        </section>
+                        <section class="modal-caveat">
+                            <h3>Interpretation boundary</h3>
+                            <p>Natural experiments strengthen causal inference, but no study identifies one universal effect for every person or platform. The calculator exposes a counterfactual assumption rather than presenting it as an observed fact.</p>
+                        </section>
                     </div>
                 `;
-                
-                const modal = document.getElementById('research-modal');
-                const modalTitle = document.getElementById('modal-title');
-                const modalBody = document.querySelector('#research-modal .modal-body');
-                
-                modalTitle.textContent = 'Calculation Methodology';
-                modalBody.innerHTML = methodologyHTML;
-                modal.classList.remove('hidden');
+                this.openResearchDialog();
             }
-            
+
             showEvidenceSummaryModal() {
-                const evidenceSummaryHTML = `
-                    <div class="space-y-6">
-                        <div class="text-center mb-6">
-                            <h3 class="text-2xl font-bold text-gray-900 mb-2">📊 Evidence Summary</h3>
-                            <p class="text-gray-600">Key findings from peer-reviewed research</p>
+                const modalBody = document.getElementById('modal-body');
+                document.getElementById('modal-title').textContent = 'Evidence summary';
+                modalBody.innerHTML = `
+                    <div class="modal-document">
+                        <p class="modal-intro">The model draws on natural experiments, longitudinal evidence, public mortality data, and established health-economics methods.</p>
+                        <div class="evidence-summary-list">
+                            <section><h3>Identification</h3><p>Staggered platform adoption and other quasi-experimental designs help distinguish exposure effects from simple correlation.</p></section>
+                            <section><h3>Health burden</h3><p>Disability weights and duration ranges translate health effects into comparable life-year estimates.</p></section>
+                            <section><h3>Economic burden</h3><p>Public-agency mortality valuation, healthcare expenditure, and productivity literature provide the monetization inputs.</p></section>
+                            <section><h3>Uncertainty</h3><p>Study populations, platform use, measurement, and counterfactual assumptions vary. The displayed total is illustrative.</p></section>
                         </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="bg-red-50 border border-red-200 rounded-sm p-4">
-                                <h4 class="font-bold text-red-800 mb-3">🔥 Key Findings</h4>
-                                <ul class="space-y-2 text-sm text-red-700">
-                                    <li>• Each hour of social media → +0.23 depression points</li>
-                                    <li>• Youth depression: 10.7% (2007) → 17.4% (2021)</li>
-                                    <li>• Facebook rollout caused 9% depression increase</li>
-                                    <li>• >3 hours daily use = 2× depression risk</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="bg-blue-50 border border-blue-200 rounded-sm p-4">
-                                <h4 class="font-bold text-blue-800 mb-3">📈 Study Quality</h4>
-                                <ul class="space-y-2 text-sm text-blue-700">
-                                    <li>• Published in American Economic Review</li>
-                                    <li>• Natural experiments for causal ID</li>
-                                    <li>• 15+ years of longitudinal data</li>
-                                    <li>• Federal agency methodologies</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="bg-green-50 border border-green-200 rounded-sm p-4">
-                                <h4 class="font-bold text-green-800 mb-3">💰 Economic Evidence</h4>
-                                <ul class="space-y-2 text-sm text-green-700">
-                                    <li>• Depression costs: $326B annually (2020)</li>
-                                    <li>• WHO: $1T global productivity loss</li>
-                                    <li>• Healthcare: $8K-12K per patient</li>
-                                    <li>• VSL: $13.7M (DOT 2024 guidance)</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="bg-purple-50 border border-purple-200 rounded-sm p-4">
-                                <h4 class="font-bold text-purple-800 mb-3">🧠 Mental Health</h4>
-                                <ul class="space-y-2 text-sm text-purple-700">
-                                    <li>• 30-50% quality of life reduction</li>
-                                    <li>• 6-year average episode duration</li>
-                                    <li>• 5M+ affected by SM-induced depression</li>
-                                    <li>• Dose-response relationship established</li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-yellow-50 border border-yellow-200 rounded-sm p-6">
-                            <h4 class="font-bold text-yellow-800 mb-3">⚠️ Important Context</h4>
-                            <div class="text-sm text-yellow-700 space-y-2">
-                                <p><strong>Causal Evidence:</strong> Studies use Facebook college rollout as natural experiment, providing strong causal identification beyond correlation.</p>
-                                <p><strong>Conservative Approach:</strong> Parameter ranges based on peer-reviewed literature. Default values use research consensus, not extreme estimates.</p>
-                                <p><strong>Federal Standards:</strong> Value of Statistical Life and economic methodologies align with EPA, DOT, and WHO guidance used in regulatory analysis.</p>
-                                <p><strong>Ongoing Research:</strong> This field is rapidly evolving. Calculator allows parameter adjustment as new evidence emerges.</p>
-                            </div>
-                        </div>
-                        
-                        <div class="text-center">
-                            <button id="view-full-citations" class="px-6 py-3 bg-indigo-600 text-white rounded-sm hover:bg-indigo-700 transition-colors font-semibold">
-                                📖 View Full Citations
-                            </button>
-                        </div>
+                        <button type="button" class="modal-secondary-action" id="view-full-citations">View complete citations</button>
                     </div>
                 `;
-                
-                const modal = document.getElementById('research-modal');
-                const modalTitle = document.getElementById('modal-title');
-                const modalBody = document.querySelector('#research-modal .modal-body');
-                
-                modalTitle.textContent = 'Evidence Summary';
-                modalBody.innerHTML = evidenceSummaryHTML;
-                modal.classList.remove('hidden');
-                
-                // Add event listener for the full citations button
-                const viewCitationsBtn = document.getElementById('view-full-citations');
-                if (viewCitationsBtn) {
-                    viewCitationsBtn.addEventListener('click', () => {
-                        this.showComprehensiveCitations();
-                                         });
-                 }
-             }
-             
+                this.openResearchDialog();
+                document.getElementById('view-full-citations').addEventListener('click', () => {
+                    this.showComprehensiveCitations();
+                });
+            }
              shareConsciousTechMessage() {
                  const results = this.calculateTotalEconomicImpact();
                  const costT = (results.total / 1e12).toFixed(1);
@@ -2741,180 +2574,130 @@ border: 1px solid var(--bg-3);
                 const modal = document.getElementById('research-modal');
                 const modalClose = document.getElementById('modal-close');
                 const infoButtons = document.querySelectorAll('.info-btn');
-                
-                // Info button click handlers
-                infoButtons.forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        const param = button.dataset.param;
-                        this.showResearchModal(param);
+
+                infoButtons.forEach((button) => {
+                    button.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        this.showResearchModal(button.dataset.param);
                     });
                 });
-                
-                // Modal close handlers
-                modalClose.addEventListener('click', () => {
-                    modal.classList.add('hidden');
+
+                modalClose.addEventListener('click', () => this.closeResearchDialog());
+                modal.addEventListener('click', (event) => {
+                    if (event.target === modal) this.closeResearchDialog();
                 });
-                
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        modal.classList.add('hidden');
+                document.addEventListener('keydown', (event) => {
+                    if (modal.classList.contains('hidden')) return;
+                    if (event.key === 'Escape') {
+                        event.preventDefault();
+                        this.closeResearchDialog();
+                        return;
                     }
+                    if (event.key === 'Tab') this.trapResearchDialogFocus(event);
                 });
-                
-                // Keyboard close
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-                        modal.classList.add('hidden');
-                    }
-                });
-                
-                console.log('✅ Research modal initialized');
             }
-            
+
+            openResearchDialog() {
+                const modal = document.getElementById('research-modal');
+                const activeElement = document.activeElement;
+                const wasHidden = modal.classList.contains('hidden');
+                if (wasHidden && activeElement instanceof HTMLElement && !modal.contains(activeElement)) {
+                    this.modalReturnFocus = activeElement;
+                }
+                modal.classList.remove('hidden');
+                modal.setAttribute('aria-hidden', 'false');
+                document.getElementById('modal-close').focus();
+            }
+
+            closeResearchDialog() {
+                const modal = document.getElementById('research-modal');
+                if (modal.classList.contains('hidden')) return;
+                modal.classList.add('hidden');
+                modal.setAttribute('aria-hidden', 'true');
+                if (this.modalReturnFocus && this.modalReturnFocus.isConnected) {
+                    this.modalReturnFocus.focus();
+                }
+                this.modalReturnFocus = null;
+            }
+
+            trapResearchDialogFocus(event) {
+                const modal = document.getElementById('research-modal');
+                const focusable = [...modal.querySelectorAll(
+                    'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+                )].filter((element) => element.getClientRects().length > 0);
+                if (!focusable.length) return;
+
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+                if (event.shiftKey && (document.activeElement === first || !modal.contains(document.activeElement))) {
+                    event.preventDefault();
+                    last.focus();
+                } else if (!event.shiftKey && document.activeElement === last) {
+                    event.preventDefault();
+                    first.focus();
+                }
+            }
+
             showResearchModal(param) {
                 const research = RESEARCH_CITATIONS[param];
-                if (!research) {
-                    console.warn(`No research data found for parameter: ${param}`);
-                    return;
-                }
-                
-                const modal = document.getElementById('research-modal');
-                const modalTitle = document.getElementById('modal-title');
-                const modalBody = document.querySelector('#research-modal .modal-body');
-                
-                // Reset modal body to proper structure if it was changed by showComprehensiveCitations
-                if (!document.getElementById('modal-description')) {
-                    modalBody.innerHTML = `
-                        <div id="modal-description" class="mb-4 text-gray-600"></div>
-                        
-                        <div class="grid md:grid-cols-2 gap-6 mb-6">
-                            <div class="bg-blue-50 p-4 rounded-sm">
-                                <h3 class="font-semibold text-blue-800 mb-2">Evidence Range</h3>
-                                <div id="modal-evidence-range" class="text-blue-700"></div>
-                            </div>
-                            <div class="bg-green-50 p-4 rounded-sm">
-                                <h3 class="font-semibold text-green-800 mb-2">Current Value</h3>
-                                <div id="modal-current-value" class="text-green-700 text-lg font-bold"></div>
-                            </div>
-                        </div>
-                        
-                        <h3 class="text-lg font-semibold mb-4">Supporting Research</h3>
-                        <div id="modal-studies" class="space-y-4"></div>
-                    `;
-                }
-                
-                const modalDescription = document.getElementById('modal-description');
-                const modalEvidenceRange = document.getElementById('modal-evidence-range');
-                const modalCurrentValue = document.getElementById('modal-current-value');
-                const modalStudies = document.getElementById('modal-studies');
-                
-                // Update modal content
-                modalTitle.textContent = research.name;
-                modalDescription.innerHTML = `
-                    <p class="text-lg">${research.description}</p>
-                    <p class="mt-2 text-sm text-gray-500">Unit: ${research.unit}</p>
-                `;
-                
-                // Format evidence range display properly
-                let rangeDisplay = '';
-                if (param === 'depression') {
-                    rangeDisplay = `${research.evidenceRange.min} - ${research.evidenceRange.max} million`;
-                } else {
-                    rangeDisplay = `${research.evidenceRange.min} - ${research.evidenceRange.max} ${research.unit}`;
-                }
-                
-                modalEvidenceRange.innerHTML = `
-                    <div class="text-lg font-bold">${rangeDisplay}</div>
-                    <div class="text-sm">Confidence: ${research.evidenceRange.confidence}</div>
-                `;
-                
-                const currentValue = this.parameters[param];
-                modalCurrentValue.innerHTML = `
-                    <div>${this.formatParameter(param, currentValue)}</div>
-                    <div class="text-sm text-gray-600">Current calculator setting</div>
-                `;
-                
-                // Sort studies: Very High confidence + applicable values first, then High confidence + applicable, then others
+                if (!research) return;
+
+                const modalBody = document.getElementById('modal-body');
+                const rangeDisplay = param === 'depression'
+                    ? `${research.evidenceRange.min}–${research.evidenceRange.max} million`
+                    : `${research.evidenceRange.min}–${research.evidenceRange.max} ${research.unit}`;
                 const sortedStudies = research.studies
                     .map((study, index) => ({ ...study, originalIndex: index }))
                     .sort((a, b) => {
-                        const aExtractedValue = this.extractValueFromStudy(a, param);
-                        const bExtractedValue = this.extractValueFromStudy(b, param);
-                        const aHasValue = aExtractedValue !== null;
-                        const bHasValue = bExtractedValue !== null;
-                        const aIsVeryHigh = a.confidence === 'Very High';
-                        const bIsVeryHigh = b.confidence === 'Very High';
-                        const aIsHigh = a.confidence === 'High';
-                        const bIsHigh = b.confidence === 'High';
-                        
-                        // Priority 1: Very High confidence + applicable value
-                        if (aIsVeryHigh && aHasValue && !(bIsVeryHigh && bHasValue)) return -1;
-                        if (bIsVeryHigh && bHasValue && !(aIsVeryHigh && aHasValue)) return 1;
-                        
-                        // Priority 2: High confidence + applicable value  
-                        if (aIsHigh && aHasValue && !(bIsHigh && bHasValue)) return -1;
-                        if (bIsHigh && bHasValue && !(aIsHigh && aHasValue)) return 1;
-                        
-                        // Priority 3: Very High confidence (no applicable value)
-                        if (aIsVeryHigh && !bIsVeryHigh) return -1;
-                        if (bIsVeryHigh && !aIsVeryHigh) return 1;
-                        
-                        // Priority 4: High confidence (no applicable value)
-                        if (aIsHigh && !bIsHigh) return -1;
-                        if (bIsHigh && !aIsHigh) return 1;
-                        
-                        // Same priority: maintain original order
-                        return a.originalIndex - b.originalIndex;
+                        const aHasValue = this.extractValueFromStudy(a, param) !== null;
+                        const bHasValue = this.extractValueFromStudy(b, param) !== null;
+                        const confidenceRank = { 'Very High': 2, High: 1 };
+                        const aRank = (confidenceRank[a.confidence] || 0) * 2 + Number(aHasValue);
+                        const bRank = (confidenceRank[b.confidence] || 0) * 2 + Number(bHasValue);
+                        return bRank - aRank || a.originalIndex - b.originalIndex;
                     });
-                
-                // Populate studies with click-to-apply functionality
-                modalStudies.innerHTML = sortedStudies.map((study, index) => {
+
+                const studies = sortedStudies.map((study) => {
                     const extractedValue = this.extractValueFromStudy(study, param);
-                    const hasApplicableValue = extractedValue !== null;
-                    
+                    const canApply = extractedValue !== null;
                     return `
-                        <div class="border border-gray-200 rounded-sm p-4 study-entry ${hasApplicableValue ? 'cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-colors' : ''}" 
-                             data-param="${param}" data-study-index="${study.originalIndex}" ${hasApplicableValue ? 'data-clickable="true"' : ''}>
-                            <div class="flex justify-between items-start mb-2">
-                                <h4 class="font-semibold text-lg">${study.title}</h4>
-                                <div class="flex items-center space-x-2">
-                                    <span class="px-2 py-1 text-xs rounded-full ${ study.confidence === 'Very High' ? 'bg-green-100 text-green-800' : study.confidence === 'High' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800' }">${study.confidence}</span>
-                                    ${hasApplicableValue ? `
-                                        <button class="apply-study-btn px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
-                                            📊 Apply Value
-                                        </button>
-                                    ` : ''}
-                                </div>
-                            </div>
-                            <p class="text-gray-600 mb-2">${study.authors}</p>
-                            <p class="font-medium mb-2">Finding: ${study.value}</p>
-                            ${hasApplicableValue ? `
-                                <div class="bg-green-50 border border-green-200 rounded p-2 mb-2">
-                                    <span class="text-green-700 text-sm font-medium">
-                                        🎯 Applicable value: ${this.formatParameter(param, extractedValue)}
-                                    </span>
-                                </div>
-                            ` : ''}
-                            <blockquote class="italic text-gray-700 border-l-4 border-gray-300 pl-4 mb-3">
-                                "${study.quote}"
-                            </blockquote>
-                            <a href="${study.url}" target="_blank" class="text-blue-600 hover:text-blue-800 underline text-sm">
-                                📄 View Study →
-                            </a>
-                        </div>
+                        <li>
+                            <article class="modal-study study-entry" data-param="${param}" data-study-index="${study.originalIndex}" ${canApply ? 'data-clickable="true"' : ''}>
+                                <header class="modal-study-header">
+                                    <h4>${study.title}</h4>
+                                    <span class="confidence-label">${study.confidence} confidence</span>
+                                </header>
+                                <p class="study-authors">${study.authors}</p>
+                                <p><strong>Finding:</strong> ${study.value}</p>
+                                ${canApply ? `
+                                    <p class="applicable-value">Applicable setting: ${this.formatParameter(param, extractedValue)}</p>
+                                    <button type="button" class="apply-study-btn">Apply this study’s value</button>
+                                ` : ''}
+                                <blockquote>${study.quote}</blockquote>
+                                <a href="${study.url}" target="_blank" rel="noopener">Open study</a>
+                            </article>
+                        </li>
                     `;
                 }).join('');
-                
-                // Add click handlers for study application
+
+                document.getElementById('modal-title').textContent = research.name;
+                modalBody.innerHTML = `
+                    <div class="modal-document parameter-document">
+                        <p class="modal-intro">${research.description}</p>
+                        <dl class="modal-facts">
+                            <div><dt>Evidence range</dt><dd>${rangeDisplay}</dd></div>
+                            <div><dt>Confidence</dt><dd>${research.evidenceRange.confidence}</dd></div>
+                            <div><dt>Current setting</dt><dd>${this.formatParameter(param, this.parameters[param])}</dd></div>
+                        </dl>
+                        <section class="modal-studies-section">
+                            <h3>Supporting research</h3>
+                            <ol class="modal-study-list">${studies}</ol>
+                        </section>
+                    </div>
+                `;
                 this.addStudyClickHandlers(param);
-                
-                // Show modal
-                modal.classList.remove('hidden');
-                
-                console.log(`📚 Showing research for ${param}`);
+                this.openResearchDialog();
             }
-            
             extractValueFromStudy(study, param) {
                 const value = study.value.toLowerCase();
                 
@@ -3092,7 +2875,7 @@ border: 1px solid var(--bg-3);
                 
                 // Close modal after short delay
                 setTimeout(() => {
-                    document.getElementById('research-modal').classList.add('hidden');
+                    this.closeResearchDialog();
                 }, 1500);
                 
                 console.log(`✅ Applied study value: ${study.title} → ${param} = ${extractedValue}`);

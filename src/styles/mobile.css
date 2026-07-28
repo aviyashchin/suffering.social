@@ -69,6 +69,22 @@
     flex-direction: column;
   }
 
+  .modal-facts,
+  .evidence-summary-list {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-facts > div,
+  .evidence-summary-list section {
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .modal-study-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .research-footer,
   .support-footer {
     align-items: flex-start;
