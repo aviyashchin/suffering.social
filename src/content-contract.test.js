@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 
 const root = process.cwd();
 const calculator = parseHtml('calculator.html');
+const calculatorSource = readFileSync(resolve(root, 'calculator.html'), 'utf8');
 const support = parseHtml('index.html');
 const scenarioNames = ['reset', 'optimistic', 'facebookFiles', 'aggressive'];
 const parameterNames = [
@@ -73,6 +74,72 @@ describe('/calculator product route contract', () => {
         calculator.querySelectorAll(`[data-scenario="${scenarioName}"]`)
       ).toHaveLength(1);
     }
+  });
+
+  test('ships only the noUiSlider control runtime', () => {
+    const scriptSources = [...calculator.querySelectorAll('script[src]')].map(
+      (node) => node.src
+    );
+
+    expect(scriptSources).not.toEqual(
+      expect.arrayContaining([
+        expect.stringMatching(/chart(?:\.min)?\.js/i),
+        expect.stringMatching(/d3(?:\.v\d+)?(?:\.min)?\.js/i),
+        expect.stringMatching(/gsap|scrolltrigger/i),
+        expect.stringMatching(/tailwind/i),
+        expect.stringMatching(/design-system/i),
+      ])
+    );
+    expect(calculatorSource).not.toMatch(/loadChartJsFallback|window\.tailwind/);
+  });
+
+  test('contains no production debug, simulated activity, or compatibility surfaces', () => {
+    expect(calculatorSource).not.toMatch(/window\.test[A-Z]/);
+    expect(calculatorSource).not.toMatch(/Debug utilities available|testAllNewFeatures/);
+    expect(calculatorSource).not.toMatch(/console\.(?:log|warn)\s*\(/);
+    expect(calculatorSource).not.toMatch(/console\.error\s*\(\s*['"`][^'"`]*[^\x00-\x7F]/);
+    expect(calculatorSource).not.toMatch(/setInterval\s*\(/);
+    expect(calculatorSource).not.toMatch(
+      /live-total-|live-daily-|live-average-|live-recent-|running-counter|debt-clock-total|sticky-cumulative-|progression-chart|composition-chart|share-canvas/
+    );
+    expect(calculator.querySelector('.engine-compat')).toBeNull();
+  });
+
+  test('initializes the visible calculator once without legacy runtime calls', () => {
+    const initialization = calculatorSource.match(
+      /init\(\)\s*\{([\s\S]*?)\n\s{12}\}/
+    )?.[1];
+
+    expect(initialization).toBeDefined();
+    expect(initialization).not.toMatch(
+      /Distribution|DebtClock|RunningCounter|LiveActivity|Progression|Composition|SocialPreview|ScrollMorph/
+    );
+    expect(calculatorSource.match(/new SocialMediaCalculator\(\)/g)).toHaveLength(
+      1
+    );
+  });
+
+  test('keeps the calculator source under its runtime-debt budget', () => {
+    expect(Buffer.byteLength(calculatorSource, 'utf8')).toBeLessThan(170_000);
+  });
+});
+
+describe('test runner isolation contract', () => {
+  test('keeps Jest away from Playwright and reserves an isolated local port', () => {
+    const packageJson = JSON.parse(
+      readFileSync(resolve(root, 'package.json'), 'utf8')
+    );
+    const playwrightConfig = readFileSync(
+      resolve(root, 'playwright.config.js'),
+      'utf8'
+    );
+
+    expect(packageJson.jest.testPathIgnorePatterns).toContain(
+      '<rootDir>/tests/e2e/'
+    );
+    expect(playwrightConfig).toMatch(/127\.0\.0\.1:4174/);
+    expect(playwrightConfig).toMatch(/reuseExistingServer:\s*false/);
+    expect(playwrightConfig).not.toMatch(/127\.0\.0\.1:4173/);
   });
 });
 

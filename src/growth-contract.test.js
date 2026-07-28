@@ -131,9 +131,10 @@ describe('SEO and telemetry build contract', () => {
     if (existsSync('playwright.config.js')) {
       const config = readFileSync('playwright.config.js', 'utf8');
       expect(config).toContain('PLAYWRIGHT_BASE_URL');
-      expect(config).toContain('http://127.0.0.1:4173');
+      expect(config).toContain('http://127.0.0.1:4174');
       expect(config).toContain('chromium');
-      expect(config).toContain('vite preview --host 127.0.0.1 --port 4173');
+      expect(config).toContain('vite preview --host 127.0.0.1 --port 4174');
+      expect(config).toContain('reuseExistingServer: false');
     }
   });
 });
