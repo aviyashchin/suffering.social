@@ -176,7 +176,9 @@ function scrubDebugMeta(debugMeta) {
 }
 
 export function scrubSentryEvent(event) {
-  const scrubbed = {};
+  // An explicit non-routable address prevents Sentry Relay from deriving
+  // visitor geography from the envelope connection when no user is supplied.
+  const scrubbed = { user: { ip_address: '0.0.0.0' } };
   for (const property of [
     'event_id',
     'timestamp',

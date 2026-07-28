@@ -61,6 +61,9 @@ proof, alerts, provider checks, rollback, and Search Console.
 Telemetry fails closed. GTM-managed aggregate GA4 and scrubbed Sentry are the
 only approved providers. The shared GTM container must retain hostname
 exceptions for this site; repository code alone cannot suppress portfolio tags.
+GTM is currently disabled in Production because container version 17's
+PostHog exception does not cover its later `page_view` trigger; see the
+production runbook before re-enabling it.
 The runtime emits one canonical `page_view` and allowlisted `cta_clicked`
 events; it excludes query strings, calculator inputs, DOM text, identities,
 replay, advertising, and lead capture. Provider variables are documented in

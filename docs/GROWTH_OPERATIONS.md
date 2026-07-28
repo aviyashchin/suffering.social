@@ -21,11 +21,12 @@ Expected normal-browser state: one GTM container, one GTM-managed GA4 configurat
 
 The portfolio GTM container must exclude `www.suffering.social` and `suffering.social` from Lemlist, Clarity, PostHog, identity, replay, advertising, and cross-domain tags. Verify those exclusions after every container publication.
 
-As of 2026-07-28, published GTM container version 17 provides the canonical-host
-exceptions for Clarity and PostHog; RB2B is separately restricted to
-`subconscious.ai`, and no Lemlist tag is installed. Preview deliberately does
-not load the shared GTM container because its generated hostnames are outside
-those production-host exceptions.
+As of 2026-07-28, published GTM container version 17 blocks Clarity and PostHog
+only on its `gtm.js` trigger. The later `page_view` rule still starts PostHog.
+Production and Preview therefore keep GTM disabled until the PostHog tag has a
+canonical-host exception on every trigger and a production trace proves zero
+prohibited requests. RB2B is separately restricted to `subconscious.ai`, and no
+Lemlist tag is installed.
 
 ## Search baseline
 

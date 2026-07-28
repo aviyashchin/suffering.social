@@ -8,16 +8,16 @@
 
 **Boundaries:** No form, lead capture, CRM, email workflow, new analytics abstraction, framework migration, calculator-model rewrite, or unsupported causal claim. Lemlist, Clarity, replay, advertising, and person-level identification are prohibited.
 
-**Execution status (2026-07-28):** Repository tasks and provider setup are
-implemented on `feat/public-research-refresh` through `51382ac`; the exact tree
-passes 80 Jest tests, lint, build validation, 11 Playwright journeys, dependency
-audit, and Lighthouse thresholds. GTM version 17 is published, Vercel
-environment names are projected by scope, and the Sentry project exists.
-Remaining release gates are intentionally external: merge the replacement PR,
-prove the deployed merge SHA, run the production Sentry canary and monitoring
-drill, submit the sitemap in Search Console, and record the readbacks in issue
-#34. The task checkboxes below preserve the original execution recipe rather
-than serving as a live status board.
+**Execution status (2026-07-28):** PR #35 merged as
+`4af590a4ae1da095ecaa2ee43443877de5cdfb6d`; production serves that revision.
+Repository validation, routing/discovery files, the direct legacy-host 308,
+and a scrubbed release-bound Sentry canary are proven. Vercel environment
+values were normalized to remove provider-added newlines. GTM remains disabled:
+published container version 17 still starts PostHog on the later `page_view`
+event despite its `gtm.js` hostname block. Search Console sitemap readback and
+the monitoring failure/recovery drill remain release-closeout gates. The task
+checkboxes below preserve the original execution recipe rather than serving as
+a live status board.
 
 ---
 
@@ -26,6 +26,7 @@ than serving as a live status board.
 ### Task 1: Replace the identification contract with an aggregate-only contract
 
 **Files:**
+
 - Modify: `src/growth-contract.test.js`
 - Modify: `src/telemetry-core.test.js`
 - Modify: `src/telemetry-runtime.test.js`
@@ -47,6 +48,7 @@ rtk git commit -m "test: define private research telemetry contract"
 ### Task 2: Implement the aggregate-only telemetry boundary
 
 **Files:**
+
 - Modify: `src/telemetry-core.js`
 - Modify: `src/telemetry-runtime.js`
 - Modify: `src/telemetry.js`
@@ -84,6 +86,7 @@ rtk git commit -m "feat: enforce aggregate-only site telemetry"
 ### Task 3: Add routing, environment, coverage, and browser foundations
 
 **Files:**
+
 - Modify: `src/growth-contract.test.js`
 - Modify: `src/build-validator.test.js`
 - Modify: `vite.config.js`
@@ -122,6 +125,7 @@ rtk git commit -m "test: add routing coverage and browser foundations"
 ### Task 4: Define route-role and calculator-preservation tests
 
 **Files:**
+
 - Add: `src/content-contract.test.js`
 - Add: `tests/e2e/calculator-engine.spec.js`
 - Add: `tests/fixtures/calculator-engine-baseline.json`
@@ -143,6 +147,7 @@ rtk git commit -m "test: define evidence-first route roles"
 ### Task 5: Refresh the support page and calculator shell
 
 **Files:**
+
 - Modify: `.impeccable.md`
 - Modify: `index.html`
 - Modify: `calculator.html`
@@ -180,6 +185,7 @@ rtk git commit -m "feat: make calculator the primary research experience"
 ### Task 6: Remove production debug behavior without changing calculations
 
 **Files:**
+
 - Modify: `calculator.html`
 - Modify: `src/d3-distribution-sliders.js`
 - Modify: `src/content-contract.test.js`
@@ -200,6 +206,7 @@ rtk git commit -m "refactor: remove calculator debug surfaces"
 ### Task 7: Add desktop, mobile, keyboard, privacy, and accessibility smoke tests
 
 **Files:**
+
 - Add: `tests/e2e/research-journey.spec.js`
 - Modify: `package.json`
 - Modify: `package-lock.json`
@@ -220,6 +227,7 @@ rtk git commit -m "test: add private research browser journey"
 ### Task 8: Add production smoke and Lighthouse gates
 
 **Files:**
+
 - Add: `.github/workflows/verify.yml`
 - Add: `.github/workflows/production-smoke.yml`
 - Add: `lighthouserc.json`
@@ -250,6 +258,7 @@ rtk git commit -m "ops: add recurring production research checks"
 ### Task 9: Verify provider configuration and create the replacement PR
 
 **Files:**
+
 - Modify only if verification exposes a repository defect.
 
 - [ ] Create or update the GitHub tracking issue with the spec, plan, acceptance criteria, and proof checklist.
@@ -277,6 +286,7 @@ rtk git diff --check
 ### Task 10: Merge, deploy, and prove production
 
 **Files:**
+
 - Modify only if production proof exposes a repository defect.
 
 - [ ] Merge the approved PR with repository-standard history, then verify the deployment is built from the merge SHA.
@@ -292,6 +302,7 @@ rtk git diff --check
 ### Task 11: Submit discovery evidence and close vestigial work
 
 **Files:**
+
 - Modify: `docs/PRODUCTION_RUNBOOK.md` or the tracking issue with dated read-back evidence.
 
 - [ ] Submit `https://www.suffering.social/sitemap.xml` in the verified Search Console domain property and read back the submitted/success state.
