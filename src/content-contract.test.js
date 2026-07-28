@@ -80,6 +80,9 @@ describe('/calculator product route contract', () => {
     const scriptSources = [...calculator.querySelectorAll('script[src]')].map(
       (node) => node.src
     );
+    const stylesheetSources = [
+      ...calculator.querySelectorAll('link[rel="stylesheet"][href]'),
+    ].map((node) => node.href);
 
     expect(scriptSources).not.toEqual(
       expect.arrayContaining([
@@ -90,6 +93,12 @@ describe('/calculator product route contract', () => {
         expect.stringMatching(/design-system/i),
       ])
     );
+    expect([...scriptSources, ...stylesheetSources]).not.toEqual(
+      expect.arrayContaining([expect.stringMatching(/cdn\.jsdelivr\.net/i)])
+    );
+    expect(
+      calculator.querySelector('script[type="module"][src="/src/calculator-bootstrap.js"]')
+    ).not.toBeNull();
     expect(calculatorSource).not.toMatch(/loadChartJsFallback|window\.tailwind/);
   });
 

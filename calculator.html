@@ -36,6 +36,7 @@
     <meta name="robots" content="index, follow, max-image-preview:large">
     <link rel="canonical" href="https://www.suffering.social/calculator">
     <script type="module" src="/src/telemetry.js"></script>
+    <script type="module" src="/src/calculator-bootstrap.js"></script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="apple-touch-icon" href="/favicon.svg">
 
@@ -78,10 +79,6 @@
       ]
     }
     </script>
-    
-    <!-- noUiSlider - Professional Range Sliders -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
     
     <link rel="stylesheet" href="src/styles/site-tokens.css">
 
@@ -1112,7 +1109,12 @@
             }
         }
 
-        window.calculator = new SocialMediaCalculator();
+        window.initializeSocialMediaCalculator = () => {
+            if (!window.calculator) {
+                window.calculator = new SocialMediaCalculator();
+            }
+            return window.calculator;
+        };
     </script>
 </body>
 </html>
