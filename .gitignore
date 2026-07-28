@@ -52,6 +52,9 @@ coverage/
 # Browser test artifacts
 test-results/
 playwright-report/
+.lighthouseci/
+.lighthouseci-production/
+artifacts/
 
 # Temporary folders
 tmp/

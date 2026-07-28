@@ -1,149 +1,73 @@
-# 🌲 Suffering.Social - Social Media Economic Impact Calculator
+# Suffering.Social
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![GitHub Stars](https://img.shields.io/github/stars/aviyashchin/suffering.social?style=social)](https://github.com/aviyashchin/suffering.social)
-[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/aviyashchin/suffering.social/issues)
+Suffering.Social is a public research project that estimates the economic cost
+of social media's mental-health effects. The model combines published causal
+evidence, government data, and explicit economic assumptions. It is an
+exploratory estimate, not a causal finding for every component or a policy
+recommendation.
 
-> **If a tree falls in the forest and doesn't boost GDP, does it matter? Now imagine that tree is your child's mental health.**
+The primary experience is the
+[research calculator](https://www.suffering.social/calculator). The
+[home page](https://www.suffering.social/) explains the evidence and method.
 
-A research-based calculator that estimates the economic impact of social media on mental health, using peer-reviewed studies and government data.
+## Architecture
 
-🔗 **Live Calculator**: [suffering.social](https://www.suffering.social)
+This is a static, multi-page Vite site:
 
-## 📊 What This Calculator Does
+- `calculator.html` owns `/calculator`, the calculation engine, assumptions,
+  scenarios, methods, and citations.
+- `index.html` owns `/`, the supporting research explainer.
+- `privacy.html` and `social_media_cost_calculatorv5.html` own `/privacy` and
+  the unlisted legacy `/v5` route.
+- `src/styles/` contains the shared design tokens and route styles.
+- `src/telemetry*.js` is the single aggregate-only event boundary.
+- `src/*.test.js` contains Jest contracts; `tests/e2e/` contains Playwright
+  engine and journey checks.
+- `scripts/validate-growth.mjs` inspects built output for canonical, privacy,
+  and source-map regressions.
+- `.github/workflows/` owns pull-request verification and the daily production
+  smoke.
 
-This tool quantifies the hidden economic costs of social media's impact on mental health through three research-backed components:
+Vercel routing lives in `vercel.json`. Vite injects a `build-revision` meta tag
+from `VERCEL_GIT_COMMIT_SHA`; production monitoring compares it with the
+expected default-branch revision.
 
-- **☠️ Mortality Costs**: Deaths attributable to social media × Value of Statistical Life  
-- **😞 Disability Costs**: Affected population × disability duration × quality impact × annual QALY value
-- **💸 Productivity Costs**: Economic losses from healthcare and workplace impacts
+## Develop and verify
 
-**Current Estimate**: **$2.48 Trillion** total economic impact since 2009
-
-## 🚀 Quick Start
-
-### Option 1: Just View the Calculator
-Simply visit [suffering.social](https://www.suffering.social) - no installation needed!
-
-### Option 2: Run Locally
-```bash
-# Clone the repository
-git clone https://github.com/aviyashchin/suffering.social.git
-cd suffering.social
-
-# Install dependencies (optional)
-npm install
-
-# Start local server
-npm run dev
-# Opens at http://localhost:3000
-```
-
-### Privacy-safe telemetry
-
-Telemetry fails closed and is disabled by default. Copy `.env.example` to a local `.env` only when validating a provider in preview, and enable one provider at a time. The shared runtime emits only canonical `page_view` and allowlisted `cta_clicked` events. It excludes calculator inputs, query strings, page text, session replay, and person-level identities.
+Use Node 22 or newer.
 
 ```bash
-npm run verify:fast
+npm ci                    # install the locked dependency graph
+npm run dev               # start the Vite development server
+npm run verify:fast       # Jest, production build, and built-output validation
+npm run test:coverage     # active source coverage
+npm run lint              # repository ESLint checks
+npm run test:e2e          # desktop and 390px Playwright journeys
+npm run build             # write the production site to dist/
+npm run lighthouse:ci     # audit built /calculator on dedicated port 4175
+npm audit --audit-level=high
 ```
 
-This runs the Jest contracts, production build, and built-output privacy/SEO checks. Production rollout and rollback steps live in `docs/GROWTH_OPERATIONS.md`.
+Run `npm run build` before `npm run lighthouse:ci`. Browser failures retain
+traces and screenshots; Lighthouse writes local reports to `.lighthouseci/`.
+See [docs/PRODUCTION_RUNBOOK.md](docs/PRODUCTION_RUNBOOK.md) for production
+proof, alerts, provider checks, rollback, and Search Console.
 
-### Option 3: Fork and Customize
-1. Click the **Fork** button on GitHub
-2. Clone your fork
-3. Modify parameters, add new research, or change the methodology
-4. Deploy your version (works on Vercel, Netlify, GitHub Pages, etc.)
+## Privacy and telemetry
 
-## 🏗️ Project Structure
+Telemetry fails closed. GTM-managed aggregate GA4 and scrubbed Sentry are the
+only approved providers. The runtime emits one canonical `page_view` and
+allowlisted `cta_clicked` events; it excludes query strings, calculator inputs,
+DOM text, identities, replay, advertising, and lead capture. Provider variables
+are documented in `.env.example`.
 
-```
-suffering.social/
-├── index.html                          # Main calculator page
-├── social_media_cost_calculatorv5.html # Alternative version
-├── package.json                        # Node.js configuration
-├── vercel.json                         # Deployment configuration
-├── docs/                               # Documentation
-├── archive/                            # Previous versions
-└── Externality Clock/                  # Research papers and data
-```
+## Research contributions
 
-## 🔬 Research Foundation
+Keep each external claim attached to a source and distinguish causal evidence
+from association. A model change must preserve or deliberately update the exact
+scenario fixtures in `tests/fixtures/` and the engine characterization test.
+Open a pull request with the changed source, model rationale, and validation
+output.
 
-All calculations are based on peer-reviewed research:
-
-- **Causal Evidence**: [Braghieri et al. (2022) - American Economic Review](https://econpapers.repec.org/RePEc:aea:aecrev:v:112:y:2022:i:11:p:3660-93)
-- **Mental Health Data**: [CDC Youth Risk Behavior Survey](https://www.cdc.gov/mmwr/volumes/73/su/su7304a9.htm)
-- **Economic Methodology**: [US DOT Value of Statistical Life](https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-on-valuation-of-a-statistical-life-in-economic-analysis)
-- **50+ additional peer-reviewed sources** (see tooltips in calculator)
-
-## 🤝 Contributing
-
-We welcome contributions! Here are ways to help:
-
-### 📚 Research Contributions
-- Add new peer-reviewed studies
-- Update parameter ranges with latest research
-- Improve methodology documentation
-- Add international data
-
-### 💻 Technical Contributions
-- Fix bugs or improve performance
-- Add new features (mobile optimization, accessibility)
-- Improve code documentation
-- Add automated testing
-
-### 🎨 Design Contributions
-- Improve UI/UX
-- Create data visualizations
-- Design educational materials
-- Enhance mobile experience
-
-### Getting Started
-1. **Fork** the repository
-2. **Clone** your fork locally
-3. **Create** a feature branch: `git checkout -b feature/amazing-feature`
-4. **Make** your changes
-5. **Test** locally: `npm run dev`
-6. **Commit** your changes: `git commit -m 'Add amazing feature'`
-7. **Push** to your branch: `git push origin feature/amazing-feature`
-8. **Open** a Pull Request
-
-## 📝 License
-
-This project is licensed under the **Apache License 2.0** - see the [LICENSE](LICENSE) file for details.
-
-This means you can:
-- ✅ Use commercially
-- ✅ Modify and distribute
-- ✅ Include in proprietary software
-- ✅ Use for research and education
-
-## 🙏 Acknowledgments
-
-- **Research Community**: Thank you to all researchers studying social media's impact on mental health
-- **Data Sources**: CDC, SAMHSA, WHO, APA, and academic institutions
-- **Open Source**: Built with modern web technologies and open source libraries
-
-## 📬 Contact
-
-- **Issues**: [GitHub Issues](https://github.com/aviyashchin/suffering.social/issues)
-- **Email**: research@subconscious.ai
-- **Discord**: [Join our community](https://discord.gg/3bgj4ZhABz)
-- **Website**: [subconscious.ai](https://subconscious.ai)
-
-## 🌟 Star History
-
-Help spread awareness by starring this repository!
-
-[![Star History Chart](https://api.star-history.com/svg?repos=aviyashchin/suffering.social&type=Date)](https://star-history.com/#aviyashchin/suffering.social&Date)
-
----
-
-**Together, we can build technology that enhances human wellbeing instead of exploiting it.**
-
-*A [Subconscious.ai](https://subconscious.ai) research project*
-
-## Autonomous maintenance
-
-Small, bounded repository changes may be delivered through the shared Symphony marketing lane.
+The project is licensed under Apache 2.0. Questions and corrections belong in
+[GitHub Issues](https://github.com/aviyashchin/suffering.social/issues).

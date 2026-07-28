@@ -168,7 +168,9 @@ test.describe('public research journey', () => {
       .locator('#hero-total-cost')
       .textContent();
     await page
-      .getByRole('button', { name: 'Load lower-bound assumptions' })
+      .getByRole('button', {
+        name: 'Lower-bound assumption — load assumptions',
+      })
       .click();
     await expect(page.locator('#hero-total-cost')).not.toHaveText(
       baselineEstimate || ''
@@ -335,10 +337,10 @@ test.describe('public research journey', () => {
     await page.waitForFunction(() => Boolean(window.calculator));
 
     const scenarioNames = [
-      'Load research baseline assumptions',
-      'Load lower-bound assumptions',
-      'Load platform-disclosures assumptions',
-      'Load upper-bound assumptions',
+      'Research baseline — load assumptions',
+      'Lower-bound assumption — load assumptions',
+      'Platform-disclosures case — load assumptions',
+      'Upper-bound assumption — load assumptions',
     ];
     const scenarios = scenarioNames.map((name) =>
       page.getByRole('button', { name })

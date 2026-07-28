@@ -76,6 +76,30 @@ describe('/calculator product route contract', () => {
     }
   });
 
+  test('keeps visible control labels inside their accessible names', () => {
+    const labeledControls = [
+      calculator.querySelector('.wordmark'),
+      ...calculator.querySelectorAll('.scenario-btn'),
+    ];
+
+    for (const control of labeledControls) {
+      expect(control.getAttribute('aria-label')).toMatch(
+        new RegExp(`^${escapeRegex(normalizedText(control))}`, 'i')
+      );
+    }
+  });
+
+  test('renders source controls without inherited transparency', () => {
+    const calculatorCss = readFileSync(
+      resolve(root, 'src/styles/calculator.css'),
+      'utf8'
+    );
+
+    expect(calculatorCss).toMatch(
+      /\.source-link\.info-btn\s*\{[^}]*\bopacity:\s*1\s*;/s
+    );
+  });
+
   test('ships only the noUiSlider control runtime', () => {
     const scriptSources = [...calculator.querySelectorAll('script[src]')].map(
       (node) => node.src
@@ -229,4 +253,8 @@ function visibleText(document) {
 
 function normalizedText(node) {
   return node.textContent.replace(/\s+/g, ' ').trim();
+}
+
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

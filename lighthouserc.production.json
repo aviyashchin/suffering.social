@@ -1,0 +1,25 @@
+{
+  "ci": {
+    "collect": {
+      "url": ["https://www.suffering.social/calculator"],
+      "numberOfRuns": 1,
+      "settings": {
+        "chromeFlags": "--no-sandbox"
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["error", { "minScore": 0.9 }],
+        "categories:accessibility": ["error", { "minScore": 1 }],
+        "categories:best-practices": ["error", { "minScore": 1 }],
+        "categories:seo": ["error", { "minScore": 0.98 }],
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.02 }],
+        "total-blocking-time": ["error", { "maxNumericValue": 99 }]
+      }
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": ".lighthouseci-production"
+    }
+  }
+}

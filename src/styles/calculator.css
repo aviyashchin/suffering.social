@@ -272,13 +272,14 @@
   font: 0.7rem/1.4 var(--font-data);
 }
 
-.source-link {
+.source-link.info-btn {
   min-height: 44px;
   padding: 0;
   border: 0;
   color: var(--research-red-dark);
   background: transparent;
   font: inherit;
+  opacity: 1;
   text-decoration: underline;
   cursor: pointer;
 }

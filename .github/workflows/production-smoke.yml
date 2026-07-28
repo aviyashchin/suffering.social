@@ -1,0 +1,59 @@
+name: Production smoke
+
+on:
+  schedule:
+    - cron: '17 13 * * *'
+  workflow_dispatch:
+    inputs:
+      force_failure:
+        description: Exercise the alert path after all real checks run
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-smoke
+  cancel-in-progress: false
+
+jobs:
+  production-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PLAYWRIGHT_BASE_URL: https://www.suffering.social
+      PRODUCTION_URL: https://www.suffering.social/calculator
+      EXPECTED_REVISION: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Run bounded production journey
+        run: npm run test:e2e -- tests/e2e/research-journey.spec.js
+      - name: Verify deployed revision and record UTC proof
+        run: node scripts/verify-production-revision.mjs
+      - run: npm run lighthouse:production
+      - name: Exercise the bounded failure drill
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.force_failure }}
+        run: |
+          echo "Intentional monitoring drill requested."
+          exit 1
+      - name: Upload production evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-smoke-${{ github.run_id }}
+          path: |
+            artifacts/
+            .lighthouseci/
+            .lighthouseci-production/
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 30

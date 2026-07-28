@@ -130,7 +130,7 @@ test('keeps duration keyboard steps aligned with its observable value', async ({
   await expect(page.locator('#duration-value')).toHaveText('4.6 years');
 
   await page.getByRole('button', {
-    name: 'Load lower-bound assumptions',
+    name: 'Lower-bound assumption — load assumptions',
   }).click();
 
   await expect
