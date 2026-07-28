@@ -1,7 +1,33 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "facethecost.com"
+        }
+      ],
+      "destination": "https://www.suffering.social/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.facethecost.com"
+        }
+      ],
+      "destination": "https://www.suffering.social/:path*",
+      "permanent": true
+    },
     {
       "source": "/v2",
       "destination": "/",
@@ -34,10 +60,6 @@
         {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=86400"
         }
       ]
     }

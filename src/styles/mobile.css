@@ -1,700 +1,117 @@
-/* src/styles/mobile.css - Mobile-first responsive design */
+@media (max-width: 720px) {
+  .research-masthead,
+  .support-masthead {
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 1rem 1.25rem;
+  }
 
-/* Mobile-first approach */
-@media (max-width: 768px) {
-    /* Ultra-compressed layout */
-    .container {
-        max-width: 100% !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-    
-    /* Edge-to-edge content */
-    main {
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-    
-    /* Minimal card spacing */
-    .card {
-        padding: 0.75rem !important;
-        margin: 0.5rem !important;
-        border-radius: 2px !important;
-        border: none !important;
-}
-    
-    /* Ultra-compressed parameter groups */
-    .parameter-group {
-        padding: 0.75rem !important;
-        margin-bottom: 1rem !important;
-        border-left: none !important;
-        border-radius: 2px !important;
-        background: white !important;
-}
-    
-    /* Color coding without borders */
-    .parameter-group.mortality {
-        background: var(--surface-mortality, var(--bg-1)) !important;
-    }
-    
-    .parameter-group.mental-health {
-        background: var(--surface-mental-health, var(--bg-1)) !important;
-    }
-    
-    .parameter-group.productivity {
-        background: var(--surface-productivity, var(--bg-1)) !important;
-    }
-    
-    /* Minimal section spacing */
-    .section-spacing {
-        padding: 0.5rem 0 !important;
-    }
-    
-    /* Compact hero */
-    #hero-section {
-        min-height: 50vh !important;
-        margin-bottom: 1rem !important;
-        padding: 1rem !important;
-    }
-    
-    /* Tight calculator start */
-    #calculator-start {
-        margin-top: 0.5rem !important;
-        padding: 1rem !important;
-    }
-    
-    /* Compressed sidebar */
-    aside .card {
-        padding: 0.75rem !important;
-        margin-bottom: 0.5rem !important;
-    }
-    
-    /* Touch targets */
-    .info-button {
-        width: 28px !important;
-        height: 28px !important;
-        font-size: 14px !important;
-        margin-left: 0.5rem !important;
-    }
-    
-    /* Touch-friendly sizes */
-    .btn, .scenario-btn {
-        min-height: 44px !important;
-        padding: 0.5rem 0.75rem !important;
-        font-size: 0.875rem !important;
-    }
-    
-    /* Compact slider controls */
-    .slider, input[type="range"] {
-        height: 32px !important;
-        margin: 0.5rem 0 !important;
-    }
-    
-    .slider::-webkit-slider-track {
-        height: 6px;
-        background: var(--bg-3);
-        border-radius: 2px;
-    }
-    
-    .slider::-webkit-slider-thumb {
-        width: 24px !important;
-        height: 24px !important;
-        border-radius: 50%;
-        background: var(--accent);
-        border: 2px solid white;
-}
-    
-    /* Hide distribution visualizations on mobile */
-    .distribution-viz {
-        display: none !important;
-    }
-    
-    /* Hide distribution info on mobile to save space */
-    .distribution-info {
-        display: none !important;
-    }
-    
-    /* Remove hover effects on mobile */
-    .btn:hover, .scenario-btn:hover, .card:hover {
-        transform: none !important;
-}
-    
-    /* Compact formulas */
-    .parameter-group .bg-red-50,
-    .parameter-group .bg-purple-50,
-    .parameter-group .bg-green-50 {
-        font-size: 0.75rem !important;
-        padding: 0.5rem !important;
-        margin: 0.5rem 0 !important;
-        border-radius: 2px !important;
-    }
-    
-    /* Compact scenario buttons */
-    .scenario-btn {
-        font-size: 0.75rem !important;
-        padding: 0.5rem 0.75rem !important;
-        margin: 0.25rem !important;
-    }
-    
-    /* Ultra-compact header */
-    .header-fixed {
-        padding: 0.75rem 0.5rem !important;
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        z-index: 1030 !important;
-    }
-    
-    .header-fixed .text-2xl, .header-fixed .text-4xl, .header-fixed .text-5xl {
-        font-size: 1.5rem !important;
-        line-height: 1.2 !important;
-    }
-    
-    .header-fixed .text-xs, .header-fixed .text-sm {
-        font-size: 0.75rem !important;
-    }
-    
-    /* Ensure body has proper top padding for fixed header */
-    body {
-        padding-top: 4.5rem !important;
-    }
-    
-    /* Minimal grid spacing */
-    .grid {
-        gap: 0.5rem !important;
-    }
-    
-    .lg\:grid-cols-3 {
-        grid-template-columns: 1fr !important;
-    }
-    
-    /* Remove excessive padding from layout containers */
-    .max-w-7xl, .max-w-6xl, .max-w-5xl {
-        max-width: 100% !important;
-        padding: 0 !important;
-    }
-    
-    /* Compact parameter labels */
-    .parameter-label {
-        font-size: 0.8rem !important;
-        margin-bottom: 0.25rem !important;
-    }
-    
-    /* Reduce chart container padding */
-    .h-64 {
-        height: 200px !important;
-    }
-    
-    /* Ultra-compact typography */
-    h1 { 
-        font-size: 1.5rem !important;
-        margin: 0.25rem 0 !important;
-    }
-    h2 { 
-        font-size: 1.25rem !important;
-        margin: 0.25rem 0 !important;
-    }
-    h3 { 
-        font-size: 1.125rem !important;
-        margin: 0.25rem 0 !important;
-    }
-    
-    /* Compact big numbers */
-    .big-number, #total-cost, #hero-total-cost { 
-        font-size: 1.75rem !important;
-        line-height: 1.1 !important;
-        margin: 0.25rem 0 !important;
-    }
-    
-    /* Hero section mobile optimization */
-    .hero-section, #hero-section {
-        padding: 2rem 1rem !important;
-        margin: 0 !important;
-        min-height: 60vh !important;
-        height: auto !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-    
-    /* Fix hero content layout on mobile */
-    #hero-content {
-        text-align: center !important;
-        max-width: 100% !important;
-        padding: 0 !important;
-    }
-    
-    /* Hero headings mobile optimization */
-    #hero-section h1 {
-        font-size: 2.5rem !important;
-        line-height: 1.1 !important;
-        margin-bottom: 1rem !important;
-    }
-    
-    /* Hero paragraph mobile optimization */
-    #hero-section p {
-        font-size: 1.125rem !important;
-        line-height: 1.4 !important;
-        margin-bottom: 1.5rem !important;
-    }
-    
-    /* Fix scroll indicator on mobile */
-    #scroll-indicator {
-        margin-top: 2rem !important;
-    }
-    
-    /* Fix calculator start section mobile layout */
-    #calculator-start {
-        margin-top: 1rem !important;
-        padding: 1.5rem !important;
-        border-radius: 2px !important;
-    }
-    
-    /* Better mobile grid layouts */
-    .grid {
-        gap: 0.75rem !important;
-    }
-    
-    /* Mobile-optimized buttons */
-    .btn, .scenario-btn {
-        min-height: 48px !important;
-        padding: 0.75rem 1rem !important;
-        font-size: 0.875rem !important;
-        border-radius: 2px !important;
-    }
-    
-    /* Fix help button position on mobile */
-    .fixed-help {
-        bottom: 4rem !important;
-        right: 1rem !important;
-        width: 3rem !important;
-        height: 3rem !important;
-        font-size: 1.25rem !important;
-        z-index: 1001 !important;
-    }
-    
-    /* Show branding on mobile with better positioning */
-    .fixed-branding {
-        position: fixed;
-        bottom: 0.5rem;
-        left: 0.5rem;
-        z-index: 1000;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(8px);
-        padding: 0.375rem;
-        border-radius: 2px;
-font-size: 0.625rem;
-        max-width: 120px;
-        text-align: center;
-    }
-    
-    /* Mobile tooltip system */
-    .mobile-tooltip {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.8);
-        z-index: 9999;
-        display: flex;
-        align-items: flex-start;
-        justify-content: center;
-        padding: 1rem;
-        opacity: 0;
-        transform: translateY(20px);
-        transition: all 0.2s ease;
-        backdrop-filter: blur(5px);
-    }
-    
-    .mobile-tooltip.show {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    
-    .mobile-tooltip .mobile-tooltip-close {
-        background: rgba(255, 255, 255, 0.2);
-        border: none;
-        border-radius: 50%;
-        width: 32px;
-        height: 32px;
-        color: white;
-        font-size: 18px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .mobile-tooltip .mobile-tooltip-content {
-        background: white;
-        border-radius: 2px;
-        padding: 1rem;
-        max-height: 75vh;
-        overflow-y: auto;
-        width: 100%;
-        max-width: 500px;
-        margin-top: 2rem;
-    }
-    
-    /* Remove ALL unnecessary spacing */
-    .space-y-2 > * + *, .space-y-4 > * + *, 
-    .space-y-6 > * + *, .space-y-8 > * + *,
-    .space-y-12 > * + *, .space-y-16 > * + * { 
-        margin-top: 0.5rem !important; 
-    }
-    
-    /* Base mobile layout */
-    body {
-        padding-top: 3rem;
-    }
-    
-    .max-w-7xl {
-        max-width: 100%;
-        padding: 0 1rem;
-    }
-    
-    /* Compact hero section */
-    .hero-section h2 {
-        font-size: 2rem;
-    }
-    
-    .hero-section .text-6xl {
-        font-size: 3rem;
-    }
-    
-    /* Parameter groups - ultra-compact with curves */
-    .parameter-group {
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border-radius: 2px;
-}
-    
-    /* Distribution Chart Mobile Styles */
-    .distribution-chart-container {
-        margin-top: 0.75rem;
-        margin-bottom: 0.75rem;
-        padding: 0.5rem;
-        height: 95px;
-        border: 1px solid var(--bg-3);
-        border-radius: 2px;
-        background: var(--bg-1 0%, var(--bg-2) 100%);
-position: relative;
-        overflow: hidden;
-    }
-    
-    /* Beautiful curve styling for mobile */
-    .distribution-chart {
-        width: 100% !important;
-        height: 65px !important;
-        display: block !important;
-        border-radius: 2px;
-    }
-    
-    /* Statistical overlay - mobile optimized */
-    .distribution-stats {
-        position: absolute;
-        bottom: 4px;
-        left: 6px;
-        right: 6px;
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 2px;
-        padding: 3px 6px;
-        font-size: 8px;
-        font-family: var(--font-mono);
-        color: var(--fg-3);
-        line-height: 1.2;
-        z-index: 10;
-        pointer-events: none;
-        backdrop-filter: blur(2px);
-        border: 1px solid rgba(229, 231, 235, 0.8);
-        max-height: 16px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-}
-    
-    /* Research distribution label */
-    .distribution-chart-container::before {
-        content: 'Research Distribution';
-        position: absolute;
-        top: 3px;
-        right: 6px;
-        font-size: 7px;
-        color: var(--fg-3);
-        font-weight: 500;
-        pointer-events: none;
-        z-index: 5;
-        background: rgba(255, 255, 255, 0.9);
-        padding: 2px 4px;
-        border-radius: 2px;
-        border: 1px solid rgba(156, 163, 175, 0.2);
-}
-    
-    /* Parameter group color coding for mobile */
-    .parameter-group[data-group="mortality"] {
-        background: var(--surface-mortality, var(--bg-1));
-        border-left: 3px solid var(--c-mortality);
-    }
-    
-    .parameter-group[data-group="mental-health"] {
-        background: var(--surface-mental-health, var(--bg-1));
-        border-left: 3px solid var(--c-mental-health);
-    }
-    
-    .parameter-group[data-group="healthcare"] {
-        background: var(--surface-productivity, var(--bg-1));
-        border-left: 3px solid var(--c-productivity);
-    }
-    
-    /* Curve accent colors */
-    .parameter-group[data-group="mortality"] .distribution-chart-container::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: transparent 50%, transparent 100%);
-        opacity: 0.3;
-        pointer-events: none;
-    }
-    
-    .parameter-group[data-group="mental-health"] .distribution-chart-container::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: transparent 50%, transparent 100%);
-        opacity: 0.3;
-        pointer-events: none;
-    }
-    
-    .parameter-group[data-group="healthcare"] .distribution-chart-container::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: transparent 50%, transparent 100%);
-        opacity: 0.3;
-        pointer-events: none;
-    }
-    
-    /* Touch-friendly slider spacing */
-    .nouislider {
-        margin: 0.75rem 0;
-    }
-    
-    /* Compact parameter labels */
-    .parameter-group label {
-        font-size: 0.875rem;
-        font-weight: 500;
-        margin-bottom: 0.5rem;
-    }
-    
-    /* Parameter value displays */
-    .parameter-group .text-right {
-        font-size: 0.875rem;
-        font-weight: 600;
-        color: var(--fg-2);
-    }
-    
-    /* Section headers for mobile */
-    .parameter-group h4 {
-        font-size: 1rem;
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    /* Results section mobile optimization */
-    .bg-red-50, .bg-purple-50, .bg-green-50 {
-        padding: 0.75rem;
-        margin-bottom: 0.75rem;
-        border-radius: 2px;
-    }
-    
-    /* Scenario buttons for mobile */
-    .scenario-btn {
-        padding: 0.75rem 0.5rem;
-        font-size: 0.8rem;
-        border-radius: 2px;
-        text-align: center;
-        min-height: 44px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    /* Grid adjustments for mobile */
-    .grid.lg\\:grid-cols-2 {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-    
-    .grid.grid-cols-2 {
-        gap: 0.75rem;
-    }
-    
-    /* Chart canvas mobile sizing */
-    #breakdown-chart {
-        max-width: 100%;
-        height: auto;
-    }
-    
-    /* Share buttons mobile optimization */
-    .flex.justify-center.space-x-4 {
-        flex-direction: column;
-        space-x: 0;
-        gap: 0.75rem;
-        align-items: center;
-    }
-    
-    .flex.justify-center.space-x-4 button {
-        width: 100%;
-        max-width: 280px;
-    }
+  .masthead-note,
+  .support-masthead > span {
+    max-width: 12rem;
+    text-align: right;
+  }
+
+  .calculator-page,
+  .support-page {
+    width: min(100% - 2rem, 70rem);
+  }
+
+  .calculator-hero {
+    padding: 4.5rem 0 3rem;
+  }
+
+  .calculator-hero h1,
+  .support-hero h1 {
+    font-size: clamp(2.45rem, 12vw, 4.5rem);
+  }
+
+  .estimate-display strong {
+    font-size: clamp(2rem, 9vw, 4rem);
+    overflow-wrap: anywhere;
+  }
+
+  .scenario-set {
+    grid-template-columns: 1fr;
+  }
+
+  .assumption-group > header {
+    grid-template-columns: 2.5rem 1fr;
+  }
+
+  .assumption-group > header output {
+    grid-column: 2;
+    text-align: left;
+  }
+
+  .assumption {
+    grid-template-columns: 1fr auto;
+    padding: 1.4rem 0;
+  }
+
+  .assumption .research-slider,
+  .assumption .evidence {
+    grid-column: 1 / -1;
+  }
+
+  .result-reading,
+  .method-section,
+  .open-research,
+  .support-evidence,
+  .support-method,
+  .source-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .research-actions,
+  .method-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .modal-facts,
+  .evidence-summary-list {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-facts > div,
+  .evidence-summary-list section {
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .modal-study-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .research-footer,
+  .support-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .support-hero {
+    padding: 5rem 0 4rem;
+  }
+
+  .evidence-figure {
+    margin-top: 1rem;
+    padding: 1rem 0;
+  }
+
+  .support-method ol li {
+    grid-template-columns: 2.5rem 1fr;
+  }
 }
 
-/* Tablet optimizations */
-@media (min-width: 769px) and (max-width: 1024px) {
-    .container {
-        max-width: 95% !important;
-        padding-left: 1.5rem !important;
-        padding-right: 1.5rem !important;
-    }
-    
-    .parameter-group {
-        padding: 2rem !important;
-    }
-}
-
-/* Desktop - keep original generous spacing */
-@media (min-width: 1025px) {
-    .container {
-        max-width: 90% !important;
-    }
-}
-
-/* Extra small mobile devices */
-@media (max-width: 480px) {
-    .max-w-7xl {
-        padding: 0 0.75rem;
-    }
-    
-    .parameter-group {
-        padding: 0.75rem;
-    }
-    
-    .distribution-chart {
-        height: 60px !important;
-    }
-    
-    .distribution-chart-container {
-        height: 85px;
-        padding: 0.4rem;
-    }
-    
-    .distribution-stats {
-        font-size: 7px;
-        padding: 2px 4px;
-    }
-    
-    .distribution-chart-container::before {
-        font-size: 6px;
-        padding: 1px 3px;
-    }
-}
-
-/* Landscape mobile optimization */
-@media (max-width: 768px) and (orientation: landscape) {
-    .distribution-chart-container {
-        height: 75px;
-    }
-    
-    .distribution-chart {
-        height: 50px !important;
-    }
-    
-    .parameter-group {
-        padding: 0.5rem;
-    }
-    
-    .grid.lg\\:grid-cols-2 {
-        grid-template-columns: 1fr 1fr;
-        gap: 0.75rem;
-    }
-}
-
-/* High DPI mobile displays */
-@media (max-width: 768px) and (-webkit-min-device-pixel-ratio: 2) {
-    .distribution-chart {
-        image-rendering: -webkit-optimize-contrast;
-        image-rendering: crisp-edges;
-    }
-    
-    .distribution-stats {
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-    }
-}
-
-/* Dark mode mobile support (if implemented) */
-@media (max-width: 768px) and (prefers-color-scheme: dark) {
-    .distribution-chart-container {
-        background: var(--color 0%, var(--color) 100%);
-        border-color: var(--fg-2);
-    }
-    
-    .distribution-stats {
-        background: rgba(31, 41, 55, 0.95);
-        color: var(--grey-300);
-        border-color: var(--fg-2);
-    }
-    
-    .distribution-chart-container::before {
-        background: rgba(31, 41, 55, 0.9);
-        color: var(--grey-300);
-        border-color: var(--fg-2);
-    }
-}
-
-/* Accessibility improvements for mobile */
-@media (max-width: 768px) {
-    .distribution-chart-container {
-        min-height: 44px; /* Touch target minimum */
-    }
-    
-    /* Focus indicators for mobile */
-    .parameter-group:focus-within .distribution-chart-container {
-        outline: 2px solid var(--accent);
-        outline-offset: 2px;
-    }
-    
-    /* High contrast mode support */
-    @media (prefers-contrast: high) {
-        .distribution-chart-container {
-            border: 2px solid var(--color);
-        }
-        
-        .distribution-stats {
-            background: var(--bg-1);
-            color: var(--color);
-            border: 1px solid var(--color);
-        }
-    }
-    
-    /* Reduced motion support */
-    @media (prefers-reduced-motion: reduce) {
-        .distribution-chart * {
-            animation: none !important;
-            transition: none !important;
-        }
-    }
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

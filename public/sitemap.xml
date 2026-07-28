@@ -2,22 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.suffering.social/</loc>
-    <lastmod>2026-07-19</lastmod>
-    <priority>1.0</priority>
+    <lastmod>2026-07-27</lastmod>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.suffering.social/calculator</loc>
-    <lastmod>2026-07-19</lastmod>
-    <priority>0.5</priority>
+    <lastmod>2026-07-27</lastmod>
+    <priority>1.0</priority>
   </url>
   <url>
     <loc>https://www.suffering.social/v5</loc>
-    <lastmod>2026-07-19</lastmod>
-    <priority>0.4</priority>
+    <lastmod>2026-07-27</lastmod>
+    <priority>0.2</priority>
   </url>
   <url>
     <loc>https://www.suffering.social/privacy</loc>
-    <lastmod>2026-07-19</lastmod>
-    <priority>0.2</priority>
+    <lastmod>2026-07-27</lastmod>
+    <priority>0.4</priority>
   </url>
 </urlset>

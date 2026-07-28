@@ -1,0 +1,76 @@
+name: Production smoke
+
+on:
+  schedule:
+    - cron: '17 13 * * *'
+  workflow_dispatch:
+    inputs:
+      force_failure:
+        description: Exercise the alert path after all real checks run
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-smoke
+  cancel-in-progress: false
+
+jobs:
+  production-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PLAYWRIGHT_BASE_URL: https://www.suffering.social
+      PRODUCTION_URL: https://www.suffering.social/calculator
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+      - name: Record production branch revision
+        run: echo "EXPECTED_REVISION=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22.13.0
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Run bounded production journey
+        run: npm run test:e2e -- tests/e2e/research-journey.spec.js
+      - name: Verify deployed revision and record UTC proof
+        run: node scripts/verify-production-revision.mjs
+      - run: npm run lighthouse:production
+      - name: Exercise the bounded failure drill
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.force_failure }}
+        run: |
+          echo "Intentional monitoring drill requested."
+          exit 1
+      - name: Upload required Playwright report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: playwright-report/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload required Lighthouse report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: lighthouse-report-${{ github.run_id }}
+          path: .lighthouseci-production/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload production evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: production-smoke-${{ github.run_id }}
+          path: |
+            artifacts/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 30

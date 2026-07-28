@@ -22,19 +22,26 @@ describe('Sentry build configuration', () => {
 
   test('enables private upload only with the complete runtime and build contract', () => {
     expect(typeof sentryBuild.resolveSentryBuildConfig).toBe('function');
-    expect(
+    const completeEnvironment = {
+      VITE_TELEMETRY_ENABLED: 'true',
+      VITE_SENTRY_ENABLED: 'true',
+      VITE_SENTRY_DSN: 'https://public@example.ingest.sentry.io/123',
+      SENTRY_AUTH_TOKEN: 'secret',
+      SENTRY_ORG: 'subconscious',
+      SENTRY_PROJECT: 'suffering-social',
+      VERCEL_GIT_COMMIT_SHA: 'abc123',
+      VERCEL_ENV: 'production',
+    };
+
+    expect(() =>
       sentryBuild.resolveSentryBuildConfig(
-        {
-          VITE_TELEMETRY_ENABLED: 'true',
-          VITE_SENTRY_ENABLED: 'true',
-          VITE_SENTRY_DSN: 'https://public@example.ingest.sentry.io/123',
-          SENTRY_AUTH_TOKEN: 'secret',
-          SENTRY_ORG: 'subconscious',
-          SENTRY_PROJECT: 'suffering-social',
-          VERCEL_GIT_COMMIT_SHA: 'abc123',
-        },
+        { ...completeEnvironment, VERCEL_ENV: '' },
         'build'
       )
-    ).toEqual({ enabled: true, release: 'abc123' });
+    ).toThrow(/VERCEL_ENV/);
+
+    expect(
+      sentryBuild.resolveSentryBuildConfig(completeEnvironment, 'build')
+    ).toEqual({ enabled: true, release: 'abc123', environment: 'production' });
   });
 });

@@ -1,7 +1,6 @@
 import {
   buildEvent,
   buildTelemetryConfig,
-  sanitizePostHogProperties,
   scrubSentryEvent,
 } from './telemetry-core.js';
 
@@ -26,23 +25,22 @@ function installConsentDefaults(windowObject) {
     ad_storage: 'denied',
     ad_user_data: 'denied',
     ad_personalization: 'denied',
-    analytics_storage: 'granted',
+    analytics_storage: 'denied',
   });
 }
 
 export async function initialiseTelemetry({
   environment,
+  buildInfo,
   windowObject,
   documentObject,
-  loadPostHog,
   loadSentry,
 }) {
   if (windowObject.__sufferingTelemetry) return windowObject.__sufferingTelemetry;
 
-  const config = buildTelemetryConfig(environment);
+  const config = buildTelemetryConfig(environment, buildInfo);
   const enabledProviders = [];
   const globalPrivacyControl = windowObject.navigator?.globalPrivacyControl === true;
-  let posthog;
   let clickHandler = null;
 
   const controller = {
@@ -59,85 +57,20 @@ export async function initialiseTelemetry({
         ...input,
         environment: config.environment,
         pathname: input.pathname || windowObject.location.pathname,
+        location: input.location || windowObject.location.href,
+        referrer: input.referrer || documentObject.referrer,
       });
       if (!event) return;
 
-      if (config.ga4.enabled && windowObject.gtag) {
-        windowObject.gtag('event', event.name, {
-          ...event.properties,
-          page_location: `https://${event.properties.canonical_host}${event.properties.pathname}`,
-          page_referrer: '',
-        });
+      if (config.gtm.enabled) {
+        windowObject.dataLayer.push({ event: event.name, ...event.properties });
       }
-      posthog?.capture(event.name, event.properties);
     },
   };
   windowObject.__sufferingTelemetry = controller;
 
-  if (config.sentry.enabled) {
-    try {
-      const sentryModule = await loadSentry();
-      const sentry = sentryModule.default || sentryModule;
-      sentry.init({
-        dsn: config.sentry.dsn,
-        environment: config.environment,
-        sendDefaultPii: false,
-        tracesSampleRate: 0,
-        beforeSend: scrubSentryEvent,
-      });
-      enabledProviders.push('sentry');
-    } catch {
-      // A blocked or unavailable vendor must not break the site.
-    }
-  }
-
-  if (config.ga4.enabled || config.gtm.enabled) installConsentDefaults(windowObject);
-
-  if (config.ga4.enabled) {
-    windowObject.gtag('js', new Date());
-    windowObject.gtag('config', config.ga4.measurementId, {
-      allow_ad_personalization_signals: false,
-      allow_google_signals: false,
-      send_page_view: false,
-    });
-    appendProviderScript(
-      documentObject,
-      'ga4',
-      `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(config.ga4.measurementId)}`
-    );
-    enabledProviders.push('ga4');
-  }
-
-  if (config.posthog.enabled) {
-    try {
-      const posthogModule = await loadPostHog();
-      posthog = posthogModule.default || posthogModule;
-      posthog.init(config.posthog.key, {
-        api_host: config.posthog.host,
-        autocapture: false,
-        capture_pageview: false,
-        capture_pageleave: false,
-        disable_session_recording: true,
-        capture_exceptions: false,
-        capture_performance: false,
-        disable_external_dependency_loading: true,
-        advanced_disable_flags: true,
-        person_profiles: 'identified_only',
-        persistence: 'localStorage',
-        save_referrer: false,
-        property_denylist: ['$current_url', '$referrer', '$referring_domain'],
-        before_send: (event) => ({
-          ...event,
-          properties: sanitizePostHogProperties(event.properties),
-        }),
-      });
-      enabledProviders.push('posthog');
-    } catch {
-      // A blocked or unavailable vendor must not break the site.
-    }
-  }
-
   if (config.gtm.enabled) {
+    installConsentDefaults(windowObject);
     windowObject.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
     appendProviderScript(
       documentObject,
@@ -149,14 +82,38 @@ export async function initialiseTelemetry({
 
   controller.capture('page_view');
   clickHandler = (event) => {
-    const anchor = event.target.closest?.('a[data-telemetry-cta]');
-    if (!anchor) return;
+    const target = event.target.closest?.('[data-telemetry-cta]');
+    if (!target) return;
     controller.capture('cta_clicked', {
-      ctaId: anchor.dataset.telemetryCta,
-      destination: anchor.getAttribute('href'),
+      ctaId: target.dataset.telemetryCta,
     });
   };
   documentObject.addEventListener('click', clickHandler);
+
+  if (config.sentry.enabled) {
+    try {
+      const sentryModule = await loadSentry();
+      const sentry = sentryModule.default || sentryModule;
+      sentry.init({
+        dsn: config.sentry.dsn,
+        environment: config.environment,
+        release: config.sentry.release,
+        sendDefaultPii: false,
+        tracesSampleRate: 0,
+        replaysSessionSampleRate: 0,
+        replaysOnErrorSampleRate: 0,
+        integrations(defaultIntegrations) {
+          return defaultIntegrations.filter(
+            (integration) => !/(?:replay|browser.?tracing|tracing)/i.test(integration.name || '')
+          );
+        },
+        beforeSend: scrubSentryEvent,
+      });
+      enabledProviders.push('sentry');
+    } catch {
+      // A blocked or unavailable vendor must not break the site.
+    }
+  }
 
   return controller;
 }

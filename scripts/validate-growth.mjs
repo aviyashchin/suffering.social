@@ -1,4 +1,3 @@
-/* eslint-env node */
 /* eslint-disable no-console */
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';

@@ -23,11 +23,16 @@ export function resolveSentryBuildConfig(environment = {}, command = 'build') {
     'SENTRY_ORG',
     'SENTRY_PROJECT',
     'VERCEL_GIT_COMMIT_SHA',
+    'VERCEL_ENV',
   ];
   const missing = required.filter((name) => !environment[name]);
   if (missing.length) {
     throw new Error(`Sentry build configuration missing: ${missing.join(', ')}`);
   }
 
-  return { enabled: true, release: environment.VERCEL_GIT_COMMIT_SHA };
+  return {
+    enabled: true,
+    release: environment.VERCEL_GIT_COMMIT_SHA,
+    environment: environment.VERCEL_ENV,
+  };
 }

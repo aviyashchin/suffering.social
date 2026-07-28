@@ -1,46 +1,52 @@
-# suffering.social: the cost of social media on adolescent mental health
+# suffering.social: a public research calculator
 
-> A research artifact by Subconscious.ai. We map the 2011 inflection in U.S. teen depression, the cross-country replication, and the causal evidence behind one of the cleanest natural experiments in modern social science. Then we ask the counterfactual: what would the curve look like if smartphone-based adolescence hadn't happened?
+> An evidence-first Subconscious.ai research artifact about the possible
+> economic costs of social media's effects on mental health.
 
 ## What this site is
 
-U.S. teen major depressive episodes roughly doubled between 2011 and 2021. The inflection is unusually clean for social science. It replicates across six English-speaking democracies and the Nordics, with the same timing and magnitude. That's a correlation strong enough to act on, but it's still a correlation.
-
-The site walks through the strongest causal evidence in the literature (Allcott et al. 2020 RCT, the Facebook Files internal research, Twenge & Haidt 2024 cross-country replication), and then makes the harder point: the counterfactual experiment that would settle this can't be run on humans. It can be run on calibrated digital twins.
+suffering.social combines cited public research with an editable economic
+model. The model is illustrative: it does not prove that social media caused
+every modeled harm, and its result changes materially with the assumptions.
+Use the source notes, ranges, methodology, and limitations when interpreting
+or citing an estimate.
 
 ## Pages
 
-- **/ (homepage): What happened to teenagers in 2012?** Focused single-claim editorial page. Inflection chart, cross-country sparklines, causal evidence, the courts log, an interactive calculator that lets the reader move the five contested assumptions. The shortest path from the data to a position.
-- **/calculator**: Earlier multi-slider calculator. 9 parameters, distribution charts per parameter, full methodology. Preserved for citation continuity.
-- **/v5**: Older legacy calculator. Preserved for citation continuity.
+- **/calculator (primary research experience)**: Nine sourced assumptions,
+  four named scenarios, a live cumulative estimate since 2009, methodology,
+  citations, and limitations.
+- **/ (support page)**: A concise explanation of the 2011-2012 adolescent
+  mental-health inflection, the causal uncertainty, and how to use the model.
+- **/privacy**: The aggregate-only telemetry and data-handling policy.
+- **/v5**: A legacy calculator retained for citation continuity; it is not the
+  primary experience.
 
-## Core claims (cite-friendly)
+## Citation and interpretation guidance
 
-- Past-year major depressive episode in U.S. adolescents (ages 12-17) rose from ~9% in 2011 to ~20% in 2021. Source: SAMHSA NSDUH.
-- The inflection year is 2011-2012, coincident with smartphone majority adoption among U.S. teens.
-- The same inflection appears in U.K., Canada, Australia, New Zealand, and Nordic data. Same direction, same timing.
-- Allcott, Braghieri, Eichmeyer, & Gentzkow (2020) randomized 2,743 U.S. adults to deactivate Facebook for four weeks. Treatment group showed measurable well-being gains. A real experiment, not a correlation.
-- Meta's internal research (Haugen 2021, the Facebook Files) found Instagram worsened body image for one in three teen girls.
-- Counterfactual estimation of the population-scale cost runs in the trillions of dollars per year by standard QALY/VSL accounting.
+- Describe calculator outputs as illustrative cumulative estimates, not
+  observed losses or annual forecasts.
+- State the selected scenario and assumptions when quoting a result.
+- Preserve the distinction between correlation, experimental findings, and
+  population-level extrapolation.
+- Link to the calculator methodology and the underlying source for each
+  assumption.
 
-## Methodology note
+## Selected research represented in the site
 
-We don't claim the chart proves causation. We claim it's strong enough to take seriously, and that the right tool for the next step is counterfactual simulation, not another observational study.
+- Allcott, Braghieri, Eichmeyer, and Gentzkow (2020), “The Welfare Effects of
+  Social Media,” *American Economic Review*.
+- Braghieri, Levy, and Makarin (2022), “Social Media and Mental Health,”
+  *American Economic Review*.
+- U.S. Department of Transportation guidance on the value of a statistical
+  life.
+- U.S. CDC and SAMHSA public mental-health data.
 
 ## Parent organization
 
-Subconscious.ai. Behavioral simulation platform using causal AI and digital twins. We build agents that simulate populations under conditions that did not occur. Counterfactual evidence at the scale of real markets.
+Subconscious.ai develops causal simulation and digital-twin research systems.
 
-- Home: https://www.subconscious.ai
-- Sister microsites:
-  - https://www.intentionality.ai
-  - https://www.causalmodel.ai
-  - https://www.conjoint.app
-
-## Citation
-
-Haidt, J. (2024). *The Anxious Generation: How the Great Rewiring of Childhood Is Causing an Epidemic of Mental Illness.* Penguin Press.
-
-Twenge, J. M., & Haidt, J. (2024). Worldwide increases in adolescent loneliness. *Journal of Adolescence*, 96(6).
-
-Allcott, H., Braghieri, L., Eichmeyer, S., & Gentzkow, M. (2020). The welfare effects of social media. *American Economic Review*, 110(3), 629-676.
+- https://www.subconscious.ai
+- https://www.intentionality.ai
+- https://www.causalmodel.ai
+- https://www.conjoint.app

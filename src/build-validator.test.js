@@ -1,4 +1,5 @@
 import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -47,6 +48,39 @@ describe('built growth contract', () => {
         expect.stringContaining('identity vendor'),
         expect.stringContaining('source map'),
       ])
+    );
+  });
+
+  test('injects only the supplied server-side build revision into built HTML', () => {
+    const transformed = JSON.parse(
+      execFileSync(
+        process.execPath,
+        [
+          '--input-type=module',
+          '--eval',
+          "const { buildRevisionMetaPlugin } = await import('./vite.config.js'); process.stdout.write(JSON.stringify(buildRevisionMetaPlugin('commit-abc123').transformIndexHtml()));",
+        ],
+        {
+          cwd: process.cwd(),
+          encoding: 'utf8',
+          env: {
+            ...process.env,
+            SENTRY_AUTH_TOKEN: 'unrelated-secret',
+            VERCEL_ENV: 'unrelated-secret',
+          },
+        }
+      )
+    );
+
+    expect(transformed).toEqual([
+      {
+        tag: 'meta',
+        attrs: { name: 'build-revision', content: 'commit-abc123' },
+        injectTo: 'head',
+      },
+    ]);
+    expect(JSON.stringify(transformed)).not.toMatch(
+      /SENTRY_AUTH_TOKEN|SENTRY_ORG|SENTRY_PROJECT|VERCEL_ENV|unrelated-secret/
     );
   });
 });

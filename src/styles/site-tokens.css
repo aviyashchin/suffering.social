@@ -1,46 +1,48 @@
-/* ============================================================
-   suffering.social — site-specific tokens
-   ------------------------------------------------------------
-   Loaded AFTER the design-system CDN bundle (cdn/v1/all.css).
-
-   The design system itself (colours, ink/grey scale, type scale,
-   spacing, fonts, --chart-*, --red) all resolve from the CDN
-   bundle. The only thing this file carries is the calculator's
-   three cost-category colours and their surface tints — a
-   site-specific concern the design system has no opinion on.
-
-   Mortality is harm → signal red. Mental-health and productivity
-   are categorical → design-system chart hues.
-   ============================================================ */
-
 :root {
-  --c-mortality:      var(--red);
-  --c-mental-health:  var(--chart-4);
-  --c-productivity:   var(--chart-2);
-  --accent:           var(--chart-1);
+  color-scheme: light;
+  --paper: #f5f1e8;
+  --paper-raised: #fbf9f4;
+  --ink: #171715;
+  --ink-muted: #5f5c55;
+  --rule: #cbc5b9;
+  --rule-strong: #908a7f;
+  --research-red: #a42e26;
+  --research-red-dark: #76211c;
+  --focus: #285b85;
+  --font-display: Georgia, "Times New Roman", serif;
+  --font-body: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-data: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 
-  --surface-mortality:     color-mix(in srgb, var(--c-mortality) 8%, var(--bg-1));
-  --surface-mental-health: color-mix(in srgb, var(--c-mental-health) 8%, var(--bg-1));
-  --surface-productivity:  color-mix(in srgb, var(--c-productivity) 8%, var(--bg-1));
-  --surface-accent:        color-mix(in srgb, var(--accent) 8%, var(--bg-1));
+  /* Compatibility aliases used by the preserved calculator engine styles. */
+  --color: var(--ink);
+  --fg-2: var(--ink-muted);
+  --bg-1: var(--paper);
+  --bg-2: var(--paper-raised);
+  --bg-3: #e6e0d5;
+  --accent: var(--research-red);
+  --red: var(--research-red);
+  --chart-1: var(--research-red);
+  --chart-2: #566f62;
+  --chart-4: #70627c;
+  --c-mortality: var(--research-red);
+  --c-mental-health: #70627c;
+  --c-productivity: #566f62;
+  --surface-mortality: #f3e7e3;
+  --surface-mental-health: #ece8ef;
+  --surface-productivity: #e7ece8;
+  --fs-h1: clamp(2.5rem, 7vw, 5.8rem);
+  --fs-h2: clamp(1.8rem, 4vw, 3.2rem);
+  --fs-body: 1rem;
+  --tracking-h1: -0.045em;
+  --tracking-h2: -0.025em;
+  --tracking-body: 0;
 }
 
-/* ------------------------------------------------------------
-   Content reset.
-   DS _base.css styles raw <h1>–<h6> at editorial display sizes
-   (the "one thing violently large" doctrine, intended for the
-   preview garden's full-bleed cards). Tailwind preflight is off
-   to stop it fighting that doctrine on the marketing surfaces,
-   but the calculator authors its heading sizes with utility
-   classes (`text-lg`, `text-2xl`) expecting a normal reset.
-   This brings raw headings back to inherit, so authored sizes
-   win — while DS still owns body type, font, ink and grey.
-   Scoped via `body >` to leave .wordmark, .lede, .head, .mast
-   etc. alone if they ever appear. ------------------------------------------------------------ */
-body h1, body h2, body h3, body h4, body h5, body h6 {
-  font-size: inherit;
-  font-weight: inherit;
-  line-height: inherit;
-  letter-spacing: normal;
+body h1,
+body h2,
+body h3,
+body h4,
+body h5,
+body h6 {
   margin: 0;
 }

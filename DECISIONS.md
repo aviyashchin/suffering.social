@@ -19,7 +19,7 @@ files. The Subconscious tokens live in DS, shadcn semantic classes
 (`bg-background`, `bg-card`, `bg-primary`, `text-muted-foreground`)
 drive the markup, themes track via `data-theme`/`data-mode` on `<html>`.
 
-## suffering.social — pinned, not rewritten
+## suffering.social — static architecture retained
 
 This site is a one-off static calculator (305KB monolith, vanilla JS,
 Chart.js + d3 + nouislider + gsap). It does **not** convert to the
@@ -42,8 +42,48 @@ State after the 2026-05-19 design-system convergence:
 | Tailwind preflight competing with `_base.css` | yes | off |
 | heading scale inside content areas | DS display sizes overrode authored utilities | content reset in `site-tokens.css` |
 
-Site is locked at this state. Any future visual changes happen in
-a React rewrite, not in `index.html`.
+The May 2026 convergence table below is historical evidence, not a prohibition
+on incremental work. The July 2026 research refresh proved that the static Vite
+architecture can be safely improved when engine characterization, route-role
+contracts, and browser tests protect behavior. A React rewrite remains
+unjustified, but visual changes may extend `calculator.html`, `index.html`, and
+the repository-owned `src/styles/` modules.
+
+## 2026-07-28 — public research route and release contract
+
+- `/calculator` is the primary research experience; `/` is its supporting
+  explainer. `/v5` remains unlisted legacy reference material.
+- Remote Tailwind CSS and the Play CDN are removed from active routes. The
+  active presentation is repository-owned and built by Vite.
+- Vercel must use the explicit `framework`, `buildCommand`, and
+  `outputDirectory: dist` contract in `vercel.json`. Provider dashboard defaults
+  previously identified the project as generic static output and are not a
+  reliable source of build truth.
+- The published portfolio GTM container is an independent enforcement surface.
+  Version 17 excludes the canonical hosts from Clarity and PostHog; RB2B remains
+  scoped to `subconscious.ai`; no Lemlist tag exists.
+- Preview intentionally omits shared GTM. Its generated hostnames do not match
+  the production-host exclusions. Sentry may run in Preview after a scrubbed,
+  symbolicated canary.
+- Source-map symbolication requires retaining only validated
+  `debug_meta.images` fields in Sentry events. Removing all debug metadata
+  improves apparent minimization but silently destroys readable production
+  stacks.
+- Analytics referrers stop at HTTPS origin, but Sentry stack and source-map URLs
+  retain a query-free pathname. Reusing one scrubber for both boundaries either
+  collects too much analytics detail or destroys symbolication.
+- Do not set a day-long `Cache-Control` header on Vercel's catch-all route.
+  Stale HTML defeats revision proof and hotfixes while also overriding the
+  provider's fingerprinted-asset behavior.
+- Production smoke checks out `main` and derives `EXPECTED_REVISION` from that
+  checkout. `github.sha` can name a manually selected non-production ref even
+  though the workflow always probes the production URL.
+- The unused `src/d3-distribution-sliders.js` implementation was not part of the
+  Vite graph and depended on missing modules/globals. It was removed instead of
+  preserving a coverage and lint exception; Git history is the archive.
+- Production proof is revision-specific: local tests, a green PR, and a ready
+  Vercel deployment are not interchangeable with a served `build-revision`
+  readback plus production Playwright and Lighthouse results.
 
 ## 2026-07-19 — privacy-first observability baseline
 
@@ -75,9 +115,7 @@ Implementation invariants future agents should preserve:
   Vite preview does not emulate this rewrite, so validate it on Vercel and then
   recheck the public production URL after promotion.
 
-The remaining Tailwind Play CDN warning and legacy CSS parser warnings predate
-observability. They are known static-site debt, not telemetry regressions. See
-`docs/GROWTH_OPERATIONS.md` for activation, evidence, rollback, and SEO/GEO
+See `docs/GROWTH_OPERATIONS.md` for activation, evidence, rollback, and SEO/GEO
 operations.
 
 ## Reverse-migrate into `~/marketing/design-system/`
