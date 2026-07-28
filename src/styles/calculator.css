@@ -620,6 +620,41 @@
   outline-offset: 3px;
 }
 
+.research-toast {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 80;
+  width: min(calc(100% - 2rem), 24rem);
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--ink);
+  border-left: 4px solid var(--research-red);
+  color: var(--ink);
+  background: var(--paper-raised);
+  box-shadow: 0 8px 30px rgb(23 23 21 / 18%);
+  font: 0.85rem/1.5 var(--font-body);
+  opacity: 0;
+  transform: translateY(-0.75rem);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.research-toast--success {
+  border-left-color: #566f62;
+}
+
+.research-toast--error {
+  border-left-color: var(--research-red);
+}
+
+.research-toast--info {
+  border-left-color: var(--focus);
+}
+
+.research-toast--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .research-footer {
   display: flex;
   justify-content: space-between;

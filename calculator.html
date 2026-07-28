@@ -2411,7 +2411,7 @@ border: 1px solid var(--bg-3);
                 
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(shareableURL).then(() => {
-                        this.showToast('🔗 Shareable link copied to clipboard!', 'success');
+                        this.showToast('Scenario link copied to the clipboard.', 'success');
                     }).catch(() => {
                         this.fallbackCopyText(shareableURL);
                     });
@@ -2427,9 +2427,9 @@ border: 1px solid var(--bg-3);
                 textArea.select();
                 try {
                     document.execCommand('copy');
-                    this.showToast('🔗 Shareable link copied to clipboard!', 'success');
+                    this.showToast('Scenario link copied to the clipboard.', 'success');
                 } catch (err) {
-                    this.showToast('❌ Failed to copy link. Please copy manually.', 'error');
+                    this.showToast('The scenario link could not be copied. Please copy it manually.', 'error');
                 }
                 document.body.removeChild(textArea);
             }
@@ -2546,26 +2546,23 @@ border: 1px solid var(--bg-3);
             }
             
             showToast(message, type = 'info') {
+                const toastType = ['success', 'error', 'info'].includes(type) ? type : 'info';
+                const existingToast = document.querySelector('.research-toast');
+                if (existingToast) existingToast.remove();
+
                 const toast = document.createElement('div');
-                const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
-                
-                toast.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300 transform translate-x-full`;
+                toast.className = `research-toast research-toast--${toastType}`;
                 toast.textContent = message;
-                
+                toast.setAttribute('role', toastType === 'error' ? 'alert' : 'status');
+                toast.setAttribute('aria-live', toastType === 'error' ? 'assertive' : 'polite');
+                toast.setAttribute('aria-atomic', 'true');
                 document.body.appendChild(toast);
-                
-                // Animate in
+
+                requestAnimationFrame(() => toast.classList.add('research-toast--visible'));
                 setTimeout(() => {
-                    toast.style.transform = 'translateX(0)';
-                }, 100);
-                
-                // Remove after 4 seconds
-                setTimeout(() => {
-                    toast.style.transform = 'translateX(100%)';
+                    toast.classList.remove('research-toast--visible');
                     setTimeout(() => {
-                        if (document.body.contains(toast)) {
-                            document.body.removeChild(toast);
-                        }
+                        if (toast.isConnected) toast.remove();
                     }, 300);
                 }, 4000);
             }
@@ -2882,36 +2879,7 @@ border: 1px solid var(--bg-3);
             }
             
             showStudyAppliedFeedback(studyTitle, param, value) {
-                // Create a temporary toast notification
-                const toast = document.createElement('div');
-                toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300';
-                toast.innerHTML = `
-                    <div class="flex items-center space-x-2">
-                        <span class="text-lg">✅</span>
-                        <div>
-                            <div class="font-semibold">Study Applied!</div>
-                            <div class="text-sm opacity-90">${param}: ${this.formatParameter(param, value)}</div>
-                            <div class="text-xs opacity-75">${studyTitle.substring(0, 40)}...</div>
-                        </div>
-                    </div>
-                `;
-                
-                document.body.appendChild(toast);
-                
-                // Animate in
-                setTimeout(() => {
-                    toast.style.transform = 'translateX(0)';
-                    toast.style.opacity = '1';
-                }, 100);
-                
-                // Remove after 3 seconds
-                setTimeout(() => {
-                    toast.style.transform = 'translateX(100%)';
-                    toast.style.opacity = '0';
-                    setTimeout(() => {
-                        document.body.removeChild(toast);
-                    }, 300);
-                }, 3000);
+                this.showToast('Study value applied to this assumption.', 'success');
             }
             
             // Performance optimization methods
