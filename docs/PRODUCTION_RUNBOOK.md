@@ -29,6 +29,9 @@ git diff --check
 Keep `.lighthouseci/` as release evidence. Do not lower a threshold to clear a
 failure: Performance must be at least 0.90, Accessibility and Best Practices
 1.00, SEO 0.98, CLS at most 0.02, and TBT below 100 ms.
+Both local and production configs collect three runs so Lighthouse CI can
+mitigate natural runner variance; a single overloaded sample is not a reason to
+weaken the launch thresholds.
 
 ## Production proof
 

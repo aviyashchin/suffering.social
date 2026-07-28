@@ -169,6 +169,7 @@ describe('continuous verification contract', () => {
     const assertions = config.ci.assert.assertions;
 
     expect(config.ci.collect.url).toEqual([url]);
+    expect(config.ci.collect.numberOfRuns).toBe(3);
     expect(assertions['categories:performance']).toEqual([
       'error',
       { minScore: 0.9 },

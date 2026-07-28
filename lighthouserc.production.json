@@ -2,7 +2,7 @@
   "ci": {
     "collect": {
       "url": ["https://www.suffering.social/calculator"],
-      "numberOfRuns": 1,
+      "numberOfRuns": 3,
       "settings": {
         "chromeFlags": "--no-sandbox"
       }
