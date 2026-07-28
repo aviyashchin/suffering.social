@@ -16,10 +16,11 @@ for the supporting explainer, `/privacy` for disclosure, and unlisted `/v5` for
 legacy reference. Active pages use repository-owned Vite assets. Aggregate GTM
 and scrubbed Sentry are the only approved providers.
 
-The refresh closed on 2026-07-28 at production revision
+The feature closeout was proven on 2026-07-28 at production revision
 `29acaab21ff8140f1a113100bbc8c0959b47ef04`. Served-revision readback,
 production Playwright and Lighthouse, the symbolicated Sentry canary, monitoring
 failure/recovery drill, GTM version 18 privacy fix, and successful Search
-Console sitemap readback are recorded on GitHub issue #34. For future releases,
-repeat those revision-specific gates rather than treating this closeout as
-permanent provider proof.
+Console sitemap readback are recorded on GitHub issue #34. The documentation
+closeout that records this evidence creates a later revision and must receive
+its own deployment readback. For future releases, repeat the revision-specific
+gates rather than treating this closeout as permanent provider proof.

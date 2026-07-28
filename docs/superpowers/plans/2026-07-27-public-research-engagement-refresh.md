@@ -8,15 +8,17 @@
 
 **Boundaries:** No form, lead capture, CRM, email workflow, new analytics abstraction, framework migration, calculator-model rewrite, or unsupported causal claim. Lemlist, Clarity, replay, advertising, and person-level identification are prohibited.
 
-**Execution status (2026-07-28):** Complete. PRs #35–#37 merged; production
-serves revision `29acaab21ff8140f1a113100bbc8c0959b47ef04`. Repository,
-routing, discovery, browser, Lighthouse, Sentry, and monitoring-drill evidence
-is recorded on issue #34. GTM container version 18 adds the required Custom
-Event hostname exception to PostHog; production traces show GA4 and Sentry with
-zero prohibited providers. Search Console accepted and successfully read
-`https://www.suffering.social/sitemap.xml`, discovering four pages. The task
-checkboxes below preserve the original execution recipe rather than serving as
-a live status board.
+**Execution status (2026-07-28):** Complete. PRs #35–#37 merged; feature
+closeout was proven at production revision
+`29acaab21ff8140f1a113100bbc8c0959b47ef04`. Repository, routing, discovery,
+browser, Lighthouse, Sentry, and monitoring-drill evidence is recorded on issue
+#34. GTM container version 18 adds the required Custom Event hostname exception
+to PostHog; production traces show GA4 and Sentry with zero prohibited
+providers. Search Console accepted and successfully read
+`https://www.suffering.social/sitemap.xml`, discovering four pages. A later
+docs-only closeout revision still requires its own served-revision readback.
+The task checkboxes below preserve the original execution recipe rather than
+serving as a live status board.
 
 ---
 
