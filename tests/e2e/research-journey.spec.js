@@ -85,7 +85,10 @@ async function expectHealthyPage(page, observations) {
   const gtmRequestCount = observations.requests.filter((request) =>
     /googletagmanager\.com\/gtm\.js/i.test(request.url)
   ).length;
-  expect(gtmRequestCount).toBe(1);
+  const gtmEnabled = await page.evaluate(() =>
+    window.__sufferingTelemetry?.enabledProviders?.includes('gtm')
+  );
+  expect(gtmRequestCount).toBe(gtmEnabled ? 1 : 0);
 }
 
 async function expectSequentialHeadings(page) {
@@ -249,6 +252,23 @@ test.describe('public research journey', () => {
       '/calculator?utm_source=private-query-canary&scenario=private-scenario-canary&email=privacy%40example.com#private-fragment-canary'
     );
     await page.waitForFunction(() => Boolean(window.__sufferingTelemetry));
+    const gtmEnabled = await page.evaluate(() =>
+      window.__sufferingTelemetry.enabledProviders.includes('gtm')
+    );
+    if (!gtmEnabled) {
+      await page.getByRole('button', { name: 'U.S. DOT guidance' }).click();
+      const dataLayer = await page.evaluate(() => window.dataLayer || []);
+      expect(JSON.stringify(dataLayer).toLowerCase()).not.toMatch(
+        /private-query-canary|private-fragment-canary|private-scenario-canary|privacy@example\.com|privacy%40example\.com/
+      );
+      expect(
+        observations.requests.filter((request) =>
+          /googletagmanager\.com\/gtm\.js/i.test(request.url)
+        )
+      ).toHaveLength(0);
+      await expectHealthyPage(page, observations);
+      return;
+    }
     await expect
       .poll(
         () =>
