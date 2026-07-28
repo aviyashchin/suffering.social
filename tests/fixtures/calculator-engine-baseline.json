@@ -1,0 +1,85 @@
+{
+  "parameters": {
+    "vsl": 13.7,
+    "suicides": 49500,
+    "attribution": 18,
+    "depression": 5000000,
+    "yld": 6,
+    "qol": 35,
+    "healthcare": 8000,
+    "productivity": 6000,
+    "duration": 4.5
+  },
+  "scenarios": {
+    "reset": {
+      "vsl": 13.7,
+      "suicides": 49500,
+      "attribution": 18,
+      "depression": 5000000,
+      "yld": 6,
+      "qol": 35,
+      "healthcare": 8000,
+      "productivity": 6000,
+      "duration": 4.5
+    },
+    "optimistic": {
+      "vsl": 7,
+      "suicides": 35000,
+      "attribution": 7,
+      "depression": 2000000,
+      "yld": 3,
+      "qol": 30,
+      "healthcare": 6500,
+      "productivity": 4000,
+      "duration": 0.25
+    },
+    "facebookFiles": {
+      "vsl": 13.7,
+      "suicides": 49500,
+      "attribution": 22,
+      "depression": 8000000,
+      "yld": 6.5,
+      "qol": 38,
+      "healthcare": 10000,
+      "productivity": 7500,
+      "duration": 5.2
+    },
+    "aggressive": {
+      "vsl": 14,
+      "suicides": 65000,
+      "attribution": 30,
+      "depression": 8000000,
+      "yld": 8,
+      "qol": 50,
+      "healthcare": 12000,
+      "productivity": 10000,
+      "duration": 6.8
+    }
+  },
+  "outputs": {
+    "reset": {
+      "mortality": 122067000000,
+      "mental": 1918000000000,
+      "productivity": 315000000000,
+      "total": 2355067000000
+    },
+    "optimistic": {
+      "mortality": 17150000000.000004,
+      "mental": 168000000000,
+      "productivity": 5250000000,
+      "total": 190400000000
+    },
+    "facebookFiles": {
+      "mortality": 149193000000,
+      "mental": 3609493333333.333,
+      "productivity": 728000000000,
+      "total": 4486686333333.333
+    },
+    "aggressive": {
+      "mortality": 273000000000,
+      "mental": 5973333333333.333,
+      "productivity": 1196800000000,
+      "total": 7443133333333.333
+    }
+  }
+}
