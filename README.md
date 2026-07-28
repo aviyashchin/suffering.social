@@ -28,9 +28,11 @@ This is a static, multi-page Vite site:
 - `.github/workflows/` owns pull-request verification and the daily production
   smoke.
 
-Vercel routing lives in `vercel.json`. Vite injects a `build-revision` meta tag
-from `VERCEL_GIT_COMMIT_SHA`; production monitoring compares it with the
-expected default-branch revision.
+Vercel routing and the Vite build contract live in `vercel.json`. The explicit
+`dist/` output is required because the provider was previously configured as a
+generic static project. Vite injects a `build-revision` meta tag from
+`VERCEL_GIT_COMMIT_SHA`; production monitoring compares it with the expected
+default-branch revision.
 
 ## Develop and verify
 
@@ -57,10 +59,12 @@ proof, alerts, provider checks, rollback, and Search Console.
 ## Privacy and telemetry
 
 Telemetry fails closed. GTM-managed aggregate GA4 and scrubbed Sentry are the
-only approved providers. The runtime emits one canonical `page_view` and
-allowlisted `cta_clicked` events; it excludes query strings, calculator inputs,
-DOM text, identities, replay, advertising, and lead capture. Provider variables
-are documented in `.env.example`.
+only approved providers. The shared GTM container must retain hostname
+exceptions for this site; repository code alone cannot suppress portfolio tags.
+The runtime emits one canonical `page_view` and allowlisted `cta_clicked`
+events; it excludes query strings, calculator inputs, DOM text, identities,
+replay, advertising, and lead capture. Provider variables are documented in
+`.env.example`.
 
 ## Research contributions
 

@@ -60,6 +60,22 @@ Clarity, PostHog, identity, replay, advertising, User-ID, Google Signals,
 cross-domain measurement, and automatic GA page views must remain off. Confirm
 all four Google consent categories default to `denied` before GTM loads.
 
+Current provider baseline (2026-07-28):
+
+- Vercel project: `aviyashchins-projects/v0-suffering-social`. Production owns
+  both approved providers; Preview owns Sentry only so preview hostnames cannot
+  bypass the shared GTM container's production-host exceptions.
+- GTM container version 17, `Suffering.social aggregate-only exclusions`, is
+  published. It excludes both canonical hosts from Clarity and PostHog; RB2B
+  remains scoped to `subconscious.ai`; no Lemlist tag exists.
+- Sentry project: `subconsciousai/suffering-social`. Browser DSN and source-map
+  upload credentials are projected through Vercel; credentials never belong in
+  `VITE_*` variables.
+
+These facts are a configuration baseline, not ongoing proof. Re-read the
+published container, deployed environment names, and Sentry event before each
+release claim.
+
 For a controlled Sentry canary, use a one-off Playwright session against
 production. Listen for the single Sentry envelope request so its `event_id` can
 be recorded, then schedule this bounded fault:
@@ -110,6 +126,12 @@ read back a successful status. Record the date range, clicks, impressions, CTR,
 average position, indexed/excluded counts, and baseline query rows in the
 tracking issue. A submitted sitemap is discovery evidence, not an indexing
 promise.
+
+The pre-release three-month baseline ending 2026-07-24 was 3 clicks, 179
+impressions, 1.7% CTR, and average position 8, with 2 indexed and 3 excluded
+pages. The only visible query rows were `social impact calculator` and
+`social calculator`, each with one impression and no clicks. Treat these as a
+dated baseline, not current performance.
 
 ## Rollback
 

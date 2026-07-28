@@ -21,6 +21,12 @@ Expected normal-browser state: one GTM container, one GTM-managed GA4 configurat
 
 The portfolio GTM container must exclude `www.suffering.social` and `suffering.social` from Lemlist, Clarity, PostHog, identity, replay, advertising, and cross-domain tags. Verify those exclusions after every container publication.
 
+As of 2026-07-28, published GTM container version 17 provides the canonical-host
+exceptions for Clarity and PostHog; RB2B is separately restricted to
+`subconscious.ai`, and no Lemlist tag is installed. Preview deliberately does
+not load the shared GTM container because its generated hostnames are outside
+those production-host exceptions.
+
 ## Search baseline
 
 Submit `https://www.suffering.social/sitemap.xml` to the existing Search Console domain property. Record impressions, clicks, indexed canonical URL, and result type for these query families before creating new content:

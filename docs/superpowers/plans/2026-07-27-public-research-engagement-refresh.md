@@ -8,6 +8,17 @@
 
 **Boundaries:** No form, lead capture, CRM, email workflow, new analytics abstraction, framework migration, calculator-model rewrite, or unsupported causal claim. Lemlist, Clarity, replay, advertising, and person-level identification are prohibited.
 
+**Execution status (2026-07-28):** Repository tasks and provider setup are
+implemented on `feat/public-research-refresh` through `51382ac`; the exact tree
+passes 80 Jest tests, lint, build validation, 11 Playwright journeys, dependency
+audit, and Lighthouse thresholds. GTM version 17 is published, Vercel
+environment names are projected by scope, and the Sentry project exists.
+Remaining release gates are intentionally external: merge the replacement PR,
+prove the deployed merge SHA, run the production Sentry canary and monitoring
+drill, submit the sitemap in Search Console, and record the readbacks in issue
+#34. The task checkboxes below preserve the original execution recipe rather
+than serving as a live status board.
+
 ---
 
 ## Chunk 1: Lock the privacy, routing, and build contract
