@@ -84,19 +84,22 @@ describe('/ support route contract', () => {
 
   test('explains the 2011-2012 inflection without overstating causality', () => {
     const text = visibleText(support);
-    expect(text).toMatch(/2011|2012/);
+    expect(text).toMatch(/2011/);
+    expect(text).toMatch(/2012/);
     expect(text).toMatch(/inflection/);
     expect(text).toMatch(/causal/);
     expect(text).toMatch(/correlation|counterfactual|cannot|does not prove/i);
   });
 
   test('has one dominant Explore the calculator link', () => {
-    const calculatorLinks = [...support.querySelectorAll('a[href="/calculator"]')];
-    const dominantLinks = calculatorLinks.filter(
-      (link) => normalizedText(link) === 'Explore the calculator'
-    );
+    const dominantLinks = [
+      ...support.querySelectorAll(
+        'a[href="/calculator"][data-primary-cta="calculator"]'
+      ),
+    ];
 
     expect(dominantLinks).toHaveLength(1);
+    expect(normalizedText(dominantLinks[0])).toBe('Explore the calculator');
   });
 
   test('does not embed calculator range controls or assumption groups', () => {
