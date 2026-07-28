@@ -1,5 +1,5 @@
-/* global process */
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -86,6 +86,67 @@ describe('continuous verification contract', () => {
       expect(workflow).toContain('path: playwright-report/');
       expect(workflow).toContain('if-no-files-found: error');
     }
+  });
+
+  test('the installed minimatch consumer retains its executable braceExpand API', () => {
+    const packageJson = JSON.parse(read('package.json'));
+    const rootRequire = createRequire(import.meta.url);
+    const eslintRequire = createRequire(
+      rootRequire.resolve('eslint/package.json')
+    );
+    const minimatch = eslintRequire('minimatch');
+
+    expect(minimatch.braceExpand('route-{home,calculator}')).toEqual([
+      'route-home',
+      'route-calculator',
+    ]);
+    expect(packageJson.overrides).not.toHaveProperty('brace-expansion');
+  });
+
+  test('declares the supported Node floor used by CI', () => {
+    const packageJson = JSON.parse(read('package.json'));
+
+    expect(packageJson.engines.node).toBe('^20.19.0 || ^22.13.0 || >=24.0.0');
+    for (const workflowPath of [
+      '.github/workflows/verify.yml',
+      '.github/workflows/production-smoke.yml',
+    ]) {
+      expect(read(workflowPath)).toContain('node-version: 22.13.0');
+    }
+  });
+
+  test('pins current GitHub Actions and requires dedicated Lighthouse artifacts', () => {
+    const expectedActions = [
+      'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1',
+      'actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0',
+      'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1',
+    ];
+
+    for (const workflowPath of [
+      '.github/workflows/verify.yml',
+      '.github/workflows/production-smoke.yml',
+    ]) {
+      const workflow = read(workflowPath);
+      for (const action of expectedActions) {
+        expect(workflow).toContain(action);
+      }
+      const actionReferences = [
+        ...workflow.matchAll(/\buses:\s*([^\s#]+)/g),
+      ].map((match) => match[1]);
+      expect(actionReferences.length).toBeGreaterThan(0);
+      for (const reference of actionReferences) {
+        expect(reference).toMatch(/^[^@]+@[a-f0-9]{40}$/);
+      }
+      expect(workflow).toContain('if-no-files-found: error');
+      expect(workflow).toContain('include-hidden-files: true');
+    }
+
+    expect(read('.github/workflows/verify.yml')).toContain(
+      'path: .lighthouseci/'
+    );
+    expect(read('.github/workflows/production-smoke.yml')).toContain(
+      'path: .lighthouseci-production/'
+    );
   });
 
   test('package scripts expose bounded local and production Lighthouse checks', () => {

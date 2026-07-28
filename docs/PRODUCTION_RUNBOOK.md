@@ -10,8 +10,9 @@ failure.
 
 ## Local release gate
 
-Use Node 22 or newer. Port `4175` is reserved for this repository's Lighthouse
-preview; do not reuse or stop services on other ports.
+Use Node `^20.19.0`, `^22.13.0`, or `>=24.0.0`; CI pins Node 22.13.0. Port
+`4175` is reserved for this repository's Lighthouse preview; do not reuse or
+stop services on other ports.
 
 ```bash
 npm ci

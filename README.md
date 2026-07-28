@@ -34,7 +34,8 @@ expected default-branch revision.
 
 ## Develop and verify
 
-Use Node 22 or newer.
+Use Node `^20.19.0`, `^22.13.0`, or `>=24.0.0`. Node 20.19.0 is the
+minimum supported runtime; CI pins Node 22.13.0.
 
 ```bash
 npm ci                    # install the locked dependency graph
