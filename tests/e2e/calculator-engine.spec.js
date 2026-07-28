@@ -211,6 +211,40 @@ test('preserves the calculator engine parameters, scenarios, and totals', async 
   }
 });
 
+test('keeps duration keyboard steps aligned with its observable value', async ({
+  page,
+}) => {
+  await page.goto('/calculator');
+  const duration = page.getByRole('slider', {
+    name: 'Average duration of economic costs',
+  });
+
+  await expect(duration).toHaveAttribute('aria-valuenow', '4.5');
+  await expect(duration).toHaveAttribute('aria-valuetext', '4.5 years');
+  await expect(page.locator('#duration-value')).toHaveText('4.5 years');
+
+  await duration.press('ArrowRight');
+
+  await expect
+    .poll(() => page.evaluate(() => window.calculator.parameters.duration))
+    .toBe(4.6);
+  await expect(duration).toHaveAttribute('aria-valuenow', '4.6');
+  await expect(duration).toHaveAttribute('aria-valuetext', '4.6 years');
+  await expect(page.locator('#duration-value')).toHaveText('4.6 years');
+
+  await page.getByRole('button', {
+    name: 'Load lower-bound assumptions',
+  }).click();
+
+  await expect
+    .poll(() => page.evaluate(() => window.calculator.parameters.duration))
+    .toBe(0.25);
+  await expect(duration).toHaveAttribute('aria-valuemin', '0.25');
+  await expect(duration).toHaveAttribute('aria-valuenow', '0.25');
+  await expect(duration).toHaveAttribute('aria-valuetext', '0.25 years');
+  await expect(page.locator('#duration-value')).toHaveText('0.25 years');
+});
+
 function formatLargeNumber(value) {
   if (value >= 1e12) return `$${(value / 1e12).toFixed(1)}T`;
   if (value >= 1e9) return `$${(value / 1e9).toFixed(1)}B`;
