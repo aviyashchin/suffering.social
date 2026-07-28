@@ -7,10 +7,14 @@ const root = process.cwd();
 const read = (path) => readFileSync(join(root, path), 'utf8');
 
 describe('continuous verification contract', () => {
+  test('build metadata fails closed outside the Vite compiler', async () => {
+    const { buildInfo } = await import('./runtime-build-info.js');
+
+    expect(buildInfo).toEqual({ release: '', environment: '' });
+  });
+
   test('production revision parser reads generated metadata and rejects missing metadata', async () => {
-    const revision = await import(
-      '../scripts/verify-production-revision.mjs'
-    ).catch(() => ({}));
+    const revision = await import('../scripts/verify-production-revision.mjs');
 
     expect(typeof revision.extractBuildRevision).toBe('function');
     expect(
@@ -152,6 +156,8 @@ describe('continuous verification contract', () => {
   test('package scripts expose bounded local and production Lighthouse checks', () => {
     const packageJson = JSON.parse(read('package.json'));
 
+    expect(packageJson.scripts.lint).toBe('eslint src scripts');
+    expect(packageJson.jest.moduleNameMapper).toBeUndefined();
     expect(packageJson.devDependencies['@lhci/cli']).toBeDefined();
     expect(packageJson.scripts['lighthouse:ci']).toBe(
       'lhci autorun --config=lighthouserc.json'
@@ -220,11 +226,14 @@ describe('continuous verification contract', () => {
     expect(workflow).toContain(
       'PLAYWRIGHT_BASE_URL: https://www.suffering.social'
     );
-    expect(workflow).toContain('EXPECTED_REVISION: ${{ github.sha }}');
-    expect(workflow).toContain('node scripts/verify-production-revision.mjs');
-    expect(read('scripts/verify-production-revision.mjs')).toContain(
-      'build-revision'
+    expect(workflow).toContain('ref: main');
+    expect(workflow).toContain(
+      'echo "EXPECTED_REVISION=$(git rev-parse HEAD)" >> "$GITHUB_ENV"'
     );
+    expect(workflow).toContain('node scripts/verify-production-revision.mjs');
+    const revisionScript = read('scripts/verify-production-revision.mjs');
+    expect(revisionScript).toContain('build-revision');
+    expect(revisionScript).toContain('signal: AbortSignal.timeout(15_000)');
     expect(workflow).toContain('npm run lighthouse:production');
     expect(workflow).toContain('actions/upload-artifact@');
     expect(workflow).toContain(

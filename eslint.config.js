@@ -12,13 +12,22 @@ export default [
       globals: {
         ...globals.browser,
         ...globals.node,
-        ...globals.jest,
+        __APP_RELEASE__: 'readonly',
+        __APP_ENVIRONMENT__: 'readonly',
       },
     },
     rules: {
       'no-console': 'warn',
       'no-unused-vars': 'error',
       'prefer-const': 'error',
+    },
+  },
+  {
+    files: ['src/**/*.test.js'],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
+      },
     },
   },
   eslintConfigPrettier,

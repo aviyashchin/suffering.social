@@ -69,6 +69,18 @@ the repository-owned `src/styles/` modules.
   `debug_meta.images` fields in Sentry events. Removing all debug metadata
   improves apparent minimization but silently destroys readable production
   stacks.
+- Analytics referrers stop at HTTPS origin, but Sentry stack and source-map URLs
+  retain a query-free pathname. Reusing one scrubber for both boundaries either
+  collects too much analytics detail or destroys symbolication.
+- Do not set a day-long `Cache-Control` header on Vercel's catch-all route.
+  Stale HTML defeats revision proof and hotfixes while also overriding the
+  provider's fingerprinted-asset behavior.
+- Production smoke checks out `main` and derives `EXPECTED_REVISION` from that
+  checkout. `github.sha` can name a manually selected non-production ref even
+  though the workflow always probes the production URL.
+- The unused `src/d3-distribution-sliders.js` implementation was not part of the
+  Vite graph and depended on missing modules/globals. It was removed instead of
+  preserving a coverage and lint exception; Git history is the archive.
 - Production proof is revision-specific: local tests, a green PR, and a ready
   Vercel deployment are not interchangeable with a served `build-revision`
   readback plus production Playwright and Lighthouse results.

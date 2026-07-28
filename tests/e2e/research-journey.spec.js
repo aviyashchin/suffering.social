@@ -222,17 +222,25 @@ test.describe('public research journey', () => {
         status: 200,
         contentType: 'application/javascript',
         body: `
-          setTimeout(() => {
-            const pageView = window.dataLayer.find(
+          const sendWhenReady = (attempt = 0) => {
+            const pageView = Array.isArray(window.dataLayer)
+              ? window.dataLayer.find(
               (entry) => entry && entry.event === 'page_view' && entry.site_key === 'suffering_social'
-            );
-            if (!pageView) return;
+                )
+              : undefined;
+            if (!pageView) {
+              if (attempt < 50) {
+                setTimeout(() => sendWhenReady(attempt + 1), 10);
+              }
+              return;
+            }
             void fetch('${syntheticProviderURL}', {
               method: 'POST',
               headers: { 'content-type': 'text/plain' },
               body: JSON.stringify(pageView)
             }).catch(() => {});
-          }, 0);
+          };
+          setTimeout(sendWhenReady, 0);
         `,
       })
     );
@@ -319,7 +327,7 @@ test.describe('public research journey', () => {
     context,
     page,
   }, testInfo) => {
-    test.skip(testInfo.project.name !== 'mobile-chromium');
+    test.skip(!testInfo.project.use.isMobile);
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     const observations = observePage(page);
 

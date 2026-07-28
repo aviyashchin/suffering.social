@@ -124,7 +124,7 @@ test('keeps duration keyboard steps aligned with its observable value', async ({
 
   await expect
     .poll(() => page.evaluate(() => window.calculator.parameters.duration))
-    .toBe(4.6);
+    .toBeCloseTo(4.6, 5);
   await expect(duration).toHaveAttribute('aria-valuenow', '4.6');
   await expect(duration).toHaveAttribute('aria-valuetext', '4.6 years');
   await expect(page.locator('#duration-value')).toHaveText('4.6 years');

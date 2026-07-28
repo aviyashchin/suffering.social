@@ -222,7 +222,7 @@ describe('browser telemetry runtime', () => {
         canonical_host: 'www.suffering.social',
         pathname: '/calculator',
         page_location: 'https://www.suffering.social/calculator',
-        page_referrer: 'https://search.example.com/research',
+        page_referrer: 'https://search.example.com',
       },
       {
         event: 'cta_clicked',
@@ -231,7 +231,7 @@ describe('browser telemetry runtime', () => {
         canonical_host: 'www.suffering.social',
         pathname: '/calculator',
         page_location: 'https://www.suffering.social/calculator',
-        page_referrer: 'https://search.example.com/research',
+        page_referrer: 'https://search.example.com',
         cta_id: 'calculator_open',
       },
       {
@@ -241,7 +241,7 @@ describe('browser telemetry runtime', () => {
         canonical_host: 'www.suffering.social',
         pathname: '/calculator',
         page_location: 'https://www.suffering.social/calculator',
-        page_referrer: 'https://search.example.com/research',
+        page_referrer: 'https://search.example.com',
         cta_id: 'scenario_copy',
       },
     ]);

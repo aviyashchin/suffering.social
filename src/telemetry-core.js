@@ -77,15 +77,14 @@ export function canonicalPathname(value = '/') {
 export function buildEvent(name, input = {}) {
   if (name !== 'page_view' && name !== 'cta_clicked') return null;
 
+  const pathname = canonicalPathname(input.pathname);
   const properties = {
     site_key: SITE_KEY,
     environment: input.environment || 'production',
     canonical_host: CANONICAL_HOST,
-    pathname: canonicalPathname(input.pathname),
-    page_location: `https://${CANONICAL_HOST}${canonicalPathname(
-      input.pathname
-    )}`,
-    page_referrer: stripUrlQuery(input.referrer) || '',
+    pathname,
+    page_location: `https://${CANONICAL_HOST}${pathname}`,
+    page_referrer: stripReferrerOrigin(input.referrer) || '',
   };
 
   if (name === 'cta_clicked') {
@@ -106,6 +105,12 @@ function stripUrlQuery(value) {
   return `https://${url.host}${sanitizePathname(url.pathname)}`;
 }
 
+function stripReferrerOrigin(value) {
+  const url = parseHttpUrl(value);
+  if (!url) return undefined;
+  return `https://${url.host}`;
+}
+
 function parseHttpUrl(value) {
   if (typeof value !== 'string' || !value.trim()) return undefined;
   try {
@@ -121,7 +126,7 @@ function parseHttpUrl(value) {
 function sanitizePathname(pathname) {
   const segments = pathname.split('/').map((segment) => {
     let decoded = segment;
-    for (let index = 0; index < 3; index += 1) {
+    for (let index = 0; index < 10; index += 1) {
       try {
         const next = decodeURIComponent(decoded);
         if (next === decoded) break;

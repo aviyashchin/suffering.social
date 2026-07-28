@@ -17,8 +17,7 @@ two `facethecost.com` hosts.
 
 ## Active modules
 
-- `src/calculator-bootstrap.js` loads the calculator's local slider runtime.
-- `src/d3-distribution-sliders.js` owns distribution visualizations.
+- `src/calculator-bootstrap.js` loads the calculator's local noUiSlider runtime.
 - `src/styles/` contains route tokens, layout, components, calculator, and
   mobile styles.
 - `src/telemetry-core.js` normalizes aggregate-only configuration and payloads.
@@ -27,9 +26,10 @@ two `facethecost.com` hosts.
 - `src/runtime-build-info.js` exposes only release/environment strings compiled
   by Vite.
 
-There is no component framework or public JavaScript API. Do not follow old
-references to `src/components/` or `src/utils/`; those paths never represented
-the current application.
+There is no component framework, D3 runtime, or public JavaScript API. Do not
+follow old references to `src/components/`, `src/utils/`, or
+`src/d3-distribution-sliders.js`; those paths do not represent the current
+application.
 
 ## Proof boundaries
 

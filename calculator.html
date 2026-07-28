@@ -107,7 +107,7 @@
             <h1 id="calculator-title">What might social media’s mental-health effects cost society?</h1>
             <div id="hero-cost-display" class="estimate-display" aria-live="polite">
                 <span class="estimate-kicker">Current illustrative estimate</span>
-                <strong id="hero-total-cost">$3,200,000,000,000</strong>
+                <strong id="hero-total-cost">$2,355,067,000,000</strong>
                 <span>under the assumptions below</span>
             </div>
             <p class="hero-caveat">
@@ -219,7 +219,7 @@
         <section class="result-reading" aria-labelledby="result-title">
             <p class="eyebrow">Interpretation</p>
             <h2 id="result-title">Read the total as a sensitivity test</h2>
-            <p class="result-number"><span id="total-cost">$3.2T</span> modeled burden</p>
+            <p class="result-number"><span id="total-cost">$2.4T</span> modeled burden</p>
             <p>The value is useful for comparing assumption sets. It is not a forecast, a clinical estimate, or proof that social media caused every represented outcome.</p>
             <div class="research-actions">
                 <button type="button" id="copy-url" data-telemetry-cta="scenario_copy">Copy this scenario</button>
@@ -819,7 +819,7 @@
                 document.getElementById('mental-result').textContent =
                     `${(depression / 1000000).toFixed(1)}M × ${yld} years × ${qol}% × $${Math.round(vsl * 1000000 / 75 / 1000)}K = ${this.formatLargeNumber(results.mental)}`;
                 document.getElementById('healthcare-result').textContent =
-                    `${(depression / 1000000).toFixed(1)}M × ($${Math.round(healthcare / 1000)}K + $${Math.round(productivity / 1000)}K) × ${duration} years = ${this.formatLargeNumber(results.productivity)}`;
+                    `${(depression / 1000000).toFixed(1)}M × ($${Math.round(healthcare / 1000)}K + $${Math.round(productivity / 1000)}K) × ${this.formatDuration(duration)} years = ${this.formatLargeNumber(results.productivity)}`;
             }
 
             setupShareButtons() {
@@ -1095,7 +1095,7 @@
                             <p class="method-step-index">03</p>
                             <div>
                                 <h3>Economic effects</h3>
-                                <p class="formula-line">${(depression / 1000000).toFixed(1)}M people × ($${Math.round(healthcare / 1000)}K care + $${Math.round(productivity / 1000)}K productivity) × ${duration} years = <strong>${this.formatLargeNumber(results.productivity)}</strong></p>
+                                <p class="formula-line">${(depression / 1000000).toFixed(1)}M people × ($${Math.round(healthcare / 1000)}K care + $${Math.round(productivity / 1000)}K productivity) × ${this.formatDuration(duration)} years = <strong>${this.formatLargeNumber(results.productivity)}</strong></p>
                                 <p>Combines treatment expenditure and productivity estimates over the selected duration.</p>
                             </div>
                         </section>

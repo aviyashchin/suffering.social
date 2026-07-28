@@ -90,10 +90,11 @@ describe('canonical analytics events', () => {
     expect(telemetry.canonicalPathname(input)).toBe(expected);
   });
 
-  test('redacts email-bearing path segments, including percent-encoded forms', () => {
+  test('redacts deeply encoded email path segments and reduces referrers to origins', () => {
     expect(
       telemetry.buildEvent('page_view', {
-        pathname: '/research/person%40example.com/results?value=42',
+        pathname:
+          '/research/person%2525252540example.com/results?value=42',
         referrer:
           'http://search.example.com/users/person%2540example.com/results?q=private',
       })
@@ -105,7 +106,7 @@ describe('canonical analytics events', () => {
         canonical_host: 'www.suffering.social',
         pathname: '/research/redacted/results',
         page_location: 'https://www.suffering.social/research/redacted/results',
-        page_referrer: 'https://search.example.com/users/redacted/results',
+        page_referrer: 'https://search.example.com',
       },
     });
   });
@@ -129,7 +130,7 @@ describe('canonical analytics events', () => {
     }
   );
 
-  test('builds a page view with HTTPS pathname-only location and referrer', () => {
+  test('builds a page view with an HTTPS pathname-only location and origin-only referrer', () => {
     expect(typeof telemetry.buildEvent).toBe('function');
 
     expect(
@@ -151,7 +152,7 @@ describe('canonical analytics events', () => {
         canonical_host: 'www.suffering.social',
         pathname: '/calculator',
         page_location: 'https://www.suffering.social/calculator',
-        page_referrer: 'https://search.example.com/research',
+        page_referrer: 'https://search.example.com',
       },
     });
   });
@@ -185,7 +186,7 @@ describe('canonical analytics events', () => {
         canonical_host: 'www.suffering.social',
         pathname: '/calculator',
         page_location: 'https://www.suffering.social/calculator',
-        page_referrer: 'https://search.example.com/',
+        page_referrer: 'https://search.example.com',
         cta_id: ctaId,
       },
     });

@@ -1,4 +1,5 @@
 export const buildInfo = Object.freeze({
-  release: __APP_RELEASE__,
-  environment: __APP_ENVIRONMENT__,
+  release: typeof __APP_RELEASE__ === 'string' ? __APP_RELEASE__ : '',
+  environment:
+    typeof __APP_ENVIRONMENT__ === 'string' ? __APP_ENVIRONMENT__ : '',
 });

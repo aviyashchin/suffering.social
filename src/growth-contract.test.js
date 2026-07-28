@@ -89,6 +89,16 @@ describe('SEO and telemetry build contract', () => {
     });
   });
 
+  test('does not cache every response behind a stale document policy', () => {
+    const vercel = JSON.parse(readFileSync('vercel.json', 'utf8'));
+    const catchAll = vercel.headers.find(({ source }) => source === '/(.*)');
+
+    expect(catchAll).toBeDefined();
+    expect(catchAll.headers.map(({ key }) => key)).not.toContain(
+      'Cache-Control'
+    );
+  });
+
   test('active pages contain no direct analytics or identification vendor loader', () => {
     const active = pages.filter(([file]) => existsSync(file));
     expect(active.length).toBeGreaterThan(0);
@@ -112,6 +122,7 @@ describe('SEO and telemetry build contract', () => {
 
   test('active pages use repository-owned styles rather than runtime design CDNs', () => {
     const active = pages.filter(([file]) => existsSync(file));
+    expect(active.length).toBeGreaterThan(0);
 
     for (const [file] of active) {
       const source = readFileSync(file, 'utf8');
@@ -154,7 +165,6 @@ describe('SEO and telemetry build contract', () => {
     expect(packageJson.jest.collectCoverageFrom).toEqual([
       'src/**/*.js',
       '!src/**/*.test.js',
-      '!src/d3-distribution-sliders.js',
     ]);
     expect(packageJson.scripts['test:e2e']).toBe('playwright test');
     expect(packageJson.devDependencies['@playwright/test']).toBeTruthy();

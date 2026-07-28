@@ -83,8 +83,11 @@ describe('/calculator product route contract', () => {
     ];
 
     for (const control of labeledControls) {
+      expect(control).not.toBeNull();
+      const visibleLabel = normalizedText(control);
+      expect(visibleLabel).not.toBe('');
       expect(control.getAttribute('aria-label')).toMatch(
-        new RegExp(`^${escapeRegex(normalizedText(control))}`, 'i')
+        new RegExp(`^${escapeRegex(visibleLabel)}`, 'i')
       );
     }
   });
@@ -108,15 +111,17 @@ describe('/calculator product route contract', () => {
       ...calculator.querySelectorAll('link[rel="stylesheet"][href]'),
     ].map((node) => node.href);
 
-    expect(scriptSources).not.toEqual(
-      expect.arrayContaining([
-        expect.stringMatching(/chart(?:\.min)?\.js/i),
-        expect.stringMatching(/d3(?:\.v\d+)?(?:\.min)?\.js/i),
-        expect.stringMatching(/gsap|scrolltrigger/i),
-        expect.stringMatching(/tailwind/i),
-        expect.stringMatching(/design-system/i),
-      ])
-    );
+    for (const forbidden of [
+      /chart(?:\.min)?\.js/i,
+      /d3(?:\.v\d+)?(?:\.min)?\.js/i,
+      /gsap|scrolltrigger/i,
+      /tailwind/i,
+      /design-system/i,
+    ]) {
+      expect(scriptSources).not.toEqual(
+        expect.arrayContaining([expect.stringMatching(forbidden)])
+      );
+    }
     expect([...scriptSources, ...stylesheetSources]).not.toEqual(
       expect.arrayContaining([expect.stringMatching(/cdn\.jsdelivr\.net/i)])
     );
@@ -130,7 +135,9 @@ describe('/calculator product route contract', () => {
     expect(calculatorSource).not.toMatch(/window\.test[A-Z]/);
     expect(calculatorSource).not.toMatch(/Debug utilities available|testAllNewFeatures/);
     expect(calculatorSource).not.toMatch(/console\.(?:log|warn)\s*\(/);
-    expect(calculatorSource).not.toMatch(/console\.error\s*\(\s*['"`][^'"`]*[^\x00-\x7F]/);
+    expect(calculatorSource).not.toMatch(
+      /console\.error\s*\(\s*['"`][^'"`]*\P{ASCII}/u
+    );
     expect(calculatorSource).not.toMatch(/setInterval\s*\(/);
     expect(calculatorSource).not.toMatch(
       /live-total-|live-daily-|live-average-|live-recent-|running-counter|debt-clock-total|sticky-cumulative-|progression-chart|composition-chart|share-canvas/
@@ -154,6 +161,13 @@ describe('/calculator product route contract', () => {
 
   test('keeps the calculator source under its runtime-debt budget', () => {
     expect(Buffer.byteLength(calculatorSource, 'utf8')).toBeLessThan(170_000);
+  });
+
+  test('renders the default estimate before JavaScript enhancement', () => {
+    expect(calculator.querySelector('#hero-total-cost').textContent).toBe(
+      '$2,355,067,000,000'
+    );
+    expect(calculator.querySelector('#total-cost').textContent).toBe('$2.4T');
   });
 });
 

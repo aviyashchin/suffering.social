@@ -34,7 +34,7 @@ than serving as a live status board.
 - [ ] Change the active-page contract to require one shared `/src/telemetry.js` entrypoint and zero inline GTM, Lemlist, Clarity, RB2B, Vector, Leadsy, replay, or direct `gtag` snippets.
 - [ ] Add a contract that active pages contain no runtime Tailwind CDN or remote design-system stylesheet.
 - [ ] Add telemetry tests proving all four Google consent categories default to `denied`, GTM is the sole Google loader, and only one normalized `page_view` plus approved `cta_clicked` events can be pushed to `dataLayer`.
-- [ ] Add tests proving URLs and referrers are reduced to HTTPS origin plus pathname and that query strings, hashes, scenario values, emails, cookies, arbitrary DOM text, and unknown CTA IDs cannot enter provider payloads.
+- [ ] Add tests proving page locations are reduced to HTTPS origin plus pathname, referrers are reduced to origin only, and query strings, hashes, scenario values, emails, cookies, arbitrary DOM text, and unknown CTA IDs cannot enter provider payloads.
 - [ ] Add Sentry tests proving `release` and `environment` are configured while user data, cookies, query strings, request bodies, extras, calculator values, and replay are absent.
 - [ ] Run `rtk proxy npm test -- --runInBand`; confirm the new tests fail for the expected legacy snippets, granted analytics storage, stale CTA vocabulary, and missing Sentry release.
 - [ ] Commit the red tests:
@@ -63,7 +63,7 @@ rtk git commit -m "test: define private research telemetry contract"
 - [ ] Set `analytics_storage`, `ad_storage`, `ad_user_data`, and `ad_personalization` to `denied` before the GTM loader is appended.
 - [ ] Make GTM the sole Google loader. Remove the direct GA4 script/config path; push normalized `page_view` and `cta_clicked` objects to `dataLayer`, where the GTM container owns the GA4 tag.
 - [ ] Keep GTM-managed GA automatic pageviews, Google Signals, advertising personalization, cross-domain linking, PostHog autocapture/replay/profiles, and Sentry PII/replay disabled.
-- [ ] Sanitize canonical page location and referrer to HTTPS origin plus pathname in one helper before emitting the canonical page view.
+- [ ] Sanitize canonical page location to HTTPS origin plus pathname and referrer to origin only before emitting the canonical page view.
 - [ ] Restrict CTA IDs to calculator entry, scenario copy/share, source inspection, and related-research exit.
 - [ ] Remove inline GTM and direct Lemlist from every active page. Retain only the shared module entrypoint.
 - [ ] Configure Sentry with scrubbed `release` and `environment`; do not initialize tracing or replay. `vite.config.js` defines compile-time `__APP_RELEASE__` from server-only `VERCEL_GIT_COMMIT_SHA` and `__APP_ENVIRONMENT__` from `VERCEL_ENV`; `src/runtime-build-info.js` exports only those non-secret strings to the browser.

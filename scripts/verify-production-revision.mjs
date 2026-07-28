@@ -55,6 +55,7 @@ async function main() {
   const response = await fetch(productionUrl, {
     headers: { 'user-agent': 'suffering-social-production-smoke' },
     redirect: 'follow',
+    signal: AbortSignal.timeout(15_000),
   });
   if (!response.ok) {
     throw new Error(`Production returned HTTP ${response.status}.`);

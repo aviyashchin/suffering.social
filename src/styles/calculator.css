@@ -386,6 +386,10 @@
   padding-inline: max(1.5rem, calc((100vw - 70rem) / 2));
 }
 
+.calculator-page {
+  overflow-x: clip;
+}
+
 .open-research h2,
 .open-research p,
 .open-research .eyebrow {

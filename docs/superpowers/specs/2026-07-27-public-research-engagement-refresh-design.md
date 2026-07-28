@@ -38,7 +38,7 @@ Use the existing normalized telemetry boundary. Measure only:
 - `page_view`
 - `cta_clicked` for calculator entry, scenario copy/share, source inspection, and related-research exit
 
-Disable automatic GA pageviews. The repository sends the one canonical page view with `page_location` and referrer reduced to HTTPS origin plus pathname. Do not capture slider values, scenario parameters, page text, query strings, email addresses, cookies, or arbitrary DOM events. Contract and browser tests must prove that query parameters and scenario state never reach GTM, GA4, PostHog, or Sentry. Update the privacy page to match live behavior.
+Disable automatic GA pageviews. The repository sends the one canonical page view with `page_location` reduced to HTTPS origin plus pathname and referrer reduced to HTTPS origin only. Do not capture slider values, scenario parameters, page text, query strings, email addresses, cookies, or arbitrary DOM events. Contract and browser tests must prove that query parameters and scenario state never reach GTM, GA4, PostHog, or Sentry. Update the privacy page to match live behavior.
 
 Sentry may record scrubbed browser failures with release and environment data. It must not send default PII, replay, request bodies, cookies, query strings, or calculator inputs.
 

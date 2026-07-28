@@ -11,10 +11,9 @@ calculation entrypoint as a versioned interface. The authoritative examples are
 `tests/fixtures/calculator-engine-baseline.json` and
 `tests/e2e/calculator-engine.spec.js`.
 
-`src/calculator-bootstrap.js` imports the local
-`src/d3-distribution-sliders.js` visualization module. There is no
-`src/components/Calculator.js`, `src/utils/constants.js`, or reusable
-`Calculator` class.
+`src/calculator-bootstrap.js` imports the local noUiSlider dependency. There is
+no D3 runtime, `src/components/Calculator.js`, `src/utils/constants.js`, or
+reusable `Calculator` class.
 
 ## Telemetry
 
@@ -29,9 +28,9 @@ Supported events:
 - `cta_clicked`, limited to the CTA vocabulary documented in
   `PRODUCTION_RUNBOOK.md`.
 
-All locations and referrers are reduced to query-free HTTPS origin plus
-pathname. Unknown events, unknown CTA IDs, identities, DOM text, calculator
-state, and arbitrary properties are discarded.
+Locations are reduced to query-free HTTPS origin plus pathname; referrers are
+reduced further to HTTPS origin only. Unknown events, unknown CTA IDs,
+identities, DOM text, calculator state, and arbitrary properties are discarded.
 
 ## Build metadata
 
