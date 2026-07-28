@@ -60,21 +60,31 @@ Clarity, PostHog, identity, replay, advertising, User-ID, Google Signals,
 cross-domain measurement, and automatic GA page views must remain off. Confirm
 all four Google consent categories default to `denied` before GTM loads.
 
-For a controlled Sentry canary, open production in an isolated browser and run
-this once:
+For a controlled Sentry canary, use a one-off Playwright session against
+production. Listen for the single Sentry envelope request so its `event_id` can
+be recorded, then schedule this bounded fault:
 
 ```js
 setTimeout(() => {
-  throw new Error('suffering-social-controlled-canary');
+  const dataLayer = window.dataLayer;
+  window.dataLayer = {};
+  try {
+    window.__sufferingTelemetry.capture('page_view');
+  } finally {
+    window.dataLayer = dataLayer;
+  }
 }, 0);
 ```
 
-Read the event back in Sentry. Confirm its release and environment, one
+The thrown `dataLayer.push` fault originates inside the compiled
+`src/telemetry-runtime.js` handler, while the `finally` block restores the page
+immediately. Read the captured `event_id` back in Sentry. Confirm its release
+and environment, one
 redacted error, a query-free canonical URL, and no user, cookie, body, extras,
 calculator state, tracing, or replay data. Require source-map symbolication:
-the stack must show the readable repository source file and line tied to the
-deployed release, not a minified bundle location. Resolve the canary after
-verification.
+the stack must resolve to the readable `src/telemetry-runtime.js` source file and
+line tied to the deployed release, not an anonymous console callback or a
+minified bundle location. Resolve the canary after verification.
 
 ## Event vocabulary
 

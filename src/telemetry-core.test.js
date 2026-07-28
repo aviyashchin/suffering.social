@@ -320,4 +320,37 @@ describe('Sentry privacy scrubbing', () => {
 
     expect(scrubbed.request).toEqual({});
   });
+
+  test('preserves only sanitized source-map debug metadata', () => {
+    const scrubbed = telemetry.scrubSentryEvent({
+      debug_meta: {
+        private_note: 'person@example.com',
+        images: [
+          {
+            type: 'sourcemap',
+            code_file:
+              'https://www.suffering.social/assets/telemetry.js?email=person@example.com',
+            debug_id: '12345678-1234-4abc-8def-1234567890ab',
+            debug_checksum: 'private',
+          },
+          {
+            type: 'other',
+            code_file: 'javascript:alert(person@example.com)',
+            debug_id: 'not-a-debug-id',
+          },
+        ],
+      },
+    });
+
+    expect(scrubbed.debug_meta).toEqual({
+      images: [
+        {
+          type: 'sourcemap',
+          code_file: 'https://www.suffering.social/assets/telemetry.js',
+          debug_id: '12345678-1234-4abc-8def-1234567890ab',
+        },
+      ],
+    });
+    expect(JSON.stringify(scrubbed)).not.toMatch(/person@example\.com|private|javascript/);
+  });
 });

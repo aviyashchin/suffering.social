@@ -82,7 +82,9 @@ export function buildEvent(name, input = {}) {
     environment: input.environment || 'production',
     canonical_host: CANONICAL_HOST,
     pathname: canonicalPathname(input.pathname),
-    page_location: `https://${CANONICAL_HOST}${canonicalPathname(input.pathname)}`,
+    page_location: `https://${CANONICAL_HOST}${canonicalPathname(
+      input.pathname
+    )}`,
     page_referrer: stripUrlQuery(input.referrer) || '',
   };
 
@@ -108,7 +110,9 @@ function parseHttpUrl(value) {
   if (typeof value !== 'string' || !value.trim()) return undefined;
   try {
     const url = new URL(value, 'https://www.suffering.social');
-    return url.protocol === 'http:' || url.protocol === 'https:' ? url : undefined;
+    return url.protocol === 'http:' || url.protocol === 'https:'
+      ? url
+      : undefined;
   } catch {
     return undefined;
   }
@@ -147,6 +151,25 @@ function scrubStacktrace(stacktrace) {
   };
 }
 
+function scrubDebugMeta(debugMeta) {
+  const images = (debugMeta?.images || [])
+    .filter(
+      (image) =>
+        image?.type === 'sourcemap' &&
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+          image.debug_id || ''
+        )
+    )
+    .map((image) => ({
+      type: 'sourcemap',
+      code_file: stripUrlQuery(image.code_file),
+      debug_id: image.debug_id,
+    }))
+    .filter((image) => image.code_file);
+
+  return images.length ? { images } : undefined;
+}
+
 export function scrubSentryEvent(event) {
   const scrubbed = {};
   for (const property of [
@@ -182,6 +205,9 @@ export function scrubSentryEvent(event) {
     const url = stripUrlQuery(event.request.url);
     scrubbed.request = url ? { url } : {};
   }
+
+  const debugMeta = scrubDebugMeta(event.debug_meta);
+  if (debugMeta) scrubbed.debug_meta = debugMeta;
 
   scrubbed.breadcrumbs = (event.breadcrumbs || [])
     .filter((breadcrumb) => breadcrumb.category === 'navigation')

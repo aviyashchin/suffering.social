@@ -32,6 +32,27 @@ describe('SEO and telemetry build contract', () => {
     expect(robots).toContain('Sitemap: https://www.suffering.social/sitemap.xml');
   });
 
+  test('discovery files describe the calculator as the primary cumulative model', () => {
+    const llms = readFileSync('public/llms.txt', 'utf8');
+    const sitemap = readFileSync('public/sitemap.xml', 'utf8');
+    const home = readFileSync('index.html', 'utf8');
+
+    expect(llms).toContain('/calculator (primary research experience)');
+    expect(llms).toContain('/ (support page)');
+    expect(llms).toContain('cumulative estimate since 2009');
+    expect(llms).not.toMatch(/trillions of dollars per year/i);
+    expect(sitemap).toMatch(
+      /<loc>https:\/\/www\.suffering\.social\/calculator<\/loc>[\s\S]*?<lastmod>2026-07-27<\/lastmod>[\s\S]*?<priority>1\.0<\/priority>/
+    );
+    expect(sitemap).toMatch(
+      /<loc>https:\/\/www\.suffering\.social\/<\/loc>[\s\S]*?<lastmod>2026-07-27<\/lastmod>[\s\S]*?<priority>0\.8<\/priority>/
+    );
+    expect(home).toContain(
+      '<meta property="article:modified_time" content="2026-07-27">'
+    );
+    expect(home).toContain('"dateModified": "2026-07-27"');
+  });
+
   test('the clean v5 URL is rewritten rather than redirected to an implementation filename', () => {
     const vercel = JSON.parse(readFileSync('vercel.json', 'utf8'));
 
@@ -55,6 +76,17 @@ describe('SEO and telemetry build contract', () => {
     }));
 
     expect(vercel.redirects.slice(0, 2)).toEqual(hostRedirects);
+  });
+
+  test('deploys the Vite build instead of serving repository source files', () => {
+    const vercel = JSON.parse(readFileSync('vercel.json', 'utf8'));
+
+    expect(vercel).toMatchObject({
+      $schema: 'https://openapi.vercel.sh/vercel.json',
+      framework: 'vite',
+      buildCommand: 'npm run build',
+      outputDirectory: 'dist',
+    });
   });
 
   test('active pages contain no direct analytics or identification vendor loader', () => {
