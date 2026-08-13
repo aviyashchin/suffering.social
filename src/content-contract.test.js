@@ -54,6 +54,18 @@ describe('/ calculator product route contract', () => {
     expect(text).toMatch(/limitation/i);
   });
 
+  test('keeps the proven calculator interface visible instead of hiding its controls', () => {
+    const assumptions = calculator.querySelector('#assumptions');
+
+    expect(assumptions?.tagName).toBe('SECTION');
+    expect(calculator.querySelector('details.advanced-model')).toBeNull();
+    expect(assumptions?.querySelectorAll('.assumption')).toHaveLength(9);
+    expect(calculator.querySelector('#hero-total-cost').textContent).toBe(
+      '$2,355,067,000,000'
+    );
+    expect(calculatorSource).not.toContain('editorial-redesign.css');
+  });
+
   test('names the four research engagement actions', () => {
     const actionNames = [
       'scenario_copy',
@@ -165,11 +177,28 @@ describe('/ calculator product route contract', () => {
   });
 
   test('renders the default estimate before JavaScript enhancement', () => {
-    expect(calculator.querySelector('#hero-total-cost').textContent).toBe('$2.4T');
-    expect(calculator.querySelector('#hero-exact-total').textContent).toContain(
+    expect(calculator.querySelector('#hero-total-cost').textContent).toBe(
       '$2,355,067,000,000'
     );
+    expect(calculator.querySelector('#hero-exact-total')).toBeNull();
     expect(calculator.querySelector('#total-cost').textContent).toBe('$2.4T');
+  });
+
+  test('uses plain visible copy without long dashes or unexplained research jargon', () => {
+    const text = visibleText(calculator);
+
+    expect(text).not.toMatch(/[–—]/);
+    expect(text).not.toMatch(/counterfactual|causal inference|attribution/i);
+  });
+
+  test('offers a consent-based research update form with a clear status message', () => {
+    const form = calculator.querySelector('#research-update-form');
+
+    expect(form).not.toBeNull();
+    expect(form.querySelector('input[type="email"][name="email"]')).not.toBeNull();
+    expect(form.querySelector('input[type="checkbox"][name="consent"]')).not.toBeNull();
+    expect(form.querySelector('[role="status"]')).not.toBeNull();
+    expect(form.querySelector('button[type="submit"]')).not.toBeNull();
   });
 });
 
@@ -202,9 +231,9 @@ describe('/ closing evidence chapter contract', () => {
     const text = visibleText(support);
     expect(text).toMatch(/2011/);
     expect(text).toMatch(/2012/);
-    expect(text).toMatch(/observed turn|break/);
+    expect(text).toMatch(/observed turn|break/i);
     expect(text).toMatch(/cause/);
-    expect(text).toMatch(/counterfactual|cannot|does not settle/i);
+    expect(text).toMatch(/cannot|does not prove|does not settle/i);
   });
 
   test('sits after the complete calculator instrument', () => {

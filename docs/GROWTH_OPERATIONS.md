@@ -2,7 +2,7 @@
 
 ## Permanent policy
 
-`suffering.social` is a sensitive-topic public research site. Person-level identification, lead capture, advertising tags, session replay, autocapture, and calculator-state collection are prohibited. GTM-managed GA4 and scrubbed Sentry are the only approved providers. Provider flags fail closed and may be enabled only after the evidence gate below passes.
+`suffering.social` is a sensitive-topic public research site. Person-level identification through telemetry, advertising tags, session replay, autocapture, and calculator-state collection are prohibited. GTM-managed GA4 and scrubbed Sentry are the only approved measurement providers. The optional research-update form is the only identity-bearing path: it requires explicit permission and sends an email address directly to the server-side contact route. The address must never enter analytics or error reports. Provider flags fail closed and may be enabled only after the evidence gate below passes.
 
 ## Preview rollout
 
@@ -53,4 +53,4 @@ impression and no clicks.
 
 ## Deferred email readiness
 
-DNS currently supports forwarding, not an authenticated sending program. Before any future email workflow, separately approve a sending domain/provider, configure DKIM and DMARC, define consent and unsubscribe handling, and test deliverability. This rollout makes no DNS changes and sends no email.
+The site now stores addresses submitted through the consent-based research-update form. It does not yet send an automated email. Before sending, separately approve a sending domain and provider, configure DKIM and DMARC, add one-click unsubscribe handling, and test deliverability. Until then, use the saved addresses only for the promised occasional research updates and honor removal requests sent to `privacy@subconscious.ai`.

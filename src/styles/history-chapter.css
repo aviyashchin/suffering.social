@@ -1,0 +1,226 @@
+/* The closing context chapter is intentionally scoped so the proven calculator
+   keeps its original layout and interaction model. */
+.history-chapter {
+  margin: 4rem 0 0;
+  padding: clamp(4rem, 9vw, 7rem) 0;
+  border-top: 1px solid var(--ink);
+}
+
+.history-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.8fr);
+  gap: clamp(2rem, 7vw, 6rem);
+  position: relative;
+}
+
+.history-header .eyebrow,
+.history-header h2 {
+  grid-column: 1;
+}
+
+.history-header h2 {
+  max-width: 12ch;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 6rem);
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+}
+
+.history-year {
+  position: absolute;
+  right: 0;
+  top: -3rem;
+  z-index: -1;
+  margin: 0;
+  color: color-mix(in srgb, var(--ink) 6%, var(--paper));
+  font-family: var(--font-data);
+  font-size: clamp(8rem, 20vw, 18rem);
+  line-height: 1;
+}
+
+.history-lede,
+.history-boundary {
+  grid-column: 2;
+  max-width: 34rem;
+  margin: 0;
+}
+
+.history-lede {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.4vw, 2rem);
+  line-height: 1.35;
+}
+
+.history-boundary {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule-strong);
+  color: var(--ink-muted);
+}
+
+.history-boundary strong {
+  color: var(--ink);
+}
+
+.history-figure {
+  margin: clamp(4rem, 8vw, 7rem) 0 0;
+  border-top: 1px solid var(--ink);
+}
+
+.history-chart-frame {
+  padding: 2rem 0 1rem;
+}
+
+.history-figure svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.history-grid line {
+  stroke: var(--rule);
+}
+
+.history-observed,
+.history-counterfactual {
+  fill: none;
+  stroke-width: 4;
+}
+
+.history-observed {
+  stroke: var(--research-red);
+}
+
+.history-counterfactual {
+  stroke: var(--ink-muted);
+  stroke-dasharray: 8 10;
+}
+
+.history-inflection {
+  stroke: var(--ink-muted);
+  stroke-dasharray: 3 8;
+}
+
+.history-node {
+  fill: var(--research-red);
+}
+
+.history-label,
+.history-axis {
+  fill: var(--ink-muted);
+  font-family: var(--font-data);
+  font-size: 15px;
+}
+
+.history-label--turn,
+.history-label--observed {
+  fill: var(--research-red);
+}
+
+.history-figure figcaption {
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--rule-strong);
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+
+.history-figure figcaption strong {
+  color: var(--ink);
+}
+
+.history-reading {
+  display: grid;
+  grid-template-columns: minmax(14rem, 0.7fr) minmax(24rem, 1.3fr);
+  gap: clamp(2rem, 7vw, 6rem);
+  padding: clamp(4rem, 8vw, 7rem) 0;
+}
+
+.history-reading-intro {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3.5vw, 3rem);
+  line-height: 1.15;
+}
+
+.history-reading ol,
+.history-sources ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.history-reading li {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  gap: 1rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--rule-strong);
+}
+
+.history-reading li > span {
+  color: var(--research-red);
+  font-family: var(--font-data);
+  font-size: 0.78rem;
+}
+
+.history-reading h3 {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  font-weight: 400;
+}
+
+.history-reading li p {
+  color: var(--ink-muted);
+}
+
+.history-sources {
+  display: grid;
+  grid-template-columns: 0.7fr 1.4fr 1fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  padding-top: 2rem;
+  border-top: 1px solid var(--ink);
+}
+
+.history-sources li {
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--rule);
+  color: var(--ink-muted);
+  font-size: 0.85rem;
+}
+
+.history-close p {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 720px) {
+  .history-header,
+  .history-reading,
+  .history-sources {
+    grid-template-columns: 1fr;
+  }
+
+  .history-lede,
+  .history-boundary {
+    grid-column: 1;
+  }
+
+  .history-year {
+    top: 4rem;
+    font-size: 38vw;
+  }
+
+  .history-chart-frame {
+    overflow: hidden;
+  }
+
+  .history-label,
+  .history-axis {
+    font-size: 20px;
+  }
+}

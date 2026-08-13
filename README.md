@@ -8,7 +8,7 @@ recommendation.
 
 The primary experience is the
 [research calculator](https://www.suffering.social/). It opens with one
-consequential assumption, reveals the full model on demand, and ends with the
+plain-language estimate, keeps all nine controls visible, and ends with the
 evidence chapter, “What changed around 2012?”
 
 ## Architecture
@@ -23,6 +23,8 @@ This is a static, multi-page Vite site:
   the unlisted legacy `/v5` route.
 - `src/styles/` contains the shared design tokens and route styles.
 - `src/telemetry*.js` is the single aggregate-only event boundary.
+- `src/research-updates.js` submits the optional email form to the server-only
+  `api/research-updates.js` contact route.
 - `src/*.test.js` contains Jest contracts; `tests/e2e/` contains Playwright
   engine and journey checks.
 - `scripts/validate-growth.mjs` inspects built output for canonical, privacy,
@@ -69,7 +71,9 @@ was re-enabled only after the compiled container and a live network trace proved
 GA4 traffic with zero PostHog, Clarity, RB2B, or Lemlist requests.
 The runtime emits one canonical `page_view` and allowlisted `cta_clicked`
 events; it excludes query strings, calculator inputs, DOM text, identities,
-replay, advertising, and lead capture. Provider variables are documented in
+replay, advertising, and email addresses. The optional research-update email
+is sent only to the server-side contact route and never enters telemetry.
+Provider variables are documented in
 `.env.example`. The page view is queued immediately, while the analytics
 provider starts only after click or keyboard engagement, or 60 seconds after
 load. Keep that boundary: immediate third-party execution materially degrades

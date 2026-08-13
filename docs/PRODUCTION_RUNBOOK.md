@@ -121,6 +121,15 @@ minified bundle location. Resolve the canary after verification.
 No event may contain a scenario value, slider value, email, cookie, arbitrary
 page text, URL query, or hash.
 
+## Research-update form
+
+`CONTACTS_API_KEY` is a server-only Production and Preview variable. Never use a
+`VITE_*` prefix. After changing the form or contact route, submit a designated
+test address in Preview, confirm the success message, read the record back from
+the contact system, and remove the test record. Repeat once in Production after
+the deployed revision is verified. A browser success message alone is not proof
+that the address was stored.
+
 ## Monitoring drill
 
 Manually dispatch `Production smoke` with `force_failure=true`. All real checks

@@ -57,10 +57,19 @@
   .result-reading,
   .method-section,
   .open-research,
+  .research-updates,
   .support-evidence,
   .support-method,
   .source-columns {
     grid-template-columns: 1fr;
+  }
+
+  .research-update-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .research-update-fields button {
+    border-top: 0;
   }
 
   .research-actions,
