@@ -2,9 +2,10 @@ import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const root = process.cwd();
-const calculator = parseHtml('calculator.html');
-const calculatorSource = readFileSync(resolve(root, 'calculator.html'), 'utf8');
-const support = parseHtml('index.html');
+const calculator = parseHtml('index.html');
+const calculatorSource = readFileSync(resolve(root, 'index.html'), 'utf8');
+const support = calculator;
+const calculatorRedirect = parseHtml('calculator.html');
 const scenarioNames = ['reset', 'optimistic', 'facebookFiles', 'aggressive'];
 const parameterNames = [
   'vsl',
@@ -18,11 +19,11 @@ const parameterNames = [
   'duration',
 ];
 
-describe('/calculator product route contract', () => {
+describe('/ calculator product route contract', () => {
   test('owns calculator-first metadata and SoftwareApplication schema', () => {
-    expectMetadata(calculator, 'https://www.suffering.social/calculator');
-    expect(calculator.title).toMatch(/calculator/i);
-    expect(meta(calculator, 'name', 'description')).toMatch(/calculator/i);
+    expectMetadata(calculator, 'https://www.suffering.social/');
+    expect(calculator.title).toMatch(/cost|estimate/i);
+    expect(meta(calculator, 'name', 'description')).toMatch(/estimate|model/i);
 
     const structuredData = [...calculator.querySelectorAll(
       'script[type="application/ld+json"]'
@@ -164,7 +165,8 @@ describe('/calculator product route contract', () => {
   });
 
   test('renders the default estimate before JavaScript enhancement', () => {
-    expect(calculator.querySelector('#hero-total-cost').textContent).toBe(
+    expect(calculator.querySelector('#hero-total-cost').textContent).toBe('$2.4T');
+    expect(calculator.querySelector('#hero-exact-total').textContent).toContain(
       '$2,355,067,000,000'
     );
     expect(calculator.querySelector('#total-cost').textContent).toBe('$2.4T');
@@ -190,7 +192,7 @@ describe('test runner isolation contract', () => {
   });
 });
 
-describe('/ support route contract', () => {
+describe('/ closing evidence chapter contract', () => {
   test('owns self-referencing metadata and one H1', () => {
     expectMetadata(support, 'https://www.suffering.social/');
     expect(support.querySelectorAll('h1')).toHaveLength(1);
@@ -200,25 +202,60 @@ describe('/ support route contract', () => {
     const text = visibleText(support);
     expect(text).toMatch(/2011/);
     expect(text).toMatch(/2012/);
-    expect(text).toMatch(/inflection/);
-    expect(text).toMatch(/causal/);
-    expect(text).toMatch(/correlation|counterfactual|cannot|does not prove/i);
+    expect(text).toMatch(/observed turn|break/);
+    expect(text).toMatch(/cause/);
+    expect(text).toMatch(/counterfactual|cannot|does not settle/i);
   });
 
-  test('has one dominant Explore the calculator link', () => {
-    const dominantLinks = [
-      ...support.querySelectorAll(
-        'a[href="/calculator"][data-primary-cta="calculator"]'
-      ),
-    ];
+  test('sits after the complete calculator instrument', () => {
+    const instrument = support.querySelector('#calculator-experiment');
+    const evidence = support.querySelector('#what-happened-2012');
+    expect(instrument).not.toBeNull();
+    expect(evidence).not.toBeNull();
+    expect(
+      instrument.compareDocumentPosition(evidence) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+  });
+});
 
-    expect(dominantLinks).toHaveLength(1);
-    expect(normalizedText(dominantLinks[0])).toBe('Explore the calculator');
+describe('/ calculator-first research narrative', () => {
+  test('makes the calculator the root experience and closes with the 2012 evidence', () => {
+    expect(support.querySelector('#hero-total-cost')).not.toBeNull();
+    expect(support.querySelector('#attribution-nouislider')).not.toBeNull();
+    expect(
+      support.querySelector(
+        'script[type="module"][src="/src/calculator-bootstrap.js"]'
+      )
+    ).not.toBeNull();
+
+    const calculator = support.querySelector('#calculator-experiment');
+    const evidence = support.querySelector('#what-happened-2012');
+
+    expect(calculator).not.toBeNull();
+    expect(evidence).not.toBeNull();
+    expect(
+      calculator.compareDocumentPosition(evidence) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+    expect(normalizedText(evidence)).toMatch(/what changed.*2012/i);
   });
 
-  test('does not embed calculator range controls or assumption groups', () => {
-    expect(support.querySelectorAll('input[type="range"]')).toHaveLength(0);
-    expect(support.querySelectorAll('[data-param]')).toHaveLength(0);
+  test('keeps the public narrative quietly self-contained', () => {
+    expect(visibleText(support)).not.toMatch(/aaru|simile/i);
+    expect(support.querySelectorAll('h1')).toHaveLength(1);
+    expectMetadata(support, 'https://www.suffering.social/');
+  });
+});
+
+describe('/calculator compatibility route contract', () => {
+  test('points readers and crawlers to the root calculator', () => {
+    expect(calculatorRedirect.querySelector('meta[name="robots"]')?.content).toMatch(
+      /noindex/
+    );
+    expect(calculatorRedirect.querySelector('link[rel="canonical"]')?.href).toBe(
+      'https://www.suffering.social/'
+    );
+    expect(calculatorRedirect.querySelector('a[href="/"]')).not.toBeNull();
   });
 });
 

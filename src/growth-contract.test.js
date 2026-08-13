@@ -2,7 +2,6 @@ import { existsSync, readFileSync } from 'node:fs';
 
 const pages = [
   ['index.html', 'https://www.suffering.social/'],
-  ['calculator.html', 'https://www.suffering.social/calculator'],
   ['social_media_cost_calculatorv5.html', 'https://www.suffering.social/v5'],
   ['privacy.html', 'https://www.suffering.social/privacy'],
 ];
@@ -37,20 +36,14 @@ describe('SEO and telemetry build contract', () => {
     const sitemap = readFileSync('public/sitemap.xml', 'utf8');
     const home = readFileSync('index.html', 'utf8');
 
-    expect(llms).toContain('/calculator (primary research experience)');
-    expect(llms).toContain('/ (support page)');
+    expect(llms).toContain('/ (primary research experience)');
+    expect(llms).toContain('/calculator**: Compatibility redirect');
     expect(llms).toContain('cumulative estimate since 2009');
     expect(llms).not.toMatch(/trillions of dollars per year/i);
     expect(sitemap).toMatch(
-      /<loc>https:\/\/www\.suffering\.social\/calculator<\/loc>[\s\S]*?<lastmod>2026-07-27<\/lastmod>[\s\S]*?<priority>1\.0<\/priority>/
+      /<loc>https:\/\/www\.suffering\.social\/<\/loc>[\s\S]*?<lastmod>2026-08-13<\/lastmod>[\s\S]*?<priority>1\.0<\/priority>/
     );
-    expect(sitemap).toMatch(
-      /<loc>https:\/\/www\.suffering\.social\/<\/loc>[\s\S]*?<lastmod>2026-07-27<\/lastmod>[\s\S]*?<priority>0\.8<\/priority>/
-    );
-    expect(home).toContain(
-      '<meta property="article:modified_time" content="2026-07-27">'
-    );
-    expect(home).toContain('"dateModified": "2026-07-27"');
+    expect(home).toContain('https://www.suffering.social/#application');
   });
 
   test('the clean v5 URL is rewritten rather than redirected to an implementation filename', () => {
@@ -62,6 +55,15 @@ describe('SEO and telemetry build contract', () => {
     expect(vercel.rewrites).toEqual(
       expect.arrayContaining([
         { source: '/v5', destination: '/social_media_cost_calculatorv5' },
+      ])
+    );
+  });
+
+  test('the former calculator path permanently redirects to the root instrument', () => {
+    const vercel = JSON.parse(readFileSync('vercel.json', 'utf8'));
+    expect(vercel.redirects).toEqual(
+      expect.arrayContaining([
+        { source: '/calculator', destination: '/', permanent: true },
       ])
     );
   });

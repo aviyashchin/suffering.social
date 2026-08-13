@@ -2,15 +2,16 @@
 
 ## Project Structure & Module Organization
 
-This is a static, multi-page Vite site. `calculator.html` owns the primary
-`/calculator` experience; `index.html` supports it at `/`. Shared JavaScript and
-CSS live in `src/`, Jest contracts sit beside their modules as
+This is a static, multi-page Vite site. `index.html` owns the calculator-first
+`/` experience and its closing 2012 evidence chapter. `calculator.html` is only
+the no-index compatibility document for the permanent `/calculator` redirect.
+Shared JavaScript and CSS live in `src/`, Jest contracts sit beside their modules as
 `src/*.test.js`, and browser journeys live in `tests/e2e/`. Keep public
 discovery files in `public/`, build checks in `scripts/`, deployment rules in
 `vercel.json`, and operational guidance in `docs/`.
 
 The unlisted `/v5` route is legacy reference material. Do not extend it when the
-active calculator or support page can satisfy the change.
+active root experience can satisfy the change.
 When `HERDR_ENV=1`, create and remove worktrees through Herdr so its ledger stays
 accurate. Otherwise use the ignored `.worktrees/<branch>` directory and remove
 the worktree after its branch merges.

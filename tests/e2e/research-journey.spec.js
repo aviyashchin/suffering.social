@@ -149,7 +149,7 @@ test.describe('public research journey', () => {
     );
   });
 
-  test('moves from the support page through scenario, copy, source, and methodology', async ({
+  test('moves through scenario, copy, source, methodology, and the 2012 evidence', async ({
     context,
     page,
   }) => {
@@ -160,11 +160,7 @@ test.describe('public research journey', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
     await expectSequentialHeadings(page);
     await expectHealthyPage(page, observations);
-    observations.requests.length = 0;
 
-    await page.getByRole('link', { name: 'Explore the calculator' }).click();
-    await expect(page).toHaveURL(/\/calculator$/);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
     await page.waitForFunction(() => Boolean(window.calculator));
 
     const baselineEstimate = await page
@@ -172,7 +168,7 @@ test.describe('public research journey', () => {
       .textContent();
     await page
       .getByRole('button', {
-        name: 'Lower-bound assumption — load assumptions',
+        name: '02 Lower bound — load assumptions',
       })
       .click();
     await expect(page.locator('#hero-total-cost')).not.toHaveText(
@@ -187,8 +183,9 @@ test.describe('public research journey', () => {
       .poll(() =>
         context.pages()[0].evaluate(() => navigator.clipboard.readText())
       )
-      .toContain('/calculator?');
+      .toContain('/?');
 
+    await page.locator('.advanced-model > summary').click();
     await page.getByRole('button', { name: 'U.S. DOT guidance' }).click();
     await expect(page.getByRole('dialog')).toBeVisible();
     await expect(
@@ -204,6 +201,11 @@ test.describe('public research journey', () => {
     await expectSequentialHeadings(page);
     await page.keyboard.press('Escape');
     await expect(page.getByRole('dialog')).toBeHidden();
+
+    await page.getByRole('link', { name: 'Start with what changed in 2012' }).click();
+    await expect(
+      page.getByRole('heading', { name: 'What changed for teenagers around 2012?' })
+    ).toBeInViewport();
 
     await expectHealthyPage(page, observations);
   });
@@ -249,9 +251,10 @@ test.describe('public research journey', () => {
     );
 
     await page.goto(
-      '/calculator?utm_source=private-query-canary&scenario=private-scenario-canary&email=privacy%40example.com#private-fragment-canary'
+      '/?utm_source=private-query-canary&scenario=private-scenario-canary&email=privacy%40example.com#private-fragment-canary'
     );
     await page.waitForFunction(() => Boolean(window.__sufferingTelemetry));
+    await page.locator('.advanced-model > summary').click();
     const gtmEnabled = await page.evaluate(() =>
       window.__sufferingTelemetry.enabledProviders.includes('gtm')
     );
@@ -311,8 +314,8 @@ test.describe('public research journey', () => {
       site_key: 'suffering_social',
       environment: expectedTelemetryEnvironment(),
       canonical_host: 'www.suffering.social',
-      pathname: '/calculator',
-      page_location: 'https://www.suffering.social/calculator',
+      pathname: '/',
+      page_location: 'https://www.suffering.social/',
       page_referrer: '',
     };
     expect(pageViews).toHaveLength(1);
@@ -323,7 +326,7 @@ test.describe('public research journey', () => {
     ]);
     expect(
       normalizedEvents.find((entry) => entry.event === 'cta_clicked')
-    ).toMatchObject({ cta_id: 'source_inspect', pathname: '/calculator' });
+    ).toMatchObject({ cta_id: 'source_inspect', pathname: '/' });
 
     // This is a separate, deterministic test-only stand-in for a GTM-managed
     // downstream tag. It proves the provider request receives only the
@@ -354,21 +357,13 @@ test.describe('public research journey', () => {
     await page.goto('/');
     await expectSequentialHeadings(page);
     await expectHealthyPage(page, observations);
-    observations.requests.length = 0;
-    const calculatorLink = page.getByRole('link', {
-      name: 'Explore the calculator',
-    });
-    await tabTo(calculatorLink, page);
-    await expect(calculatorLink).toBeFocused();
-    await page.keyboard.press('Enter');
-    await expect(page).toHaveURL(/\/calculator$/);
     await page.waitForFunction(() => Boolean(window.calculator));
 
     const scenarioNames = [
-      'Research baseline — load assumptions',
-      'Lower-bound assumption — load assumptions',
-      'Platform-disclosures case — load assumptions',
-      'Upper-bound assumption — load assumptions',
+      '01 Research baseline — load assumptions',
+      '02 Lower bound — load assumptions',
+      '03 Disclosure case — load assumptions',
+      '04 Upper bound — load assumptions',
     ];
     const scenarios = scenarioNames.map((name) =>
       page.getByRole('button', { name })
@@ -403,16 +398,8 @@ test.describe('public research journey', () => {
       baselineEstimate || ''
     );
 
-    const sliders = page.getByRole('slider');
-    await expect(sliders).toHaveCount(9);
-    for (let index = 0; index < 9; index += 1) {
-      const slider = sliders.nth(index);
-      await expect(slider).toHaveAccessibleName(/.+/);
-      await expect(slider).toHaveAttribute('aria-valuenow', /.+/);
-      await expect(slider).toHaveAttribute('aria-valuetext', /.+/);
-    }
-
-    const firstSlider = sliders.first();
+    const firstSlider = page.getByRole('slider').first();
+    await expect(page.getByRole('slider')).toHaveCount(1);
     await tabTo(firstSlider, page);
     await expectVisibleFocus(firstSlider);
     const sliderValueBefore = Number(
@@ -427,9 +414,21 @@ test.describe('public research journey', () => {
       await firstSlider.getAttribute('aria-valuenow')
     );
     await expect
-      .poll(() => page.evaluate(() => window.calculator.parameters.vsl))
+      .poll(() => page.evaluate(() => window.calculator.parameters.attribution))
       .toBe(sliderValueAfter);
 
+    const modelSummary = page.locator('.advanced-model > summary');
+    await tabTo(modelSummary, page);
+    await expectVisibleFocus(modelSummary);
+    await page.keyboard.press('Enter');
+    const sliders = page.getByRole('slider');
+    await expect(sliders).toHaveCount(9);
+    for (let index = 0; index < 9; index += 1) {
+      const slider = sliders.nth(index);
+      await expect(slider).toHaveAccessibleName(/.+/);
+      await expect(slider).toHaveAttribute('aria-valuenow', /.+/);
+      await expect(slider).toHaveAttribute('aria-valuetext', /.+/);
+    }
     const source = page.getByRole('button', { name: 'U.S. DOT guidance' });
     await tabTo(source, page);
     await expectVisibleFocus(source);
@@ -453,7 +452,10 @@ test.describe('public research journey', () => {
     await expect(source).toBeFocused();
 
     await page.keyboard.press('Shift+Tab');
-    await expect(firstSlider).toBeFocused();
+    const vslSlider = page.getByRole('slider', {
+      name: 'Value of a statistical life',
+    });
+    await expect(vslSlider).toBeFocused();
     await page.keyboard.press('Tab');
     await expect(source).toBeFocused();
 
@@ -468,7 +470,7 @@ test.describe('public research journey', () => {
     );
     await expect
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))
-      .toContain('/calculator?');
+      .toContain('/?');
 
     const methodology = page.getByRole('button', {
       name: 'Read methodology',

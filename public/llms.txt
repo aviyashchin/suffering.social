@@ -13,11 +13,11 @@ or citing an estimate.
 
 ## Pages
 
-- **/calculator (primary research experience)**: Nine sourced assumptions,
-  four named scenarios, a live cumulative estimate since 2009, methodology,
-  citations, and limitations.
-- **/ (support page)**: A concise explanation of the 2011-2012 adolescent
-  mental-health inflection, the causal uncertainty, and how to use the model.
+- **/ (primary research experience)**: Nine sourced assumptions, four named
+  scenarios, a live cumulative estimate since 2009, methodology, citations,
+  limitations, and a closing explanation of the 2011–2012 adolescent
+  mental-health turn.
+- **/calculator**: Compatibility redirect to the root research experience.
 - **/privacy**: The aggregate-only telemetry and data-handling policy.
 - **/v5**: A legacy calculator retained for citation continuity; it is not the
   primary experience.
@@ -44,7 +44,8 @@ or citing an estimate.
 
 ## Parent organization
 
-Subconscious.ai develops causal simulation and digital-twin research systems.
+Subconscious.ai is a causal behavioral platform. It runs controlled experiments
+on human decisions and reports estimated effects with uncertainty.
 
 - https://www.subconscious.ai
 - https://www.intentionality.ai

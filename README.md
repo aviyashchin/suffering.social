@@ -7,16 +7,18 @@ exploratory estimate, not a causal finding for every component or a policy
 recommendation.
 
 The primary experience is the
-[research calculator](https://www.suffering.social/calculator). The
-[home page](https://www.suffering.social/) explains the evidence and method.
+[research calculator](https://www.suffering.social/). It opens with one
+consequential assumption, reveals the full model on demand, and ends with the
+evidence chapter, “What changed around 2012?”
 
 ## Architecture
 
 This is a static, multi-page Vite site:
 
-- `calculator.html` owns `/calculator`, the calculation engine, assumptions,
-  scenarios, methods, and citations.
-- `index.html` owns `/`, the supporting research explainer.
+- `index.html` owns `/`, including the calculation engine, assumptions,
+  scenarios, methods, citations, and closing evidence chapter.
+- `calculator.html` is a no-index compatibility document; Vercel permanently
+  redirects `/calculator` to `/`.
 - `privacy.html` and `social_media_cost_calculatorv5.html` own `/privacy` and
   the unlisted legacy `/v5` route.
 - `src/styles/` contains the shared design tokens and route styles.
@@ -47,8 +49,8 @@ npm run test:coverage     # active source coverage
 npm run lint              # repository ESLint checks
 npm run test:e2e          # desktop and 390px Playwright journeys
 npm run build             # write the production site to dist/
-npm run lighthouse:ci     # audit built /calculator on dedicated port 4175
-npm audit --audit-level=high
+npm run lighthouse:ci     # audit the built root experience on port 4175
+npm audit --omit=dev --audit-level=high # audit shipped dependencies
 ```
 
 Run `npm run build` before `npm run lighthouse:ci`. Browser failures retain

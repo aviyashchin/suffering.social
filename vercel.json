@@ -37,6 +37,11 @@
       "source": "/index-v2",
       "destination": "/",
       "permanent": true
+    },
+    {
+      "source": "/calculator",
+      "destination": "/",
+      "permanent": true
     }
   ],
   "rewrites": [

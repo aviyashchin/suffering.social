@@ -1,13 +1,13 @@
 :root {
   color-scheme: light;
-  --paper: #f5f1e8;
-  --paper-raised: #fbf9f4;
+  --paper: #f2f1ed;
+  --paper-raised: color-mix(in srgb, var(--paper) 96%, white);
   --ink: #171715;
   --ink-muted: #5f5c55;
-  --rule: #cbc5b9;
-  --rule-strong: #908a7f;
-  --research-red: #a42e26;
-  --research-red-dark: #76211c;
+  --rule: color-mix(in srgb, var(--ink) 20%, var(--paper));
+  --rule-strong: color-mix(in srgb, var(--ink) 52%, var(--paper));
+  --research-red: #c8102e;
+  --research-red-dark: color-mix(in srgb, var(--research-red) 75%, var(--ink));
   --focus: #285b85;
   --font-display: Georgia, "Times New Roman", serif;
   --font-body: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;

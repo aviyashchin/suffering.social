@@ -11,7 +11,7 @@ const parameterIds = Object.keys(baseline.parameters);
 test('preserves the calculator engine parameters, scenarios, and totals', async ({
   page,
 }) => {
-  await page.goto('/calculator');
+  await page.goto('/');
   await page.waitForFunction(() => Boolean(window.calculator), null, {
     timeout: 30_000,
   });
@@ -27,6 +27,7 @@ test('preserves the calculator engine parameters, scenarios, and totals', async 
       outputs[scenarioName] = calculator.calculateTotalEconomicImpact();
       rendered[scenarioName] = {
         heroTotal: document.getElementById('hero-total-cost').textContent,
+        heroExactTotal: document.getElementById('hero-exact-total').textContent,
         total: document.getElementById('total-cost').textContent,
         mortality: document.getElementById('mortality-result').textContent,
         mental: document.getElementById('mental-result').textContent,
@@ -74,6 +75,9 @@ test('preserves the calculator engine parameters, scenarios, and totals', async 
     }
 
     expect(snapshot.rendered[scenarioName].heroTotal).toBe(
+      formatLargeNumber(expectedOutput.total)
+    );
+    expect(snapshot.rendered[scenarioName].heroExactTotal).toContain(
       formatFullNumber(expectedOutput.total)
     );
     expect(snapshot.rendered[scenarioName].total).toBe(
@@ -95,7 +99,7 @@ test('preserves the calculator engine parameters, scenarios, and totals', async 
     await expect(page.locator(`#${parameterId}-value`)).toHaveCount(1);
   }
 
-  for (const outputId of ['hero-total-cost', 'total-cost']) {
+  for (const outputId of ['hero-total-cost', 'hero-exact-total', 'total-cost']) {
     await expect(page.locator(`#${outputId}`)).toHaveCount(1);
   }
 
@@ -111,7 +115,8 @@ test('preserves the calculator engine parameters, scenarios, and totals', async 
 test('keeps duration keyboard steps aligned with its observable value', async ({
   page,
 }) => {
-  await page.goto('/calculator');
+  await page.goto('/');
+  await page.locator('.advanced-model > summary').click();
   const duration = page.getByRole('slider', {
     name: 'Average duration of economic costs',
   });
@@ -130,7 +135,7 @@ test('keeps duration keyboard steps aligned with its observable value', async ({
   await expect(page.locator('#duration-value')).toHaveText('4.6 years');
 
   await page.getByRole('button', {
-    name: 'Lower-bound assumption — load assumptions',
+    name: '02 Lower bound — load assumptions',
   }).click();
 
   await expect
