@@ -168,8 +168,8 @@ describe('continuous verification contract', () => {
   });
 
   test.each([
-    ['lighthouserc.json', 'http://127.0.0.1:4175/calculator'],
-    ['lighthouserc.production.json', 'https://www.suffering.social/calculator'],
+    ['lighthouserc.json', 'http://127.0.0.1:4175/'],
+    ['lighthouserc.production.json', 'https://www.suffering.social/'],
   ])('%s enforces the launch thresholds', (path, url) => {
     const config = JSON.parse(read(path));
     const assertions = config.ci.assert.assertions;

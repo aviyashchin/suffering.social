@@ -46,7 +46,7 @@ export function verifyRevision({
 async function main() {
   const expectedRevision = process.env.EXPECTED_REVISION;
   const productionUrl =
-    process.env.PRODUCTION_URL || 'https://www.suffering.social/calculator';
+    process.env.PRODUCTION_URL || 'https://www.suffering.social/';
 
   if (!expectedRevision) {
     throw new Error('EXPECTED_REVISION is required.');

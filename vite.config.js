@@ -22,9 +22,9 @@ export function buildRevisionMetaPlugin(revision = '') {
 // silently drops every other static HTML in the repo (you get a 404 at
 // runtime even though the source file exists).
 //
-// Routes (after /v2 was promoted to /):
-//   /            index.html               (the editorial calculator, was /v2)
-//   /calculator  calculator.html          (legacy chartjunky calculator)
+// Routes:
+//   /            index.html               (calculator + evidence narrative)
+//   /calculator  calculator.html          (compatibility redirect to /)
 //   /v5          social_media_cost_calculatorv5.html (older legacy calculator)
 //
 // Both /v2 and /index-v2 redirect to / for backward compatibility with

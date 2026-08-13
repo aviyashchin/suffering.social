@@ -37,11 +37,12 @@ weaken the launch thresholds.
 
 After the default-branch deployment is ready:
 
-1. Confirm `/`, `/calculator`, `/privacy`, `/robots.txt`, `/sitemap.xml`, and
-   `/llms.txt` return `200` with the canonical host.
+1. Confirm `/`, `/privacy`, `/robots.txt`, `/sitemap.xml`, and `/llms.txt`
+   return `200` with the canonical host, and `/calculator` permanently redirects
+   to `/`.
 2. Confirm both `facethecost.com` hosts permanently preserve the requested path
    when redirecting to `https://www.suffering.social`.
-3. Read `/calculator`'s `build-revision` meta tag and compare it exactly with
+3. Read `/`'s `build-revision` meta tag and compare it exactly with
    the default-branch merge SHA.
 4. Run the bounded browser journey:
 

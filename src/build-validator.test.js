@@ -23,7 +23,7 @@ describe('built growth contract', () => {
     expect(typeof validator.validateBuiltOutput).toBe('function');
     const pages = {
       'index.html': 'https://www.suffering.social/',
-      'calculator.html': 'https://www.suffering.social/calculator',
+      'calculator.html': 'https://www.suffering.social/',
       'social_media_cost_calculatorv5.html': 'https://www.suffering.social/v5',
       'privacy.html': 'https://www.suffering.social/privacy',
     };

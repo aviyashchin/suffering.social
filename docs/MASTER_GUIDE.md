@@ -4,9 +4,11 @@
 
 Suffering.Social is a static, multi-page Vite application:
 
-- `calculator.html` is the primary `/calculator` research experience and owns
-  the legacy calculation engine embedded near the end of the document.
-- `index.html` is the concise `/` evidence and method explainer.
+- `index.html` is the primary `/` research experience. It owns the calculator,
+  the progressively disclosed full model, methods and citations, and the final
+  “What changed around 2012?” evidence chapter.
+- `calculator.html` is a no-index compatibility document. Vercel permanently
+  redirects `/calculator` to `/`; do not add product content to it.
 - `privacy.html` owns `/privacy`.
 - `social_media_cost_calculatorv5.html` remains buildable at the unlisted `/v5`
   route for reference; do not extend it as the active product.
