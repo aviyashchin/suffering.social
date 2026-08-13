@@ -29,6 +29,45 @@ function installConsentDefaults(windowObject) {
   });
 }
 
+function deferProviderStart(windowObject, documentObject, startProvider) {
+  const engagementEvents = ['click', 'keydown'];
+  let fallbackTimer;
+  let cancelled = false;
+
+  const cleanup = () => {
+    if (fallbackTimer !== undefined) windowObject.clearTimeout(fallbackTimer);
+    windowObject.removeEventListener('load', scheduleFallback);
+    for (const eventName of engagementEvents) {
+      windowObject.removeEventListener(eventName, start);
+    }
+  };
+  const start = () => {
+    if (cancelled) return;
+    cleanup();
+    startProvider();
+  };
+  const scheduleFallback = () => {
+    fallbackTimer = windowObject.setTimeout(start, 60_000);
+  };
+
+  for (const eventName of engagementEvents) {
+    windowObject.addEventListener(eventName, start, {
+      once: true,
+      passive: true,
+    });
+  }
+  if (documentObject.readyState === 'complete') {
+    scheduleFallback();
+  } else {
+    windowObject.addEventListener('load', scheduleFallback, { once: true });
+  }
+
+  return () => {
+    cancelled = true;
+    cleanup();
+  };
+}
+
 export async function initialiseTelemetry({
   environment,
   buildInfo,
@@ -42,11 +81,13 @@ export async function initialiseTelemetry({
   const enabledProviders = [];
   const globalPrivacyControl = windowObject.navigator?.globalPrivacyControl === true;
   let clickHandler = null;
+  let cancelDeferredProvider = null;
 
   const controller = {
     enabledProviders,
     globalPrivacyControl,
     destroy() {
+      cancelDeferredProvider?.();
       if (clickHandler) documentObject.removeEventListener('click', clickHandler);
       if (windowObject.__sufferingTelemetry === controller) {
         delete windowObject.__sufferingTelemetry;
@@ -71,13 +112,19 @@ export async function initialiseTelemetry({
 
   if (config.gtm.enabled) {
     installConsentDefaults(windowObject);
-    windowObject.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
-    appendProviderScript(
+    cancelDeferredProvider = deferProviderStart(
+      windowObject,
       documentObject,
-      'gtm',
-      `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(config.gtm.containerId)}`
+      () => {
+        windowObject.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+        appendProviderScript(
+          documentObject,
+          'gtm',
+          `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(config.gtm.containerId)}`
+        );
+        enabledProviders.push('gtm');
+      }
     );
-    enabledProviders.push('gtm');
   }
 
   controller.capture('page_view');

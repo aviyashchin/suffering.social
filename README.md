@@ -70,7 +70,10 @@ GA4 traffic with zero PostHog, Clarity, RB2B, or Lemlist requests.
 The runtime emits one canonical `page_view` and allowlisted `cta_clicked`
 events; it excludes query strings, calculator inputs, DOM text, identities,
 replay, advertising, and lead capture. Provider variables are documented in
-`.env.example`.
+`.env.example`. The page view is queued immediately, while the analytics
+provider starts only after click or keyboard engagement, or 60 seconds after
+load. Keep that boundary: immediate third-party execution materially degrades
+the production interaction budget without improving the event contract.
 
 ## Research contributions
 

@@ -36,6 +36,7 @@ describe('browser telemetry runtime', () => {
 
   afterEach(() => {
     window.__sufferingTelemetry?.destroy();
+    jest.useRealTimers();
     jest.restoreAllMocks();
   });
 
@@ -59,7 +60,7 @@ describe('browser telemetry runtime', () => {
     expect(loadSentry).not.toHaveBeenCalled();
   });
 
-  test('initialises GTM once with every Google consent category denied', async () => {
+  test('queues private events immediately and starts GTM once after engagement', async () => {
     expect(typeof runtime.initialiseTelemetry).toBe('function');
     const sentry = { init: jest.fn() };
     let dataLayerAtGtmAppend;
@@ -79,6 +80,12 @@ describe('browser telemetry runtime', () => {
       loadPostHog: jest.fn(),
       loadSentry: async () => sentry,
     });
+    expect(dataLayerAtGtmAppend).toBeUndefined();
+    expect(document.querySelectorAll('script[data-telemetry-provider="gtm"]')).toHaveLength(0);
+    expect(window.dataLayer.filter((entry) => entry?.event === 'page_view')).toHaveLength(1);
+
+    window.dispatchEvent(new Event('click'));
+
     expect(dataLayerAtGtmAppend).toContainEqual([
       'consent',
       'default',
@@ -101,7 +108,7 @@ describe('browser telemetry runtime', () => {
 
     expect(second).toBe(controller);
     expect(controller.globalPrivacyControl).toBe(false);
-    expect(controller.enabledProviders).toEqual(['gtm', 'sentry']);
+    expect(controller.enabledProviders).toEqual(expect.arrayContaining(['gtm', 'sentry']));
     expect(document.querySelectorAll('script[data-telemetry-provider="ga4"]')).toHaveLength(0);
     expect(document.querySelectorAll('script[data-telemetry-provider="gtm"]')).toHaveLength(1);
     expect(window.dataLayer.map((entry) => Array.from(entry))).toContainEqual([
@@ -151,7 +158,7 @@ describe('browser telemetry runtime', () => {
     );
   });
 
-  test('starts GTM and interaction capture before a stalled Sentry loader resolves', () => {
+  test('captures interaction and starts GTM before a stalled Sentry loader resolves', () => {
     document.body.innerHTML = `
       <button data-telemetry-cta="scenario_copy">Copy scenario</button>
     `;
@@ -166,16 +173,37 @@ describe('browser telemetry runtime', () => {
     });
 
     expect(loadSentry).toHaveBeenCalledTimes(1);
-    expect(window.__sufferingTelemetry.enabledProviders).toEqual(['gtm']);
-    expect(document.querySelectorAll('script[data-telemetry-provider="gtm"]')).toHaveLength(1);
+    expect(window.__sufferingTelemetry.enabledProviders).toEqual([]);
+    expect(document.querySelectorAll('script[data-telemetry-provider="gtm"]')).toHaveLength(0);
     expect(window.dataLayer.filter((entry) => entry?.event === 'page_view')).toHaveLength(1);
 
     document.querySelector('[data-telemetry-cta="scenario_copy"]').click();
+    expect(window.__sufferingTelemetry.enabledProviders).toEqual(['gtm']);
+    expect(document.querySelectorAll('script[data-telemetry-provider="gtm"]')).toHaveLength(1);
     expect(
       window.dataLayer.filter(
         (entry) => entry?.event === 'cta_clicked' && entry?.cta_id === 'scenario_copy'
       )
     ).toHaveLength(1);
+  });
+
+  test('starts GTM after one minute when a reader does not interact', async () => {
+    jest.useFakeTimers();
+
+    await runtime.initialiseTelemetry({
+      environment: enabledEnvironment(),
+      buildInfo,
+      windowObject: window,
+      documentObject: document,
+      loadSentry: async () => ({ init: jest.fn() }),
+    });
+    window.dispatchEvent(new Event('load'));
+
+    jest.advanceTimersByTime(59_999);
+    expect(document.querySelectorAll('script[data-telemetry-provider="gtm"]')).toHaveLength(0);
+
+    jest.advanceTimersByTime(1);
+    expect(document.querySelectorAll('script[data-telemetry-provider="gtm"]')).toHaveLength(1);
   });
 
   test('pushes one private canonical page view and only approved CTA clicks to dataLayer', async () => {
