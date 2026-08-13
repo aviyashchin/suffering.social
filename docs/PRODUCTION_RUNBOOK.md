@@ -22,7 +22,7 @@ npm run build
 npm run validate:growth
 npm run test:e2e
 npm run lighthouse:ci
-npm audit --audit-level=high
+npm audit --omit=dev --audit-level=high
 git diff --check
 ```
 

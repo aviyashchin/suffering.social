@@ -210,7 +210,7 @@ describe('continuous verification contract', () => {
       'npm run lint',
       'npm run build',
       'npm run validate:growth',
-      'npm audit --audit-level=high',
+      'npm audit --omit=dev --audit-level=high',
       'npm run test:e2e',
       'npm run lighthouse:ci',
     ]) {

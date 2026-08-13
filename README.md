@@ -50,7 +50,7 @@ npm run lint              # repository ESLint checks
 npm run test:e2e          # desktop and 390px Playwright journeys
 npm run build             # write the production site to dist/
 npm run lighthouse:ci     # audit the built root experience on port 4175
-npm audit --audit-level=high
+npm audit --omit=dev --audit-level=high # audit shipped dependencies
 ```
 
 Run `npm run build` before `npm run lighthouse:ci`. Browser failures retain
