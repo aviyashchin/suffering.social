@@ -168,7 +168,7 @@ test.describe('public research journey', () => {
       .textContent();
     await page
       .getByRole('button', {
-        name: '02 Lower bound — load assumptions',
+        name: 'Lower-bound assumption, load assumptions',
       })
       .click();
     await expect(page.locator('#hero-total-cost')).not.toHaveText(
@@ -185,7 +185,6 @@ test.describe('public research journey', () => {
       )
       .toContain('/?');
 
-    await page.locator('.advanced-model > summary').click();
     await page.getByRole('button', { name: 'U.S. DOT guidance' }).click();
     await expect(page.getByRole('dialog')).toBeVisible();
     await expect(
@@ -202,11 +201,49 @@ test.describe('public research journey', () => {
     await page.keyboard.press('Escape');
     await expect(page.getByRole('dialog')).toBeHidden();
 
-    await page.getByRole('link', { name: 'Start with what changed in 2012' }).click();
-    await expect(
-      page.getByRole('heading', { name: 'What changed for teenagers around 2012?' })
-    ).toBeInViewport();
+    const historyHeading = page.getByRole('heading', {
+      name: 'What changed around 2012?',
+    });
+    await historyHeading.scrollIntoViewIfNeeded();
+    await expect(historyHeading).toBeInViewport();
 
+    await expectHealthyPage(page, observations);
+  });
+
+  test('submits a consenting research-update email without leaking it to telemetry', async ({
+    page,
+  }) => {
+    const observations = observePage(page);
+    let submittedBody;
+    await page.route('**/api/research-updates', async (route) => {
+      submittedBody = route.request().postDataJSON();
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ ok: true }),
+      });
+    });
+
+    await page.goto('/');
+    await page.getByLabel('Email address').fill('reader@example.com');
+    await page
+      .getByLabel(/save my email so the research team can contact me/i)
+      .check();
+    await page.getByRole('button', { name: 'Send me updates' }).click();
+
+    await expect(page.locator('.research-update-status')).toHaveText(
+      'You are on the list.'
+    );
+    expect(submittedBody).toEqual({
+      email: 'reader@example.com',
+      consent: true,
+      website: '',
+    });
+
+    const telemetryEvidence = JSON.stringify(
+      observations.requests.filter((request) => providerPattern.test(request.url))
+    );
+    expect(telemetryEvidence).not.toContain('reader@example.com');
     await expectHealthyPage(page, observations);
   });
 
@@ -254,24 +291,14 @@ test.describe('public research journey', () => {
       '/?utm_source=private-query-canary&scenario=private-scenario-canary&email=privacy%40example.com#private-fragment-canary'
     );
     await page.waitForFunction(() => Boolean(window.__sufferingTelemetry));
-    await page.locator('.advanced-model > summary').click();
-    const gtmEnabled = await page.evaluate(() =>
-      window.__sufferingTelemetry.enabledProviders.includes('gtm')
-    );
-    if (!gtmEnabled) {
-      await page.getByRole('button', { name: 'U.S. DOT guidance' }).click();
-      const dataLayer = await page.evaluate(() => window.dataLayer || []);
-      expect(JSON.stringify(dataLayer).toLowerCase()).not.toMatch(
-        /private-query-canary|private-fragment-canary|private-scenario-canary|privacy@example\.com|privacy%40example\.com/
-      );
-      expect(
-        observations.requests.filter((request) =>
-          /googletagmanager\.com\/gtm\.js/i.test(request.url)
+    await page.getByRole('button', { name: 'U.S. DOT guidance' }).click();
+    await expect
+      .poll(() =>
+        page.evaluate(() =>
+          window.__sufferingTelemetry.enabledProviders.includes('gtm')
         )
-      ).toHaveLength(0);
-      await expectHealthyPage(page, observations);
-      return;
-    }
+      )
+      .toBe(true);
     await expect
       .poll(
         () =>
@@ -280,8 +307,6 @@ test.describe('public research journey', () => {
           ).length
       )
       .toBe(1);
-
-    await page.getByRole('button', { name: 'U.S. DOT guidance' }).click();
 
     const providerRequests = observations.requests.filter((request) =>
       providerPattern.test(request.url)
@@ -360,10 +385,10 @@ test.describe('public research journey', () => {
     await page.waitForFunction(() => Boolean(window.calculator));
 
     const scenarioNames = [
-      '01 Research baseline — load assumptions',
-      '02 Lower bound — load assumptions',
-      '03 Disclosure case — load assumptions',
-      '04 Upper bound — load assumptions',
+      'Research baseline, load assumptions',
+      'Lower-bound assumption, load assumptions',
+      'Platform-disclosures case, load assumptions',
+      'Upper-bound assumption, load assumptions',
     ];
     const scenarios = scenarioNames.map((name) =>
       page.getByRole('button', { name })
@@ -399,7 +424,7 @@ test.describe('public research journey', () => {
     );
 
     const firstSlider = page.getByRole('slider').first();
-    await expect(page.getByRole('slider')).toHaveCount(1);
+    await expect(page.getByRole('slider')).toHaveCount(9);
     await tabTo(firstSlider, page);
     await expectVisibleFocus(firstSlider);
     const sliderValueBefore = Number(
@@ -414,13 +439,9 @@ test.describe('public research journey', () => {
       await firstSlider.getAttribute('aria-valuenow')
     );
     await expect
-      .poll(() => page.evaluate(() => window.calculator.parameters.attribution))
+      .poll(() => page.evaluate(() => window.calculator.parameters.vsl))
       .toBe(sliderValueAfter);
 
-    const modelSummary = page.locator('.advanced-model > summary');
-    await tabTo(modelSummary, page);
-    await expectVisibleFocus(modelSummary);
-    await page.keyboard.press('Enter');
     const sliders = page.getByRole('slider');
     await expect(sliders).toHaveCount(9);
     for (let index = 0; index < 9; index += 1) {

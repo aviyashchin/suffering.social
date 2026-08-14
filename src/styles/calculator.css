@@ -374,7 +374,7 @@
 }
 
 .limitations li::before {
-  content: "—";
+  content: "•";
   margin-right: 1rem;
   color: var(--research-red);
 }
@@ -402,6 +402,115 @@
   min-height: 44px;
   color: var(--paper);
   text-underline-offset: 0.25em;
+}
+
+.research-updates {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(20rem, 1fr);
+  gap: clamp(2rem, 7vw, 7rem);
+  padding: clamp(3.5rem, 8vw, 7rem) 0;
+  border-top: 1px solid var(--ink);
+}
+
+.research-updates h2 {
+  max-width: 12ch;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 4.5vw, 3.9rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 1.03;
+}
+
+.research-updates form {
+  align-self: start;
+  padding-top: 0.25rem;
+}
+
+.research-updates form > label:first-child {
+  display: block;
+  margin-bottom: 0.5rem;
+  font: 700 0.75rem/1.4 var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.research-update-fields {
+  display: grid;
+  grid-template-columns: 1fr auto;
+}
+
+.research-update-fields input,
+.research-update-fields button {
+  min-height: 48px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  font: 600 0.86rem/1.3 var(--font-body);
+}
+
+.research-update-fields input {
+  min-width: 0;
+  padding: 0 0.9rem;
+  color: var(--ink);
+  background: var(--paper-raised);
+}
+
+.research-update-fields button {
+  padding: 0 1.15rem;
+  color: var(--paper);
+  background: var(--ink);
+  cursor: pointer;
+}
+
+.research-update-fields button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.research-update-fields input:focus-visible,
+.research-update-fields button:focus-visible,
+.research-update-consent input:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.research-update-consent {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.65rem;
+  align-items: start;
+  margin-top: 1rem;
+  color: var(--ink-muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.research-update-consent input {
+  width: 1rem;
+  height: 1rem;
+  margin: 0.15rem 0 0;
+  accent-color: var(--research-red);
+}
+
+.research-update-note,
+.research-update-status {
+  margin: 0.8rem 0 0;
+  color: var(--ink-muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.research-update-status:not(:empty) {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.research-update-trap {
+  position: absolute !important;
+  left: -10000px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
 }
 
 .research-modal {

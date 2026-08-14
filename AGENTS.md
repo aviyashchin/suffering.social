@@ -41,8 +41,10 @@ validation modules instead of introducing parallel frameworks.
 Every behavior change needs the narrowest distinguishing Jest or Playwright
 test. Research-model changes must deliberately update scenario fixtures and
 citations. Telemetry is aggregate-only: never capture identities, queries,
-calculator state, DOM text, replay, advertising data, or leads. GTM is the sole
-Google loader; Sentry must remain scrubbed. See
+calculator state, DOM text, replay, advertising data, or email addresses. The
+optional research-update form may send a consenting email only through
+`api/research-updates.js`; never place its server key in a `VITE_*` variable.
+GTM is the sole Google loader; Sentry must remain scrubbed. See
 `docs/PRODUCTION_RUNBOOK.md` before provider or deployment work.
 
 ## Commits & Pull Requests
