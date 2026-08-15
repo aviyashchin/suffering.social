@@ -46,7 +46,10 @@ function addStudyChoices(curve, plot, parameter, calculator, render) {
 
   const choices = document.createElement('section');
   choices.className = 'study-choices';
-  choices.setAttribute('aria-label', 'Paper values for this estimate');
+  const parameterLabel =
+    curve.closest('.assumption')?.querySelector('label')?.textContent?.trim() ||
+    parameter;
+  choices.setAttribute('aria-label', `Paper values for ${parameterLabel}`);
   const heading = document.createElement('p');
   heading.className = 'study-choices-heading';
   heading.textContent = 'Try a paper in the model';
@@ -84,12 +87,15 @@ function addStudyChoices(curve, plot, parameter, calculator, render) {
     finding.textContent = `Paper finding: ${study.value}`;
     const basis = document.createElement('small');
     basis.textContent = `Model value: ${study.valueBasis}`;
-    const link = document.createElement('a');
-    link.href = study.url;
-    link.target = '_blank';
-    link.rel = 'noopener';
-    link.textContent = 'Read paper';
-    item.append(button, finding, basis, link);
+    item.append(button, finding, basis);
+    if (study.url) {
+      const link = document.createElement('a');
+      link.href = study.url;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.textContent = 'Read paper';
+      item.append(link);
+    }
     list.append(item);
 
     const apply = () => {

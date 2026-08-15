@@ -17,7 +17,7 @@
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
     "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "test:e2e": "playwright test",
-    "lint": "eslint src scripts",
+    "lint": "eslint src scripts tests/e2e",
     "lint:fix": "npm run lint -- --fix",
     "format": "prettier --write js/**/*.js css/**/*.css",
     "bundle-analyze": "vite-bundle-analyzer dist",

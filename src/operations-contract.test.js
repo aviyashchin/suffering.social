@@ -156,7 +156,7 @@ describe('continuous verification contract', () => {
   test('package scripts expose bounded local and production Lighthouse checks', () => {
     const packageJson = JSON.parse(read('package.json'));
 
-    expect(packageJson.scripts.lint).toBe('eslint src scripts');
+    expect(packageJson.scripts.lint).toBe('eslint src scripts tests/e2e');
     expect(packageJson.jest.moduleNameMapper).toBeUndefined();
     expect(packageJson.devDependencies['@lhci/cli']).toBeDefined();
     expect(packageJson.scripts['lighthouse:ci']).toBe(

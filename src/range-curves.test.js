@@ -52,8 +52,77 @@ describe('research range curves', () => {
     );
   });
 
+  test('labels paper choices, guards missing URLs, and synchronizes selection', () => {
+    document.body.innerHTML = `
+      <article class="assumption">
+        <label for="vsl-nouislider">Public value used for one life</label>
+        <div id="vsl-nouislider"></div>
+        <figure class="range-curve" data-parameter="vsl">
+          <svg><path class="range-curve-fill"></path><path class="range-curve-line"></path></svg>
+          <span class="range-curve-marker"></span>
+          <output class="range-curve-current"></output>
+        </figure>
+      </article>
+    `;
+    const slider = document.getElementById('vsl-nouislider');
+    slider.noUiSlider = { on: () => {} };
+    const applied = [];
+    const calculator = {
+      parameters: { vsl: 10.5 },
+      sliderConfigs: { vsl: { range: { min: 7, max: 14 } } },
+      researchCitations: {
+        vsl: {
+          studies: [
+            {
+              modelValue: 10.5,
+              shortLabel: 'Linked paper',
+              value: 'Reported finding',
+              valueBasis: 'Direct estimate',
+              url: 'https://example.com/paper',
+            },
+            {
+              modelValue: 14,
+              shortLabel: 'Archived paper',
+              value: 'Archived finding',
+              valueBasis: 'Upper estimate',
+            },
+          ],
+        },
+      },
+      formatParameter: (_parameter, value) => `$${Number(value).toFixed(1)}M`,
+      applyResearchStudy: (_parameter, studyIndex) => {
+        applied.push(studyIndex);
+        return true;
+      },
+    };
+
+    initializeRangeCurves(calculator);
+
+    const region = document.querySelector('.study-choices');
+    const choices = [...document.querySelectorAll('.study-choice')];
+    expect(region).toHaveAttribute(
+      'aria-label',
+      'Paper values for Public value used for one life'
+    );
+    expect(document.querySelectorAll('.study-choice-item a')).toHaveLength(1);
+    expect(region.innerHTML).not.toContain('undefined');
+    expect(choices[0]).toHaveAttribute('aria-pressed', 'true');
+
+    choices[1].click();
+    expect(applied).toEqual([1]);
+    expect(choices[1]).toHaveAttribute('aria-pressed', 'true');
+  });
+
   test('moves a bell curve peak across the fixed research range', () => {
     expect(curvePath(15)).not.toBe(curvePath(85));
     expect(curvePath(15)).toMatch(/^M 0 90 L /);
+    const peakX = (percent) =>
+      curvePath(percent)
+        .replace(/^M 0 90 L /, '')
+        .split(' L ')
+        .map((point) => point.split(' ').map(Number))
+        .reduce((peak, point) => (point[1] < peak[1] ? point : peak))[0];
+
+    expect(peakX(15)).toBeLessThan(peakX(85));
   });
 });
