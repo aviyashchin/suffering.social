@@ -19,7 +19,12 @@ two `facethecost.com` hosts.
 
 ## Active modules
 
-- `src/calculator-bootstrap.js` loads the calculator's local noUiSlider runtime.
+- `src/calculator-bootstrap.js` loads the calculator's local noUiSlider runtime,
+  initializes the research curves, and starts the estimated-cost clock.
+- `src/range-curves.js` renders moving illustrative range curves and accessible
+  paper choices. Paper findings remain distinct from their mapped model values.
+- `src/cost-clock.js` derives a per-second historical average from the current
+  cumulative estimate; it does not measure live harm.
 - `src/styles/` contains route tokens, layout, components, calculator, and
   mobile styles.
 - `src/telemetry-core.js` normalizes aggregate-only configuration and payloads.

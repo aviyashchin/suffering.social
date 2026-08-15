@@ -54,6 +54,34 @@ describe('/ calculator product route contract', () => {
     expect(text).toMatch(/limitation/i);
   });
 
+  test('restores the original calculator instrument without pretending the curves are probabilities', () => {
+    const estimateLink = calculator.querySelector(
+      'a.estimate-display[href="#assumptions"]'
+    );
+    const curves = [...calculator.querySelectorAll('.range-curve')];
+
+    expect(estimateLink).not.toBeNull();
+    expect(curves).toHaveLength(9);
+    for (const parameter of parameterNames) {
+      const curve = calculator.querySelector(
+        `.range-curve[data-parameter="${parameter}"]`
+      );
+      expect(curve).not.toBeNull();
+      expect(curve.querySelector('svg[aria-hidden="true"]')).not.toBeNull();
+      expect(curve.querySelector('.range-curve-marker')).not.toBeNull();
+    }
+
+    expect(visibleText(calculator)).toMatch(/illustrative range curve/i);
+    expect(visibleText(calculator)).not.toMatch(/probability distribution/i);
+  });
+
+  test('keeps the educational clock and paper-selection surfaces in the active instrument', () => {
+    expect(calculator.querySelector('#cost-clock-total')).not.toBeNull();
+    expect(calculator.querySelector('#cost-clock-rate')).not.toBeNull();
+    expect(calculatorSource).toMatch(/modelValue:/);
+    expect(calculatorSource).toMatch(/not a live measurement/i);
+  });
+
   test('keeps the proven calculator interface visible instead of hiding its controls', () => {
     const assumptions = calculator.querySelector('#assumptions');
 
@@ -270,7 +298,9 @@ describe('/ calculator-first research narrative', () => {
   });
 
   test('keeps the public narrative quietly self-contained', () => {
-    expect(visibleText(support)).not.toMatch(/aaru|simile/i);
+    expect(visibleText(support)).not.toMatch(
+      /aaru|simile|facebook|instagram|tiktok|snapchat/i
+    );
     expect(support.querySelectorAll('h1')).toHaveLength(1);
     expectMetadata(support, 'https://www.suffering.social/');
   });

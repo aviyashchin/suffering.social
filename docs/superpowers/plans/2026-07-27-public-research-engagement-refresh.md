@@ -1,5 +1,11 @@
 # Public Research Engagement Refresh Implementation Plan
 
+> **Historical execution plan (updated 2026-08-15):** The route roles below
+> describe the original proposal, not current architecture. The calculator now
+> lives at `/`, `/calculator` permanently redirects to it, and the 2012 evidence
+> chapter closes the root experience. Use `README.md`, `AGENTS.md`, and
+> `docs/MASTER_GUIDE.md` for current operation.
+
 > **Execution rule:** Implement each task test-first. Keep `/calculator`'s calculation engine, parameter IDs, defaults, and citations intact while replacing its presentation and tightening its telemetry boundary.
 
 **Goal:** Make `/calculator` the production-grade primary research experience, keep `/` as its supporting explainer, and prove the resulting site is private, observable, accessible, responsive, discoverable, and maintainable.
