@@ -1,5 +1,10 @@
 # Public Research Engagement Refresh
 
+> **Historical design note (2026-08-15):** Route ownership changed after this
+> proposal. The calculator now lives at `/`, `/calculator` permanently redirects
+> to it, and the 2012 evidence chapter closes the same page. Use `README.md`,
+> `AGENTS.md`, and `docs/MASTER_GUIDE.md` for current architecture.
+
 ## Outcome
 
 Make `/calculator` the primary research experience and retain `/` as a concise supporting explainer. The site should help informed non-specialists test assumptions, inspect evidence, share a scenario, and understand the limits of the estimate. It must not collect leads or identify visitors.

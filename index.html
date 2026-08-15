@@ -88,6 +88,7 @@
     <link rel="stylesheet" href="src/styles/calculator.css">
     <link rel="stylesheet" href="src/styles/mobile.css">
     <link rel="stylesheet" href="src/styles/history-chapter.css">
+    <link rel="stylesheet" href="src/styles/original-instrument.css">
     
     <!-- Error Handling & Loading States -->
 
@@ -99,24 +100,34 @@
     <a class="skip-link" href="#assumptions">Skip to assumptions</a>
     <header id="debt-clock-header" class="research-masthead">
         <a class="wordmark" href="/" aria-label="suffering.social calculator">suffering.social</a>
+        <div class="cost-clock" aria-label="Estimated cost clock">
+            <span>Estimated cost since 2009</span>
+            <strong id="cost-clock-total">$2,355,067,000,000</strong>
+            <small id="cost-clock-rate">Historical average: about $4,250 every second</small>
+        </div>
         <span class="masthead-note">A public research instrument by Subconscious</span>
     </header>
 
     <main class="calculator-page">
       <div id="calculator-experiment">
         <section id="hero-section" class="calculator-hero" aria-labelledby="calculator-title">
-            <p class="eyebrow">A testable estimate · United States · Since 2009</p>
-            <h1 id="calculator-title">How much could social media’s mental health effects cost?</h1>
-            <div id="hero-cost-display" class="estimate-display" aria-live="polite">
-                <span class="estimate-kicker">Current illustrative estimate</span>
+            <p class="eyebrow">An open cost model | United States | Since 2009</p>
+            <h1 id="calculator-title">What is social media costing us?</h1>
+            <p class="hero-stakes">Lives cut short. Years with depression. Medical bills. Missed work.</p>
+            <a id="hero-cost-display" class="estimate-display" href="#assumptions" aria-live="polite">
+                <span class="estimate-kicker">Estimated cost under these settings</span>
                 <strong id="hero-total-cost">$2,355,067,000,000</strong>
-                <span>under the assumptions below</span>
-            </div>
-            <p class="hero-caveat">
-                This calculator does not prove cause and effect. It combines published
-                estimates. Change any number below to see how the answer moves.
+                <span>Click the total to test every number</span>
+            </a>
+            <p class="hero-human-cost">
+                This setting includes about <strong id="hero-deaths">8,910 deaths</strong>
+                and <strong id="hero-depression-years">30 million years lived with depression</strong>.
             </p>
-            <p class="adjust-prompt"><a href="#assumptions">Change the numbers</a> or start with a preset.</p>
+            <p class="hero-caveat">
+                This is an estimate, not proof. It combines published research. Change
+                any number below and the total changes with it.
+            </p>
+            <p class="adjust-prompt"><a href="#assumptions">Build your estimate</a> or start with a preset.</p>
 
             <div id="hero-scenarios" class="scenario-set" role="group" aria-label="Assumption cases">
                 <button type="button" class="scenario-btn" data-scenario="reset" aria-label="Research baseline, load assumptions">Research baseline</button>
@@ -130,7 +141,8 @@
             <div class="section-heading">
                 <p class="eyebrow">Model inputs</p>
                 <h2 id="assumptions-title">Nine estimates you can change</h2>
-                <p>Move any slider. Each number includes its likely range and source.</p>
+                <p>Move any slider. Each number shows a published low and high value, plus its source.</p>
+                <p class="curve-explainer">Each normal curve is a visual guide to that range. It does not show the odds of any value.</p>
             </div>
 
             <section class="assumption-group" aria-labelledby="mortality-title">
@@ -144,18 +156,33 @@
                         <div class="assumption-copy"><label for="vsl-nouislider">Public value used for one life</label><p>A standard number used by public agencies. It is not the price of a person.</p></div>
                         <strong id="vsl-value">$13.7M</strong>
                         <div id="vsl-nouislider" class="research-slider"></div>
+                        <figure class="range-curve" data-parameter="vsl" aria-label="Illustrative range curve for the public value used for one life">
+                            <svg viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true"><path class="range-curve-fill" d="M0 84 C54 84 72 77 98 62 C135 40 159 10 200 6 C241 10 265 40 302 62 C328 77 346 84 400 84 L400 90 L0 90 Z"></path><path class="range-curve-line" d="M0 84 C54 84 72 77 98 62 C135 40 159 10 200 6 C241 10 265 40 302 62 C328 77 346 84 400 84"></path></svg>
+                            <span class="range-curve-marker" aria-hidden="true"></span><output class="range-curve-current">$13.7M</output>
+                            <figcaption><span>$7M low</span><span>Illustrative range curve</span><span>$14M high</span></figcaption>
+                        </figure>
                         <p class="evidence">Evidence range $7M to $14M · <button class="source-link info-btn" type="button" data-param="vsl" data-telemetry-cta="source_inspect">U.S. DOT guidance</button></p>
                     </article>
                     <article class="assumption">
                         <div class="assumption-copy"><label for="suicides-nouislider">Excess deaths since 2009</label><p>Change in deaths represented in the mortality component.</p></div>
                         <strong id="suicides-value">49.5K</strong>
                         <div id="suicides-nouislider" class="research-slider"></div>
+                        <figure class="range-curve" data-parameter="suicides" aria-label="Illustrative range curve for excess deaths since 2009">
+                            <svg viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true"><path class="range-curve-fill" d="M0 84 C54 84 72 77 98 62 C135 40 159 10 200 6 C241 10 265 40 302 62 C328 77 346 84 400 84 L400 90 L0 90 Z"></path><path class="range-curve-line" d="M0 84 C54 84 72 77 98 62 C135 40 159 10 200 6 C241 10 265 40 302 62 C328 77 346 84 400 84"></path></svg>
+                            <span class="range-curve-marker" aria-hidden="true"></span><output class="range-curve-current">49.5K</output>
+                            <figcaption><span>30K low</span><span>Illustrative range curve</span><span>70K high</span></figcaption>
+                        </figure>
                         <p class="evidence">Evidence range 30K to 70K deaths · <button class="source-link info-btn" type="button" data-param="suicides" data-telemetry-cta="source_inspect">CDC WONDER</button></p>
                     </article>
                     <article class="assumption">
                         <div class="assumption-copy"><label for="attribution-nouislider">Share that social media may have caused</label><p>This is an estimate, not a measured fact.</p></div>
                         <strong id="attribution-value">18%</strong>
                         <div id="attribution-nouislider" class="research-slider"></div>
+                        <figure class="range-curve" data-parameter="attribution" aria-label="Illustrative range curve for the share social media may have caused">
+                            <svg viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true"><path class="range-curve-fill" d="M0 84 C54 84 72 77 98 62 C135 40 159 10 200 6 C241 10 265 40 302 62 C328 77 346 84 400 84 L400 90 L0 90 Z"></path><path class="range-curve-line" d="M0 84 C54 84 72 77 98 62 C135 40 159 10 200 6 C241 10 265 40 302 62 C328 77 346 84 400 84"></path></svg>
+                            <span class="range-curve-marker" aria-hidden="true"></span><output class="range-curve-current">18%</output>
+                            <figcaption><span>7% low</span><span>Illustrative range curve</span><span>30% high</span></figcaption>
+                        </figure>
                         <p class="evidence">Evidence range 7% to 30% · <button class="source-link info-btn" type="button" data-param="attribution" data-telemetry-cta="source_inspect">Research comparing similar groups</button></p>
                     </article>
                 </div>
@@ -172,18 +199,33 @@
                         <div class="assumption-copy"><label for="depression-nouislider">People whose depression may be linked</label><p>The number of people included in this estimate.</p></div>
                         <strong id="depression-value">5.0M</strong>
                         <div id="depression-nouislider" class="research-slider"></div>
+                        <figure class="range-curve" data-parameter="depression" aria-label="Illustrative range curve for people whose depression may be linked">
+                            <svg viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true"><path class="range-curve-fill" d="M0 84 C54 84 72 77 98 62 C135 40 159 10 200 6 C241 10 265 40 302 62 C328 77 346 84 400 84 L400 90 L0 90 Z"></path><path class="range-curve-line" d="M0 84 C54 84 72 77 98 62 C135 40 159 10 200 6 C241 10 265 40 302 62 C328 77 346 84 400 84"></path></svg>
+                            <span class="range-curve-marker" aria-hidden="true"></span><output class="range-curve-current">5.0M</output>
+                            <figcaption><span>2M low</span><span>Illustrative range curve</span><span>8M high</span></figcaption>
+                        </figure>
                         <p class="evidence">Evidence range 2M to 8M · <button class="source-link info-btn" type="button" data-param="depression" data-telemetry-cta="source_inspect">Long-term study</button></p>
                     </article>
                     <article class="assumption">
                         <div class="assumption-copy"><label for="yld-nouislider">Years affected by depression</label><p>The average number of years each person is affected.</p></div>
                         <strong id="yld-value">6.0 years</strong>
                         <div id="yld-nouislider" class="research-slider"></div>
+                        <figure class="range-curve" data-parameter="yld" aria-label="Illustrative range curve for years affected by depression">
+                            <svg viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true"><path class="range-curve-fill" d="M0 84 C54 84 72 77 98 62 C135 40 159 10 200 6 C241 10 265 40 302 62 C328 77 346 84 400 84 L400 90 L0 90 Z"></path><path class="range-curve-line" d="M0 84 C54 84 72 77 98 62 C135 40 159 10 200 6 C241 10 265 40 302 62 C328 77 346 84 400 84"></path></svg>
+                            <span class="range-curve-marker" aria-hidden="true"></span><output class="range-curve-current">6.0 years</output>
+                            <figcaption><span>3 years low</span><span>Illustrative range curve</span><span>8 years high</span></figcaption>
+                        </figure>
                         <p class="evidence">Evidence range 3 to 8 years · <button class="source-link info-btn" type="button" data-param="yld" data-telemetry-cta="source_inspect">Global Burden of Disease</button></p>
                     </article>
                     <article class="assumption">
                         <div class="assumption-copy"><label for="qol-nouislider">Loss in quality of life</label><p>The average loss during each affected year.</p></div>
                         <strong id="qol-value">35%</strong>
                         <div id="qol-nouislider" class="research-slider"></div>
+                        <figure class="range-curve" data-parameter="qol" aria-label="Illustrative range curve for loss in quality of life">
+                            <svg viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true"><path class="range-curve-fill" d="M0 84 C54 84 72 77 98 62 C135 40 159 10 200 6 C241 10 265 40 302 62 C328 77 346 84 400 84 L400 90 L0 90 Z"></path><path class="range-curve-line" d="M0 84 C54 84 72 77 98 62 C135 40 159 10 200 6 C241 10 265 40 302 62 C328 77 346 84 400 84"></path></svg>
+                            <span class="range-curve-marker" aria-hidden="true"></span><output class="range-curve-current">35%</output>
+                            <figcaption><span>30% low</span><span>Illustrative range curve</span><span>50% high</span></figcaption>
+                        </figure>
                         <p class="evidence">Evidence range 30% to 50% · <button class="source-link info-btn" type="button" data-param="qol" data-telemetry-cta="source_inspect">WHO health estimates</button></p>
                     </article>
                 </div>
@@ -200,18 +242,33 @@
                         <div class="assumption-copy"><label for="healthcare-nouislider">Yearly healthcare cost per person</label><p>Extra spending on treatment and care.</p></div>
                         <strong id="healthcare-value">$8K</strong>
                         <div id="healthcare-nouislider" class="research-slider"></div>
+                        <figure class="range-curve" data-parameter="healthcare" aria-label="Illustrative range curve for yearly healthcare cost per person">
+                            <svg viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true"><path class="range-curve-fill" d="M0 84 C54 84 72 77 98 62 C135 40 159 10 200 6 C241 10 265 40 302 62 C328 77 346 84 400 84 L400 90 L0 90 Z"></path><path class="range-curve-line" d="M0 84 C54 84 72 77 98 62 C135 40 159 10 200 6 C241 10 265 40 302 62 C328 77 346 84 400 84"></path></svg>
+                            <span class="range-curve-marker" aria-hidden="true"></span><output class="range-curve-current">$8K</output>
+                            <figcaption><span>$6.5K low</span><span>Illustrative range curve</span><span>$12K high</span></figcaption>
+                        </figure>
                         <p class="evidence">Evidence range $6.5K to $12K · <button class="source-link info-btn" type="button" data-param="healthcare" data-telemetry-cta="source_inspect">Economic burden study</button></p>
                     </article>
                     <article class="assumption">
                         <div class="assumption-copy"><label for="productivity-nouislider">Yearly work loss per person</label><p>Lost income from missed work and reduced hours.</p></div>
                         <strong id="productivity-value">$6K</strong>
                         <div id="productivity-nouislider" class="research-slider"></div>
+                        <figure class="range-curve" data-parameter="productivity" aria-label="Illustrative range curve for yearly work loss per person">
+                            <svg viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true"><path class="range-curve-fill" d="M0 84 C54 84 72 77 98 62 C135 40 159 10 200 6 C241 10 265 40 302 62 C328 77 346 84 400 84 L400 90 L0 90 Z"></path><path class="range-curve-line" d="M0 84 C54 84 72 77 98 62 C135 40 159 10 200 6 C241 10 265 40 302 62 C328 77 346 84 400 84"></path></svg>
+                            <span class="range-curve-marker" aria-hidden="true"></span><output class="range-curve-current">$6K</output>
+                            <figcaption><span>$4K low</span><span>Illustrative range curve</span><span>$10K high</span></figcaption>
+                        </figure>
                         <p class="evidence">Evidence range $4K to $10K · <button class="source-link info-btn" type="button" data-param="productivity" data-telemetry-cta="source_inspect">Economic burden study</button></p>
                     </article>
                     <article class="assumption">
                         <div class="assumption-copy"><label for="duration-nouislider">Average duration of economic costs</label><p>Years in which care and productivity effects are counted.</p></div>
                         <strong id="duration-value">4.5 years</strong>
                         <div id="duration-nouislider" class="research-slider"></div>
+                        <figure class="range-curve" data-parameter="duration" aria-label="Illustrative range curve for the average duration of economic costs">
+                            <svg viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true"><path class="range-curve-fill" d="M0 84 C54 84 72 77 98 62 C135 40 159 10 200 6 C241 10 265 40 302 62 C328 77 346 84 400 84 L400 90 L0 90 Z"></path><path class="range-curve-line" d="M0 84 C54 84 72 77 98 62 C135 40 159 10 200 6 C241 10 265 40 302 62 C328 77 346 84 400 84"></path></svg>
+                            <span class="range-curve-marker" aria-hidden="true"></span><output class="range-curve-current">4.5 years</output>
+                            <figcaption><span>0.25 years low</span><span>Illustrative range curve</span><span>6.8 years high</span></figcaption>
+                        </figure>
                         <p class="evidence">Evidence range 0.25 to 6.8 years · <button class="source-link info-btn" type="button" data-param="duration" data-telemetry-cta="source_inspect">Long-term treatment study</button></p>
                     </article>
                 </div>
@@ -370,6 +427,9 @@
                         title: "DOT VSL Guidance Update (2024)",
                         authors: "U.S. Department of Transportation",
                         value: "$13.7 million",
+                        modelValue: 13.7,
+                        shortLabel: "DOT guidance",
+                        valueBasis: "Direct central estimate",
                         confidence: "Very High",
                         url: "https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-on-valuation-of-a-statistical-life-in-economic-analysis",
                         quote: "Central VSL estimate for 2024 economic analysis"
@@ -378,6 +438,9 @@
                         title: "EPA VSL Guidance Update (2023)",
                         authors: "U.S. Environmental Protection Agency",
                         value: "$10.9 million base year, $12.8M in 2023 dollars",
+                        modelValue: 12.8,
+                        shortLabel: "EPA guidance",
+                        valueBasis: "Inflation-adjusted estimate",
                         confidence: "Very High",
                         url: "https://www.epa.gov/environmental-economics/mortality-risk-valuation",
                         quote: "EPA's current central estimate for VSL in regulatory analysis"
@@ -386,6 +449,9 @@
                         title: "VSL Meta-Analysis of Meta-Analyses",
                         authors: "Viscusi, Aldy, Banzhaf",
                         value: "$7.0-8.0 million central range",
+                        modelValue: 7.5,
+                        shortLabel: "VSL meta-analysis",
+                        valueBasis: "Midpoint of the reported range",
                         confidence: "Very High",
                         url: "https://www.nber.org/papers/w29185",
                         quote: "The value of statistical life: a meta-analysis of meta-analyses"
@@ -403,9 +469,12 @@
                         title: "Social Media and Mental Health",
                         authors: "Braghieri, Levy, Makarin",
                         value: "9% depression increase",
+                        modelValue: 9,
+                        shortLabel: "Rollout study",
+                        valueBasis: "Original model mapping",
                         confidence: "Very High",
                         url: "https://www.aeaweb.org/articles?id=10.1257/aer.20211218",
-                        quote: "Facebook rollout caused 9% increase in depression"
+                        quote: "A staggered platform rollout was followed by a 9% increase in depression"
                     },
                     {
                         title: "Surgeon General Advisory",
@@ -416,17 +485,12 @@
                         quote: "Double risk of depression with >3 hours daily use"
                     },
                     {
-                        title: "Facebook Files Internal Research",
-                        authors: "Haugen Whistleblower Documents",
-                        value: "13.5% teen girls: Instagram makes depression worse",
-                        confidence: "High",
-                        url: "https://www.wsj.com/articles/facebook-knows-instagram-is-toxic-for-teen-girls-company-documents-show-11631620739",
-                        quote: "We make body image issues worse for one in three teen girls"
-                    },
-                    {
                         title: "Systematic Review of Social Media and Suicide Risk",
                         authors: "Sedgwick R, Epstein S, Dutta R, et al.",
                         value: "25-30% higher suicide risk with heavy social media use",
+                        modelValue: 28,
+                        shortLabel: "Systematic review",
+                        valueBasis: "Legacy mapping, rounded to the slider step",
                         confidence: "High",
                         url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC6791504/",
                         quote: "Heavy social media use associated with 25-30% increased suicide ideation and attempts"
@@ -459,7 +523,10 @@
                     {
                         title: "CDC Suicide Data and Statistics",
                         authors: "Centers for Disease Control",
-                        value: "49,000 annual deaths → 73,500 total excess deaths since 2009",
+                        value: "49,000 annual deaths; the model baseline uses 49,500 cumulative excess deaths",
+                        modelValue: 49500,
+                        shortLabel: "National surveillance",
+                        valueBasis: "Original model baseline",
                         confidence: "High",
                         url: "https://www.cdc.gov/suicide/facts/data.html",
                         quote: "Youth suicide rates: 10.7 per 100,000 (2007) → 17.4 per 100,000 (2021)"
@@ -468,6 +535,9 @@
                         title: "A nationwide study on social media and self-harm",
                         authors: "Tormoen et al.",
                         value: "Conservative estimate: 60,000 excess deaths since 2009",
+                        modelValue: 60000,
+                        shortLabel: "Nationwide study",
+                        valueBasis: "Reported conservative estimate",
                         confidence: "High",
                         url: "https://www.nature.com/articles/s41598-023-46370-y",
                         quote: "Significant association between social media use and self-harm behaviors"
@@ -493,6 +563,9 @@
                         title: "Social Media Use and Depressive Symptoms During Early Adolescence",
                         authors: "Nagata JM, Otmar CD, Shim J, et al.",
                         value: "Increased SM use → higher depression symptoms",
+                        modelValue: 5000000,
+                        shortLabel: "Longitudinal study",
+                        valueBasis: "Original model synthesis",
                         confidence: "High",
                         url: "https://www.ajmc.com/view/increased-social-media-use-linked-to-rising-depressive-symptoms-in-early-adolescents",
                         quote: "Within-person increases in social media use were significantly associated with greater depressive symptoms a year later"
@@ -501,6 +574,9 @@
                         title: "Association between Social Media Use and Depression among U.S. Young Adults",
                         authors: "Lin LY, Sidani JE, Shensa A, et al.",
                         value: "AOR=1.66-3.05 for highest SM use quartiles",
+                        modelValue: 3000000,
+                        shortLabel: "Young-adult study",
+                        valueBasis: "Original lower-bound mapping",
                         confidence: "High",
                         url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC4853817/",
                         quote: "Participants in the highest quartile had significantly increased odds of depression (AOR=1.66-3.05) after controlling for all covariates"
@@ -518,6 +594,9 @@
                         title: "Depression prevalence estimates",
                         authors: "Global Burden of Disease Study",
                         value: "51.84 million DALYs globally",
+                        modelValue: 6,
+                        shortLabel: "Global burden study",
+                        valueBasis: "Original model mapping",
                         confidence: "High",
                         url: "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(21)02143-7/fulltext",
                         quote: "Depression accounts for 27.6% of years lived with disability for mental disorders"
@@ -526,6 +605,9 @@
                         title: "Clinical episode duration studies",
                         authors: "Spijker et al.",
                         value: "Median episode 3 months; 20% still depressed at 24 months",
+                        modelValue: 3,
+                        shortLabel: "Episode study",
+                        valueBasis: "Original lower-bound mapping",
                         confidence: "High",
                         url: "https://pubmed.ncbi.nlm.nih.gov/12204924/",
                         quote: "Natural history of depression shows variable episode duration"
@@ -534,6 +616,9 @@
                         title: "Global Burden of Disease Study 2019",
                         authors: "GBD 2019 Mental Disorders Collaborators",
                         value: "Depression: 46.9 million DALYs globally (average 6.2 years per case)",
+                        modelValue: 6.2,
+                        shortLabel: "GBD 2019",
+                        valueBasis: "Reported average",
                         confidence: "Very High",
                         url: "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(21)02143-7/fulltext",
                         quote: "Major depressive disorder was responsible for 46.9 million disability-adjusted life years globally"
@@ -551,6 +636,9 @@
                         title: "Population quality of life norms",
                         authors: "Singapore SF-6D Study",
                         value: "Mean baseline score 0.87, depression reduces to ~0.52",
+                        modelValue: 40,
+                        shortLabel: "Health-utility study",
+                        valueBasis: "Implied reduction",
                         confidence: "High",
                         url: "https://link.springer.com/article/10.1007/s11136-017-1585-3",
                         quote: "Depression associated with 40% reduction in health utility scores"
@@ -559,6 +647,9 @@
                         title: "Utility loss per depressed adult",
                         authors: "Lamers et al.",
                         value: "~0.41 QALYs per depressed adult",
+                        modelValue: 41,
+                        shortLabel: "QALY study",
+                        valueBasis: "Reported utility loss",
                         confidence: "High",
                         url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC4590980/",
                         quote: "Substantial quality of life impairment associated with major depression"
@@ -567,6 +658,9 @@
                         title: "Health-Related Quality of Life in Depression",
                         authors: "Rapaport MH, Clary C, Fayyad R, et al.",
                         value: "30-50% reduction in quality of life measures",
+                        modelValue: 30,
+                        shortLabel: "Quality-of-life trial",
+                        valueBasis: "Lower end of the reported range",
                         confidence: "High",
                         url: "https://pubmed.ncbi.nlm.nih.gov/15841781/",
                         quote: "Major depression associated with 30-50% reduction in quality of life across multiple domains"
@@ -584,6 +678,9 @@
                         title: "Healthcare costs of depression",
                         authors: "Healthcare Cost Institute",
                         value: "$10,836 annual cost per MDD patient",
+                        modelValue: 10800,
+                        shortLabel: "Cost analysis",
+                        valueBasis: "Reported value, rounded to slider step",
                         confidence: "High",
                         url: "https://www.psychiatrist.com/jcp/depression/major-depressive-disorder/economic-burden-depression/",
                         quote: "Direct medical costs significantly elevated for patients with major depression"
@@ -592,6 +689,9 @@
                         title: "Direct Medical Costs of Depression Treatment",
                         authors: "Basu A, Ganoczy D, Simonetti J, et al.",
                         value: "$8,000-12,000 annual direct medical costs per patient",
+                        modelValue: 10000,
+                        shortLabel: "Direct medical costs",
+                        valueBasis: "Midpoint of the reported range",
                         confidence: "High",
                         url: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6430527/",
                         quote: "Average annual direct medical costs range $8,000-12,000 per patient with major depression"
@@ -609,6 +709,9 @@
                         title: "Workplace impact of depression",
                         authors: "Economic Burden Studies",
                         value: "$187.8 billion annual employer costs",
+                        modelValue: 6000,
+                        shortLabel: "Workplace burden study",
+                        valueBasis: "Original per-person mapping",
                         confidence: "High",
                         url: "https://pubmed.ncbi.nlm.nih.gov/12813119/",
                         quote: "$44 billion US work-time loss per year from depression"
@@ -625,6 +728,9 @@
                         title: "Workplace Productivity Loss from Depression",
                         authors: "Stewart WF, Ricci JA, Chee E, et al.",
                         value: "$5,000-9,000 annual productivity loss per employee",
+                        modelValue: 7000,
+                        shortLabel: "Employee loss study",
+                        valueBasis: "Midpoint of the reported range",
                         confidence: "High",
                         url: "https://pubmed.ncbi.nlm.nih.gov/12813119/",
                         quote: "Depression results in $5,000-9,000 annual productivity loss per affected employee through absenteeism and presenteeism"
@@ -642,6 +748,9 @@
                         title: "Treatment guidelines",
                         authors: "Medscape Clinical Guidelines",
                         value: "6 to 12 weeks acute; 4 to 9 months maintenance",
+                        modelValue: 0.8,
+                        shortLabel: "Treatment guideline",
+                        valueBasis: "Nine months, rounded to the slider step",
                         confidence: "High",
                         url: "https://emedicine.medscape.com/article/286759-treatment",
                         quote: "Standard treatment duration for major depressive episodes"
@@ -650,6 +759,9 @@
                         title: "Long-term outcomes study",
                         authors: "Spijker et al.",
                         value: "20% still depressed at 24 months",
+                        modelValue: 2,
+                        shortLabel: "Long-term outcomes",
+                        valueBasis: "Reported follow-up duration",
                         confidence: "High",
                         url: "https://pubmed.ncbi.nlm.nih.gov/12204924/",
                         quote: "Substantial proportion experience prolonged episodes"
@@ -658,6 +770,9 @@
                         title: "Economic Burden Treatment Duration Analysis",
                         authors: "Crown WH, Finkelstein S, Berndt ER, et al.",
                         value: "Average treatment duration: 3.9 years for recurrent episodes",
+                        modelValue: 3.9,
+                        shortLabel: "Economic burden study",
+                        valueBasis: "Reported average",
                         confidence: "High",
                         url: "https://pubmed.ncbi.nlm.nih.gov/12005119/",
                         quote: "Patients with recurrent depression had average treatment duration of 3.9 years"
@@ -706,6 +821,7 @@
                 };
                 this.modalReturnFocus = null;
                 this.lastResults = null;
+                this.researchCitations = RESEARCH_CITATIONS;
                 this.init();
             }
 
@@ -815,6 +931,19 @@
                 this.updateAllDisplays();
             }
 
+            applyResearchStudy(param, studyIndex) {
+                const study = this.researchCitations[param]?.studies?.[studyIndex];
+                if (!study || !Number.isFinite(study.modelValue)) return false;
+                const slider = document.getElementById(`${param}-nouislider`)?.noUiSlider;
+                if (!slider) return false;
+
+                slider.set(study.modelValue);
+                this.parameters[param] = Number(slider.get());
+                this.updateDisplay(param, this.parameters[param]);
+                this.updateAllDisplays();
+                return true;
+            }
+
             formatParameter(param, value) {
                 const formatters = {
                     vsl: (number) => `$${number.toFixed(1)}M`,
@@ -893,6 +1022,12 @@
                     this.formatFullNumber(results.total);
                 document.getElementById('total-cost').textContent =
                     this.formatLargeNumber(results.total);
+                const modeledDeaths = this.parameters.suicides * (this.parameters.attribution / 100);
+                const depressionYears = this.parameters.depression * this.parameters.yld;
+                document.getElementById('hero-deaths').textContent =
+                    `${Math.round(modeledDeaths).toLocaleString('en-US')} deaths`;
+                document.getElementById('hero-depression-years').textContent =
+                    `${(depressionYears / 1000000).toLocaleString('en-US', { maximumFractionDigits: 1 })} million years lived with depression`;
                 this.updateFormulaDisplays(results);
             }
 
@@ -1191,6 +1326,14 @@
                                 <h3>Economic effects</h3>
                                 <p class="formula-line">${(depression / 1000000).toFixed(1)}M people × ($${Math.round(healthcare / 1000)}K care + $${Math.round(productivity / 1000)}K productivity) × ${this.formatDuration(duration)} years = <strong>${this.formatLargeNumber(results.productivity)}</strong></p>
                                 <p>Combines treatment expenditure and productivity estimates over the selected duration.</p>
+                            </div>
+                        </section>
+                        <section class="method-step">
+                            <p class="method-step-index">04</p>
+                            <div>
+                                <h3>Estimated cost clock</h3>
+                                <p>The header divides the current cumulative estimate by the seconds since January 1, 2009. It extends that historical average while this page is open.</p>
+                                <p>The clock is a model display. It is not a live measurement of harm happening right now.</p>
                             </div>
                         </section>
                         <section class="modal-caveat">

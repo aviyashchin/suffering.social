@@ -1,0 +1,842 @@
+/* The active calculator keeps the legacy instrument's force without its runtime debt. */
+:root {
+  --instrument-black: #08090b;
+  --instrument-panel: #111318;
+  --instrument-panel-raised: #171a20;
+  --instrument-ink: #f7f4ee;
+  --instrument-muted: #a9a7a2;
+  --instrument-rule: rgb(255 255 255 / 16%);
+  --instrument-red: #ff3d51;
+  --instrument-red-strong: #a90d2b;
+  --instrument-violet: #a980ff;
+  --instrument-green: #53d6a1;
+}
+
+.research-masthead {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 2rem;
+  align-items: center;
+  width: 100%;
+  padding: 0.75rem max(1.5rem, calc((100vw - 80rem) / 2));
+  border-bottom-color: rgb(255 255 255 / 14%);
+  background: rgb(8 9 11 / 96%);
+  backdrop-filter: blur(18px);
+}
+
+.research-masthead .wordmark,
+.research-masthead .masthead-note {
+  color: var(--instrument-ink);
+}
+
+.research-masthead .masthead-note {
+  justify-self: end;
+}
+
+.cost-clock {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0.1rem 0.75rem;
+  align-items: baseline;
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+}
+
+.cost-clock > span {
+  grid-column: 1;
+  grid-row: 1;
+  color: var(--instrument-muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cost-clock > strong {
+  grid-column: 1;
+  grid-row: 2;
+  color: var(--instrument-red);
+  font-size: clamp(0.85rem, 1.3vw, 1.15rem);
+  line-height: 1;
+}
+
+.cost-clock > small {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  max-width: 16rem;
+  color: var(--instrument-muted);
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.calculator-page {
+  width: 100%;
+}
+
+#calculator-experiment {
+  color: var(--instrument-ink);
+  background:
+    radial-gradient(circle at 78% 8%, rgb(190 24 45 / 18%), transparent 28rem),
+    linear-gradient(rgb(255 255 255 / 2%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 2%) 1px, transparent 1px),
+    var(--instrument-black);
+  background-size: auto, 42px 42px, 42px 42px, auto;
+}
+
+#calculator-experiment > section,
+#calculator-experiment > aside {
+  width: min(calc(100% - 3rem), 80rem);
+  margin-inline: auto;
+}
+
+#calculator-experiment h1,
+#calculator-experiment h2,
+#calculator-experiment h3,
+#calculator-experiment label,
+#calculator-experiment p,
+#calculator-experiment strong,
+#calculator-experiment output {
+  color: inherit;
+}
+
+#calculator-experiment .eyebrow {
+  color: var(--instrument-red);
+}
+
+.calculator-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(23rem, 0.95fr);
+  grid-template-rows: auto auto auto auto auto auto;
+  gap: 1.25rem clamp(3rem, 8vw, 8rem);
+  max-width: none;
+  min-height: calc(100svh - 4.75rem);
+  padding: clamp(5rem, 10vw, 9rem) 0 4rem;
+  align-content: center;
+}
+
+.calculator-hero .eyebrow {
+  grid-column: 1 / -1;
+  margin: 0 0 1.25rem;
+}
+
+.calculator-hero h1 {
+  grid-column: 1;
+  grid-row: 2;
+  max-width: 9ch;
+  color: var(--instrument-ink);
+  font-size: clamp(4rem, 7.8vw, 7.6rem);
+  font-weight: 400;
+  letter-spacing: -0.065em;
+  line-height: 0.88;
+}
+
+.hero-stakes {
+  grid-column: 1;
+  grid-row: 3;
+  max-width: 26ch;
+  margin: 0;
+  color: var(--instrument-ink) !important;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+  line-height: 1.25;
+}
+
+.estimate-display {
+  position: relative;
+  grid-column: 2;
+  grid-row: 2 / span 2;
+  align-self: center;
+  margin: 0;
+  padding: clamp(2rem, 4vw, 3.5rem);
+  overflow: hidden;
+  border: 1px solid rgb(255 61 81 / 58%);
+  background: linear-gradient(145deg, rgb(255 61 81 / 14%), rgb(255 255 255 / 3%));
+  color: var(--instrument-ink);
+  text-decoration: none;
+  box-shadow: 0 28px 80px rgb(0 0 0 / 42%);
+  transition: border-color 180ms ease, transform 180ms ease, background 180ms ease;
+}
+
+.estimate-display::after {
+  position: absolute;
+  right: -2rem;
+  bottom: -4rem;
+  width: 12rem;
+  height: 12rem;
+  border: 1px solid rgb(255 61 81 / 24%);
+  border-radius: 50%;
+  content: '';
+}
+
+.estimate-display:hover {
+  border-color: var(--instrument-red);
+  background: linear-gradient(145deg, rgb(255 61 81 / 21%), rgb(255 255 255 / 4%));
+  color: var(--instrument-ink);
+  transform: translateY(-3px);
+}
+
+.estimate-display:focus-visible {
+  outline: 3px solid white;
+  outline-offset: 5px;
+}
+
+.estimate-display strong {
+  position: relative;
+  z-index: 1;
+  color: var(--instrument-red) !important;
+  font-size: clamp(2.35rem, 3.2vw, 3.3rem);
+  font-weight: 600;
+  letter-spacing: -0.08em;
+}
+
+.estimate-display span {
+  position: relative;
+  z-index: 1;
+  color: var(--instrument-muted);
+}
+
+.estimate-display .estimate-kicker {
+  color: var(--instrument-ink);
+}
+
+.hero-human-cost {
+  grid-column: 2;
+  grid-row: 4;
+  margin: 0;
+  padding-left: 1.25rem;
+  border-left: 3px solid var(--instrument-red);
+  color: var(--instrument-muted) !important;
+  font-size: 1rem;
+}
+
+.hero-human-cost strong {
+  color: var(--instrument-ink) !important;
+}
+
+.hero-caveat {
+  grid-column: 1;
+  grid-row: 4;
+  max-width: 39rem;
+  margin: 0;
+  color: var(--instrument-muted) !important;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.adjust-prompt {
+  grid-column: 1;
+  grid-row: 5;
+  margin: 0;
+  color: var(--instrument-muted) !important;
+}
+
+.adjust-prompt a {
+  color: var(--instrument-ink);
+  text-underline-offset: 0.3em;
+}
+
+.calculator-hero .scenario-set {
+  grid-column: 1 / -1;
+  grid-row: 6;
+  margin-top: 1.5rem;
+  border-color: var(--instrument-rule);
+}
+
+.calculator-hero .scenario-btn {
+  min-height: 4.25rem;
+  border-color: var(--instrument-rule);
+  color: var(--instrument-ink) !important;
+  background: rgb(255 255 255 / 3%) !important;
+}
+
+.calculator-hero .scenario-btn:hover,
+.calculator-hero .scenario-btn[aria-pressed='true'] {
+  color: white !important;
+  background: var(--instrument-red-strong) !important;
+}
+
+.assumptions-section {
+  padding: clamp(5rem, 10vw, 9rem) 0;
+  border-top: 1px solid var(--instrument-rule);
+}
+
+.section-heading {
+  max-width: 58rem;
+}
+
+.section-heading h2,
+.result-reading h2,
+.method-section h2,
+.limitations h2,
+.open-research h2 {
+  color: var(--instrument-ink) !important;
+}
+
+.section-heading > p:last-of-type,
+.curve-explainer {
+  color: var(--instrument-muted) !important;
+}
+
+.curve-explainer {
+  max-width: 52rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--instrument-red);
+}
+
+.assumption-group {
+  --group-color: var(--instrument-red);
+  margin-bottom: clamp(4rem, 8vw, 7rem);
+  overflow: hidden;
+  border: 1px solid var(--instrument-rule);
+  border-top: 4px solid var(--group-color);
+  background: rgb(17 19 24 / 92%);
+  box-shadow: 0 28px 80px rgb(0 0 0 / 24%);
+}
+
+.assumption-group:nth-of-type(2) {
+  --group-color: var(--instrument-violet);
+}
+
+.assumption-group:nth-of-type(3) {
+  --group-color: var(--instrument-green);
+}
+
+.assumption-group > header {
+  grid-template-columns: 3.5rem minmax(0, 1fr) auto;
+  padding: 1.5rem 1.75rem;
+  border-bottom-color: var(--instrument-rule);
+  background: rgb(255 255 255 / 2%);
+}
+
+.assumption-group .group-index {
+  color: var(--group-color) !important;
+}
+
+.assumption-group h3 {
+  color: var(--instrument-ink);
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+}
+
+.assumption-group header p,
+.assumption-group header output {
+  color: var(--instrument-muted);
+}
+
+.assumption-list {
+  padding-inline: 1.75rem;
+}
+
+.assumption {
+  grid-template-columns: minmax(13rem, 1.15fr) 7rem minmax(18rem, 1.85fr);
+  gap: 1rem 2rem;
+  min-height: 15rem;
+  padding: 2rem 0;
+  border-bottom-color: var(--instrument-rule);
+}
+
+.assumption-copy {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  align-self: start;
+}
+
+.assumption-copy label {
+  color: var(--instrument-ink);
+  font-size: 1.25rem;
+}
+
+.assumption-copy p,
+.assumption .evidence {
+  color: var(--instrument-muted);
+}
+
+.assumption > strong {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  color: var(--group-color) !important;
+  text-align: left;
+}
+
+.assumption > .research-slider {
+  grid-column: 3;
+  grid-row: 1;
+  align-self: center;
+}
+
+.assumption > .range-curve {
+  grid-column: 2 / 4;
+  grid-row: 2;
+}
+
+.assumption > .evidence {
+  grid-column: 2 / 4;
+  grid-row: 3;
+  margin: 0;
+}
+
+.assumption .source-link {
+  color: var(--instrument-ink);
+  text-underline-offset: 0.25em;
+}
+
+.assumption-group .noUi-target {
+  border: 0;
+  background: rgb(255 255 255 / 15%);
+  box-shadow: none;
+}
+
+.assumption-group .noUi-connect {
+  background: var(--group-color);
+}
+
+.assumption-group .noUi-handle {
+  border-color: var(--group-color);
+  background: var(--instrument-panel);
+  box-shadow: 0 0 0 4px rgb(8 9 11 / 70%);
+}
+
+.assumption-group .noUi-tooltip {
+  border-color: var(--instrument-rule);
+  color: var(--instrument-ink);
+  background: var(--instrument-black);
+}
+
+.range-curve {
+  position: relative;
+  height: auto;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--instrument-rule);
+  background: rgb(0 0 0 / 20%);
+}
+
+.range-curve-plot {
+  position: relative;
+  height: 8.75rem;
+  overflow: hidden;
+  border-bottom: 1px solid var(--instrument-rule);
+  background:
+    linear-gradient(rgb(255 255 255 / 4%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 4%) 1px, transparent 1px),
+    rgb(0 0 0 / 20%);
+  background-size: 32px 32px;
+}
+
+.range-curve-plot svg,
+.range-curve > svg {
+  position: absolute;
+  inset: 1.5rem 0 1.45rem;
+  width: 100%;
+  height: calc(100% - 2.95rem);
+}
+
+.range-curve-fill {
+  fill: color-mix(in srgb, var(--group-color) 28%, transparent);
+}
+
+.range-curve-line {
+  fill: none;
+  stroke: var(--group-color);
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.range-curve-marker {
+  position: absolute;
+  top: 1.4rem;
+  bottom: 1.35rem;
+  left: 50%;
+  width: 2px;
+  background: var(--instrument-ink);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 50%);
+  transform: translateX(-50%);
+  transition: left 120ms ease-out;
+}
+
+.range-curve-marker::before {
+  position: absolute;
+  top: -0.25rem;
+  left: 50%;
+  width: 0.6rem;
+  height: 0.6rem;
+  border: 2px solid var(--instrument-black);
+  border-radius: 50%;
+  background: var(--instrument-ink);
+  content: '';
+  transform: translateX(-50%);
+}
+
+.range-curve-current {
+  position: absolute;
+  top: 0.15rem;
+  left: 50%;
+  color: var(--instrument-ink) !important;
+  font: 700 0.75rem/1 var(--font-data);
+  transform: translateX(-50%);
+  transition: left 120ms ease-out;
+}
+
+.range-curve figcaption {
+  position: absolute;
+  right: 0.65rem;
+  bottom: 0.35rem;
+  left: 0.65rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--instrument-muted);
+  font: 0.75rem/1.2 var(--font-data);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.range-curve figcaption span:nth-child(2) {
+  color: var(--group-color);
+  text-align: center;
+}
+
+.study-point {
+  position: absolute;
+  bottom: 1.05rem;
+  z-index: 3;
+  width: 1rem;
+  height: 1rem;
+  transform: translateX(-50%);
+}
+
+.study-point::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 2px solid var(--instrument-black);
+  border-radius: 50%;
+  background: var(--group-color);
+  box-shadow: 0 0 0 1px var(--group-color);
+  content: '';
+  transform: translate(-50%, -50%);
+}
+
+.study-point.is-active::after {
+  width: 0.8rem;
+  height: 0.8rem;
+  background: var(--instrument-ink);
+}
+
+.study-choices {
+  padding: 1rem;
+  background: rgb(255 255 255 / 2%);
+}
+
+.study-choices-heading {
+  margin: 0 0 0.75rem !important;
+  color: var(--instrument-ink) !important;
+  font: 700 0.75rem/1 var(--font-data);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.study-choice-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.65rem;
+}
+
+.study-choice-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  border: 1px solid var(--instrument-rule);
+  background: var(--instrument-panel);
+}
+
+.study-choice {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 3rem;
+  padding: 0.65rem;
+  border: 0;
+  border-bottom: 1px solid var(--instrument-rule);
+  color: var(--instrument-ink);
+  background: transparent;
+  font: 0.75rem/1.25 var(--font-body);
+  text-align: left;
+  cursor: pointer;
+}
+
+.study-choice strong {
+  flex: 0 0 auto;
+  color: var(--group-color) !important;
+  font-family: var(--font-data);
+  font-size: 0.75rem;
+}
+
+.study-choice:hover,
+.study-choice[aria-pressed='true'] {
+  background: color-mix(in srgb, var(--group-color) 14%, transparent);
+}
+
+.study-choice:focus-visible {
+  outline: 2px solid var(--instrument-ink);
+  outline-offset: -3px;
+}
+
+.study-choice-item small {
+  align-self: center;
+  padding: 0.55rem 0.65rem;
+  color: var(--instrument-muted);
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.study-choice-finding {
+  grid-column: 1 / -1;
+  min-height: 3.5rem;
+  margin: 0 !important;
+  padding: 0.55rem 0.65rem;
+  border-bottom: 1px solid var(--instrument-rule);
+  color: var(--instrument-muted) !important;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.study-choice-item a {
+  align-self: center;
+  padding: 0.55rem 0.65rem;
+  color: var(--instrument-ink);
+  font: 0.75rem/1 var(--font-data);
+  white-space: nowrap;
+  text-underline-offset: 0.2em;
+}
+
+.study-mapping-note {
+  max-width: 60rem;
+  margin: 0.85rem 0 0 !important;
+  color: var(--instrument-muted) !important;
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.result-reading {
+  width: 100% !important;
+  max-width: none;
+  padding: clamp(5rem, 10vw, 9rem) max(1.5rem, calc((100vw - 80rem) / 2));
+  border: 0;
+  background: var(--instrument-red-strong);
+  color: white;
+}
+
+.result-reading .eyebrow,
+.result-reading p,
+.result-reading h2,
+.result-reading .result-number span {
+  color: white !important;
+}
+
+.result-reading .result-number span {
+  font-size: clamp(5rem, 13vw, 12rem);
+  font-weight: 700;
+  letter-spacing: -0.085em;
+}
+
+.result-reading .research-actions button {
+  border: 1px solid white;
+  color: white !important;
+  background: transparent !important;
+}
+
+.result-reading .research-actions button:hover {
+  color: var(--instrument-red-strong) !important;
+  background: white !important;
+}
+
+.method-section,
+.limitations,
+.open-research {
+  border-color: var(--instrument-rule);
+}
+
+.method-section p,
+.limitations li,
+.open-research p {
+  color: var(--instrument-muted) !important;
+}
+
+.method-actions button {
+  border-color: var(--instrument-rule);
+  color: var(--instrument-ink) !important;
+  background: var(--instrument-panel) !important;
+}
+
+.method-actions button:hover {
+  color: var(--instrument-black) !important;
+  background: var(--instrument-ink) !important;
+}
+
+#calculator-experiment .open-research {
+  width: min(calc(100% - 3rem), 80rem);
+  margin-bottom: 0;
+  background: var(--instrument-panel-raised);
+}
+
+#calculator-experiment .open-research a {
+  color: var(--instrument-ink);
+}
+
+#what-happened-2012 {
+  width: 100%;
+  margin-inline: 0;
+}
+
+@media (max-width: 900px) {
+  .research-masthead {
+    grid-template-columns: 1fr auto;
+  }
+
+  .research-masthead .cost-clock {
+    justify-self: end;
+  }
+
+  .research-masthead .masthead-note {
+    display: none;
+  }
+
+  .calculator-hero {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    min-height: auto;
+  }
+
+  .calculator-hero .eyebrow,
+  .calculator-hero h1,
+  .hero-stakes,
+  .estimate-display,
+  .hero-human-cost,
+  .hero-caveat,
+  .adjust-prompt,
+  .calculator-hero .scenario-set {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .calculator-hero h1 {
+    max-width: 10ch;
+  }
+
+  .estimate-display {
+    margin-top: 1.5rem;
+  }
+
+  .assumption {
+    grid-template-columns: minmax(11rem, 0.8fr) 6rem minmax(16rem, 1.2fr);
+    gap-inline: 1.25rem;
+  }
+}
+
+@media (max-width: 720px) {
+  .research-masthead {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .research-masthead .cost-clock {
+    justify-self: stretch;
+  }
+
+  .cost-clock > small {
+    justify-self: end;
+    text-align: right;
+  }
+
+  #calculator-experiment > section,
+  #calculator-experiment > aside {
+    width: min(calc(100% - 2rem), 80rem);
+  }
+
+  .calculator-hero {
+    padding-top: 4.5rem;
+  }
+
+  .calculator-hero h1 {
+    font-size: clamp(3.7rem, 18vw, 5.8rem);
+  }
+
+  .estimate-display strong {
+    font-size: clamp(2.45rem, 12vw, 4.2rem);
+  }
+
+  .assumption-group > header {
+    grid-template-columns: 2.25rem 1fr;
+    padding: 1.25rem;
+  }
+
+  .assumption-group > header output {
+    grid-column: 2;
+    text-align: left;
+  }
+
+  .assumption-list {
+    padding-inline: 1.25rem;
+  }
+
+  .assumption {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    min-height: 0;
+    padding: 2rem 0;
+  }
+
+  .assumption-copy {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .assumption > strong {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+  }
+
+  .assumption > .research-slider {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin-top: 0.5rem;
+  }
+
+  .assumption > .range-curve {
+    grid-column: 1 / -1;
+    grid-row: 3;
+  }
+
+  .assumption > .evidence {
+    grid-column: 1 / -1;
+    grid-row: 4;
+  }
+
+  .range-curve-plot {
+    height: 8rem;
+  }
+
+  .range-curve figcaption span:nth-child(2) {
+    display: none;
+  }
+
+  .study-choice-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .estimate-display,
+  .range-curve-marker,
+  .range-curve-current {
+    transition: none;
+  }
+}

@@ -142,6 +142,87 @@ test('keeps duration keyboard steps aligned with its observable value', async ({
   await expect(page.locator('#duration-value')).toHaveText('0.25 years');
 });
 
+test('keeps the live estimate clickable and every research range curve usable', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.waitForFunction(() => Boolean(window.calculator));
+
+  const curves = page.locator('.range-curve');
+  await expect(curves).toHaveCount(9);
+  for (const curve of await curves.all()) {
+    await expect(curve).toBeVisible();
+  }
+
+  const marker = page.locator(
+    '.range-curve[data-parameter="attribution"] .range-curve-marker'
+  );
+  const curveLine = page.locator(
+    '.range-curve[data-parameter="attribution"] .range-curve-line'
+  );
+  const initialPosition = await marker.evaluate((element) => element.style.left);
+  const initialPath = await curveLine.getAttribute('d');
+  await page
+    .getByRole('slider', { name: 'Share that social media may have caused' })
+    .press('ArrowRight');
+  await expect
+    .poll(() => marker.evaluate((element) => element.style.left))
+    .not.toBe(initialPosition);
+  await expect(curveLine).not.toHaveAttribute('d', initialPath || '');
+
+  const paperChoices = page.locator(
+    '.range-curve[data-parameter="attribution"] .study-choice'
+  );
+  await expect(paperChoices).toHaveCount(2);
+  const totalBeforePaper = await page.locator('#hero-total-cost').textContent();
+  await paperChoices.first().click();
+  await expect(page.locator('#hero-total-cost')).not.toHaveText(
+    totalBeforePaper || ''
+  );
+
+  const clock = page.locator('#cost-clock-total');
+  const clockStart = await clock.textContent();
+  await expect(clock).not.toHaveText(clockStart || '', { timeout: 2_000 });
+
+  await page.locator('#hero-cost-display').click();
+  await expect(page).toHaveURL(/#assumptions$/);
+  await expect(page.locator('#assumptions')).toBeInViewport();
+});
+
+test('keeps every selectable paper mapping inside its stated model range', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.waitForFunction(() => Boolean(window.calculator));
+
+  const mappings = await page.evaluate(() => {
+    const calculator = window.calculator;
+    return Object.fromEntries(
+      Object.entries(calculator.researchCitations).map(([parameter, research]) => [
+        parameter,
+        {
+          range: calculator.sliderConfigs[parameter].range,
+          studies: research.studies
+            .filter((study) => Number.isFinite(study.modelValue))
+            .map((study) => ({
+              value: study.modelValue,
+              basis: study.valueBasis,
+            })),
+        },
+      ])
+    );
+  });
+
+  for (const [parameter, mapping] of Object.entries(mappings)) {
+    expect(mapping.studies.length, parameter).toBeGreaterThanOrEqual(2);
+    for (const study of mapping.studies) {
+      expect(study.basis, parameter).toBeTruthy();
+      expect(study.value, parameter).toBeGreaterThanOrEqual(mapping.range.min);
+      expect(study.value, parameter).toBeLessThanOrEqual(mapping.range.max);
+    }
+  }
+});
+
 function formatLargeNumber(value) {
   if (value >= 1e12) return `$${(value / 1e12).toFixed(1)}T`;
   if (value >= 1e9) return `$${(value / 1e9).toFixed(1)}B`;

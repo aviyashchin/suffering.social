@@ -10,6 +10,10 @@ Shared JavaScript and CSS live in `src/`, Jest contracts sit beside their module
 discovery files in `public/`, build checks in `scripts/`, deployment rules in
 `vercel.json`, and operational guidance in `docs/`.
 
+The paper choices, moving illustrative range curves, and estimated-cost clock
+are active teaching features. Preserve the distinction between a paper's
+reported finding and its mapped calculator value; see `docs/MAINTENANCE_GUIDE.md`.
+
 The unlisted `/v5` route is legacy reference material. Do not extend it when the
 active root experience can satisfy the change.
 When `HERDR_ENV=1`, create and remove worktrees through Herdr so its ledger stays

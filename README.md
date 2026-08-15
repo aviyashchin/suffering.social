@@ -22,6 +22,10 @@ This is a static, multi-page Vite site:
 - `privacy.html` and `social_media_cost_calculatorv5.html` own `/privacy` and
   the unlisted legacy `/v5` route.
 - `src/styles/` contains the shared design tokens and route styles.
+- `src/range-curves.js` keeps each assumption's illustrative curve, current
+  marker, and selectable paper mappings synchronized with its slider.
+- `src/cost-clock.js` extrapolates the current cumulative estimate using its
+  historical average since January 1, 2009. It is not a live harm counter.
 - `src/telemetry*.js` is the single aggregate-only event boundary.
 - `src/research-updates.js` submits the optional email form to the server-only
   `api/research-updates.js` contact route.
@@ -84,6 +88,10 @@ the production interaction budget without improving the event contract.
 Keep each external claim attached to a source and distinguish causal evidence
 from association. A model change must preserve or deliberately update the exact
 scenario fixtures in `tests/fixtures/` and the engine characterization test.
+Paper findings and calculator inputs are not interchangeable. Keep the reported
+finding visible, document the mapping in `valueBasis`, and expose only
+`modelValue` entries inside the parameter's stated slider range. The range
+curves illustrate the editable range; they are not probability distributions.
 Open a pull request with the changed source, model rationale, and validation
 output.
 

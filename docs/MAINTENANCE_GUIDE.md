@@ -2,7 +2,9 @@
 
 ## Change research assumptions
 
-The active calculation implementation remains embedded in `calculator.html`.
+The active calculation implementation remains embedded in `index.html`.
+`calculator.html` is only the no-index compatibility document for the permanent
+`/calculator` redirect. Do not restore active behavior there.
 Before changing a parameter ID, default, formula, or scenario:
 
 1. Update the relevant citation and explain whether the evidence is causal or
@@ -14,6 +16,13 @@ Before changing a parameter ID, default, formula, or scenario:
 
 A failing characterization test is a model change, not presentation noise.
 
+Research cards are part of the calculator, not decoration. Each selectable
+study needs a finite `modelValue` inside the slider range, a short label, and a
+`valueBasis` explaining how the paper's finding maps to the model input. Some
+legacy mappings fell outside today's declared ranges; do not silently revive
+them. `src/range-curves.test.js` protects curve movement, while Playwright proves
+that paper selection changes the slider and estimate.
+
 ## Change presentation
 
 Use semantic markup in `index.html` or `calculator.html` and extend the existing
@@ -21,6 +30,12 @@ files in `src/styles/`. Preserve one H1, visible focus, 44px interactive targets
 390px layout without horizontal overflow, and reduced-motion behavior. Do not
 add remote CSS, Tailwind Play CDN, a second design framework, or inline provider
 snippets.
+
+The curves are illustrative range guides, not probability distributions. Their
+shape and marker must move with the slider. The header clock divides the current
+cumulative estimate by elapsed time since January 1, 2009, then extrapolates
+that average while the page is open. Keep the page's explicit statement that it
+is a model display, not a live measurement.
 
 ## Change telemetry
 

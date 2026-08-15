@@ -442,6 +442,16 @@ test.describe('public research journey', () => {
       .poll(() => page.evaluate(() => window.calculator.parameters.vsl))
       .toBe(sliderValueAfter);
 
+    const firstPaperChoice = page
+      .locator('.range-curve[data-parameter="vsl"] .study-choice')
+      .first();
+    await page.keyboard.press('Tab');
+    await expectVisibleFocus(firstPaperChoice);
+    await page.keyboard.press('Enter');
+    await expect
+      .poll(() => page.evaluate(() => window.calculator.parameters.vsl))
+      .toBe(13.7);
+
     const sliders = page.getByRole('slider');
     await expect(sliders).toHaveCount(9);
     for (let index = 0; index < 9; index += 1) {
@@ -473,10 +483,11 @@ test.describe('public research journey', () => {
     await expect(source).toBeFocused();
 
     await page.keyboard.press('Shift+Tab');
-    const vslSlider = page.getByRole('slider', {
-      name: 'Value of a statistical life',
-    });
-    await expect(vslSlider).toBeFocused();
+    const lastPaperLink = page
+      .locator('.range-curve[data-parameter="vsl"]')
+      .getByRole('link', { name: 'Read paper' })
+      .last();
+    await expectVisibleFocus(lastPaperLink);
     await page.keyboard.press('Tab');
     await expect(source).toBeFocused();
 
