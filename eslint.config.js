@@ -30,5 +30,14 @@ export default [
       },
     },
   },
+  {
+    files: ['tests/e2e/**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
+    },
+  },
   eslintConfigPrettier,
 ];

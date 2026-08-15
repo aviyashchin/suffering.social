@@ -615,6 +615,11 @@
   text-underline-offset: 0.2em;
 }
 
+.study-choice-item a:focus-visible {
+  outline: 2px solid var(--instrument-ink);
+  outline-offset: -3px;
+}
+
 .study-mapping-note {
   max-width: 60rem;
   margin: 0.85rem 0 0 !important;
@@ -735,7 +740,7 @@
 
   .assumption {
     grid-template-columns: minmax(11rem, 0.8fr) 6rem minmax(16rem, 1.2fr);
-    gap-inline: 1.25rem;
+    column-gap: 1.25rem;
   }
 }
 
