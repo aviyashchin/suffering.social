@@ -262,10 +262,12 @@ describe('/ calculator product route contract', () => {
 
   test('offers a consent-based research update form with a clear status message', () => {
     const form = calculator.querySelector('#research-update-form');
+    const consent = form.querySelector('input[type="checkbox"][name="consent"]');
 
     expect(form).not.toBeNull();
     expect(form.querySelector('input[type="email"][name="email"]')).not.toBeNull();
-    expect(form.querySelector('input[type="checkbox"][name="consent"]')).not.toBeNull();
+    expect(consent).not.toBeNull();
+    expect(consent.checked).toBe(true);
     expect(form.querySelector('[role="status"]')).not.toBeNull();
     expect(form.querySelector('button[type="submit"]')).not.toBeNull();
   });

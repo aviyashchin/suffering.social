@@ -335,7 +335,7 @@
   font-family: var(--font-data);
 }
 
-.result-number span {
+.result-number > span {
   display: block;
   color: var(--research-red);
   font-size: clamp(3rem, 7vw, 5.5rem);
