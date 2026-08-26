@@ -1000,10 +1000,11 @@ body {
   margin: 2rem 0 0;
 }
 
-.result-reading .result-number span {
+.result-reading .result-number > span {
   display: block;
   font: 500 clamp(5.2rem, 13vw, 12rem)/0.8 var(--instrument-data);
   letter-spacing: -0.1em;
+  white-space: nowrap;
 }
 
 .result-reading .research-actions {
@@ -1273,6 +1274,23 @@ body {
     grid-template-columns: 1fr auto;
   }
 
+  .result-reading {
+    grid-template-columns: 1fr;
+  }
+
+  .result-reading .eyebrow,
+  .result-reading h2,
+  .result-reading .result-number,
+  .result-reading > p:not(.eyebrow, .result-number),
+  .result-reading .research-actions {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .result-reading > p:not(.eyebrow, .result-number) {
+    align-self: auto;
+  }
+
   .study-choice-finding,
   .study-choice-item small {
     grid-column: 1 / -1;
@@ -1485,17 +1503,7 @@ body {
   }
 
   .result-reading {
-    grid-template-columns: 1fr;
     padding-inline: 1rem;
-  }
-
-  .result-reading .eyebrow,
-  .result-reading h2,
-  .result-reading .result-number,
-  .result-reading > p:not(.eyebrow, .result-number),
-  .result-reading .research-actions {
-    grid-column: 1;
-    grid-row: auto;
   }
 
   .result-reading .result-number span {

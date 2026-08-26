@@ -226,9 +226,9 @@ test.describe('public research journey', () => {
 
     await page.goto('/');
     await page.getByLabel('Email address').fill('reader@example.com');
-    await page
-      .getByLabel(/save my email so the research team can contact me/i)
-      .check();
+    await expect(
+      page.getByLabel(/save my email so the research team can contact me/i)
+    ).toBeChecked();
     await page.getByRole('button', { name: 'Send me updates' }).click();
 
     await expect(page.locator('.research-update-status')).toHaveText(
@@ -245,6 +245,34 @@ test.describe('public research journey', () => {
     );
     expect(telemetryEvidence).not.toContain('reader@example.com');
     await expectHealthyPage(page, observations);
+  });
+
+  test('keeps the interpretation total and actions intact at a tablet viewport', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 869, height: 1200 });
+    await page.goto('/');
+
+    const result = page.locator('.result-reading');
+    await result.scrollIntoViewIfNeeded();
+
+    await expect(page.locator('#total-cost')).toHaveText('$2.4T');
+    expect(await page.locator('#total-cost').innerText()).toBe('$2.4T');
+
+    const resultBox = await result.boundingBox();
+    const actionBoxes = await page
+      .locator('.result-reading .research-actions button')
+      .evaluateAll((buttons) =>
+        buttons.map((button) => {
+          const rect = button.getBoundingClientRect();
+          return { left: rect.left, right: rect.right };
+        })
+      );
+    expect(resultBox).not.toBeNull();
+    for (const box of actionBoxes) {
+      expect(box.left).toBeGreaterThanOrEqual(resultBox.x);
+      expect(box.right).toBeLessThanOrEqual(resultBox.x + resultBox.width);
+    }
   });
 
   test('keeps query, hash, email, and scenario state out of provider payloads', async ({

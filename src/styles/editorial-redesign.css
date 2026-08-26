@@ -414,7 +414,7 @@ body::before {
   margin: 0;
 }
 
-.result-number span {
+.result-number > span {
   color: var(--color);
   font-family: var(--font-display);
   font-size: clamp(5rem, 11vw, 10rem);
