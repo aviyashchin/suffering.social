@@ -75,4 +75,11 @@ impression and no clicks.
 
 ## Deferred email readiness
 
-The site now stores addresses submitted through the consent-based research-update form. It does not yet send an automated email. Before sending, separately approve a sending domain and provider, configure DKIM and DMARC, add one-click unsubscribe handling, and test deliverability. Until then, use the saved addresses only for the promised occasional research updates and honor removal requests sent to `privacy@subconscious.ai`.
+The consent-based research-update form upserts a person in Attio and adds that
+person to the `suffering_social_research_updates` list. The list was read back
+from Attio on 2026-08-26. This is contact storage, not a sending campaign, and
+the site does not send an automated email. Before sending, separately approve a
+sending domain and provider, configure DKIM and DMARC, add one-click
+unsubscribe handling, and test deliverability. Until then, use the saved
+addresses only for the promised occasional research updates and honor removal
+requests sent to `privacy@subconscious.ai`.

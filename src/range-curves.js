@@ -33,15 +33,35 @@ function createStudyButton(study, parameter, studyIndex, calculator, className) 
   name.textContent = study.shortLabel;
   const value = document.createElement('strong');
   value.textContent = `Use ${formattedValue}`;
-  button.append(name, value);
+  const finding = document.createElement('span');
+  finding.className = 'study-choice-finding';
+  finding.textContent = study.value;
+  const basis = document.createElement('small');
+  basis.textContent = study.valueBasis;
+  button.append(name, value, finding, basis);
   return button;
 }
 
 function addStudyChoices(curve, plot, parameter, calculator, render) {
   const studies = calculator.researchCitations?.[parameter]?.studies || [];
-  const selectable = studies
+  const mappedStudies = studies
     .map((study, studyIndex) => ({ study, studyIndex }))
     .filter(({ study }) => Number.isFinite(study.modelValue));
+  const startingValue =
+    calculator.scenarios?.reset?.[parameter] ?? calculator.parameters[parameter];
+  const hasExactStartingStudy = mappedStudies.some(
+    ({ study }) => Math.abs(study.modelValue - startingValue) < 0.001
+  );
+  const baseline = {
+    modelValue: startingValue,
+    shortLabel: 'Starting model value',
+    value: 'The value used when this page opens',
+    valueBasis: 'Original model baseline',
+  };
+  const selectable = [
+    ...(hasExactStartingStudy ? [] : [{ study: baseline, studyIndex: -1 }]),
+    ...mappedStudies,
+  ];
   if (selectable.length === 0) return;
 
   const choices = document.createElement('section');
@@ -52,7 +72,8 @@ function addStudyChoices(curve, plot, parameter, calculator, render) {
   choices.setAttribute('aria-label', `Paper values for ${parameterLabel}`);
   const heading = document.createElement('p');
   heading.className = 'study-choices-heading';
-  heading.textContent = 'Try a paper in the model';
+  heading.textContent =
+    'Choose a study to update this assumption. Select a row. The slider, curve, formula, and total update together.';
   const list = document.createElement('div');
   list.className = 'study-choice-list';
 
@@ -82,12 +103,7 @@ function addStudyChoices(curve, plot, parameter, calculator, render) {
       calculator,
       'study-choice'
     );
-    const finding = document.createElement('p');
-    finding.className = 'study-choice-finding';
-    finding.textContent = `Paper finding: ${study.value}`;
-    const basis = document.createElement('small');
-    basis.textContent = `Model value: ${study.valueBasis}`;
-    item.append(button, finding, basis);
+    item.append(button);
     if (study.url) {
       const link = document.createElement('a');
       link.href = study.url;
@@ -109,7 +125,7 @@ function addStudyChoices(curve, plot, parameter, calculator, render) {
   const note = document.createElement('p');
   note.className = 'study-mapping-note';
   note.textContent =
-    'The paper finding and the calculator input are not always the same measure. Each button labels how the model value was chosen.';
+    'A reported finding and a model value may measure different things. Each row explains how the model value was chosen.';
   choices.append(heading, list, note);
   curve.append(choices);
 }
