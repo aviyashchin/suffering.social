@@ -211,6 +211,37 @@ test('keeps the active section formula below the calculator summary', async ({
   await expect(groupHeader.locator('output')).toContainText('=');
 });
 
+test('updates formulas during slider movement and keeps the selected research anchor', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.waitForFunction(() => Boolean(window.calculator));
+
+  const curve = page.locator('.range-curve[data-parameter="vsl"]');
+  const choices = curve.locator('.study-choice');
+  const orderedValues = await choices.evaluateAll((items) =>
+    items.map((item) => Number(item.dataset.modelValue))
+  );
+  expect(orderedValues).toEqual([...orderedValues].sort((a, b) => a - b));
+
+  const selected = choices.filter({ hasText: 'DOT guidance' });
+  await selected.click();
+  const formula = page.locator('#mortality-result');
+  const formulaBeforeDrag = await formula.getAttribute('aria-label');
+  await page.evaluate(() => {
+    document.getElementById('vsl-nouislider').noUiSlider.set(10);
+  });
+
+  await expect(formula).not.toHaveAttribute(
+    'aria-label',
+    formulaBeforeDrag || ''
+  );
+  await expect(selected).toHaveAttribute('aria-pressed', 'true');
+  await expect(selected).toHaveAttribute('data-selection-state', 'adjusted');
+  await expect(formula.locator('[data-animated-number-token]')).not.toHaveCount(0);
+
+});
+
 test('keeps every selectable paper mapping inside its stated model range', async ({
   page,
 }) => {

@@ -1,3 +1,5 @@
+import { setAnimatedNumberText } from './animated-number-text.js';
+
 const MODEL_START = Date.UTC(2009, 0, 1);
 
 export function averageCostPerSecond(total, start = MODEL_START, end = Date.now()) {
@@ -27,9 +29,9 @@ export function startCostClock(calculator) {
   if (!totalDisplay && !heroTotalDisplay) return () => {};
 
   const openedAt = Date.now();
-  const render = () => {
+  const render = (advanceClock = true) => {
     const results = calculator.calculateTotalEconomicImpact();
-    const secondsSinceOpen = (Date.now() - openedAt) / 1000;
+    const secondsSinceOpen = advanceClock ? (Date.now() - openedAt) / 1000 : 0;
     const tickingComponents = Object.fromEntries(
       Object.keys(componentDisplays).map((component) => {
         const value = Number(results[component]) || 0;
@@ -42,18 +44,28 @@ export function startCostClock(calculator) {
       (sum, value) => sum + value,
       0
     );
-    if (totalDisplay) totalDisplay.textContent = formatClockTotal(tickingTotal);
+    if (totalDisplay) {
+      setAnimatedNumberText(totalDisplay, formatClockTotal(tickingTotal));
+    }
     if (heroTotalDisplay) {
-      heroTotalDisplay.textContent = formatClockTotal(tickingTotal);
+      setAnimatedNumberText(heroTotalDisplay, formatClockTotal(tickingTotal));
     }
     Object.entries(componentDisplays).forEach(([component, display]) => {
       if (display) {
-        display.textContent = formatClockComponent(tickingComponents[component]);
+        setAnimatedNumberText(
+          display,
+          formatClockComponent(tickingComponents[component])
+        );
       }
     });
   };
 
   render();
+  const renderExactModel = () => render(false);
+  document.addEventListener('calculator:updated', renderExactModel);
   const interval = window.setInterval(render, 250);
-  return () => window.clearInterval(interval);
+  return () => {
+    document.removeEventListener('calculator:updated', renderExactModel);
+    window.clearInterval(interval);
+  };
 }

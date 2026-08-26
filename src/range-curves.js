@@ -37,7 +37,11 @@ function createStudyButton(study, parameter, studyIndex, calculator, className) 
   finding.className = 'study-choice-finding';
   finding.textContent = study.value;
   const basis = document.createElement('small');
-  basis.textContent = study.valueBasis;
+  basis.append(document.createTextNode(study.valueBasis));
+  const state = document.createElement('span');
+  state.className = 'study-choice-state';
+  state.setAttribute('aria-hidden', 'true');
+  basis.append(state);
   button.append(name, value, finding, basis);
   return button;
 }
@@ -61,7 +65,7 @@ function addStudyChoices(curve, plot, parameter, calculator, render) {
   const selectable = [
     ...(hasExactStartingStudy ? [] : [{ study: baseline, studyIndex: -1 }]),
     ...mappedStudies,
-  ];
+  ].sort((left, right) => left.study.modelValue - right.study.modelValue);
   if (selectable.length === 0) return;
 
   const choices = document.createElement('section');
@@ -76,6 +80,12 @@ function addStudyChoices(curve, plot, parameter, calculator, render) {
     'Choose a study to update this assumption. Select a row. The slider, curve, formula, and total update together.';
   const list = document.createElement('div');
   list.className = 'study-choice-list';
+  const openingSelection = selectable.find(
+    ({ study }) => Math.abs(study.modelValue - calculator.parameters[parameter]) < 0.001
+  );
+  curve.dataset.selectedStudyIndex = String(
+    openingSelection?.studyIndex ?? selectable[0].studyIndex
+  );
 
   selectable.forEach(({ study, studyIndex }) => {
     const percent = curveMarkerPercent(
@@ -86,6 +96,7 @@ function addStudyChoices(curve, plot, parameter, calculator, render) {
     const point = document.createElement('span');
     point.className = 'study-point';
     point.dataset.modelValue = String(study.modelValue);
+    point.dataset.studyIndex = String(studyIndex);
     point.title = `${study.shortLabel}: ${calculator.formatParameter(
       parameter,
       study.modelValue
@@ -115,8 +126,12 @@ function addStudyChoices(curve, plot, parameter, calculator, render) {
     list.append(item);
 
     const apply = () => {
+      const previousSelection = curve.dataset.selectedStudyIndex;
+      curve.dataset.selectedStudyIndex = String(studyIndex);
       if (calculator.applyResearchStudy(parameter, studyIndex)) {
         render(study.modelValue);
+      } else {
+        curve.dataset.selectedStudyIndex = previousSelection;
       }
     };
     button.addEventListener('click', apply);
@@ -161,17 +176,36 @@ export function initializeRangeCurves(calculator) {
       current.textContent = calculator.formatParameter(parameter, numericValue);
       line.setAttribute('d', path);
       fill.setAttribute('d', `${path} L 400 90 Z`);
-      curve
-        .querySelectorAll('.study-choice, .study-point')
-        .forEach((choice) => {
-          const isActive =
-            Math.abs(Number(choice.dataset.modelValue) - numericValue) < 0.001;
-          if (choice.classList.contains('study-choice')) {
-            choice.setAttribute('aria-pressed', String(isActive));
-          } else {
-            choice.classList.toggle('is-active', isActive);
-          }
-        });
+      curve.querySelectorAll('.study-choice').forEach((choice) => {
+        const isSelected =
+          choice.dataset.studyIndex === curve.dataset.selectedStudyIndex;
+        const isExact =
+          Math.abs(Number(choice.dataset.modelValue) - numericValue) < 0.001;
+        choice.setAttribute('aria-pressed', String(isSelected));
+        choice.dataset.selectionState = isSelected
+          ? isExact
+            ? 'exact'
+            : 'adjusted'
+          : 'none';
+        const state = choice.querySelector('.study-choice-state');
+        if (state) {
+          state.textContent = isSelected
+            ? isExact
+              ? 'Selected'
+              : 'Selected, adjusted'
+            : '';
+        }
+      });
+      curve.querySelectorAll('.study-point').forEach((point) => {
+        const isSelected =
+          point.dataset.studyIndex === curve.dataset.selectedStudyIndex;
+        point.classList.toggle('is-active', isSelected);
+        point.classList.toggle(
+          'is-adjusted',
+          isSelected &&
+            Math.abs(Number(point.dataset.modelValue) - numericValue) >= 0.001
+        );
+      });
     };
 
     addStudyChoices(curve, plot, parameter, calculator, render);

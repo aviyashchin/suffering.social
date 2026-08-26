@@ -24,6 +24,9 @@ them. `src/range-curves.test.js` protects curve movement, while Playwright prove
 that paper selection changes the slider and estimate. If the opening value does
 not match one paper exactly, the interface selects a labeled starting-model row.
 Do not mark the nearest paper as selected because that would misstate its role.
+Rows are ordered by mapped model value, from low to high. A selected row remains
+the research anchor when its slider moves and changes its state to `adjusted`.
+Selecting another row replaces that anchor.
 
 ## Change presentation
 
@@ -40,6 +43,11 @@ model display while the page is open, but does not publish a per-second rate.
 Keep the page's explicit statement that it is a model display, not a live
 measurement. Each assumption-group header stays below the masthead so its live
 formula remains visible while the user tests studies in that section.
+
+Slider `update` events recalculate the model before release. Live numeric text
+uses the vanilla adapter in `src/animated-number-text.js`, which follows the
+design system's compact directional transition and reduced-motion contract.
+Use it for derived values and formulas. Keep static research findings still.
 
 ## Change telemetry
 
