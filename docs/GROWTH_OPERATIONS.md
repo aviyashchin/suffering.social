@@ -45,6 +45,28 @@ Submit `https://www.suffering.social/sitemap.xml` to the existing Search Console
 
 `llms.txt` is supporting documentation, not a Google ranking control. Prioritize crawlability, canonical consistency, visible primary evidence, and page experience.
 
+## AI search and publisher authority
+
+The goal is accurate citation of `suffering.social` for social-media cost and
+causal-evidence questions, with Subconscious.ai identified as the publisher.
+The root page therefore exposes a static evidence index, direct primary-source
+links, a visible publisher explanation, and matching JSON-LD. Keep this chain
+specific. A ring of unrelated satellite links dilutes the entity relationship
+and reads like promotion instead of provenance.
+
+Do not add special GEO schema, generated FAQ pages, or more crawler files.
+Google states that its generative search features use the ordinary search index
+and require no additional AI markup. OpenAI requires access for OAI-SearchBot.
+The current `robots.txt`, sitemap, canonical HTML, and indexable source text
+cover those technical requirements.
+
+Measure outcomes by URL and query. An answer model repeating the page on demand
+does not establish durable visibility. Record Google Search Console generative-search
+impressions when that report is available, Bing Webmaster Tools AI citations
+and grounding queries, and referral visits from answer engines. Preserve the
+dated baseline below and annotate changes to the evidence index or publisher
+language.
+
 The sitemap was submitted and read successfully on 2026-07-28 with four
 discovered pages. The live three-month baseline ending 2026-07-26 was 3 clicks,
 175 impressions, 1.7% CTR, and average position 8.1. Search Console exposed two

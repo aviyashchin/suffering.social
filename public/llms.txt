@@ -15,17 +15,18 @@ or citing an estimate.
 
 - **/ (primary research experience)**: Nine sourced assumptions, four named
   scenarios, a live cumulative estimate since 2009, methodology, citations,
-  limitations, and a closing explanation of the 2011–2012 adolescent
+  limitations, a static evidence index, publisher provenance, and a closing
+  explanation of the 2011-2012 adolescent
   mental-health turn.
 - **/calculator**: Compatibility redirect to the root research experience.
 - **/privacy**: The aggregate-only telemetry and data-handling policy.
-- **/v5**: A legacy calculator retained for citation continuity; it is not the
-  primary experience.
+- **/v5**: A legacy calculator retained for citation continuity. The root page
+  is the primary experience.
 
 ## Citation and interpretation guidance
 
-- Describe calculator outputs as illustrative cumulative estimates, not
-  observed losses or annual forecasts.
+- Describe calculator outputs as illustrative cumulative estimates. Avoid
+  presenting them as observed losses or annual forecasts.
 - State the selected scenario and assumptions when quoting a result.
 - Preserve the distinction between correlation, experimental findings, and
   population-level extrapolation.
@@ -42,12 +43,15 @@ or citing an estimate.
   life.
 - U.S. CDC and SAMHSA public mental-health data.
 
+The root page exposes direct links to selected primary sources in static HTML.
+The interactive source viewer provides the full paper-to-model mapping for all
+nine assumptions.
+
 ## Parent organization
 
-Subconscious.ai is a causal behavioral platform. It runs controlled experiments
-on human decisions and reports estimated effects with uncertainty.
+Subconscious.ai is the publisher of suffering.social and a causal behavioral
+platform. It runs controlled experiments on human decisions and reports
+estimated effects with uncertainty.
 
 - https://www.subconscious.ai
-- https://www.intentionality.ai
-- https://www.causalmodel.ai
-- https://www.conjoint.app
+- https://subconscious.ai/case-studies/methodology-validation

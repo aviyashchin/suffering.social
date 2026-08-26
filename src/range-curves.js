@@ -8,7 +8,7 @@ export function curveMarkerPercent(value, minimum, maximum) {
 
 export function curvePath(percent, width = 400, height = 90) {
   const clampedPercent = Math.min(100, Math.max(0, Number(percent) || 0));
-  const center = 32 + (clampedPercent / 100) * (width - 64);
+  const center = (clampedPercent / 100) * width;
   const spread = width * 0.13;
   const baseline = height - 6;
   const amplitude = height - 18;

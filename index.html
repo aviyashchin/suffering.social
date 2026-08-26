@@ -31,7 +31,7 @@
     <meta property="linkedin:description" content="A transparent public-research instrument for testing the possible economic burden of social media's mental-health effects.">
     
     <!-- Additional Meta Tags -->
-    <meta name="author" content="Suffering.Social Research Team">
+    <meta name="author" content="Subconscious.ai Research">
     <meta name="keywords" content="social media cost, mental health economics, digital wellness, research calculator, depression statistics, social impact">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <link rel="canonical" href="https://www.suffering.social/">
@@ -74,6 +74,14 @@
             "priceCurrency": "USD"
           },
           "publisher": { "@id": "https://subconscious.ai/#organization" },
+          "creator": { "@id": "https://subconscious.ai/#organization" },
+          "dateModified": "2026-08-25",
+          "citation": [
+            "https://www.aeaweb.org/articles?id=10.1257/aer.20211218",
+            "https://www.aeaweb.org/articles?id=10.1257/aer.20190658",
+            "https://www.nber.org/papers/w29185",
+            "https://www.samhsa.gov/data/data-we-collect/nsduh-national-survey-drug-use-and-health"
+          ],
           "isPartOf": { "@id": "https://www.suffering.social/#website" }
         }
       ]
@@ -114,7 +122,11 @@
             <p class="eyebrow">An open cost model | United States | Since 2009</p>
             <h1 id="calculator-title">What is social media costing us?</h1>
             <p class="hero-stakes">Lives cut short. Years with depression. Medical bills. Missed work.</p>
-            <a id="hero-cost-display" class="estimate-display" href="#assumptions" aria-live="polite">
+            <figure class="model-field" aria-hidden="true">
+                <canvas id="evidence-field-canvas"></canvas>
+                <figcaption><span>Lives lost</span><span>Mental health</span><span>Economic effects</span></figcaption>
+            </figure>
+            <a id="hero-cost-display" class="estimate-display" href="#assumptions" aria-live="off">
                 <span class="estimate-kicker">Estimated cost under these settings</span>
                 <strong id="hero-total-cost">$2,355,067,000,000</strong>
                 <span>Click the total to test every number</span>
@@ -124,8 +136,8 @@
                 and <strong id="hero-depression-years">30 million years lived with depression</strong>.
             </p>
             <p class="hero-caveat">
-                This is an estimate, not proof. It combines published research. Change
-                any number below and the total changes with it.
+                This estimate combines published research. It cannot prove cause.
+                Change any number below and the total changes with it.
             </p>
             <p class="adjust-prompt"><a href="#assumptions">Build your estimate</a> or start with a preset.</p>
 
@@ -145,7 +157,7 @@
                 <p class="curve-explainer">Each normal curve is a visual guide to that range. It does not show the odds of any value.</p>
             </div>
 
-            <section class="assumption-group" aria-labelledby="mortality-title">
+            <section class="assumption-group" data-category="lives" aria-labelledby="mortality-title">
                 <header>
                     <p class="group-index">01</p>
                     <div><h3 id="mortality-title">Lives lost</h3><p>Estimates the public cost of deaths that happened earlier than expected.</p></div>
@@ -175,7 +187,7 @@
                         <p class="evidence">Evidence range 30K to 70K deaths · <button class="source-link info-btn" type="button" data-param="suicides" data-telemetry-cta="source_inspect">CDC WONDER</button></p>
                     </article>
                     <article class="assumption">
-                        <div class="assumption-copy"><label for="attribution-nouislider">Share that social media may have caused</label><p>This is an estimate, not a measured fact.</p></div>
+                        <div class="assumption-copy"><label for="attribution-nouislider">Share that social media may have caused</label><p>This is a working estimate. No study measured this share directly.</p></div>
                         <strong id="attribution-value">18%</strong>
                         <div id="attribution-nouislider" class="research-slider"></div>
                         <figure class="range-curve" data-parameter="attribution" aria-label="Illustrative range curve for the share social media may have caused">
@@ -188,7 +200,7 @@
                 </div>
             </section>
 
-            <section class="assumption-group" aria-labelledby="mental-title">
+            <section class="assumption-group" data-category="health" aria-labelledby="mental-title">
                 <header>
                     <p class="group-index">02</p>
                     <div><h3 id="mental-title">Mental health</h3><p>Estimates the cost of years lived with depression.</p></div>
@@ -231,7 +243,7 @@
                 </div>
             </section>
 
-            <section class="assumption-group" aria-labelledby="economic-title">
+            <section class="assumption-group" data-category="economic" aria-labelledby="economic-title">
                 <header>
                     <p class="group-index">03</p>
                     <div><h3 id="economic-title">Economic effects</h3><p>Counts direct care and lost productivity over time.</p></div>
@@ -276,10 +288,11 @@
         </section>
 
         <section class="result-reading" aria-labelledby="result-title">
+            <div class="result-category-key" aria-hidden="true"><span></span><span></span><span></span></div>
             <p class="eyebrow">Interpretation</p>
             <h2 id="result-title">See which choices change the answer</h2>
             <p class="result-number"><span id="total-cost">$2.4T</span> estimated cost</p>
-            <p>Use this total to compare different sets of numbers. It is not a forecast, a diagnosis, or proof that social media caused every outcome.</p>
+            <p>Use this total to compare different sets of numbers. The result cannot prove cause or describe one person's experience.</p>
             <div class="research-actions">
                 <button type="button" id="copy-url" data-telemetry-cta="scenario_copy">Copy this scenario</button>
                 <button type="button" id="share-twitter" data-telemetry-cta="scenario_share">Share research link</button>
@@ -308,8 +321,31 @@
             </ul>
         </section>
 
+        <section id="evidence-index" class="evidence-index" aria-labelledby="evidence-index-title">
+            <header>
+                <p class="eyebrow">Evidence index</p>
+                <h2 id="evidence-index-title">What this calculator can support</h2>
+                <p><strong>The output is an illustrative cumulative estimate for the United States since 2009.</strong> It combines editable assumptions about lives lost, years with depression, healthcare spending, and missed work.</p>
+                <p>Each paper's reported finding stays separate from the value mapped into the calculator. Open a source, inspect the finding, then change the model value to see its effect.</p>
+            </header>
+            <ul>
+                <li><a href="https://www.aeaweb.org/articles?id=10.1257/aer.20211218" target="_blank" rel="noopener">Social Media and Mental Health</a><span>Staggered platform rollout and student mental health</span></li>
+                <li><a href="https://www.aeaweb.org/articles?id=10.1257/aer.20190658" target="_blank" rel="noopener">The Welfare Effects of Social Media</a><span>Randomized deactivation and measured wellbeing effects</span></li>
+                <li><a href="https://www.nber.org/papers/w29185" target="_blank" rel="noopener">Value of statistical life synthesis</a><span>Research range used for reducing mortality risk</span></li>
+                <li><a href="https://www.samhsa.gov/data/data-we-collect/nsduh-national-survey-drug-use-and-health" target="_blank" rel="noopener">National Survey on Drug Use and Health</a><span>National mental-health trend data</span></li>
+            </ul>
+        </section>
+
+        <aside id="about-subconscious" class="publisher-note" aria-labelledby="publisher-note-title">
+            <p class="eyebrow">Publisher</p>
+            <h2 id="publisher-note-title">Why Subconscious publishes this work</h2>
+            <p><a href="https://subconscious.ai">Subconscious.ai</a> is a causal behavioral platform. It runs controlled experiments on human decisions and reports estimated effects with uncertainty.</p>
+            <p>This public calculator applies the same research discipline to a contested question: expose every assumption, separate measured findings from model choices, and make uncertainty inspectable.</p>
+            <a class="publisher-note-link" href="https://subconscious.ai/case-studies/methodology-validation">See how Subconscious validates behavioral experiments</a>
+        </aside>
+
         <aside class="open-research">
-            <div><p class="eyebrow">Open research</p><h2>Check the work, not just the answer.</h2></div>
+            <div><p class="eyebrow">Open research</p><h2>Check the sources and calculations.</h2></div>
             <p>The calculator and sources are public. Corrections and better estimates are welcome.</p>
             <a href="https://github.com/aviyashchin/suffering.social" target="_blank" rel="noopener" data-telemetry-cta="research_exit">Open the research repository</a>
         </aside>
@@ -328,7 +364,7 @@
           <div class="history-chart-frame">
             <svg viewBox="0 0 960 470" role="img" aria-labelledby="history-chart-title history-chart-desc">
               <title id="history-chart-title">Illustrative index of adolescent mental-health distress, 2005 to 2021</title>
-              <desc id="history-chart-desc">The survey number stays fairly steady through 2011 and rises after 2012. The dashed line asks what might have happened without the change. It is not a measured result.</desc>
+              <desc id="history-chart-desc">The survey number stays fairly steady through 2011 and rises after 2012. The dashed line asks what might have happened without the change. Researchers did not measure that line.</desc>
               <g class="history-grid">
                 <line x1="70" y1="60" x2="70" y2="390" />
                 <line x1="70" y1="390" x2="910" y2="390" />
@@ -347,13 +383,13 @@
               <text class="history-axis" x="866" y="430">2021</text>
             </svg>
           </div>
-          <figcaption><strong>The solid line shows the pattern seen in national surveys.</strong> The dashed line asks what might have happened without the change. It is a question, not a measured result.</figcaption>
+          <figcaption><strong>The solid line shows the pattern seen in national surveys.</strong> The dashed line asks what might have happened without the change. Researchers did not measure that line.</figcaption>
         </figure>
 
         <div class="history-reading">
-          <p class="history-reading-intro">To study the change, researchers do three things.</p>
+          <p class="history-reading-intro">Researchers use several checks to study the change.</p>
           <ol>
-            <li><span>01</span><div><h3>Check more than one survey.</h3><p>A real change should appear in several trusted sources, not just one chart.</p></div></li>
+            <li><span>01</span><div><h3>Check more than one survey.</h3><p>A real change should appear in several trusted sources. One chart is not enough.</p></div></li>
             <li><span>02</span><div><h3>Compare similar groups.</h3><p>Researchers compare people who got access earlier with similar people who got access later.</p></div></li>
             <li><span>03</span><div><h3>Test every guess.</h3><p>Change each assumption and see how much the final estimate moves.</p></div></li>
           </ol>
@@ -555,7 +591,7 @@
             depression: {
                 name: "People with SM-Induced Depression",
                 unit: "millions",
-                description: "Number of depression cases directly attributable to social media exposure, not total depression.",
+                description: "Number of depression cases directly attributed to social media exposure. Other depression cases are excluded.",
                 defaultValue: 5.0,
                 evidenceRange: { min: 2, max: 8, confidence: "High" },
                 studies: [
@@ -1317,7 +1353,7 @@
                             <div>
                                 <h3>Mental health</h3>
                                 <p class="formula-line">${(depression / 1000000).toFixed(1)}M people × ${yld} years × ${qol}% disability weight × $${Math.round(vsl * 1000000 / 75 / 1000)}K annual life value = <strong>${this.formatLargeNumber(results.mental)}</strong></p>
-                                <p>Adapts the WHO burden-of-disease framework and health-utility literature. This is a modeled comparison, not a diagnosis.</p>
+                                <p>Adapts the WHO burden-of-disease framework and health-utility literature. This modeled comparison does not diagnose anyone.</p>
                             </div>
                         </section>
                         <section class="method-step">
@@ -1333,7 +1369,7 @@
                             <div>
                                 <h3>Estimated cost clock</h3>
                                 <p>The header divides the current cumulative estimate by the seconds since January 1, 2009. It extends that historical average while this page is open.</p>
-                                <p>The clock is a model display. It is not a live measurement of harm happening right now.</p>
+                                <p>The clock displays the model over time. It does not measure harm as it happens.</p>
                             </div>
                         </section>
                         <section class="modal-caveat">

@@ -6,6 +6,8 @@ const calculator = parseHtml('index.html');
 const calculatorSource = readFileSync(resolve(root, 'index.html'), 'utf8');
 const support = calculator;
 const calculatorRedirect = parseHtml('calculator.html');
+const privacy = parseHtml('privacy.html');
+const legacy = parseHtml('social_media_cost_calculatorv5.html');
 const scenarioNames = ['reset', 'optimistic', 'facebookFiles', 'aggressive'];
 const parameterNames = [
   'vsl',
@@ -34,6 +36,38 @@ describe('/ calculator product route contract', () => {
     expect(
       structuredData.some((entry) => entry['@type'] === 'SoftwareApplication')
     ).toBe(true);
+  });
+
+  test('publishes a static evidence and provenance path for search systems', () => {
+    const evidenceIndex = calculator.querySelector('#evidence-index');
+    const publisher = calculator.querySelector('#about-subconscious');
+    const structuredData = [...calculator.querySelectorAll(
+      'script[type="application/ld+json"]'
+    )]
+      .map((node) => JSON.parse(node.textContent))
+      .flatMap((entry) => entry['@graph'] || [entry]);
+    const application = structuredData.find(
+      (entry) => entry['@type'] === 'SoftwareApplication'
+    );
+
+    expect(evidenceIndex).not.toBeNull();
+    expect(evidenceIndex.querySelectorAll('a[href^="https://"]')).toHaveLength(4);
+    expect(normalizedText(evidenceIndex)).toMatch(/illustrative cumulative estimate/i);
+    expect(normalizedText(evidenceIndex)).toMatch(/reported finding/i);
+    expect(publisher).not.toBeNull();
+    expect(normalizedText(publisher)).toMatch(/causal behavioral platform/i);
+    expect(
+      publisher.querySelector(
+        'a[href="https://subconscious.ai/case-studies/methodology-validation"]'
+      )
+    ).not.toBeNull();
+    expect(application.creator).toEqual({
+      '@id': 'https://subconscious.ai/#organization',
+    });
+    expect(application.citation).toHaveLength(4);
+    for (const citation of application.citation) {
+      expect(evidenceIndex.querySelector(`a[href="${citation}"]`)).not.toBeNull();
+    }
   });
 
   test('has one H1 and frames the estimate with uncertainty', () => {
@@ -79,7 +113,7 @@ describe('/ calculator product route contract', () => {
     expect(calculator.querySelector('#cost-clock-total')).not.toBeNull();
     expect(calculator.querySelector('#cost-clock-rate')).not.toBeNull();
     expect(calculatorSource).toMatch(/modelValue:/);
-    expect(calculatorSource).toMatch(/not a live measurement/i);
+    expect(calculatorSource).toMatch(/does not measure harm as it happens/i);
   });
 
   test('keeps the proven calculator interface visible instead of hiding its controls', () => {
@@ -297,7 +331,7 @@ describe('/ calculator-first research narrative', () => {
     expect(normalizedText(evidence)).toMatch(/what changed.*2012/i);
   });
 
-  test('keeps the public narrative quietly self-contained', () => {
+  test('keeps the public narrative self-contained', () => {
     expect(visibleText(support)).not.toMatch(
       /aaru|simile|facebook|instagram|tiktok|snapchat/i
     );
@@ -330,6 +364,41 @@ describe('legacy /v5 route contract', () => {
           'header a[href="/v5"], nav a[href="/v5"], [aria-label*="navigation" i] a[href="/v5"]'
         )
       ).toHaveLength(0);
+    }
+  });
+});
+
+describe('public voice contract', () => {
+  const publicPages = [calculator, calculatorRedirect, privacy, legacy];
+  const publicTextAssets = [
+    readFileSync(resolve(root, 'public/llms.txt'), 'utf8'),
+  ];
+  const bannedPhrases = [
+    /and\s+here is (?:the|a) kicker/i,
+    /here is what people miss/i,
+    /here is the part that no one talks about/i,
+    /that distinction matters/i,
+  ];
+  const litotes = [
+    /\bnot (?:bad|uncommon|insignificant|impossible|unreasonable|unimportant)\b/i,
+    /\bno small (?:feat|matter|task)\b/i,
+  ];
+  const negativeParallelism =
+    /(?:,\s*not\b|\bnot just\b|\bit (?:is|was|does|did|can) not\b[^.!?]{0,100}[,;:]\s*it (?:is|was|does|did|can)\b)/i;
+
+  test('keeps every public page free of long dashes and stock AI phrasing', () => {
+    const publicText = [
+      ...publicPages.map((page) => visibleText(page)),
+      ...publicTextAssets,
+    ];
+
+    for (const text of publicText) {
+      expect(text).not.toMatch(/[–—]/);
+      expect(text).not.toMatch(/\b(?:quietly|alignment|balanced|quiet)\b/i);
+      expect(text).not.toMatch(negativeParallelism);
+      for (const phrase of [...bannedPhrases, ...litotes]) {
+        expect(text).not.toMatch(phrase);
+      }
     }
   });
 });

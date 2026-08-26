@@ -27,6 +27,7 @@ describe('estimated cost clock', () => {
   test('renders the historical rate and returns an interval cleanup', () => {
     document.body.innerHTML = `
       <strong id="cost-clock-total"></strong>
+      <strong id="hero-total-cost"></strong>
       <small id="cost-clock-rate"></small>
     `;
     jest.spyOn(Date, 'now').mockReturnValue(Date.UTC(2010, 0, 1));
@@ -43,7 +44,19 @@ describe('estimated cost clock', () => {
     expect(document.getElementById('cost-clock-rate')).toHaveTextContent(
       'Historical average: about $1 every second'
     );
+    expect(document.getElementById('hero-total-cost')).toHaveTextContent(
+      '$31,536,000'
+    );
     expect(setIntervalSpy).toHaveBeenCalledWith(expect.any(Function), 250);
+
+    jest.spyOn(Date, 'now').mockReturnValue(Date.UTC(2010, 0, 1) + 1000);
+    setIntervalSpy.mock.calls[0][0]();
+    expect(document.getElementById('cost-clock-total')).toHaveTextContent(
+      '$31,536,001'
+    );
+    expect(document.getElementById('hero-total-cost')).toHaveTextContent(
+      '$31,536,001'
+    );
 
     cleanup();
     expect(clearIntervalSpy).toHaveBeenCalledWith(
