@@ -111,6 +111,19 @@ the stack must resolve to the readable `src/telemetry-runtime.js` source file an
 line tied to the deployed release, not an anonymous console callback or a
 minified bundle location. Resolve the canary after verification.
 
+Playwright's injected `setTimeout` callback can add a second synthetic frame
+whose generated line does not exist in the one-line production bundle. Sentry
+may label that secondary frame `js_invalid_sourcemap_location`. Judge the
+canary by the primary in-app frame: it must still resolve to the expected
+`src/telemetry-runtime.js` line. A readable primary frame is valid proof; a
+minified or anonymous primary frame is not.
+
+The 2026-08-26 canary on release `e5bc62ba8a42d7c796aa48bf0be1ae50eee5e7b1`
+resolved the primary frame to `src/telemetry-runtime.js:107`, used the
+`production` environment and query-free canonical URL, and contained no
+cookies, request body, extras, custom tags, calculator state, tracing, or
+replay. Sentry redacted the placeholder user and IP fields.
+
 ## Event vocabulary
 
 - `page_view`: once per route, with `site_key`, environment, canonical host,
@@ -129,6 +142,11 @@ test address in Preview, confirm the success message, read the record back from
 the contact system, and remove the test record. Repeat once in Production after
 the deployed revision is verified. A browser success message alone is not proof
 that the address was stored.
+
+On 2026-08-26, a synthetic production address produced one person and one
+`suffering_social_research_updates` list entry. Both objects were deleted after
+read-back, and follow-up queries returned zero matching people and `404` for
+the removed list entry.
 
 ## Monitoring drill
 

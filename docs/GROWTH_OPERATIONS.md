@@ -73,6 +73,20 @@ discovered pages. The live three-month baseline ending 2026-07-26 was 3 clicks,
 query rows: `social impact calculator` and `social calculator`, each with one
 impression and no clicks.
 
+### Launch measurement reviews
+
+Owner: Avi Yashchin and Subconscious web operations.
+
+- 2026-09-02: 7-day review.
+- 2026-09-23: 28-day review.
+
+At each review, record Search Console clicks, impressions, CTR, indexed
+canonical URLs, and query rows. Compare aggregate `calculator_open`,
+`source_inspect`, and `research_exit` events. Read successful signups from the
+Attio list count, never from analytics. Check answer-engine citations and
+referrals manually. Record the date range and prior baseline beside every
+comparison so a change in traffic cannot be mistaken for a change in value.
+
 ## Deferred email readiness
 
 The consent-based research-update form upserts a person in Attio and adds that
@@ -83,3 +97,9 @@ sending domain and provider, configure DKIM and DMARC, add one-click
 unsubscribe handling, and test deliverability. Until then, use the saved
 addresses only for the promised occasional research updates and honor removal
 requests sent to `privacy@subconscious.ai`.
+
+Research-update owner: Avi Yashchin. Subconscious web operations will review
+new signups weekly. After sender authentication and unsubscribe handling are
+approved, send only when the research or calculator changes materially, with
+at most one research update per month. Until then, the list is a consented
+contact queue and no automated campaign may send from it.

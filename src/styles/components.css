@@ -149,53 +149,6 @@ overflow: hidden;
   border-color: rgba(255, 255, 255, 0.4);
 }
 
-/* ============================================================================
-   PARAMETER GROUPS
-   ============================================================================ */
-
-.parameter-group {
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-  background: var(--bg-2);
-  border-radius: 2px;
-  border: 1px solid var(--bg-3);
-}
-
-.parameter-group h3 {
-  color: var(--color);
-  font-size: 1.125rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-/* Parameter Styling by Type */
-.parameter-group[data-group="mortality"] {
-  border-left: 4px solid var(--c-mortality);
-}
-
-.parameter-group[data-group="mortality"] h3 {
-  color: var(--c-mortality);
-}
-
-.parameter-group[data-group="mental-health"] {
-  border-left: 4px solid var(--c-mental-health);
-}
-
-.parameter-group[data-group="mental-health"] h3 {
-  color: var(--c-mental-health);
-}
-
-.parameter-group[data-group="healthcare"] {
-  border-left: 4px solid var(--c-productivity);
-}
-
-.parameter-group[data-group="healthcare"] h3 {
-  color: var(--c-productivity);
-}
-
 /* Individual Parameters */
 .parameter {
   margin-bottom: 1.5rem;
@@ -489,34 +442,6 @@ transition: all 0.2s ease;
   text-overflow: ellipsis;
 }
 
-/* Parameter group color coding */
-.parameter-group[data-group="mortality"] .parameter {
-  background: var(--surface-mortality);
-  border-color: var(--surface-mortality);
-}
-
-.parameter-group[data-group="mortality"] .parameter:hover {
-  border-color: var(--c-mortality);
-}
-
-.parameter-group[data-group="mental-health"] .parameter {
-  background: var(--surface-mental-health);
-  border-color: var(--c-mental-health);
-}
-
-.parameter-group[data-group="mental-health"] .parameter:hover {
-  border-color: var(--c-mental-health);
-}
-
-.parameter-group[data-group="healthcare"] .parameter {
-  background: var(--surface-productivity);
-  border-color: var(--surface-productivity);
-}
-
-.parameter-group[data-group="healthcare"] .parameter:hover {
-  border-color: var(--c-productivity);
-}
-
 /* Info button styling - Enhanced hover states */
 .info-btn {
   background: rgba(59, 130, 246, 0.1);
@@ -594,19 +519,6 @@ position: relative;
   background: transparent;
   opacity: 0.3;
   pointer-events: none;
-}
-
-/* Parameter-specific curve colors */
-.parameter-group[data-group="mortality"] .distribution-chart-container::after {
-  color: var(--c-mortality);
-}
-
-.parameter-group[data-group="mental-health"] .distribution-chart-container::after {
-  color: var(--c-mental-health);
-}
-
-.parameter-group[data-group="healthcare"] .distribution-chart-container::after {
-  color: var(--c-productivity);
 }
 
 /* Fixed element positioning helpers */
@@ -856,11 +768,6 @@ font-size: 0.875rem;
     font-size: 0.875rem;
   }
   
-  .parameter-group {
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-  }
-  
   .parameter-label {
     flex-direction: column;
     align-items: flex-start;
@@ -897,10 +804,6 @@ font-size: 0.875rem;
 
 /* Large screen adjustments */
 @media (min-width: 1024px) {
-  .parameter-group {
-    padding: 2rem;
-  }
-  
   .chart-container {
     padding: 1.5rem;
   }
@@ -1041,27 +944,6 @@ overflow: hidden;
 .scenario-btn.optimistic:hover {
     background: var(--c-productivity, var(--c-productivity));
     transform: translateY(-0.5px);
-}
-
-/* Parameter Groups */
-.parameter-group {
-    margin-bottom: 3rem;
-    padding: 2rem;
-    background: var(--bg-1);
-    border-radius: 2px;
-    border-left: 4px solid;
-}
-
-.parameter-group.mortality {
-    border-left-color: var(--c-mortality);
-}
-
-.parameter-group.mental-health {
-    border-left-color: var(--c-mental-health);
-}
-
-.parameter-group.productivity {
-    border-left-color: var(--c-productivity);
 }
 
 /* Slider System */
@@ -1344,8 +1226,8 @@ border: 1px solid var(--bg-3);
 
 .support-caveat {
   max-width: 45rem;
-  padding-left: 1.25rem;
-  border-left: 3px solid var(--research-red);
+  padding-block: 1.25rem;
+  border-block: 1px solid var(--research-red);
 }
 
 .support-primary {

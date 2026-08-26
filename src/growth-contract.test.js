@@ -41,7 +41,7 @@ describe('SEO and telemetry build contract', () => {
     expect(llms).toContain('cumulative estimate since 2009');
     expect(llms).not.toMatch(/trillions of dollars per year/i);
     expect(sitemap).toMatch(
-      /<loc>https:\/\/www\.suffering\.social\/<\/loc>[\s\S]*?<lastmod>2026-08-25<\/lastmod>[\s\S]*?<priority>1\.0<\/priority>/
+      /<loc>https:\/\/www\.suffering\.social\/<\/loc>[\s\S]*?<lastmod>2026-08-26<\/lastmod>[\s\S]*?<priority>1\.0<\/priority>/
     );
     expect(home).toContain('https://www.suffering.social/#application');
   });

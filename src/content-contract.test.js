@@ -269,6 +269,41 @@ describe('/ calculator product route contract', () => {
     expect(form.querySelector('[role="status"]')).not.toBeNull();
     expect(form.querySelector('button[type="submit"]')).not.toBeNull();
   });
+
+  test('separates the model from legal outcomes and points distressed readers to help', () => {
+    const legalContext = calculator.querySelector('#legal-context');
+    const safetyNote = calculator.querySelector('#crisis-support');
+
+    expect(legalContext).not.toBeNull();
+    expect(normalizedText(legalContext)).toMatch(/august 26, 2026/i);
+    expect(normalizedText(legalContext)).toMatch(
+      /not a verdict, settlement value, or estimate of legal damages/i
+    );
+    expect(
+      legalContext.querySelector(
+        'a[href="https://www.ag.idaho.gov/newsroom/ag-labrador-delivers-largest-big-tech-settlement-in-history-for-child-protection-against-facebook-instagram/"]'
+      )
+    ).not.toBeNull();
+
+    expect(safetyNote).not.toBeNull();
+    expect(normalizedText(safetyNote)).toMatch(/call or text 988/i);
+    expect(safetyNote.querySelector('a[href="https://988lifeline.org/"]')).not.toBeNull();
+  });
+
+  test('keeps active styles free of legacy side stripes', () => {
+    const activeCss = [
+      'src/styles/base.css',
+      'src/styles/components.css',
+      'src/styles/calculator.css',
+      'src/styles/mobile.css',
+      'src/styles/history-chapter.css',
+      'src/styles/original-instrument.css',
+    ]
+      .map((path) => readFileSync(resolve(root, path), 'utf8'))
+      .join('\n');
+
+    expect(activeCss).not.toMatch(/border-left:\s*(?:[2-9]|[1-9]\d+)px\b/i);
+  });
 });
 
 describe('test runner isolation contract', () => {

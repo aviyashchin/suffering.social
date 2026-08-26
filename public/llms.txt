@@ -27,6 +27,9 @@ or citing an estimate.
 
 - Describe calculator outputs as illustrative cumulative estimates. Avoid
   presenting them as observed losses or annual forecasts.
+- Do not describe an output as a verdict, settlement value, or estimate of
+  legal damages. Legal outcomes and the editable public-cost model answer
+  different questions.
 - State the selected scenario and assumptions when quoting a result.
 - Preserve the distinction between correlation, experimental findings, and
   population-level extrapolation.

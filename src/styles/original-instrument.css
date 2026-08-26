@@ -1037,10 +1037,39 @@ body {
 
 .method-section p,
 .limitations li,
+.legal-context p,
 .evidence-index p,
 .publisher-note p,
 .open-research p {
   color: var(--instrument-muted) !important;
+}
+
+.legal-context {
+  max-width: 58rem;
+  margin-top: 3rem;
+  padding-block: 1.5rem;
+  border-block: 1px solid var(--instrument-rule);
+}
+
+.legal-context h3 {
+  max-width: 26ch;
+  margin: 0.45rem 0 0.8rem;
+  font-family: var(--instrument-serif);
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+}
+
+.legal-context p {
+  max-width: 68ch;
+  line-height: 1.7;
+}
+
+.legal-context a,
+.footer-safety a {
+  color: var(--instrument-ink);
+  text-underline-offset: 0.2em;
 }
 
 .evidence-index,
