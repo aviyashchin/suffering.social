@@ -11,16 +11,21 @@ export function formatClockTotal(value) {
 
 export function startCostClock(calculator) {
   const totalDisplay = document.getElementById('cost-clock-total');
+  const heroTotalDisplay = document.getElementById('hero-total-cost');
   const rateDisplay = document.getElementById('cost-clock-rate');
-  if (!totalDisplay || !rateDisplay) return () => {};
+  if (!totalDisplay && !heroTotalDisplay) return () => {};
 
   const openedAt = Date.now();
   const render = () => {
     const total = calculator.calculateTotalEconomicImpact().total;
     const rate = averageCostPerSecond(total, MODEL_START, openedAt);
     const addedSinceOpen = rate * ((Date.now() - openedAt) / 1000);
-    totalDisplay.textContent = formatClockTotal(total + addedSinceOpen);
-    rateDisplay.textContent = `Historical average: about ${formatClockTotal(rate)} every second`;
+    const tickingTotal = formatClockTotal(total + addedSinceOpen);
+    if (totalDisplay) totalDisplay.textContent = tickingTotal;
+    if (heroTotalDisplay) heroTotalDisplay.textContent = tickingTotal;
+    if (rateDisplay) {
+      rateDisplay.textContent = `Historical average: about ${formatClockTotal(rate)} every second`;
+    }
   };
 
   render();

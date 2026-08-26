@@ -124,5 +124,8 @@ describe('research range curves', () => {
         .reduce((peak, point) => (point[1] < peak[1] ? point : peak))[0];
 
     expect(peakX(15)).toBeLessThan(peakX(85));
+    expect(peakX(0)).toBe(0);
+    expect(peakX(50)).toBe(200);
+    expect(peakX(100)).toBe(400);
   });
 });

@@ -16,7 +16,8 @@ evidence chapter, “What changed around 2012?”
 This is a static, multi-page Vite site:
 
 - `index.html` owns `/`, including the calculation engine, assumptions,
-  scenarios, methods, citations, and closing evidence chapter.
+  scenarios, methods, a static evidence index, publisher provenance, citations,
+  and the closing evidence chapter.
 - `calculator.html` is a no-index compatibility document; Vercel permanently
   redirects `/calculator` to `/`.
 - `privacy.html` and `social_media_cost_calculatorv5.html` own `/privacy` and
@@ -92,6 +93,10 @@ Paper findings and calculator inputs are not interchangeable. Keep the reported
 finding visible, document the mapping in `valueBasis`, and expose only
 `modelValue` entries inside the parameter's stated slider range. The range
 curves illustrate the editable range; they are not probability distributions.
+Keep selected primary-source links and the Subconscious publisher relationship
+visible in static HTML. Search and answer engines may never open the interactive
+source dialog. Matching JSON-LD can describe visible provenance; it cannot
+replace it.
 Open a pull request with the changed source, model rationale, and validation
 output.
 
