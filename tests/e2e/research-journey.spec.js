@@ -442,11 +442,11 @@ test.describe('public research journey', () => {
       .poll(() => page.evaluate(() => window.calculator.parameters.vsl))
       .toBe(sliderValueAfter);
 
-    const firstPaperChoice = page
+    const baselinePaperChoice = page
       .locator('.range-curve[data-parameter="vsl"] .study-choice')
-      .first();
-    await page.keyboard.press('Tab');
-    await expectVisibleFocus(firstPaperChoice);
+      .filter({ hasText: 'DOT guidance' });
+    await tabTo(baselinePaperChoice, page);
+    await expectVisibleFocus(baselinePaperChoice);
     await page.keyboard.press('Enter');
     await expect
       .poll(() => page.evaluate(() => window.calculator.parameters.vsl))

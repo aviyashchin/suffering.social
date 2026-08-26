@@ -64,8 +64,13 @@ describe('research range curves', () => {
         </figure>
       </article>
     `;
+    let updateHandler;
     const slider = document.getElementById('vsl-nouislider');
-    slider.noUiSlider = { on: () => {} };
+    slider.noUiSlider = {
+      on: (event, handler) => {
+        if (event === 'update.rangeCurve') updateHandler = handler;
+      },
+    };
     const applied = [];
     const calculator = {
       parameters: { vsl: 11 },
@@ -75,17 +80,17 @@ describe('research range curves', () => {
         vsl: {
           studies: [
             {
+              modelValue: 14,
+              shortLabel: 'Archived paper',
+              value: 'Archived finding',
+              valueBasis: 'Upper estimate',
+            },
+            {
               modelValue: 10.5,
               shortLabel: 'Linked paper',
               value: 'Reported finding',
               valueBasis: 'Direct estimate',
               url: 'https://example.com/paper',
-            },
-            {
-              modelValue: 14,
-              shortLabel: 'Archived paper',
-              value: 'Archived finding',
-              valueBasis: 'Upper estimate',
             },
           ],
         },
@@ -108,15 +113,25 @@ describe('research range curves', () => {
     expect(document.querySelectorAll('.study-choice-item a')).toHaveLength(1);
     expect(region.innerHTML).not.toContain('undefined');
     expect(choices).toHaveLength(3);
-    expect(choices[0]).toHaveAttribute('aria-pressed', 'true');
-    expect(choices[0]).toHaveTextContent('Starting model value');
+    expect(choices.map((choice) => Number(choice.dataset.modelValue))).toEqual([
+      10.5,
+      11,
+      14,
+    ]);
+    expect(choices[1]).toHaveAttribute('aria-pressed', 'true');
+    expect(choices[1]).toHaveTextContent('Starting model value');
     expect(region).toHaveTextContent(
       'Select a row. The slider, curve, formula, and total update together.'
     );
 
     choices[2].click();
-    expect(applied).toEqual([1]);
+    expect(applied).toEqual([0]);
     expect(choices[2]).toHaveAttribute('aria-pressed', 'true');
+    expect(choices[2]).toHaveAttribute('data-selection-state', 'exact');
+
+    updateHandler(['13']);
+    expect(choices[2]).toHaveAttribute('aria-pressed', 'true');
+    expect(choices[2]).toHaveAttribute('data-selection-state', 'adjusted');
   });
 
   test('moves a bell curve peak across the fixed research range', () => {

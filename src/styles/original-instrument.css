@@ -35,6 +35,40 @@ body {
   background: var(--instrument-red);
 }
 
+.animated-number-clip {
+  display: inline-block;
+  overflow-y: clip;
+  vertical-align: bottom;
+}
+
+.animated-number-value {
+  display: inline-block;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+.animated-number-clip[data-direction='up'] .animated-number-value {
+  animation: number-settle-up 180ms var(--ease-out-expo) both;
+}
+
+.animated-number-clip[data-direction='down'] .animated-number-value {
+  animation: number-settle-down 180ms var(--ease-out-expo) both;
+}
+
+@keyframes number-settle-up {
+  from {
+    opacity: 0.35;
+    transform: translateY(45%);
+  }
+}
+
+@keyframes number-settle-down {
+  from {
+    opacity: 0.35;
+    transform: translateY(-45%);
+  }
+}
+
 .research-masthead {
   position: sticky;
   top: 0;
@@ -764,6 +798,12 @@ body {
   background: var(--group-color);
 }
 
+.study-point.is-adjusted::after {
+  background: var(--instrument-paper-raised);
+  outline: 2px solid var(--group-color);
+  outline-offset: 2px;
+}
+
 .study-choices {
   padding: 0;
   background: transparent;
@@ -831,6 +871,10 @@ body {
   background: var(--instrument-ink);
 }
 
+.study-choice[data-selection-state='adjusted'] {
+  background: color-mix(in oklch, var(--instrument-ink) 90%, var(--group-color));
+}
+
 .study-choice:hover strong,
 .study-choice[aria-pressed='true'] strong,
 .study-choice:hover small,
@@ -858,6 +902,14 @@ body {
   color: var(--instrument-muted);
   font-size: 0.75rem;
   line-height: 1.45;
+}
+
+.study-choice-state {
+  margin-left: auto;
+  color: inherit;
+  font: 650 0.62rem/1.2 var(--instrument-data);
+  letter-spacing: 0;
+  text-align: right;
 }
 
 .study-choice-item a {
@@ -1434,6 +1486,10 @@ body {
   .range-curve-current,
   .study-choice {
     transition: none;
+  }
+
+  .animated-number-value {
+    animation: none !important;
   }
 }
 .study-choice > span,

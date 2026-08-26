@@ -76,6 +76,10 @@ describe('estimated cost clock', () => {
     expect(document.getElementById('hero-total-cost')).toHaveTextContent(
       '$31,536,010'
     );
+    document.dispatchEvent(new CustomEvent('calculator:updated'));
+    expect(document.getElementById('cost-clock-total')).toHaveTextContent(
+      '$31,536,000'
+    );
     cleanup();
     expect(clearIntervalSpy).toHaveBeenCalledWith(
       setIntervalSpy.mock.results[0].value

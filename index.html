@@ -938,8 +938,8 @@
                         currentHandle.setAttribute('aria-valuemax', String(config.range.max));
                         currentHandle.setAttribute('aria-valuenow', this.formatDuration(value));
                     }
+                    this.updateAllDisplays();
                 });
-                container.noUiSlider.on('change', () => this.updateAllDisplays());
             }
 
             setupScenarioButtons() {
@@ -1011,7 +1011,7 @@
 
             updateDisplay(param, value) {
                 const display = document.getElementById(`${param}-value`);
-                if (display) display.textContent = this.formatParameter(param, value);
+                this.setOutputText(display, this.formatParameter(param, value));
                 if (param === 'attribution') {
                     const meter = document.getElementById('attribution-meter');
                     if (meter) {
@@ -1056,23 +1056,41 @@
                 return `$${Math.round(value).toLocaleString('en-US')}`;
             }
 
+            setOutputText(element, value) {
+                if (!element) return;
+                if (typeof window.setAnimatedNumberText === 'function') {
+                    window.setAnimatedNumberText(element, value);
+                    return;
+                }
+                element.textContent = value;
+            }
+
             updateAllDisplays() {
                 const results = this.calculateTotalEconomicImpact();
                 this.lastResults = results;
                 Object.entries(this.parameters).forEach(([param, value]) => {
                     this.updateDisplay(param, value);
                 });
-                document.getElementById('hero-total-cost').textContent =
-                    this.formatFullNumber(results.total);
-                document.getElementById('total-cost').textContent =
-                    this.formatLargeNumber(results.total);
+                this.setOutputText(
+                    document.getElementById('hero-total-cost'),
+                    this.formatFullNumber(results.total)
+                );
+                this.setOutputText(
+                    document.getElementById('total-cost'),
+                    this.formatLargeNumber(results.total)
+                );
                 const modeledDeaths = this.parameters.suicides * (this.parameters.attribution / 100);
                 const depressionYears = this.parameters.depression * this.parameters.yld;
-                document.getElementById('hero-deaths').textContent =
-                    `${Math.round(modeledDeaths).toLocaleString('en-US')} deaths`;
-                document.getElementById('hero-depression-years').textContent =
-                    `${(depressionYears / 1000000).toLocaleString('en-US', { maximumFractionDigits: 1 })} million years lived with depression`;
+                this.setOutputText(
+                    document.getElementById('hero-deaths'),
+                    `${Math.round(modeledDeaths).toLocaleString('en-US')} deaths`
+                );
+                this.setOutputText(
+                    document.getElementById('hero-depression-years'),
+                    `${(depressionYears / 1000000).toLocaleString('en-US', { maximumFractionDigits: 1 })} million years lived with depression`
+                );
                 this.updateFormulaDisplays(results);
+                document.dispatchEvent(new CustomEvent('calculator:updated'));
             }
 
             updateFormulaDisplays(results) {
@@ -1087,12 +1105,18 @@
                     productivity,
                     duration
                 } = this.parameters;
-                document.getElementById('mortality-result').textContent =
-                    `${Math.round(suicides / 1000)}K × ${attribution}% × $${vsl}M = ${this.formatLargeNumber(results.mortality)}`;
-                document.getElementById('mental-result').textContent =
-                    `${(depression / 1000000).toFixed(1)}M × ${yld} years × ${qol}% × $${Math.round(vsl * 1000000 / 75 / 1000)}K = ${this.formatLargeNumber(results.mental)}`;
-                document.getElementById('healthcare-result').textContent =
-                    `${(depression / 1000000).toFixed(1)}M × ($${Math.round(healthcare / 1000)}K + $${Math.round(productivity / 1000)}K) × ${this.formatDuration(duration)} years = ${this.formatLargeNumber(results.productivity)}`;
+                this.setOutputText(
+                    document.getElementById('mortality-result'),
+                    `${Math.round(suicides / 1000)}K × ${attribution}% × $${vsl}M = ${this.formatLargeNumber(results.mortality)}`
+                );
+                this.setOutputText(
+                    document.getElementById('mental-result'),
+                    `${(depression / 1000000).toFixed(1)}M × ${yld} years × ${qol}% × $${Math.round(vsl * 1000000 / 75 / 1000)}K = ${this.formatLargeNumber(results.mental)}`
+                );
+                this.setOutputText(
+                    document.getElementById('healthcare-result'),
+                    `${(depression / 1000000).toFixed(1)}M × ($${Math.round(healthcare / 1000)}K + $${Math.round(productivity / 1000)}K) × ${this.formatDuration(duration)} years = ${this.formatLargeNumber(results.productivity)}`
+                );
             }
 
             setupShareButtons() {
