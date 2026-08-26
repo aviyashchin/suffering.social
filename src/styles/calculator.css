@@ -687,9 +687,10 @@
 
 .modal-study blockquote {
   margin: 1rem 0;
-  padding-left: 1rem;
-  border-left: 2px solid var(--rule-strong);
+  padding: 1rem;
+  border: 1px solid var(--rule-strong);
   color: var(--ink-muted);
+  background: var(--paper);
   font-family: var(--font-display);
   font-style: italic;
 }
@@ -741,8 +742,7 @@
   z-index: 80;
   width: min(calc(100% - 2rem), 24rem);
   padding: 1rem 1.1rem;
-  border: 1px solid var(--ink);
-  border-left: 4px solid var(--research-red);
+  border: 1px solid var(--toast-border, var(--research-red));
   color: var(--ink);
   background: var(--paper-raised);
   box-shadow: 0 8px 30px rgb(23 23 21 / 18%);
@@ -753,15 +753,15 @@
 }
 
 .research-toast--success {
-  border-left-color: #566f62;
+  --toast-border: #566f62;
 }
 
 .research-toast--error {
-  border-left-color: var(--research-red);
+  --toast-border: var(--research-red);
 }
 
 .research-toast--info {
-  border-left-color: var(--focus);
+  --toast-border: var(--focus);
 }
 
 .research-toast--visible {
@@ -779,6 +779,21 @@
   border-top: 1px solid var(--rule);
   color: var(--ink-muted);
   font-size: 0.78rem;
+  flex-wrap: wrap;
+}
+
+.footer-safety {
+  flex: 0 0 100%;
+  max-width: 70ch;
+  margin: 0 0 0.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+
+.footer-safety a {
+  color: var(--ink);
 }
 
 .research-footer nav,

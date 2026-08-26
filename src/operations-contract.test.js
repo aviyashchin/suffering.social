@@ -240,4 +240,24 @@ describe('continuous verification contract', () => {
       "if: ${{ github.event_name == 'workflow_dispatch' && inputs.force_failure }}"
     );
   });
+
+  test('assigns the research list and launch measurement reviews to named owners', () => {
+    const operations = read('docs/GROWTH_OPERATIONS.md');
+
+    expect(operations).toMatch(/Research-update owner:\s*Avi Yashchin/i);
+    expect(operations).toMatch(/review\s+new signups weekly/i);
+    expect(operations).toMatch(/at most one research update per month/i);
+    expect(operations).toMatch(/2026-09-02[^\n]*7-day review/i);
+    expect(operations).toMatch(/2026-09-23[^\n]*28-day review/i);
+    for (const outcome of [
+      'Search Console',
+      'calculator_open',
+      'source_inspect',
+      'research_exit',
+      'successful signups',
+      'answer-engine citations',
+    ]) {
+      expect(operations).toContain(outcome);
+    }
+  });
 });
