@@ -152,6 +152,7 @@ test('keeps the live estimate clickable and every research range curve usable', 
   await expect(curves).toHaveCount(9);
   for (const curve of await curves.all()) {
     await expect(curve).toBeVisible();
+    await expect(curve.locator('.study-choice[aria-pressed="true"]')).toHaveCount(1);
   }
 
   const marker = page.locator(
@@ -171,7 +172,7 @@ test('keeps the live estimate clickable and every research range curve usable', 
   await expect(curveLine).not.toHaveAttribute('d', initialPath || '');
 
   const paperChoices = page.locator(
-    '.range-curve[data-parameter="attribution"] .study-choice'
+    '.range-curve[data-parameter="attribution"] .study-choice:not([data-study-index="-1"])'
   );
   await expect(paperChoices).toHaveCount(2);
   const totalBeforePaper = await page.locator('#hero-total-cost').textContent();
@@ -187,6 +188,27 @@ test('keeps the live estimate clickable and every research range curve usable', 
   await page.locator('#hero-cost-display').click();
   await expect(page).toHaveURL(/#assumptions$/);
   await expect(page.locator('#assumptions')).toBeInViewport();
+});
+
+test('keeps the active section formula below the calculator summary', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.waitForFunction(() => Boolean(window.calculator));
+
+  const group = page.locator('.assumption-group[data-category="health"]');
+  const groupHeader = group.locator(':scope > header');
+  await group.locator('.assumption').nth(1).scrollIntoViewIfNeeded();
+
+  const mastheadBottom = await page
+    .locator('.research-masthead')
+    .evaluate((element) => element.getBoundingClientRect().bottom);
+  const groupHeaderTop = await groupHeader.evaluate(
+    (element) => element.getBoundingClientRect().top
+  );
+
+  expect(Math.abs(groupHeaderTop - mastheadBottom)).toBeLessThan(3);
+  await expect(groupHeader.locator('output')).toContainText('=');
 });
 
 test('keeps every selectable paper mapping inside its stated model range', async ({

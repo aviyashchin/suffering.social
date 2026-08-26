@@ -21,7 +21,9 @@ study needs a finite `modelValue` inside the slider range, a short label, and a
 `valueBasis` explaining how the paper's finding maps to the model input. Some
 legacy mappings fell outside today's declared ranges; do not silently revive
 them. `src/range-curves.test.js` protects curve movement, while Playwright proves
-that paper selection changes the slider and estimate.
+that paper selection changes the slider and estimate. If the opening value does
+not match one paper exactly, the interface selects a labeled starting-model row.
+Do not mark the nearest paper as selected because that would misstate its role.
 
 ## Change presentation
 
@@ -32,10 +34,12 @@ add remote CSS, Tailwind Play CDN, a second design framework, or inline provider
 snippets.
 
 The curves are illustrative range guides, not probability distributions. Their
-shape and marker must move with the slider. The header clock divides the current
-cumulative estimate by elapsed time since January 1, 2009, then extrapolates
-that average while the page is open. Keep the page's explicit statement that it
-is a model display, not a live measurement.
+shape and marker must move with the slider. The header clock keeps mortality,
+mental-health, and economic components visible with their sum. It advances the
+model display while the page is open, but does not publish a per-second rate.
+Keep the page's explicit statement that it is a model display, not a live
+measurement. Each assumption-group header stays below the masthead so its live
+formula remains visible while the user tests studies in that section.
 
 ## Change telemetry
 

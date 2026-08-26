@@ -68,7 +68,8 @@ describe('research range curves', () => {
     slider.noUiSlider = { on: () => {} };
     const applied = [];
     const calculator = {
-      parameters: { vsl: 10.5 },
+      parameters: { vsl: 11 },
+      scenarios: { reset: { vsl: 11 } },
       sliderConfigs: { vsl: { range: { min: 7, max: 14 } } },
       researchCitations: {
         vsl: {
@@ -106,11 +107,16 @@ describe('research range curves', () => {
     );
     expect(document.querySelectorAll('.study-choice-item a')).toHaveLength(1);
     expect(region.innerHTML).not.toContain('undefined');
+    expect(choices).toHaveLength(3);
     expect(choices[0]).toHaveAttribute('aria-pressed', 'true');
+    expect(choices[0]).toHaveTextContent('Starting model value');
+    expect(region).toHaveTextContent(
+      'Select a row. The slider, curve, formula, and total update together.'
+    );
 
-    choices[1].click();
+    choices[2].click();
     expect(applied).toEqual([1]);
-    expect(choices[1]).toHaveAttribute('aria-pressed', 'true');
+    expect(choices[2]).toHaveAttribute('aria-pressed', 'true');
   });
 
   test('moves a bell curve peak across the fixed research range', () => {

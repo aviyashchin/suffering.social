@@ -109,11 +109,17 @@
     <header id="debt-clock-header" class="research-masthead">
         <a class="wordmark" href="/" aria-label="suffering.social calculator">suffering.social</a>
         <div class="cost-clock" aria-label="Estimated cost clock">
-            <span>Estimated cost since 2009</span>
-            <strong id="cost-clock-total">$2,355,067,000,000</strong>
-            <small id="cost-clock-rate">Historical average: about $4,250 every second</small>
+            <div class="cost-clock-total">
+                <span>Estimated cost since 2009</span>
+                <strong id="cost-clock-total">$2,355,067,000,000</strong>
+            </div>
+            <div class="cost-clock-components" aria-label="Parts of the total">
+                <span data-category="lives"><small>Lives lost</small><strong id="cost-clock-mortality">$122.1B</strong></span>
+                <span data-category="health"><small>Depression</small><strong id="cost-clock-mental">$1.9T</strong></span>
+                <span data-category="economic"><small>Economic loss</small><strong id="cost-clock-economic">$315.0B</strong></span>
+            </div>
         </div>
-        <span class="masthead-note">A public research instrument by Subconscious</span>
+        <a class="masthead-link" href="https://subconscious.ai">Subconscious.ai</a>
     </header>
 
     <main class="calculator-page">
@@ -968,7 +974,9 @@
             }
 
             applyResearchStudy(param, studyIndex) {
-                const study = this.researchCitations[param]?.studies?.[studyIndex];
+                const study = studyIndex === -1
+                    ? { modelValue: this.scenarios.reset[param] }
+                    : this.researchCitations[param]?.studies?.[studyIndex];
                 if (!study || !Number.isFinite(study.modelValue)) return false;
                 const slider = document.getElementById(`${param}-nouislider`)?.noUiSlider;
                 if (!slider) return false;
@@ -1368,7 +1376,7 @@
                             <p class="method-step-index">04</p>
                             <div>
                                 <h3>Estimated cost clock</h3>
-                                <p>The header divides the current cumulative estimate by the seconds since January 1, 2009. It extends that historical average while this page is open.</p>
+                                <p>The header shows the three parts of the model and their sum. Every amount updates when an assumption changes.</p>
                                 <p>The clock displays the model over time. It does not measure harm as it happens.</p>
                             </div>
                         </section>

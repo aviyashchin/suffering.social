@@ -111,7 +111,14 @@ describe('/ calculator product route contract', () => {
 
   test('keeps the educational clock and paper-selection surfaces in the active instrument', () => {
     expect(calculator.querySelector('#cost-clock-total')).not.toBeNull();
-    expect(calculator.querySelector('#cost-clock-rate')).not.toBeNull();
+    expect(calculator.querySelector('#cost-clock-rate')).toBeNull();
+    for (const component of ['mortality', 'mental', 'economic']) {
+      expect(calculator.querySelector(`#cost-clock-${component}`)).not.toBeNull();
+    }
+    expect(
+      calculator.querySelector('a.masthead-link[href="https://subconscious.ai"]')
+    ).not.toBeNull();
+    expect(visibleText(calculator)).not.toMatch(/historical average/i);
     expect(calculatorSource).toMatch(/modelValue:/);
     expect(calculatorSource).toMatch(/does not measure harm as it happens/i);
   });
