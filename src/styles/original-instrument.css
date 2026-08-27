@@ -48,24 +48,24 @@ body {
 }
 
 .animated-number-clip[data-direction='up'] .animated-number-value {
-  animation: number-settle-up 180ms var(--ease-out-expo) both;
+  animation: number-settle-up 220ms var(--ease-out-expo) both;
 }
 
 .animated-number-clip[data-direction='down'] .animated-number-value {
-  animation: number-settle-down 180ms var(--ease-out-expo) both;
+  animation: number-settle-down 220ms var(--ease-out-expo) both;
 }
 
 @keyframes number-settle-up {
   from {
-    opacity: 0.35;
-    transform: translateY(45%);
+    opacity: 0.58;
+    transform: translateY(28%);
   }
 }
 
 @keyframes number-settle-down {
   from {
-    opacity: 0.35;
-    transform: translateY(-45%);
+    opacity: 0.58;
+    transform: translateY(-28%);
   }
 }
 
