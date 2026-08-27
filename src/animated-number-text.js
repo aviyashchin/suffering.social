@@ -30,6 +30,12 @@ function numericValue(text) {
 export function setAnimatedNumberText(element, value) {
   if (!element) return;
   const text = String(value);
+  if (
+    element.hasAttribute('data-animated-number-text') &&
+    element.getAttribute('aria-label') === text
+  ) {
+    return;
+  }
   const tokens = tokenizeAnimatedNumberText(text);
   const numbers = tokens
     .filter((token) => token.kind === 'number')

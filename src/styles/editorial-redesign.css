@@ -156,7 +156,7 @@ body::before {
   overflow-wrap: anywhere;
 }
 
-.estimate-display span:last-child {
+.estimate-display > span:last-child {
   color: var(--muted);
   font-family: var(--font-data);
   font-size: 0.75rem;

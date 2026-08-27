@@ -190,6 +190,57 @@ test('keeps the live estimate clickable and every research range curve usable', 
   await expect(page.locator('#assumptions')).toBeInViewport();
 });
 
+test('keeps the hero estimate typographically unified with quieter directional motion', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1045, height: 1396 });
+  await page.goto('/');
+  await page.waitForFunction(() => Boolean(window.calculator));
+
+  const hero = page.locator('#hero-total-cost');
+  const inspectMotion = () =>
+    hero.evaluate((element) => {
+      const value = element.querySelector('.animated-number-value');
+      const animation = value?.getAnimations()[0];
+      const keyframe = animation?.effect.getKeyframes()[0];
+      const heroStyle = getComputedStyle(element);
+      const valueStyle = value ? getComputedStyle(value) : null;
+      return {
+        direction: value?.parentElement?.dataset.direction,
+        duration: animation?.effect.getTiming().duration,
+        initialOpacity: keyframe?.opacity,
+        initialTransform: keyframe?.transform,
+        heroFontSize: heroStyle.fontSize,
+        heroColor: heroStyle.color,
+        valueFontSize: valueStyle?.fontSize,
+        valueColor: valueStyle?.color,
+      };
+    });
+
+  await page.getByRole('button', {
+    name: 'Upper-bound assumption, load assumptions',
+  }).click();
+  const upward = await inspectMotion();
+  expect(upward).toMatchObject({
+    direction: 'up',
+    duration: 220,
+    initialOpacity: '0.58',
+    initialTransform: 'translateY(28%)',
+  });
+  expect(upward.valueFontSize).toBe(upward.heroFontSize);
+  expect(upward.valueColor).toBe(upward.heroColor);
+
+  await page.getByRole('button', {
+    name: 'Lower-bound assumption, load assumptions',
+  }).click();
+  await expect.poll(() => inspectMotion()).toMatchObject({
+    direction: 'down',
+    duration: 220,
+    initialOpacity: '0.58',
+    initialTransform: 'translateY(-28%)',
+  });
+});
+
 test('keeps the active section formula below the calculator summary', async ({
   page,
 }) => {

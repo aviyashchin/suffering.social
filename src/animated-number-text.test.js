@@ -45,4 +45,16 @@ describe('animated number text', () => {
       .map((token) => token.dataset.direction);
     expect(directions).toEqual(['none', 'up', 'none']);
   });
+
+  test('preserves an active directional node across an identical formatted write', () => {
+    const output = document.createElement('output');
+    setAnimatedNumberText(output, '$100');
+    setAnimatedNumberText(output, '$125');
+    const activeToken = output.querySelector('[data-animated-number-token]');
+
+    setAnimatedNumberText(output, '$125');
+
+    expect(output.querySelector('[data-animated-number-token]')).toBe(activeToken);
+    expect(activeToken).toHaveAttribute('data-direction', 'up');
+  });
 });

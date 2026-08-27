@@ -92,7 +92,7 @@
   line-height: 1.08;
 }
 
-.estimate-display span {
+.estimate-display > span {
   color: var(--ink-muted);
   font-size: 0.9rem;
 }
