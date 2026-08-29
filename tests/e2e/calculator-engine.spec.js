@@ -240,7 +240,7 @@ test('keeps the hero estimate typographically unified with quieter directional m
   expect(upward).toMatchObject({
     direction: 'up',
     duration: 220,
-    initialOpacity: '0.58',
+    initialOpacity: '1',
     initialTransform: 'translateY(28%)',
   });
   expect(upward.valueFontSize).toBe(upward.heroFontSize);
@@ -250,7 +250,7 @@ test('keeps the hero estimate typographically unified with quieter directional m
   expect(downward).toMatchObject({
     direction: 'down',
     duration: 220,
-    initialOpacity: '0.58',
+    initialOpacity: '1',
     initialTransform: 'translateY(-28%)',
   });
 });
