@@ -57,14 +57,14 @@ body {
 
 @keyframes number-settle-up {
   from {
-    opacity: 0.58;
+    opacity: 1;
     transform: translateY(28%);
   }
 }
 
 @keyframes number-settle-down {
   from {
-    opacity: 0.58;
+    opacity: 1;
     transform: translateY(-28%);
   }
 }
