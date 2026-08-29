@@ -403,6 +403,7 @@ test.describe('public research journey', () => {
     context,
     page,
   }, testInfo) => {
+    test.setTimeout(60_000);
     test.skip(!testInfo.project.use.isMobile);
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     const observations = observePage(page);

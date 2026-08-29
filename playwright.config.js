@@ -9,6 +9,7 @@ const usesLocalPreview =
 
 export default defineConfig({
   testDir: './tests/e2e',
+  workers: 2,
   reporter: [
     ['list'],
     ['html', { outputFolder: 'playwright-report', open: 'never' }],
@@ -24,6 +25,7 @@ export default defineConfig({
           'VITE_TELEMETRY_ENABLED=true VITE_GTM_ENABLED=true VITE_GTM_CONTAINER_ID=GTM-TEST123 npm run build && npx vite preview --host 127.0.0.1 --port 4174',
         url: localBaseURL,
         reuseExistingServer: false,
+        timeout: 180_000,
       }
     : undefined,
   projects: [

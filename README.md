@@ -24,7 +24,11 @@ This is a static, multi-page Vite site:
   the unlisted legacy `/v5` route.
 - `src/styles/` contains the shared design tokens and route styles.
 - `src/range-curves.js` keeps each assumption's illustrative curve, current
-  marker, and selectable paper mappings synchronized with its slider.
+  marker, selectable paper mappings, and evidence receipt synchronized with its
+  slider.
+- `src/calculator-model.js` is the page-independent source for model defaults,
+  scenarios, slider ranges, and formulas. Change model values there, then
+  deliberately update the frozen fixture.
 - `src/cost-clock.js` extrapolates the current cumulative estimate using its
   historical average since January 1, 2009. It is not a live harm counter.
 - `src/telemetry*.js` is the single aggregate-only event boundary.
@@ -52,6 +56,7 @@ minimum supported runtime; CI pins Node 22.13.0.
 npm ci                    # install the locked dependency graph
 npm run dev               # start the Vite development server
 npm run verify:fast       # Jest, production build, and built-output validation
+npm run verify:release    # complete local publication gate used by CI
 npm run test:coverage     # active source coverage
 npm run lint              # repository ESLint checks
 npm run test:e2e          # desktop and 390px Playwright journeys
@@ -97,6 +102,10 @@ Keep selected primary-source links and the Subconscious publisher relationship
 visible in static HTML. Search and answer engines may never open the interactive
 source dialog. Matching JSON-LD can describe visible provenance; it cannot
 replace it.
+The baseline source ledger contains one visible primary path for each of the
+nine inputs. Keep those links synchronized with the structured-data citations.
+The interactive evidence receipt explains the selected study's reported
+finding, mapped value, current value, and effect on the total.
 Open a pull request with the changed source, model rationale, and validation
 output.
 

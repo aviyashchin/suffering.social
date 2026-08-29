@@ -202,10 +202,12 @@ describe('continuous verification contract', () => {
 
   test('pull-request verification runs every required gate', () => {
     const workflow = read('.github/workflows/verify.yml');
+    const packageJson = JSON.parse(read('package.json'));
+    const releaseGate = packageJson.scripts['verify:release'];
+
+    expect(workflow).toContain('npm run verify:release');
 
     for (const command of [
-      'npm ci',
-      'npx playwright install --with-deps chromium',
       'npm run test:coverage -- --runInBand',
       'npm run lint',
       'npm run build',
@@ -214,8 +216,10 @@ describe('continuous verification contract', () => {
       'npm run test:e2e',
       'npm run lighthouse:ci',
     ]) {
-      expect(workflow).toContain(command);
+      expect(releaseGate).toContain(command);
     }
+    expect(workflow).toContain('npm ci');
+    expect(workflow).toContain('npx playwright install --with-deps chromium');
   });
 
   test('production verification is scheduled, external, revision-aware, and drillable', () => {

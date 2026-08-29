@@ -292,34 +292,6 @@
   display: none !important;
 }
 
-.noUi-target {
-  border: 0;
-  border-radius: 0;
-  background: var(--rule);
-  box-shadow: none;
-}
-
-.noUi-horizontal {
-  height: 2px;
-}
-
-.noUi-horizontal .noUi-handle {
-  top: -21px;
-  right: -22px;
-  width: 44px;
-  height: 44px;
-  border: 1px solid var(--ink);
-  border-radius: 50%;
-  background: var(--paper-raised);
-  box-shadow: none;
-  cursor: grab;
-}
-
-.noUi-handle::before,
-.noUi-handle::after {
-  display: none;
-}
-
 .result-reading,
 .method-section,
 .open-research {

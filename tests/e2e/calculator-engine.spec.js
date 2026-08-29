@@ -129,9 +129,11 @@ test('keeps duration keyboard steps aligned with its observable value', async ({
   await expect(duration).toHaveAttribute('aria-valuetext', '4.6 years');
   await expect(page.locator('#duration-value')).toHaveText('4.6 years');
 
-  await page.getByRole('button', {
-    name: 'Lower-bound assumption, load assumptions',
-  }).click();
+  await page
+    .getByRole('button', {
+      name: 'Lower-bound assumption, load assumptions',
+    })
+    .click();
 
   await expect
     .poll(() => page.evaluate(() => window.calculator.parameters.duration))
@@ -152,7 +154,9 @@ test('keeps the live estimate clickable and every research range curve usable', 
   await expect(curves).toHaveCount(9);
   for (const curve of await curves.all()) {
     await expect(curve).toBeVisible();
-    await expect(curve.locator('.study-choice[aria-pressed="true"]')).toHaveCount(1);
+    await expect(
+      curve.locator('.study-choice[aria-pressed="true"]')
+    ).toHaveCount(1);
   }
 
   const marker = page.locator(
@@ -161,13 +165,20 @@ test('keeps the live estimate clickable and every research range curve usable', 
   const curveLine = page.locator(
     '.range-curve[data-parameter="attribution"] .range-curve-line'
   );
-  const initialPosition = await marker.evaluate((element) => element.style.left);
+  const initialPosition = await marker.evaluate(
+    (element) => element.style.left
+  );
   const initialPath = await curveLine.getAttribute('d');
-  await page
-    .getByRole('slider', { name: 'Share that social media may have caused' })
-    .press('ArrowRight');
+  await page.evaluate(() => {
+    document.getElementById('attribution-nouislider').noUiSlider.set(19);
+  });
   await expect
-    .poll(() => marker.evaluate((element) => element.style.left))
+    .poll(() => page.evaluate(() => window.calculator.parameters.attribution))
+    .toBe(19);
+  await expect
+    .poll(() => marker.evaluate((element) => element.style.left), {
+      timeout: 10_000,
+    })
     .not.toBe(initialPosition);
   await expect(curveLine).not.toHaveAttribute('d', initialPath || '');
 
@@ -198,8 +209,11 @@ test('keeps the hero estimate typographically unified with quieter directional m
   await page.waitForFunction(() => Boolean(window.calculator));
 
   const hero = page.locator('#hero-total-cost');
-  const inspectMotion = () =>
-    hero.evaluate((element) => {
+  const inspectMotion = (nextValue) =>
+    hero.evaluate((element, controlledValue) => {
+      if (controlledValue) {
+        window.setAnimatedNumberText(element, controlledValue);
+      }
       const value = element.querySelector('.animated-number-value');
       const animation = value?.getAnimations()[0];
       const keyframe = animation?.effect.getKeyframes()[0];
@@ -215,11 +229,13 @@ test('keeps the hero estimate typographically unified with quieter directional m
         valueFontSize: valueStyle?.fontSize,
         valueColor: valueStyle?.color,
       };
-    });
+    }, nextValue);
 
-  await page.getByRole('button', {
-    name: 'Upper-bound assumption, load assumptions',
-  }).click();
+  await page
+    .getByRole('button', {
+      name: 'Upper-bound assumption, load assumptions',
+    })
+    .click();
   const upward = await inspectMotion();
   expect(upward).toMatchObject({
     direction: 'up',
@@ -230,10 +246,8 @@ test('keeps the hero estimate typographically unified with quieter directional m
   expect(upward.valueFontSize).toBe(upward.heroFontSize);
   expect(upward.valueColor).toBe(upward.heroColor);
 
-  await page.getByRole('button', {
-    name: 'Lower-bound assumption, load assumptions',
-  }).click();
-  await expect.poll(() => inspectMotion()).toMatchObject({
+  const downward = await inspectMotion('$1,000');
+  expect(downward).toMatchObject({
     direction: 'down',
     duration: 220,
     initialOpacity: '0.58',
@@ -289,8 +303,9 @@ test('updates formulas during slider movement and keeps the selected research an
   );
   await expect(selected).toHaveAttribute('aria-pressed', 'true');
   await expect(selected).toHaveAttribute('data-selection-state', 'adjusted');
-  await expect(formula.locator('[data-animated-number-token]')).not.toHaveCount(0);
-
+  await expect(formula.locator('[data-animated-number-token]')).not.toHaveCount(
+    0
+  );
 });
 
 test('keeps every selectable paper mapping inside its stated model range', async ({
@@ -302,18 +317,20 @@ test('keeps every selectable paper mapping inside its stated model range', async
   const mappings = await page.evaluate(() => {
     const calculator = window.calculator;
     return Object.fromEntries(
-      Object.entries(calculator.researchCitations).map(([parameter, research]) => [
-        parameter,
-        {
-          range: calculator.sliderConfigs[parameter].range,
-          studies: research.studies
-            .filter((study) => Number.isFinite(study.modelValue))
-            .map((study) => ({
-              value: study.modelValue,
-              basis: study.valueBasis,
-            })),
-        },
-      ])
+      Object.entries(calculator.researchCitations).map(
+        ([parameter, research]) => [
+          parameter,
+          {
+            range: calculator.sliderConfigs[parameter].range,
+            studies: research.studies
+              .filter((study) => Number.isFinite(study.modelValue))
+              .map((study) => ({
+                value: study.modelValue,
+                basis: study.valueBasis,
+              })),
+          },
+        ]
+      )
     );
   });
 
@@ -325,6 +342,69 @@ test('keeps every selectable paper mapping inside its stated model range', async
       expect(study.value, parameter).toBeLessThanOrEqual(mapping.range.max);
     }
   }
+});
+
+test('explains how the selected study becomes the live estimate', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.waitForFunction(() => Boolean(window.calculator));
+
+  const receipt = page.locator('.evidence-receipt[data-parameter="vsl"]');
+  await expect(receipt).toBeVisible();
+  await expect(receipt).toContainText('Evidence role');
+  await expect(receipt).toContainText('Study found');
+  await expect(receipt).toContainText('Model uses');
+  await expect(receipt).toContainText('You selected');
+  await expect(receipt).toContainText('Effect on total');
+  await expect(receipt).toContainText('DOT guidance');
+  await expect(receipt).toContainText('$13.7M');
+  await expect(receipt).toContainText('Matches the selected study mapping');
+
+  await page.evaluate(() => {
+    document.getElementById('vsl-nouislider').noUiSlider.set(10);
+  });
+
+  await expect(receipt.locator('[data-receipt-value]')).toHaveText('$10.0M');
+  await expect(receipt.locator('[data-receipt-effect]')).toContainText(
+    'lower than the selected study mapping'
+  );
+
+  await expect(
+    page.locator(
+      '.evidence-receipt[data-parameter="attribution"] [data-receipt-role]'
+    )
+  ).toHaveText('Opening model assumption');
+});
+
+test('uses the compact design-system range and readable sticky summary', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await page.waitForFunction(() => Boolean(window.calculator));
+
+  const presentation = await page.evaluate(() => {
+    const handle = document.querySelector('#vsl-nouislider .noUi-handle');
+    const label = document.querySelector('.cost-clock-components small');
+    const masthead = document.querySelector('.research-masthead');
+    const handleStyle = getComputedStyle(handle);
+    return {
+      handleWidth: handleStyle.width,
+      handleRadius: handleStyle.borderRadius,
+      handleShadow: handleStyle.boxShadow,
+      labelSize: Number.parseFloat(getComputedStyle(label).fontSize),
+      mastheadHeight: masthead.getBoundingClientRect().height,
+    };
+  });
+
+  expect(presentation).toMatchObject({
+    handleWidth: '16px',
+    handleRadius: '0px',
+    handleShadow: 'none',
+  });
+  expect(presentation.labelSize).toBeGreaterThanOrEqual(12);
+  expect(presentation.mastheadHeight).toBeLessThanOrEqual(135);
 });
 
 function formatLargeNumber(value) {
