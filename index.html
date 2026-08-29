@@ -36,7 +36,6 @@
     <meta name="robots" content="index, follow, max-image-preview:large">
     <link rel="canonical" href="https://www.suffering.social/">
     <script type="module" src="/src/telemetry.js"></script>
-    <script type="module" src="/src/calculator-bootstrap.js"></script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="apple-touch-icon" href="/favicon.svg">
 
@@ -75,12 +74,17 @@
           },
           "publisher": { "@id": "https://subconscious.ai/#organization" },
           "creator": { "@id": "https://subconscious.ai/#organization" },
-          "dateModified": "2026-08-26",
+          "dateModified": "2026-08-29",
           "citation": [
+            "https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-on-valuation-of-a-statistical-life-in-economic-analysis",
+            "https://www.cdc.gov/suicide/facts/data.html",
             "https://www.aeaweb.org/articles?id=10.1257/aer.20211218",
-            "https://www.aeaweb.org/articles?id=10.1257/aer.20190658",
-            "https://www.nber.org/papers/w29185",
-            "https://www.samhsa.gov/data/data-we-collect/nsduh-national-survey-drug-use-and-health"
+            "https://www.ajmc.com/view/increased-social-media-use-linked-to-rising-depressive-symptoms-in-early-adolescents",
+            "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(21)02143-7/fulltext",
+            "https://pubmed.ncbi.nlm.nih.gov/15841781/",
+            "https://www.psychiatrist.com/jcp/depression/major-depressive-disorder/economic-burden-depression/",
+            "https://pubmed.ncbi.nlm.nih.gov/12813119/",
+            "https://pubmed.ncbi.nlm.nih.gov/12005119/"
           ],
           "isPartOf": { "@id": "https://www.suffering.social/#website" }
         }
@@ -162,6 +166,12 @@
                 <p>Move any slider. Each number shows a published low and high value, plus its source.</p>
                 <p class="curve-explainer">Each normal curve is a visual guide to that range. It does not show the odds of any value.</p>
             </div>
+
+            <ol id="reading-key" class="reading-key" aria-label="How to use the calculator">
+                <li><strong>Choose a study</strong><span>Start from a published finding or the labeled opening value.</span></li>
+                <li><strong>Adjust the value</strong><span>The calculator keeps the study visible when you move its slider.</span></li>
+                <li><strong>Watch the estimate</strong><span>The formula, component, and total change together.</span></li>
+            </ol>
 
             <section class="assumption-group" data-category="lives" aria-labelledby="mortality-title">
                 <header>
@@ -340,11 +350,16 @@
                 <p><strong>The output is an illustrative cumulative estimate for the United States since 2009.</strong> It combines editable assumptions about lives lost, years with depression, healthcare spending, and missed work.</p>
                 <p>Each paper's reported finding stays separate from the value mapped into the calculator. Open a source, inspect the finding, then change the model value to see its effect.</p>
             </header>
-            <ul>
-                <li><a href="https://www.aeaweb.org/articles?id=10.1257/aer.20211218" target="_blank" rel="noopener">Social Media and Mental Health</a><span>Staggered platform rollout and student mental health</span></li>
-                <li><a href="https://www.aeaweb.org/articles?id=10.1257/aer.20190658" target="_blank" rel="noopener">The Welfare Effects of Social Media</a><span>Randomized deactivation and measured wellbeing effects</span></li>
-                <li><a href="https://www.nber.org/papers/w29185" target="_blank" rel="noopener">Value of statistical life synthesis</a><span>Research range used for reducing mortality risk</span></li>
-                <li><a href="https://www.samhsa.gov/data/data-we-collect/nsduh-national-survey-drug-use-and-health" target="_blank" rel="noopener">National Survey on Drug Use and Health</a><span>National mental-health trend data</span></li>
+            <ul id="source-ledger">
+                <li><strong>Government valuation</strong><a href="https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-on-valuation-of-a-statistical-life-in-economic-analysis" target="_blank" rel="noopener">Public value used for one life</a><span>Evidence role: agency guidance | Model mapping: direct central estimate</span></li>
+                <li><strong>National trend estimate</strong><a href="https://www.cdc.gov/suicide/facts/data.html" target="_blank" rel="noopener">Excess deaths since 2009</a><span>Evidence role: national surveillance | Model mapping: opening model value</span></li>
+                <li><strong>Exposure study</strong><a href="https://www.aeaweb.org/articles?id=10.1257/aer.20211218" target="_blank" rel="noopener">Share social media may have caused</a><span>Evidence role: rollout comparison | Model mapping: published change</span></li>
+                <li><strong>Population estimate</strong><a href="https://www.ajmc.com/view/increased-social-media-use-linked-to-rising-depressive-symptoms-in-early-adolescents" target="_blank" rel="noopener">People whose depression may be linked</a><span>Evidence role: longitudinal study | Model mapping: original synthesis</span></li>
+                <li><strong>Disease burden</strong><a href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(21)02143-7/fulltext" target="_blank" rel="noopener">Years affected by depression</a><span>Evidence role: global burden estimate | Model mapping: original model value</span></li>
+                <li><strong>Health utility</strong><a href="https://pubmed.ncbi.nlm.nih.gov/15841781/" target="_blank" rel="noopener">Loss in quality of life</a><span>Evidence role: quality-of-life study | Model mapping: lower end of the reported range</span></li>
+                <li><strong>Care cost</strong><a href="https://www.psychiatrist.com/jcp/depression/major-depressive-disorder/economic-burden-depression/" target="_blank" rel="noopener">Yearly healthcare cost per person</a><span>Evidence role: economic estimate | Model mapping: reported value rounded to the slider step</span></li>
+                <li><strong>Work loss</strong><a href="https://pubmed.ncbi.nlm.nih.gov/12813119/" target="_blank" rel="noopener">Yearly work loss per person</a><span>Evidence role: workplace burden study | Model mapping: original per-person value</span></li>
+                <li><strong>Duration estimate</strong><a href="https://pubmed.ncbi.nlm.nih.gov/12005119/" target="_blank" rel="noopener">Average duration of economic costs</a><span>Evidence role: treatment duration study | Model mapping: reported average</span></li>
             </ul>
         </section>
 
@@ -463,7 +478,14 @@
     </footer>
 
     <!-- Calculator engine and research source viewer -->
-    <script>
+    <script type="module">
+        import {
+            DEFAULT_PARAMETERS,
+            SCENARIOS,
+            SLIDER_CONFIGS,
+            calculateTotalEconomicImpact
+        } from '/src/calculator-model.js';
+
         const RESEARCH_CITATIONS = {
             vsl: {
                 name: "Value of Statistical Life",
@@ -833,41 +855,9 @@
 
         class SocialMediaCalculator {
             constructor() {
-                this.parameters = {
-                    vsl: 13.7,
-                    suicides: 49500,
-                    attribution: 18,
-                    depression: 5000000,
-                    yld: 6.0,
-                    qol: 35,
-                    healthcare: 8000,
-                    productivity: 6000,
-                    duration: 4.5
-                };
-                this.scenarios = {
-                    reset: { vsl: 13.7, suicides: 49500, attribution: 18, depression: 5000000, yld: 6.0, qol: 35, healthcare: 8000, productivity: 6000, duration: 4.5 },
-                    aggressive: { vsl: 14.0, suicides: 65000, attribution: 30, depression: 8000000, yld: 8.0, qol: 50, healthcare: 12000, productivity: 10000, duration: 6.8 },
-                    facebookFiles: { vsl: 13.7, suicides: 49500, attribution: 22, depression: 8000000, yld: 6.5, qol: 38, healthcare: 10000, productivity: 7500, duration: 5.2 },
-                    optimistic: { vsl: 7.0, suicides: 35000, attribution: 7, depression: 2000000, yld: 3.0, qol: 30, healthcare: 6500, productivity: 4000, duration: 0.25 }
-                };
-                this.sliderConfigs = {
-                    vsl: { range: { min: 7.0, max: 14.0 }, step: 0.1 },
-                    suicides: { range: { min: 30000, max: 70000 }, step: 500 },
-                    attribution: { range: { min: 7, max: 30 }, step: 1 },
-                    depression: { range: { min: 2000000, max: 8000000 }, step: 100000 },
-                    yld: { range: { min: 3.0, max: 8.0 }, step: 0.1 },
-                    qol: { range: { min: 30, max: 50 }, step: 1 },
-                    healthcare: { range: { min: 6500, max: 12000 }, step: 100 },
-                    productivity: { range: { min: 4000, max: 10000 }, step: 100 },
-                    duration: {
-                        range: { min: 0.25, max: 6.8 },
-                        controlRange: {
-                            min: [0.25, 0.05],
-                            '0.7633587786%': [0.3, 0.1],
-                            max: 6.8
-                        }
-                    }
-                };
+                this.parameters = { ...DEFAULT_PARAMETERS };
+                this.scenarios = SCENARIOS;
+                this.sliderConfigs = SLIDER_CONFIGS;
                 this.modalReturnFocus = null;
                 this.lastResults = null;
                 this.researchCitations = RESEARCH_CITATIONS;
@@ -1029,27 +1019,7 @@
             }
 
             calculateTotalEconomicImpact() {
-                const {
-                    vsl,
-                    suicides,
-                    attribution,
-                    depression,
-                    yld,
-                    qol,
-                    healthcare,
-                    productivity,
-                    duration
-                } = this.parameters;
-                const mortality = suicides * (attribution / 100) * vsl * 1000000;
-                const annualLifeValue = (vsl * 1000000) / 75;
-                const mental = depression * yld * (qol / 100) * annualLifeValue;
-                const economic = depression * (healthcare + productivity) * duration;
-                return {
-                    mortality,
-                    mental,
-                    productivity: economic,
-                    total: mortality + mental + economic
-                };
+                return calculateTotalEconomicImpact(this.parameters);
             }
 
             formatLargeNumber(value) {
@@ -1428,6 +1398,7 @@
             return window.calculator;
         };
     </script>
+    <script type="module" src="/src/calculator-bootstrap.js"></script>
     <script type="module" src="/src/research-updates.js"></script>
 </body>
 </html>

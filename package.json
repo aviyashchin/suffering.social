@@ -13,6 +13,7 @@
     "preview": "vite preview",
     "validate:growth": "node scripts/validate-growth.mjs dist",
     "verify:fast": "npm test -- --runInBand && npm run build && npm run validate:growth",
+    "verify:release": "npm run test:coverage -- --runInBand && npm run lint && npm run build && npm run validate:growth && npm audit --omit=dev --audit-level=high && npm run test:e2e && npm run lighthouse:ci",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
     "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
@@ -26,10 +27,7 @@
   },
   "dependencies": {
     "@sentry/browser": "^10.66.0",
-    "chart.js": "^3.9.1",
-    "nouislider": "^15.7.1",
-    "posthog-js": "^1.404.1",
-    "tippy.js": "^6.3.7"
+    "nouislider": "^15.7.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -45,7 +43,6 @@
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
     "prettier": "^2.8.1",
-    "tailwindcss": "^4.1.11",
     "vite": "^7.3.6",
     "vite-bundle-analyzer": "^0.7.0"
   },

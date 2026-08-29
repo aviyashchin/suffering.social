@@ -27,9 +27,9 @@ describe('/ calculator product route contract', () => {
     expect(calculator.title).toMatch(/cost|estimate/i);
     expect(meta(calculator, 'name', 'description')).toMatch(/estimate|model/i);
 
-    const structuredData = [...calculator.querySelectorAll(
-      'script[type="application/ld+json"]'
-    )]
+    const structuredData = [
+      ...calculator.querySelectorAll('script[type="application/ld+json"]'),
+    ]
       .map((node) => JSON.parse(node.textContent))
       .flatMap((entry) => entry['@graph'] || [entry]);
 
@@ -41,9 +41,9 @@ describe('/ calculator product route contract', () => {
   test('publishes a static evidence and provenance path for search systems', () => {
     const evidenceIndex = calculator.querySelector('#evidence-index');
     const publisher = calculator.querySelector('#about-subconscious');
-    const structuredData = [...calculator.querySelectorAll(
-      'script[type="application/ld+json"]'
-    )]
+    const structuredData = [
+      ...calculator.querySelectorAll('script[type="application/ld+json"]'),
+    ]
       .map((node) => JSON.parse(node.textContent))
       .flatMap((entry) => entry['@graph'] || [entry]);
     const application = structuredData.find(
@@ -51,8 +51,12 @@ describe('/ calculator product route contract', () => {
     );
 
     expect(evidenceIndex).not.toBeNull();
-    expect(evidenceIndex.querySelectorAll('a[href^="https://"]')).toHaveLength(4);
-    expect(normalizedText(evidenceIndex)).toMatch(/illustrative cumulative estimate/i);
+    expect(evidenceIndex.querySelectorAll('a[href^="https://"]')).toHaveLength(
+      9
+    );
+    expect(normalizedText(evidenceIndex)).toMatch(
+      /illustrative cumulative estimate/i
+    );
     expect(normalizedText(evidenceIndex)).toMatch(/reported finding/i);
     expect(publisher).not.toBeNull();
     expect(normalizedText(publisher)).toMatch(/causal behavioral platform/i);
@@ -64,10 +68,28 @@ describe('/ calculator product route contract', () => {
     expect(application.creator).toEqual({
       '@id': 'https://subconscious.ai/#organization',
     });
-    expect(application.citation).toHaveLength(4);
+    expect(application.citation).toHaveLength(9);
     for (const citation of application.citation) {
-      expect(evidenceIndex.querySelector(`a[href="${citation}"]`)).not.toBeNull();
+      expect(
+        evidenceIndex.querySelector(`a[href="${citation}"]`)
+      ).not.toBeNull();
     }
+  });
+
+  test('teaches the evidence path before asking readers to change the model', () => {
+    const readingKey = calculator.querySelector('#reading-key');
+    const evidenceLedger = calculator.querySelector('#source-ledger');
+
+    expect(readingKey).not.toBeNull();
+    expect(normalizedText(readingKey)).toMatch(/choose a study/i);
+    expect(normalizedText(readingKey)).toMatch(/adjust the value/i);
+    expect(normalizedText(readingKey)).toMatch(/watch the estimate/i);
+    expect(evidenceLedger).not.toBeNull();
+    expect(evidenceLedger.querySelectorAll('a[href^="https://"]')).toHaveLength(
+      9
+    );
+    expect(normalizedText(evidenceLedger)).toMatch(/evidence role/i);
+    expect(normalizedText(evidenceLedger)).toMatch(/model mapping/i);
   });
 
   test('has one H1 and frames the estimate with uncertainty', () => {
@@ -78,7 +100,9 @@ describe('/ calculator product route contract', () => {
 
   test('keeps every assumption control and exposes sources, methodology, and limitations', () => {
     for (const parameter of parameterNames) {
-      expect(calculator.querySelector(`#${parameter}-nouislider`)).not.toBeNull();
+      expect(
+        calculator.querySelector(`#${parameter}-nouislider`)
+      ).not.toBeNull();
       expect(calculator.querySelector(`#${parameter}-value`)).not.toBeNull();
     }
 
@@ -113,10 +137,14 @@ describe('/ calculator product route contract', () => {
     expect(calculator.querySelector('#cost-clock-total')).not.toBeNull();
     expect(calculator.querySelector('#cost-clock-rate')).toBeNull();
     for (const component of ['mortality', 'mental', 'economic']) {
-      expect(calculator.querySelector(`#cost-clock-${component}`)).not.toBeNull();
+      expect(
+        calculator.querySelector(`#cost-clock-${component}`)
+      ).not.toBeNull();
     }
     expect(
-      calculator.querySelector('a.masthead-link[href="https://subconscious.ai"]')
+      calculator.querySelector(
+        'a.masthead-link[href="https://subconscious.ai"]'
+      )
     ).not.toBeNull();
     expect(visibleText(calculator)).not.toMatch(/historical average/i);
     expect(calculatorSource).toMatch(/modelValue:/);
@@ -185,6 +213,24 @@ describe('/ calculator product route contract', () => {
     );
   });
 
+  test('uses the public design contract vocabulary in the local paper theme', () => {
+    const tokens = readFileSync(
+      resolve(root, 'src/styles/site-tokens.css'),
+      'utf8'
+    );
+
+    for (const token of [
+      '--backgroundColor',
+      '--font-mono',
+      '--fs-meta',
+      '--lh-body',
+      '--sp-1',
+      '--sp-8',
+    ]) {
+      expect(tokens).toContain(token);
+    }
+  });
+
   test('ships only the noUiSlider control runtime', () => {
     const scriptSources = [...calculator.querySelectorAll('script[src]')].map(
       (node) => node.src
@@ -208,14 +254,20 @@ describe('/ calculator product route contract', () => {
       expect.arrayContaining([expect.stringMatching(/cdn\.jsdelivr\.net/i)])
     );
     expect(
-      calculator.querySelector('script[type="module"][src="/src/calculator-bootstrap.js"]')
+      calculator.querySelector(
+        'script[type="module"][src="/src/calculator-bootstrap.js"]'
+      )
     ).not.toBeNull();
-    expect(calculatorSource).not.toMatch(/loadChartJsFallback|window\.tailwind/);
+    expect(calculatorSource).not.toMatch(
+      /loadChartJsFallback|window\.tailwind/
+    );
   });
 
   test('contains no production debug, simulated activity, or compatibility surfaces', () => {
     expect(calculatorSource).not.toMatch(/window\.test[A-Z]/);
-    expect(calculatorSource).not.toMatch(/Debug utilities available|testAllNewFeatures/);
+    expect(calculatorSource).not.toMatch(
+      /Debug utilities available|testAllNewFeatures/
+    );
     expect(calculatorSource).not.toMatch(/console\.(?:log|warn)\s*\(/);
     expect(calculatorSource).not.toMatch(
       /console\.error\s*\(\s*['"`][^'"`]*\P{ASCII}/u
@@ -236,9 +288,9 @@ describe('/ calculator product route contract', () => {
     expect(initialization).not.toMatch(
       /Distribution|DebtClock|RunningCounter|LiveActivity|Progression|Composition|SocialPreview|ScrollMorph/
     );
-    expect(calculatorSource.match(/new SocialMediaCalculator\(\)/g)).toHaveLength(
-      1
-    );
+    expect(
+      calculatorSource.match(/new SocialMediaCalculator\(\)/g)
+    ).toHaveLength(1);
   });
 
   test('keeps the calculator source under its runtime-debt budget', () => {
@@ -262,10 +314,14 @@ describe('/ calculator product route contract', () => {
 
   test('offers a consent-based research update form with a clear status message', () => {
     const form = calculator.querySelector('#research-update-form');
-    const consent = form.querySelector('input[type="checkbox"][name="consent"]');
+    const consent = form.querySelector(
+      'input[type="checkbox"][name="consent"]'
+    );
 
     expect(form).not.toBeNull();
-    expect(form.querySelector('input[type="email"][name="email"]')).not.toBeNull();
+    expect(
+      form.querySelector('input[type="email"][name="email"]')
+    ).not.toBeNull();
     expect(consent).not.toBeNull();
     expect(consent.checked).toBe(true);
     expect(form.querySelector('[role="status"]')).not.toBeNull();
@@ -289,7 +345,9 @@ describe('/ calculator product route contract', () => {
 
     expect(safetyNote).not.toBeNull();
     expect(normalizedText(safetyNote)).toMatch(/call or text 988/i);
-    expect(safetyNote.querySelector('a[href="https://988lifeline.org/"]')).not.toBeNull();
+    expect(
+      safetyNote.querySelector('a[href="https://988lifeline.org/"]')
+    ).not.toBeNull();
   });
 
   test('keeps active styles free of legacy side stripes', () => {
@@ -370,7 +428,8 @@ describe('/ calculator-first research narrative', () => {
     expect(calculator).not.toBeNull();
     expect(evidence).not.toBeNull();
     expect(
-      calculator.compareDocumentPosition(evidence) & Node.DOCUMENT_POSITION_FOLLOWING
+      calculator.compareDocumentPosition(evidence) &
+        Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy();
     expect(normalizedText(evidence)).toMatch(/what changed.*2012/i);
   });
@@ -386,21 +445,21 @@ describe('/ calculator-first research narrative', () => {
 
 describe('/calculator compatibility route contract', () => {
   test('points readers and crawlers to the root calculator', () => {
-    expect(calculatorRedirect.querySelector('meta[name="robots"]')?.content).toMatch(
-      /noindex/
-    );
-    expect(calculatorRedirect.querySelector('link[rel="canonical"]')?.href).toBe(
-      'https://www.suffering.social/'
-    );
+    expect(
+      calculatorRedirect.querySelector('meta[name="robots"]')?.content
+    ).toMatch(/noindex/);
+    expect(
+      calculatorRedirect.querySelector('link[rel="canonical"]')?.href
+    ).toBe('https://www.suffering.social/');
     expect(calculatorRedirect.querySelector('a[href="/"]')).not.toBeNull();
   });
 });
 
 describe('legacy /v5 route contract', () => {
   test('remains buildable but is absent from primary navigation', () => {
-    expect(existsSync(resolve(root, 'social_media_cost_calculatorv5.html'))).toBe(
-      true
-    );
+    expect(
+      existsSync(resolve(root, 'social_media_cost_calculatorv5.html'))
+    ).toBe(true);
 
     for (const page of [support, calculator]) {
       expect(
@@ -455,22 +514,24 @@ function parseHtml(file) {
 }
 
 function expectMetadata(document, expectedUrl) {
-  expect(document.querySelector('link[rel="canonical"]')?.href).toBe(expectedUrl);
+  expect(document.querySelector('link[rel="canonical"]')?.href).toBe(
+    expectedUrl
+  );
   expect(meta(document, 'property', 'og:url')).toBe(expectedUrl);
   expect(meta(document, 'name', 'twitter:url')).toBe(expectedUrl);
 }
 
 function meta(document, attribute, value) {
-  return (
-    document.querySelector(`meta[${attribute}="${value}"]`)?.content || ''
-  );
+  return document.querySelector(`meta[${attribute}="${value}"]`)?.content || '';
 }
 
 function visibleText(document) {
   const clone = document.body.cloneNode(true);
-  clone.querySelectorAll('script, style, template, [hidden]').forEach((node) => {
-    node.remove();
-  });
+  clone
+    .querySelectorAll('script, style, template, [hidden]')
+    .forEach((node) => {
+      node.remove();
+    });
   return normalizedText(clone);
 }
 
