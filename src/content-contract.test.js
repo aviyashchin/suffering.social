@@ -51,9 +51,9 @@ describe('/ calculator product route contract', () => {
     );
 
     expect(evidenceIndex).not.toBeNull();
-    expect(evidenceIndex.querySelectorAll('a[href^="https://"]')).toHaveLength(
-      9
-    );
+    expect(
+      evidenceIndex.querySelectorAll('[data-research-pack-url^="https://"]')
+    ).toHaveLength(9);
     expect(normalizedText(evidenceIndex)).toMatch(
       /illustrative cumulative estimate/i
     );
@@ -71,7 +71,7 @@ describe('/ calculator product route contract', () => {
     expect(application.citation).toHaveLength(9);
     for (const citation of application.citation) {
       expect(
-        evidenceIndex.querySelector(`a[href="${citation}"]`)
+        evidenceIndex.querySelector(`[data-research-pack-url="${citation}"]`)
       ).not.toBeNull();
     }
   });
@@ -85,9 +85,10 @@ describe('/ calculator product route contract', () => {
     expect(normalizedText(readingKey)).toMatch(/adjust the value/i);
     expect(normalizedText(readingKey)).toMatch(/watch the estimate/i);
     expect(evidenceLedger).not.toBeNull();
-    expect(evidenceLedger.querySelectorAll('a[href^="https://"]')).toHaveLength(
-      9
-    );
+    expect(
+      evidenceLedger.querySelectorAll('[data-research-pack-url^="https://"]')
+    ).toHaveLength(9);
+    expect(evidenceLedger.querySelectorAll('a[href^="https://"]')).toHaveLength(0);
     expect(normalizedText(evidenceLedger)).toMatch(/evidence role/i);
     expect(normalizedText(evidenceLedger)).toMatch(/model mapping/i);
   });
@@ -312,7 +313,7 @@ describe('/ calculator product route contract', () => {
     expect(text).not.toMatch(/counterfactual|causal inference|attribution/i);
   });
 
-  test('offers a consent-based research update form with a clear status message', () => {
+  test('offers a consent-based source pack form with a clear status message', () => {
     const form = calculator.querySelector('#research-update-form');
     const consent = form.querySelector(
       'input[type="checkbox"][name="consent"]'
@@ -325,7 +326,10 @@ describe('/ calculator product route contract', () => {
     expect(consent).not.toBeNull();
     expect(consent.checked).toBe(true);
     expect(form.querySelector('[role="status"]')).not.toBeNull();
-    expect(form.querySelector('button[type="submit"]')).not.toBeNull();
+    expect(normalizedText(form)).toMatch(/source pack/i);
+    expect(normalizedText(form.querySelector('button[type="submit"]'))).toMatch(
+      /unlock the sources/i
+    );
   });
 
   test('separates the model from legal outcomes and points distressed readers to help', () => {

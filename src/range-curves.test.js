@@ -110,7 +110,9 @@ describe('research range curves', () => {
       'aria-label',
       'Paper values for Public value used for one life'
     );
-    expect(document.querySelectorAll('.study-choice-item a')).toHaveLength(1);
+    expect(
+      document.querySelectorAll('.study-choice-item [data-research-pack-url]')
+    ).toHaveLength(1);
     expect(region.innerHTML).not.toContain('undefined');
     expect(choices).toHaveLength(3);
     expect(choices.map((choice) => Number(choice.dataset.modelValue))).toEqual([

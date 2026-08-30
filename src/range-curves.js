@@ -233,12 +233,12 @@ function addStudyChoices(curve, plot, parameter, calculator, render) {
     );
     item.append(button);
     if (study.url) {
-      const link = document.createElement('a');
-      link.href = study.url;
-      link.target = '_blank';
-      link.rel = 'noopener';
-      link.textContent = 'Read paper';
-      item.append(link);
+      const sourceButton = document.createElement('button');
+      sourceButton.type = 'button';
+      sourceButton.className = 'research-source-trigger';
+      sourceButton.dataset.researchPackUrl = study.url;
+      sourceButton.textContent = 'Get source';
+      item.append(sourceButton);
     }
     list.append(item);
 

@@ -48,7 +48,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color);
 }
 
-/* Mapped onto the design-system 5-size scale — mid-weights collapse
+/* Mapped onto the design-system 5-size scale; mid-weights collapse
    (doctrine: one thing violently large, kill the middle). */
 h1 { font-size: var(--fs-h1);   letter-spacing: var(--tracking-h1); }
 h2 { font-size: var(--fs-h2);   letter-spacing: var(--tracking-h2); }

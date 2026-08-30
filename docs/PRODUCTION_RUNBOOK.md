@@ -134,14 +134,19 @@ replay. Sentry redacted the placeholder user and IP fields.
 No event may contain a scenario value, slider value, email, cookie, arbitrary
 page text, URL query, or hash.
 
-## Research-update form
+## Research-pack form
 
-`CONTACTS_API_KEY` is a server-only Production and Preview variable. Never use a
-`VITE_*` prefix. After changing the form or contact route, submit a designated
-test address in Preview, confirm the success message, read the record back from
-the contact system, and remove the test record. Repeat once in Production after
-the deployed revision is verified. A browser success message alone is not proof
-that the address was stored.
+`SIGNALS_LEAD_SECRET` is a server-only Production and Preview variable on this
+site. It must match `SIGNALS_SUFFERING_SOCIAL_HMAC_SECRET` on the Signals
+receiver. Never use a `VITE_*` prefix. The source adapter signs the exact lead
+payload and accepts only a `201` or replay-safe `202` response whose
+`receipt_id` matches the browser's submission UUID.
+
+After changing the form or route, submit a designated address in Preview,
+confirm the matching receipt, read the event back from Signals, confirm the
+asynchronous contact delivery, then remove the test contact. Repeat once in
+Production after the deployed revision is verified. A browser success message
+alone is not proof that the address was stored.
 
 On 2026-08-26, a synthetic production address produced one person and one
 `suffering_social_research_updates` list entry. Both objects were deleted after

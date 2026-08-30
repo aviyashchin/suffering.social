@@ -991,7 +991,7 @@ body {
 }
 
 .study-choice:focus-visible,
-.study-choice-item a:focus-visible {
+.study-choice-item .research-source-trigger:focus-visible {
   z-index: 1;
   outline: 3px solid var(--instrument-focus);
   outline-offset: -3px;
@@ -1020,12 +1020,16 @@ body {
   text-align: right;
 }
 
-.study-choice-item a {
+.study-choice-item .research-source-trigger {
   grid-column: 2;
   align-self: center;
   padding: 0.7rem 0.85rem;
+  border: 0;
   color: var(--instrument-ink);
+  background: transparent;
   font: 650 0.75rem/1 var(--instrument-data);
+  text-align: left;
+  text-decoration: underline;
   white-space: nowrap;
   text-underline-offset: 0.2em;
 }
@@ -1238,9 +1242,32 @@ body {
 }
 
 .evidence-index a,
+.evidence-index .research-source-trigger,
 .publisher-note a {
   color: var(--instrument-ink);
   text-underline-offset: 0.2em;
+}
+
+.evidence-index .research-source-trigger,
+#calculator-experiment .open-research .research-source-trigger,
+.modal-study .research-source-trigger {
+  width: fit-content;
+  padding: 0;
+  border: 0;
+  color: var(--instrument-ink);
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.evidence-index .research-source-trigger:focus-visible,
+#calculator-experiment .open-research .research-source-trigger:focus-visible,
+.modal-study .research-source-trigger:focus-visible {
+  outline: 3px solid var(--instrument-focus);
+  outline-offset: 0.25rem;
 }
 
 .evidence-index span {
@@ -1279,7 +1306,8 @@ body {
   background: var(--instrument-paper-raised);
 }
 
-#calculator-experiment .open-research a {
+#calculator-experiment .open-research a,
+#calculator-experiment .open-research .research-source-trigger {
   color: var(--instrument-ink);
 }
 
@@ -1411,7 +1439,7 @@ body {
     grid-column: 1 / -1;
   }
 
-  .study-choice-item a {
+  .study-choice-item .research-source-trigger {
     grid-column: 2;
     grid-row: 1;
   }
@@ -1647,7 +1675,7 @@ body {
     grid-column: 1 / -1;
   }
 
-  .study-choice-item a {
+  .study-choice-item .research-source-trigger {
     grid-column: 2;
     grid-row: 3;
   }

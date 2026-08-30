@@ -218,27 +218,45 @@ test.describe('public research journey', () => {
     await page.route('**/api/research-updates', async (route) => {
       submittedBody = route.request().postDataJSON();
       await route.fulfill({
-        status: 200,
+        status: 201,
         contentType: 'application/json',
-        body: JSON.stringify({ ok: true }),
+        body: JSON.stringify({
+          ok: true,
+          lead_id: submittedBody.submission_id,
+          receipt_id: submittedBody.submission_id,
+        }),
       });
     });
 
     await page.goto('/');
+    const gatedSource = page
+      .locator('.range-curve[data-parameter="vsl"]')
+      .getByRole('button', { name: 'Get source' })
+      .first();
+    await gatedSource.click();
+    await expect(page.getByLabel('Email address')).toBeFocused();
+    await expect(page.locator('.research-update-status')).toHaveText(
+      'Enter your email to open this source.'
+    );
     await page.getByLabel('Email address').fill('reader@example.com');
     await expect(
-      page.getByLabel(/save my email so the research team can contact me/i)
+      page.getByLabel(/save my email so the research team can provide the source pack/i)
     ).toBeChecked();
-    await page.getByRole('button', { name: 'Send me updates' }).click();
+    await page.getByRole('button', { name: 'Unlock the sources' }).click();
 
     await expect(page.locator('.research-update-status')).toHaveText(
-      'You are on the list.'
+      'Sources ready. Choose any source to open it.'
     );
-    expect(submittedBody).toEqual({
+    await expect(gatedSource).toBeFocused();
+    expect(submittedBody).toMatchObject({
       email: 'reader@example.com',
       consent: true,
       website: '',
     });
+    expect(submittedBody.submission_id).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f-]{27}$/i
+    );
+    expect(submittedBody.started_at).toEqual(expect.any(Number));
 
     const telemetryEvidence = JSON.stringify(
       observations.requests.filter((request) => providerPattern.test(request.url))
@@ -501,7 +519,7 @@ test.describe('public research journey', () => {
 
     await page.keyboard.press('Shift+Tab');
     await expect(
-      page.getByRole('link', { name: 'Open study' }).last()
+      page.getByRole('button', { name: 'Get study' }).last()
     ).toBeFocused();
     await page.keyboard.press('Tab');
     await expect(
@@ -514,7 +532,7 @@ test.describe('public research journey', () => {
     await page.keyboard.press('Shift+Tab');
     const lastPaperLink = page
       .locator('.range-curve[data-parameter="vsl"]')
-      .getByRole('link', { name: 'Read paper' })
+      .getByRole('button', { name: 'Get source' })
       .last();
     await expectVisibleFocus(lastPaperLink);
     await page.keyboard.press('Tab');
