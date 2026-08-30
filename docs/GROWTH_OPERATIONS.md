@@ -89,14 +89,15 @@ comparison so a change in traffic cannot be mistaken for a change in value.
 
 ## Deferred email readiness
 
-The consent-based research-update form upserts a person in Attio and adds that
-person to the `suffering_social_research_updates` list. The list was read back
-from Attio on 2026-08-26. This is contact storage, not a sending campaign, and
-the site does not send an automated email. Before sending, separately approve a
-sending domain and provider, configure DKIM and DMARC, add one-click
-unsubscribe handling, and test deliverability. Until then, use the saved
-addresses only for the promised occasional research updates and honor removal
-requests sent to `privacy@subconscious.ai`.
+The consent-based research-pack form sends a signed lead to
+`signals.subconscious.ai`. Signals stores the receipt before returning `201` or
+replay-safe `202`, then queues contact delivery. This is contact storage, not a
+sending campaign. The source pack unlocks in the browser after receipt; no
+automated email is promised. Before sending, separately approve a sending
+domain and provider, configure DKIM and DMARC, add one-click unsubscribe
+handling, and test deliverability. Until then, use saved addresses only for
+source access and occasional major research updates. Honor removal requests
+sent to `privacy@subconscious.ai`.
 
 Research-update owner: Avi Yashchin. Subconscious web operations will review
 new signups weekly. After sender authentication and unsubscribe handling are

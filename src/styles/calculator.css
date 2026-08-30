@@ -368,12 +368,17 @@
   color: inherit;
 }
 
-.open-research a {
+.open-research a,
+.open-research .research-source-trigger {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
   color: var(--paper);
   text-underline-offset: 0.25em;
+}
+
+.modal-study .research-source-trigger {
+  min-height: 44px;
 }
 
 .research-updates {

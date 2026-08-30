@@ -32,8 +32,10 @@ This is a static, multi-page Vite site:
 - `src/cost-clock.js` extrapolates the current cumulative estimate using its
   historical average since January 1, 2009. It is not a live harm counter.
 - `src/telemetry*.js` is the single aggregate-only event boundary.
-- `src/research-updates.js` submits the optional email form to the server-only
-  `api/research-updates.js` contact route.
+- `src/research-updates.js` gates convenient source links behind the consented
+  research-pack form. `api/research-updates.js` signs the lead for
+  `signals.subconscious.ai` and unlocks sources only after a matching durable
+  receipt.
 - `src/*.test.js` contains Jest contracts; `tests/e2e/` contains Playwright
   engine and journey checks.
 - `scripts/validate-growth.mjs` inspects built output for canonical, privacy,
@@ -45,7 +47,9 @@ Vercel routing and the Vite build contract live in `vercel.json`. The explicit
 `dist/` output is required because the provider was previously configured as a
 generic static project. Vite injects a `build-revision` meta tag from
 `VERCEL_GIT_COMMIT_SHA`; production monitoring compares it with the expected
-default-branch revision.
+default-branch revision. Keep server tests under `api/` excluded in
+`.vercelignore`; Vercel otherwise packages every JavaScript file there as a
+public function.
 
 ## Develop and verify
 
@@ -81,8 +85,10 @@ was re-enabled only after the compiled container and a live network trace proved
 GA4 traffic with zero PostHog, Clarity, RB2B, or Lemlist requests.
 The runtime emits one canonical `page_view` and allowlisted `cta_clicked`
 events; it excludes query strings, calculator inputs, DOM text, identities,
-replay, advertising, and email addresses. The optional research-update email
-is sent only to the server-side contact route and never enters telemetry.
+replay, advertising, and email addresses. A research-pack email goes only to
+the same-origin server route, then through the signed Signals lead receiver. It
+never enters telemetry. A browser success state requires a matching durable
+receipt from Signals.
 Provider variables are documented in
 `.env.example`. The page view is queued immediately, while the analytics
 provider starts only after click or keyboard engagement, or 60 seconds after
@@ -98,12 +104,12 @@ Paper findings and calculator inputs are not interchangeable. Keep the reported
 finding visible, document the mapping in `valueBasis`, and expose only
 `modelValue` entries inside the parameter's stated slider range. The range
 curves illustrate the editable range; they are not probability distributions.
-Keep selected primary-source links and the Subconscious publisher relationship
-visible in static HTML. Search and answer engines may never open the interactive
-source dialog. Matching JSON-LD can describe visible provenance; it cannot
-replace it.
-The baseline source ledger contains one visible primary path for each of the
-nine inputs. Keep those links synchronized with the structured-data citations.
+Keep selected primary-source citations and the Subconscious publisher
+relationship visible in static HTML. Search and answer engines may never open
+the interactive source dialog. Matching JSON-LD can describe visible
+provenance; it cannot replace it. The baseline source ledger contains one
+described primary path for each of the nine inputs. Its source buttons use the
+consented research-pack gate while JSON-LD retains citation URLs for discovery.
 The interactive evidence receipt explains the selected study's reported
 finding, mapped value, current value, and effect on the total.
 Open a pull request with the changed source, model rationale, and validation

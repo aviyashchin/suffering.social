@@ -1,0 +1,5 @@
+api/*.test.js
+playwright-report/
+test-results/
+coverage/
+archive/

@@ -351,15 +351,15 @@
                 <p>Each paper's reported finding stays separate from the value mapped into the calculator. Open a source, inspect the finding, then change the model value to see its effect.</p>
             </header>
             <ul id="source-ledger">
-                <li><strong>Government valuation</strong><a href="https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-on-valuation-of-a-statistical-life-in-economic-analysis" target="_blank" rel="noopener">Public value used for one life</a><span>Evidence role: agency guidance | Model mapping: direct central estimate</span></li>
-                <li><strong>National trend estimate</strong><a href="https://www.cdc.gov/suicide/facts/data.html" target="_blank" rel="noopener">Excess deaths since 2009</a><span>Evidence role: national surveillance | Model mapping: opening model value</span></li>
-                <li><strong>Exposure study</strong><a href="https://www.aeaweb.org/articles?id=10.1257/aer.20211218" target="_blank" rel="noopener">Share social media may have caused</a><span>Evidence role: rollout comparison | Model mapping: published change</span></li>
-                <li><strong>Population estimate</strong><a href="https://www.ajmc.com/view/increased-social-media-use-linked-to-rising-depressive-symptoms-in-early-adolescents" target="_blank" rel="noopener">People whose depression may be linked</a><span>Evidence role: longitudinal study | Model mapping: original synthesis</span></li>
-                <li><strong>Disease burden</strong><a href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(21)02143-7/fulltext" target="_blank" rel="noopener">Years affected by depression</a><span>Evidence role: global burden estimate | Model mapping: original model value</span></li>
-                <li><strong>Health utility</strong><a href="https://pubmed.ncbi.nlm.nih.gov/15841781/" target="_blank" rel="noopener">Loss in quality of life</a><span>Evidence role: quality-of-life study | Model mapping: lower end of the reported range</span></li>
-                <li><strong>Care cost</strong><a href="https://www.psychiatrist.com/jcp/depression/major-depressive-disorder/economic-burden-depression/" target="_blank" rel="noopener">Yearly healthcare cost per person</a><span>Evidence role: economic estimate | Model mapping: reported value rounded to the slider step</span></li>
-                <li><strong>Work loss</strong><a href="https://pubmed.ncbi.nlm.nih.gov/12813119/" target="_blank" rel="noopener">Yearly work loss per person</a><span>Evidence role: workplace burden study | Model mapping: original per-person value</span></li>
-                <li><strong>Duration estimate</strong><a href="https://pubmed.ncbi.nlm.nih.gov/12005119/" target="_blank" rel="noopener">Average duration of economic costs</a><span>Evidence role: treatment duration study | Model mapping: reported average</span></li>
+                <li><strong>Government valuation</strong><button type="button" class="research-source-trigger" data-research-pack-url="https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-on-valuation-of-a-statistical-life-in-economic-analysis">Get the public value source</button><span>Evidence role: agency guidance | Model mapping: direct central estimate</span></li>
+                <li><strong>National trend estimate</strong><button type="button" class="research-source-trigger" data-research-pack-url="https://www.cdc.gov/suicide/facts/data.html">Get the excess deaths source</button><span>Evidence role: national surveillance | Model mapping: opening model value</span></li>
+                <li><strong>Exposure study</strong><button type="button" class="research-source-trigger" data-research-pack-url="https://www.aeaweb.org/articles?id=10.1257/aer.20211218">Get the exposure study</button><span>Evidence role: rollout comparison | Model mapping: published change</span></li>
+                <li><strong>Population estimate</strong><button type="button" class="research-source-trigger" data-research-pack-url="https://www.ajmc.com/view/increased-social-media-use-linked-to-rising-depressive-symptoms-in-early-adolescents">Get the population study</button><span>Evidence role: longitudinal study | Model mapping: original synthesis</span></li>
+                <li><strong>Disease burden</strong><button type="button" class="research-source-trigger" data-research-pack-url="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(21)02143-7/fulltext">Get the disease burden source</button><span>Evidence role: global burden estimate | Model mapping: original model value</span></li>
+                <li><strong>Health utility</strong><button type="button" class="research-source-trigger" data-research-pack-url="https://pubmed.ncbi.nlm.nih.gov/15841781/">Get the quality of life study</button><span>Evidence role: quality-of-life study | Model mapping: lower end of the reported range</span></li>
+                <li><strong>Care cost</strong><button type="button" class="research-source-trigger" data-research-pack-url="https://www.psychiatrist.com/jcp/depression/major-depressive-disorder/economic-burden-depression/">Get the care cost study</button><span>Evidence role: economic estimate | Model mapping: reported value rounded to the slider step</span></li>
+                <li><strong>Work loss</strong><button type="button" class="research-source-trigger" data-research-pack-url="https://pubmed.ncbi.nlm.nih.gov/12813119/">Get the work loss study</button><span>Evidence role: workplace burden study | Model mapping: original per-person value</span></li>
+                <li><strong>Duration estimate</strong><button type="button" class="research-source-trigger" data-research-pack-url="https://pubmed.ncbi.nlm.nih.gov/12005119/">Get the duration study</button><span>Evidence role: treatment duration study | Model mapping: reported average</span></li>
             </ul>
         </section>
 
@@ -373,8 +373,8 @@
 
         <aside class="open-research">
             <div><p class="eyebrow">Open research</p><h2>Check the sources and calculations.</h2></div>
-            <p>The calculator and sources are public. Corrections and better estimates are welcome.</p>
-            <a href="https://github.com/aviyashchin/suffering.social" target="_blank" rel="noopener" data-telemetry-cta="research_exit">Open the research repository</a>
+            <p>The model is public. The source pack includes the papers, agency data, and mapping notes behind all nine assumptions.</p>
+            <button type="button" class="research-source-trigger" data-research-pack-url="https://github.com/aviyashchin/suffering.social" data-telemetry-cta="research_exit">Get the research repository</button>
         </aside>
       </div>
 
@@ -437,21 +437,21 @@
         </div>
       </section>
 
-      <section class="research-updates" aria-labelledby="research-updates-title">
+      <section id="research-pack" class="research-updates" aria-labelledby="research-updates-title">
         <div>
-          <p class="eyebrow">Research updates</p>
-          <h2 id="research-updates-title">Want to see what we learn next?</h2>
-          <p>Leave your email for occasional updates when the research or calculator changes.</p>
+          <p class="eyebrow">Source pack</p>
+          <h2 id="research-updates-title">Take the research with you.</h2>
+          <p>Get the nine studies, agency sources, and model notes behind this calculator. We will also send major research updates.</p>
         </div>
         <form id="research-update-form">
           <label for="research-update-email">Email address</label>
           <div class="research-update-fields">
             <input id="research-update-email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="you@example.com">
-            <button type="submit">Send me updates</button>
+            <button type="submit">Unlock the sources</button>
           </div>
           <label class="research-update-consent">
             <input name="consent" type="checkbox" required checked>
-            <span>Save my email so the research team can contact me about major updates. I can ask to be removed at any time.</span>
+            <span>Save my email so the research team can provide the source pack and contact me about major updates. I can ask to be removed at any time.</span>
           </label>
           <label class="research-update-trap" aria-hidden="true">
             Website
@@ -1272,7 +1272,7 @@
                             <p class="study-authors">${study.authors}</p>
                             <p><strong>Finding:</strong> ${study.value}</p>
                             <blockquote>${study.quote}</blockquote>
-                            <a href="${study.url}" target="_blank" rel="noopener">Open study</a>
+                            <button type="button" class="research-source-trigger" data-research-pack-url="${study.url}">Get study</button>
                         </article>
                     </li>
                 `;
