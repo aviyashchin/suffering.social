@@ -47,7 +47,9 @@ Vercel routing and the Vite build contract live in `vercel.json`. The explicit
 `dist/` output is required because the provider was previously configured as a
 generic static project. Vite injects a `build-revision` meta tag from
 `VERCEL_GIT_COMMIT_SHA`; production monitoring compares it with the expected
-default-branch revision.
+default-branch revision. Keep server tests under `api/` excluded in
+`.vercelignore`; Vercel otherwise packages every JavaScript file there as a
+public function.
 
 ## Develop and verify
 
