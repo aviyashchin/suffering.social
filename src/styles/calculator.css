@@ -207,11 +207,6 @@
   border-bottom: 1px solid var(--rule);
 }
 
-.group-index {
-  color: var(--research-red);
-  font: 700 0.75rem var(--font-data);
-}
-
 .assumption-group h3 {
   color: var(--ink);
   font-family: var(--font-display);
@@ -300,18 +295,6 @@
   gap: clamp(2rem, 7vw, 7rem);
   padding: clamp(3.5rem, 8vw, 7rem) 0;
   border-top: 1px solid var(--ink);
-}
-
-.result-number {
-  margin-top: 2rem;
-  font-family: var(--font-data);
-}
-
-.result-number > span {
-  display: block;
-  color: var(--research-red);
-  font-size: clamp(3rem, 7vw, 5.5rem);
-  letter-spacing: -0.07em;
 }
 
 .research-actions,
@@ -649,7 +632,7 @@
   font-size: 1.05rem;
 }
 
-.confidence-label {
+.evidence-role-label {
   flex: 0 0 auto;
   color: var(--research-red);
   font: 0.65rem var(--font-data);

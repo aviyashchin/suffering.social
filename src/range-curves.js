@@ -22,6 +22,20 @@ export function curvePath(percent, width = 400, height = 90) {
   return `M 0 ${height} L ${points.join(' L ')}`;
 }
 
+function createCurveGraphic() {
+  const namespace = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(namespace, 'svg');
+  svg.setAttribute('viewBox', '0 0 400 90');
+  svg.setAttribute('preserveAspectRatio', 'none');
+  svg.setAttribute('aria-hidden', 'true');
+  const fill = document.createElementNS(namespace, 'path');
+  fill.classList.add('range-curve-fill');
+  const line = document.createElementNS(namespace, 'path');
+  line.classList.add('range-curve-line');
+  svg.append(fill, line);
+  return { svg, fill, line };
+}
+
 const EVIDENCE_ROLES = {
   vsl: 'Government valuation',
   suicides: 'National trend estimate',
@@ -42,25 +56,6 @@ function totalWithParameter(calculator, parameter, value) {
   return total;
 }
 
-function formatReceiptEffect(calculator, parameter, currentValue, anchorValue) {
-  if (typeof calculator.calculateTotalEconomicImpact !== 'function') {
-    return 'Move the slider to compare this value with the selected study mapping.';
-  }
-  const currentTotal = calculator.calculateTotalEconomicImpact().total;
-  const anchorTotal = totalWithParameter(
-    calculator,
-    parameter,
-    Number(anchorValue)
-  );
-  const difference = currentTotal - anchorTotal;
-  if (Math.abs(difference) < 0.01) {
-    return 'Matches the selected study mapping.';
-  }
-  return `${calculator.formatLargeNumber(Math.abs(difference))} ${
-    difference > 0 ? 'higher' : 'lower'
-  } than the selected study mapping.`;
-}
-
 function createEvidenceReceipt(curve, parameter, calculator, selectable) {
   const receipt = document.createElement('section');
   receipt.className = 'evidence-receipt';
@@ -70,7 +65,7 @@ function createEvidenceReceipt(curve, parameter, calculator, selectable) {
   const heading = document.createElement('p');
   heading.className = 'evidence-receipt-heading';
   const headingLabel = document.createElement('span');
-  headingLabel.textContent = 'Current evidence anchor';
+  headingLabel.textContent = 'Current anchor';
   const headingValue = document.createElement('strong');
   headingValue.dataset.receiptStudy = '';
   heading.append(headingLabel, headingValue);
@@ -78,10 +73,8 @@ function createEvidenceReceipt(curve, parameter, calculator, selectable) {
   const facts = document.createElement('dl');
   const fields = [
     ['Evidence role', 'role'],
-    ['Study found', 'finding'],
+    ['Anchor says', 'finding'],
     ['Model uses', 'mapping'],
-    ['You selected', 'value'],
-    ['Effect on total', 'effect'],
   ];
   for (const [label, key] of fields) {
     const item = document.createElement('div');
@@ -94,7 +87,7 @@ function createEvidenceReceipt(curve, parameter, calculator, selectable) {
   }
   receipt.append(heading, facts);
 
-  const update = (currentValue) => {
+  const update = () => {
     const selectedIndex = Number(curve.dataset.selectedStudyIndex);
     const selected = selectable.find(
       ({ studyIndex }) => studyIndex === selectedIndex
@@ -107,15 +100,6 @@ function createEvidenceReceipt(curve, parameter, calculator, selectable) {
       selected.value;
     receipt.querySelector('[data-receipt-mapping]').textContent =
       calculator.formatParameter(parameter, selected.modelValue);
-    receipt.querySelector('[data-receipt-value]').textContent =
-      calculator.formatParameter(parameter, Number(currentValue));
-    receipt.querySelector('[data-receipt-effect]').textContent =
-      formatReceiptEffect(
-        calculator,
-        parameter,
-        Number(currentValue),
-        selected.modelValue
-      );
   };
 
   return { receipt, update };
@@ -154,11 +138,47 @@ function createStudyButton(
   return button;
 }
 
+function createContextStudyRow(study) {
+  const item = document.createElement('article');
+  item.className = 'study-choice-item study-choice-item--context';
+  const context = document.createElement('div');
+  context.className = 'context-study';
+  const name = document.createElement('span');
+  name.textContent = study.shortLabel;
+  const role = document.createElement('strong');
+  role.textContent = 'Context only';
+  const finding = document.createElement('span');
+  finding.className = 'study-choice-finding';
+  finding.textContent = study.value;
+  const basis = document.createElement('small');
+  basis.textContent = study.valueBasis;
+  context.append(name, role, finding, basis);
+  item.append(context);
+  if (study.url) {
+    const sourceButton = document.createElement('button');
+    sourceButton.type = 'button';
+    sourceButton.className = 'research-source-trigger';
+    sourceButton.dataset.researchPackUrl = study.url;
+    sourceButton.textContent = 'Get source';
+    item.append(sourceButton);
+  }
+  return item;
+}
+
 function addStudyChoices(curve, plot, parameter, calculator, render) {
   const studies = calculator.researchCitations?.[parameter]?.studies || [];
-  const mappedStudies = studies
-    .map((study, studyIndex) => ({ study, studyIndex }))
-    .filter(({ study }) => Number.isFinite(study.modelValue));
+  const indexedStudies = studies.map((study, studyIndex) => ({
+    study,
+    studyIndex,
+  }));
+  const mappedStudies = indexedStudies
+    .filter(
+      ({ study }) =>
+        study.mappingStatus === 'direct' && Number.isFinite(study.modelValue)
+    );
+  const contextualStudies = indexedStudies.filter(
+    ({ study }) => study.mappingStatus !== 'direct'
+  );
   const startingValue =
     calculator.scenarios?.reset?.[parameter] ??
     calculator.parameters[parameter];
@@ -184,12 +204,11 @@ function addStudyChoices(curve, plot, parameter, calculator, render) {
     curve.closest('.assumption')?.querySelector('label')?.textContent?.trim() ||
     parameter;
   choices.setAttribute('aria-label', `Paper values for ${parameterLabel}`);
-  const heading = document.createElement('p');
-  heading.className = 'study-choices-heading';
-  heading.textContent =
-    'Choose a study to update this assumption. Select a row. The slider, curve, formula, and total update together.';
   const list = document.createElement('div');
   list.className = 'study-choice-list';
+  const heading = document.createElement('p');
+  heading.className = 'study-choices-heading';
+  heading.textContent = 'Compare source values';
   const openingSelection = selectable.find(
     ({ study }) =>
       Math.abs(study.modelValue - calculator.parameters[parameter]) < 0.001
@@ -254,11 +273,24 @@ function addStudyChoices(curve, plot, parameter, calculator, render) {
     button.addEventListener('click', apply);
   });
 
-  const note = document.createElement('p');
-  note.className = 'study-mapping-note';
-  note.textContent =
-    'A reported finding and a model value may measure different things. Each row explains how the model value was chosen.';
-  choices.append(heading, evidenceReceipt.receipt, list, note);
+  contextualStudies.forEach(({ study }) => {
+    list.append(createContextStudyRow(study));
+  });
+
+  choices.append(evidenceReceipt.receipt);
+  if (selectable.length > 1 || contextualStudies.length > 0) {
+    const note = document.createElement('p');
+    note.className = 'study-mapping-note';
+    note.textContent =
+      'Selectable rows update the model. Context rows report related findings without setting this input.';
+    choices.append(heading, list, note);
+  } else {
+    const note = document.createElement('p');
+    note.className = 'study-mapping-note';
+    note.textContent =
+      'No study measures this input directly. The opening value is a model assumption.';
+    choices.append(note);
+  }
   curve.append(choices);
   return evidenceReceipt.update;
 }
@@ -270,25 +302,37 @@ export function initializeRangeCurves(calculator) {
     const slider = document.getElementById(`${parameter}-nouislider`);
     const marker = curve.querySelector('.range-curve-marker');
     const current = curve.querySelector('.range-curve-current');
-    const line = curve.querySelector('.range-curve-line');
-    const fill = curve.querySelector('.range-curve-fill');
-    if (
-      !config ||
-      !slider?.noUiSlider ||
-      !marker ||
-      !current ||
-      !line ||
-      !fill
-    ) {
+    const impact = curve.querySelector('.sensitivity-impact');
+    if (!config || !slider?.noUiSlider || !marker || !current) {
       return;
     }
 
     const plot = document.createElement('div');
     plot.className = 'range-curve-plot';
     [...curve.children].forEach((child) => plot.append(child));
+    const { svg, fill, line } = createCurveGraphic();
+    plot.prepend(svg);
     curve.append(plot);
 
     let updateReceipt = () => {};
+    if (
+      impact &&
+      typeof calculator.calculateTotalEconomicImpact === 'function'
+    ) {
+      const lowTotal = totalWithParameter(
+        calculator,
+        parameter,
+        config.range.min
+      );
+      const highTotal = totalWithParameter(
+        calculator,
+        parameter,
+        config.range.max
+      );
+      impact.textContent = `Total ${calculator.formatLargeNumber(
+        Math.min(lowTotal, highTotal)
+      )} to ${calculator.formatLargeNumber(Math.max(lowTotal, highTotal))}`;
+    }
     const render = (value) => {
       const numericValue = Number(value);
       const percent = curveMarkerPercent(

@@ -144,7 +144,7 @@ test('keeps duration keyboard steps aligned with its observable value', async ({
   await expect(page.locator('#duration-value')).toHaveText('0.25 years');
 });
 
-test('keeps the live estimate clickable and every research range curve usable', async ({
+test('keeps the live estimate clickable and every sensitivity range usable', async ({
   page,
 }) => {
   await page.goto('/');
@@ -154,21 +154,15 @@ test('keeps the live estimate clickable and every research range curve usable', 
   await expect(curves).toHaveCount(9);
   for (const curve of await curves.all()) {
     await expect(curve).toBeVisible();
-    await expect(
-      curve.locator('.study-choice[aria-pressed="true"]')
-    ).toHaveCount(1);
+    await expect(curve.locator('.evidence-receipt')).toHaveCount(1);
   }
 
   const marker = page.locator(
     '.range-curve[data-parameter="attribution"] .range-curve-marker'
   );
-  const curveLine = page.locator(
-    '.range-curve[data-parameter="attribution"] .range-curve-line'
-  );
   const initialPosition = await marker.evaluate(
     (element) => element.style.left
   );
-  const initialPath = await curveLine.getAttribute('d');
   await page.evaluate(() => {
     document.getElementById('attribution-nouislider').noUiSlider.set(19);
   });
@@ -180,12 +174,12 @@ test('keeps the live estimate clickable and every research range curve usable', 
       timeout: 10_000,
     })
     .not.toBe(initialPosition);
-  await expect(curveLine).not.toHaveAttribute('d', initialPath || '');
-
-  const paperChoices = page.locator(
-    '.range-curve[data-parameter="attribution"] .study-choice:not([data-study-index="-1"])'
+  const vslRange = page.locator('.range-curve[data-parameter="vsl"]');
+  await expect(vslRange.getByText('Compare source values')).toBeVisible();
+  const paperChoices = vslRange.locator(
+    '.study-choice:not([data-study-index="-1"])'
   );
-  await expect(paperChoices).toHaveCount(2);
+  await expect(paperChoices).toHaveCount(3);
   const totalBeforePaper = await page.locator('#hero-total-cost').textContent();
   await paperChoices.first().click();
   await expect(page.locator('#hero-total-cost')).not.toHaveText(
@@ -214,7 +208,9 @@ test('keeps the hero estimate typographically unified with quieter directional m
       if (controlledValue) {
         window.setAnimatedNumberText(element, controlledValue);
       }
-      const value = element.querySelector('.animated-number-value');
+      const value = element.querySelector(
+        '.animated-number-clip:not([data-direction="none"]) .animated-number-value'
+      );
       const animation = value?.getAnimations()[0];
       const keyframe = animation?.effect.getKeyframes()[0];
       const heroStyle = getComputedStyle(element);
@@ -241,7 +237,7 @@ test('keeps the hero estimate typographically unified with quieter directional m
     direction: 'up',
     duration: 220,
     initialOpacity: '1',
-    initialTransform: 'translateY(28%)',
+    initialTransform: 'translateY(100%)',
   });
   expect(upward.valueFontSize).toBe(upward.heroFontSize);
   expect(upward.valueColor).toBe(upward.heroColor);
@@ -251,8 +247,17 @@ test('keeps the hero estimate typographically unified with quieter directional m
     direction: 'down',
     duration: 220,
     initialOpacity: '1',
-    initialTransform: 'translateY(-28%)',
+    initialTransform: 'translateY(-100%)',
   });
+
+  const changedDigitCount = await hero.evaluate((element) => {
+    window.setAnimatedNumberText(element, '$2,355,067,085,577');
+    window.setAnimatedNumberText(element, '$2,355,067,085,578');
+    return element.querySelectorAll(
+      '.animated-number-clip:not([data-direction="none"])'
+    ).length;
+  });
+  expect(changedDigitCount).toBe(1);
 });
 
 test('keeps the active section formula below the calculator summary', async ({
@@ -283,6 +288,7 @@ test('updates formulas during slider movement and keeps the selected research an
   await page.waitForFunction(() => Boolean(window.calculator));
 
   const curve = page.locator('.range-curve[data-parameter="vsl"]');
+  await expect(curve.getByText('Compare source values')).toBeVisible();
   const choices = curve.locator('.study-choice');
   const orderedValues = await choices.evaluateAll((items) =>
     items.map((item) => Number(item.dataset.modelValue))
@@ -353,22 +359,15 @@ test('explains how the selected study becomes the live estimate', async ({
   const receipt = page.locator('.evidence-receipt[data-parameter="vsl"]');
   await expect(receipt).toBeVisible();
   await expect(receipt).toContainText('Evidence role');
-  await expect(receipt).toContainText('Study found');
+  await expect(receipt).toContainText('Anchor says');
   await expect(receipt).toContainText('Model uses');
-  await expect(receipt).toContainText('You selected');
-  await expect(receipt).toContainText('Effect on total');
   await expect(receipt).toContainText('DOT guidance');
   await expect(receipt).toContainText('$13.7M');
-  await expect(receipt).toContainText('Matches the selected study mapping');
 
   await page.evaluate(() => {
     document.getElementById('vsl-nouislider').noUiSlider.set(10);
   });
-
-  await expect(receipt.locator('[data-receipt-value]')).toHaveText('$10.0M');
-  await expect(receipt.locator('[data-receipt-effect]')).toContainText(
-    'lower than the selected study mapping'
-  );
+  await expect(page.locator('#vsl-value')).toHaveText('$10.0M');
 
   await expect(
     page.locator(

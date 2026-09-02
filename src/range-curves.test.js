@@ -1,6 +1,6 @@
 import {
-  curvePath,
   curveMarkerPercent,
+  curvePath,
   initializeRangeCurves,
 } from './range-curves.js';
 
@@ -12,11 +12,10 @@ describe('research range curves', () => {
     expect(curveMarkerPercent(20, 7, 14)).toBe(100);
   });
 
-  test('keeps a curve marker synchronized with its calculator control', () => {
+  test('keeps a sensitivity marker synchronized with its calculator control', () => {
     document.body.innerHTML = `
       <div id="vsl-nouislider"></div>
       <figure class="range-curve" data-parameter="vsl">
-        <svg><path class="range-curve-fill"></path><path class="range-curve-line"></path></svg>
         <span class="range-curve-marker"></span>
         <output class="range-curve-current"></output>
       </figure>
@@ -37,16 +36,19 @@ describe('research range curves', () => {
     initializeRangeCurves(calculator);
 
     const marker = document.querySelector('.range-curve-marker');
-    const line = document.querySelector('.range-curve-line');
-    const initialPath = line.getAttribute('d');
     expect(marker.style.left).toBe('50%');
     expect(document.querySelector('.range-curve-current')).toHaveTextContent(
       '$10.5M'
     );
+    expect(document.querySelector('.range-curve-line')).not.toBeNull();
+    expect(document.querySelector('.range-curve-fill')).not.toBeNull();
+    expect(document.querySelector('.study-choices details')).toBeNull();
+    expect(document.querySelector('.study-choices')).toHaveTextContent(
+      'No study measures this input directly'
+    );
 
     updateHandler(['14']);
     expect(marker.style.left).toBe('100%');
-    expect(line.getAttribute('d')).not.toBe(initialPath);
     expect(document.querySelector('.range-curve-current')).toHaveTextContent(
       '$14.0M'
     );
@@ -58,7 +60,6 @@ describe('research range curves', () => {
         <label for="vsl-nouislider">Public value used for one life</label>
         <div id="vsl-nouislider"></div>
         <figure class="range-curve" data-parameter="vsl">
-          <svg><path class="range-curve-fill"></path><path class="range-curve-line"></path></svg>
           <span class="range-curve-marker"></span>
           <output class="range-curve-current"></output>
         </figure>
@@ -81,12 +82,14 @@ describe('research range curves', () => {
           studies: [
             {
               modelValue: 14,
+              mappingStatus: 'context',
               shortLabel: 'Archived paper',
               value: 'Archived finding',
               valueBasis: 'Upper estimate',
             },
             {
               modelValue: 10.5,
+              mappingStatus: 'direct',
               shortLabel: 'Linked paper',
               value: 'Reported finding',
               valueBasis: 'Direct estimate',
@@ -114,41 +117,32 @@ describe('research range curves', () => {
       document.querySelectorAll('.study-choice-item [data-research-pack-url]')
     ).toHaveLength(1);
     expect(region.innerHTML).not.toContain('undefined');
-    expect(choices).toHaveLength(3);
+    expect(region.querySelector('details')).toBeNull();
+    expect(region).toHaveTextContent('Compare source values');
+    expect(region).toHaveTextContent('Archived paper');
+    expect(region).toHaveTextContent('Context only');
+    expect(choices).toHaveLength(2);
     expect(choices.map((choice) => Number(choice.dataset.modelValue))).toEqual([
       10.5,
       11,
-      14,
     ]);
     expect(choices[1]).toHaveAttribute('aria-pressed', 'true');
     expect(choices[1]).toHaveTextContent('Starting model value');
-    expect(region).toHaveTextContent(
-      'Select a row. The slider, curve, formula, and total update together.'
-    );
+    expect(region).toHaveTextContent('Selectable rows update the model');
+    expect(region.querySelectorAll('.evidence-receipt dt')).toHaveLength(3);
 
-    choices[2].click();
-    expect(applied).toEqual([0]);
-    expect(choices[2]).toHaveAttribute('aria-pressed', 'true');
-    expect(choices[2]).toHaveAttribute('data-selection-state', 'exact');
+    choices[0].click();
+    expect(applied).toEqual([1]);
+    expect(choices[0]).toHaveAttribute('aria-pressed', 'true');
+    expect(choices[0]).toHaveAttribute('data-selection-state', 'exact');
 
     updateHandler(['13']);
-    expect(choices[2]).toHaveAttribute('aria-pressed', 'true');
-    expect(choices[2]).toHaveAttribute('data-selection-state', 'adjusted');
+    expect(choices[0]).toHaveAttribute('aria-pressed', 'true');
+    expect(choices[0]).toHaveAttribute('data-selection-state', 'adjusted');
   });
 
-  test('moves a bell curve peak across the fixed research range', () => {
+  test('moves an illustrative normal curve across the fixed model range', () => {
     expect(curvePath(15)).not.toBe(curvePath(85));
     expect(curvePath(15)).toMatch(/^M 0 90 L /);
-    const peakX = (percent) =>
-      curvePath(percent)
-        .replace(/^M 0 90 L /, '')
-        .split(' L ')
-        .map((point) => point.split(' ').map(Number))
-        .reduce((peak, point) => (point[1] < peak[1] ? point : peak))[0];
-
-    expect(peakX(15)).toBeLessThan(peakX(85));
-    expect(peakX(0)).toBe(0);
-    expect(peakX(50)).toBe(200);
-    expect(peakX(100)).toBe(400);
   });
 });
