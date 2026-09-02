@@ -4,11 +4,15 @@ import { resolve } from 'node:path';
 const root = process.cwd();
 const calculator = parseHtml('index.html');
 const calculatorSource = readFileSync(resolve(root, 'index.html'), 'utf8');
+const calculatorBootstrap = readFileSync(
+  resolve(root, 'src/calculator-bootstrap.js'),
+  'utf8'
+);
 const support = calculator;
 const calculatorRedirect = parseHtml('calculator.html');
 const privacy = parseHtml('privacy.html');
 const legacy = parseHtml('social_media_cost_calculatorv5.html');
-const scenarioNames = ['reset', 'optimistic', 'facebookFiles', 'aggressive'];
+const scenarioNames = ['reset', 'optimistic', 'aggressive'];
 const parameterNames = [
   'vsl',
   'suicides',
@@ -113,25 +117,55 @@ describe('/ calculator product route contract', () => {
     expect(text).toMatch(/limitation/i);
   });
 
-  test('restores the original calculator instrument without pretending the curves are probabilities', () => {
+  test('shows labeled normal curves without presenting them as probability', () => {
     const estimateLink = calculator.querySelector(
       'a.estimate-display[href="#assumptions"]'
     );
-    const curves = [...calculator.querySelectorAll('.range-curve')];
+    const ranges = [...calculator.querySelectorAll('.range-curve')];
 
     expect(estimateLink).not.toBeNull();
-    expect(curves).toHaveLength(9);
+    expect(ranges).toHaveLength(9);
     for (const parameter of parameterNames) {
-      const curve = calculator.querySelector(
+      const range = calculator.querySelector(
         `.range-curve[data-parameter="${parameter}"]`
       );
-      expect(curve).not.toBeNull();
-      expect(curve.querySelector('svg[aria-hidden="true"]')).not.toBeNull();
-      expect(curve.querySelector('.range-curve-marker')).not.toBeNull();
+      expect(range).not.toBeNull();
+      expect(range.querySelector('.range-curve-marker')).not.toBeNull();
     }
 
-    expect(visibleText(calculator)).toMatch(/illustrative range curve/i);
-    expect(visibleText(calculator)).not.toMatch(/probability distribution/i);
+    expect(visibleText(calculator)).toMatch(/sensitivity range/i);
+    expect(visibleText(calculator)).toMatch(/normal curve/i);
+    expect(visibleText(calculator)).toMatch(/not.*probability/i);
+  });
+
+  test('defines the comparison and makes the total conditional on model assumptions', () => {
+    const hero = calculator.querySelector('#hero-section');
+    const modelLogic = calculator.querySelector('#model-logic');
+
+    expect(normalizedText(hero)).toMatch(
+      /if (?:the|these) assumptions are true/i
+    );
+    expect(normalizedText(hero)).toMatch(/did not expand beyond.*2009/i);
+    expect(normalizedText(hero)).toMatch(/cannot observe|cannot be observed/i);
+    expect(modelLogic).not.toBeNull();
+    expect(normalizedText(modelLogic)).toMatch(/observed change/i);
+    expect(normalizedText(modelLogic)).toMatch(/share.*caused/i);
+    expect(normalizedText(modelLogic)).toMatch(/public value/i);
+  });
+
+  test('lets the causal question and result stand without a decorative hero animation', () => {
+    expect(calculator.querySelector('#evidence-field-canvas')).toBeNull();
+    expect(calculator.querySelector('.model-field')).toBeNull();
+    expect(calculator.querySelector('.hero-model')).not.toBeNull();
+    expect(calculatorBootstrap).not.toMatch(/initializeEvidenceField/);
+  });
+
+  test('uses evidence roles instead of unsupported confidence grades or numbered scaffolding', () => {
+    expect(calculator.querySelector('.confidence-label')).toBeNull();
+    expect(calculator.querySelector('.group-index')).toBeNull();
+    expect(calculatorSource).not.toMatch(/\$\{study\.confidence\} confidence/i);
+    expect(calculatorSource).toMatch(/Quasi-experimental study/i);
+    expect(calculatorSource).toMatch(/Observed national trend/i);
   });
 
   test('keeps the educational clock and paper-selection surfaces in the active instrument', () => {
@@ -185,6 +219,9 @@ describe('/ calculator product route contract', () => {
         calculator.querySelectorAll(`[data-scenario="${scenarioName}"]`)
       ).toHaveLength(1);
     }
+    expect(
+      calculator.querySelector('[data-scenario="facebookFiles"]')
+    ).toBeNull();
   });
 
   test('keeps visible control labels inside their accessible names', () => {

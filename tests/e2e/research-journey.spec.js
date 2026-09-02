@@ -229,8 +229,9 @@ test.describe('public research journey', () => {
     });
 
     await page.goto('/');
-    const gatedSource = page
-      .locator('.range-curve[data-parameter="vsl"]')
+    const vslRange = page.locator('.range-curve[data-parameter="vsl"]');
+    await expect(vslRange.getByText('Compare source values')).toBeVisible();
+    const gatedSource = vslRange
       .getByRole('button', { name: 'Get source' })
       .first();
     await gatedSource.click();
@@ -434,7 +435,6 @@ test.describe('public research journey', () => {
     const scenarioNames = [
       'Research baseline, load assumptions',
       'Lower-bound assumption, load assumptions',
-      'Platform-disclosures case, load assumptions',
       'Upper-bound assumption, load assumptions',
     ];
     const scenarios = scenarioNames.map((name) =>
@@ -454,7 +454,6 @@ test.describe('public research journey', () => {
     }
 
     await page.keyboard.press('Shift+Tab');
-    await page.keyboard.press('Shift+Tab');
     const scenario = scenarios[1];
     await expectVisibleFocus(scenario);
 
@@ -463,7 +462,7 @@ test.describe('public research journey', () => {
       .textContent();
     await page.keyboard.press('Enter');
     await expect(scenario).toHaveAttribute('aria-pressed', 'true');
-    for (const inactiveScenario of [scenarios[0], scenarios[2], scenarios[3]]) {
+    for (const inactiveScenario of [scenarios[0], scenarios[2]]) {
       await expect(inactiveScenario).toHaveAttribute('aria-pressed', 'false');
     }
     await expect(page.locator('#hero-total-cost')).not.toHaveText(
@@ -489,8 +488,10 @@ test.describe('public research journey', () => {
       .poll(() => page.evaluate(() => window.calculator.parameters.vsl))
       .toBe(sliderValueAfter);
 
-    const baselinePaperChoice = page
-      .locator('.range-curve[data-parameter="vsl"] .study-choice')
+    const vslRange = page.locator('.range-curve[data-parameter="vsl"]');
+    await expect(vslRange.getByText('Compare source values')).toBeVisible();
+    const baselinePaperChoice = vslRange
+      .locator('.study-choice')
       .filter({ hasText: 'DOT guidance' });
     await tabTo(baselinePaperChoice, page);
     await expectVisibleFocus(baselinePaperChoice);

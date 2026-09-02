@@ -46,6 +46,49 @@ describe('animated number text', () => {
     expect(directions).toEqual(['none', 'up', 'none']);
   });
 
+  test('moves only the digit wheels whose displayed digits changed', () => {
+    const output = document.createElement('output');
+    setAnimatedNumberText(output, '$2,355,067,085,577');
+    setAnimatedNumberText(output, '$2,355,067,085,578');
+
+    const digits = [
+      ...output.querySelectorAll('[data-animated-number-digit]'),
+    ];
+    expect(digits).toHaveLength(13);
+    expect(
+      digits.filter((digit) => digit.dataset.direction === 'up')
+    ).toHaveLength(1);
+    expect(
+      digits.filter((digit) => digit.dataset.direction === 'none')
+    ).toHaveLength(12);
+    expect(output).toHaveTextContent('$2,355,067,085,578');
+  });
+
+  test('turns lower place-value wheels when a higher wheel carries', () => {
+    const output = document.createElement('output');
+    setAnimatedNumberText(output, '$100');
+    setAnimatedNumberText(output, '$110');
+
+    const digits = [
+      ...output.querySelectorAll('[data-animated-number-digit]'),
+    ];
+    expect(digits.map((digit) => digit.dataset.placeValue)).toEqual([
+      '100',
+      '10',
+      '1',
+    ]);
+    expect(digits.map((digit) => digit.dataset.direction)).toEqual([
+      'none',
+      'up',
+      'up',
+    ]);
+    expect(digits.map((digit) => digit.dataset.wheelSteps)).toEqual([
+      '0',
+      '1',
+      '10',
+    ]);
+  });
+
   test('preserves an active directional node across an identical formatted write', () => {
     const output = document.createElement('output');
     setAnimatedNumberText(output, '$100');
