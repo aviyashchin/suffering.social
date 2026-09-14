@@ -55,11 +55,15 @@ control while retaining the existing keyboard and 44px target behavior.
 
 The curves are illustrative range guides, not probability distributions. Their
 shape and marker must move with the slider. The header clock keeps mortality,
-mental-health, and economic components visible with their sum. It advances the
+mental-health, and economic components visible with their sum. Mortality shows
+the estimated life count first and its dollar valuation in parentheses; changing
+the public value of one life must not change that count. It advances the
 model display while the page is open, but does not publish a per-second rate.
 Keep the page's explicit statement that it is a model display, not a live
 measurement. Each assumption-group header stays below the masthead so its live
-formula remains visible while the user tests studies in that section.
+formula remains visible while the user tests studies in that section. On narrow
+screens the active curve stays below that header while its source rows scroll.
+Keep the curve total ranges synchronized when other assumptions change.
 
 Slider `update` events recalculate the model before release. Live numeric text
 uses the vanilla adapter in `src/animated-number-text.js`, which follows the

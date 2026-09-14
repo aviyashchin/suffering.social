@@ -319,19 +319,23 @@ export function initializeRangeCurves(calculator) {
       impact &&
       typeof calculator.calculateTotalEconomicImpact === 'function'
     ) {
-      const lowTotal = totalWithParameter(
-        calculator,
-        parameter,
-        config.range.min
-      );
-      const highTotal = totalWithParameter(
-        calculator,
-        parameter,
-        config.range.max
-      );
-      impact.textContent = `Total ${calculator.formatLargeNumber(
-        Math.min(lowTotal, highTotal)
-      )} to ${calculator.formatLargeNumber(Math.max(lowTotal, highTotal))}`;
+      const updateImpact = () => {
+        const lowTotal = totalWithParameter(
+          calculator,
+          parameter,
+          config.range.min
+        );
+        const highTotal = totalWithParameter(
+          calculator,
+          parameter,
+          config.range.max
+        );
+        impact.textContent = `Total ${calculator.formatLargeNumber(
+          Math.min(lowTotal, highTotal)
+        )} to ${calculator.formatLargeNumber(Math.max(lowTotal, highTotal))}`;
+      };
+      updateImpact();
+      document.addEventListener('calculator:updated', updateImpact);
     }
     const render = (value) => {
       const numericValue = Number(value);

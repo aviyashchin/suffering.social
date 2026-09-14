@@ -37,11 +37,11 @@ body {
 
 .animated-number-clip {
   position: relative;
-  display: inline-block;
+  display: inline-grid;
   height: 1em;
   overflow-y: clip;
   line-height: 1;
-  vertical-align: bottom;
+  vertical-align: baseline;
 }
 
 .animated-number-clip::before {
@@ -192,6 +192,12 @@ body {
   font-size: var(--fs-meta);
   font-weight: 650;
   line-height: 1;
+}
+
+.cost-clock-valuation {
+  color: var(--category-lives);
+  font-size: var(--fs-meta);
+  line-height: 1.2;
 }
 
 .cost-clock-components [data-category='lives'] {
@@ -1454,7 +1460,7 @@ body {
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 980px) {
   .research-masthead {
     grid-template-columns: 1fr auto;
     gap: 0.35rem 1rem;
@@ -1509,7 +1515,7 @@ body {
 
   .calculator-hero {
     min-height: auto;
-    padding-top: 4.5rem;
+    padding-top: 2rem;
   }
 
   .calculator-hero h1 {
@@ -1551,6 +1557,7 @@ body {
 
   .assumption-group > header {
     grid-template-columns: 1fr;
+    gap: 0.35rem;
     padding-block: 0.75rem;
   }
 
@@ -1570,7 +1577,7 @@ body {
   .assumption {
     grid-template-columns: 1fr auto;
     gap: 1rem;
-    padding-block: 2.5rem;
+    padding-block: 1.25rem;
   }
 
   .assumption-copy {
@@ -1622,8 +1629,82 @@ body {
     border-top: 1px solid var(--instrument-rule-soft);
   }
 
+  .assumptions-section {
+    padding-block: 2.5rem;
+  }
+
+  .assumption-group {
+    margin-bottom: 3rem;
+  }
+
+  .range-curve {
+    overflow: visible;
+  }
+
   .range-curve-plot {
-    height: 5.8rem;
+    position: sticky;
+    top: calc(var(--masthead-height, 8rem) + var(--group-header-height, 6rem));
+    z-index: 11;
+    height: 7rem;
+  }
+
+  .range-curve figcaption {
+    flex-wrap: wrap;
+    gap: 0.15rem 0.5rem;
+    letter-spacing: 0;
+  }
+
+  .range-curve figcaption .sensitivity-impact {
+    order: 1;
+    flex-basis: 100%;
+    text-align: center;
+  }
+
+  .range-curve-plot svg {
+    bottom: 2.4rem;
+    height: calc(100% - 3.9rem);
+  }
+
+  .range-curve-plot::before,
+  .study-point {
+    bottom: 2.4rem;
+  }
+
+  .range-curve-marker {
+    bottom: 2.4rem;
+  }
+
+  .evidence-receipt-heading,
+  .evidence-receipt dl > div {
+    gap: 0.25rem;
+    padding: 0.5rem 0.65rem;
+  }
+
+  .evidence-receipt-heading {
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+  }
+
+  .study-choice > span,
+  .study-choice > strong,
+  .study-choice > small,
+  .context-study > span,
+  .context-study > strong,
+  .context-study > small {
+    min-height: 0;
+    padding: 0.35rem 0.65rem;
+  }
+
+  .study-choice > span:first-child,
+  .study-choice > strong,
+  .context-study > span:first-child,
+  .context-study > strong {
+    min-height: 44px;
+  }
+
+  .study-choice > small {
+    gap: 0.5rem;
+    flex-wrap: wrap;
   }
 
   .study-choice-item {
@@ -1648,7 +1729,8 @@ body {
 
   .study-choice-item .research-source-trigger {
     grid-column: 2;
-    grid-row: 3;
+    grid-row: 2;
+    min-height: 44px;
   }
 
   .result-reading {

@@ -20,9 +20,7 @@ describe('estimated cost clock', () => {
   });
 
   test('formats the changing total without implying cents of precision', () => {
-    expect(formatClockTotal(2_355_067_000_123.8)).toBe(
-      '$2,355,067,000,124'
-    );
+    expect(formatClockTotal(2_355_067_000_123.8)).toBe('$2,355,067,000,124');
   });
 
   test('keeps component totals readable in a compact header', () => {
@@ -34,7 +32,7 @@ describe('estimated cost clock', () => {
     document.body.innerHTML = `
       <strong id="cost-clock-total"></strong>
       <strong id="hero-total-cost"></strong>
-      <strong id="cost-clock-mortality"></strong>
+      <strong id="cost-clock-mortality"></strong><span id="cost-clock-mortality-value"></span>
       <strong id="cost-clock-mental"></strong>
       <strong id="cost-clock-economic"></strong>
     `;
@@ -43,6 +41,7 @@ describe('estimated cost clock', () => {
     const clearIntervalSpy = jest.spyOn(window, 'clearInterval');
 
     const cleanup = startCostClock({
+      parameters: { suicides: 100, attribution: 20 },
       calculateTotalEconomicImpact: () => ({
         mortality: 3_153_600,
         mental: 12_614_400,
@@ -55,8 +54,11 @@ describe('estimated cost clock', () => {
       '$31,536,000'
     );
     expect(document.getElementById('cost-clock-mortality')).toHaveTextContent(
-      '$3.2M'
+      '20 lives'
     );
+    expect(
+      document.getElementById('cost-clock-mortality-value')
+    ).toHaveTextContent('($3.2M)');
     expect(document.getElementById('cost-clock-mental')).toHaveTextContent(
       '$12.6M'
     );
