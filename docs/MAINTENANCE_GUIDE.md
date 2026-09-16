@@ -45,7 +45,13 @@ add remote CSS, Tailwind Play CDN, a second design framework, or inline provider
 snippets.
 
 This public vanilla repository consumes the design-system contract vocabulary
-through `src/styles/site-tokens.css`. Do not add React islands or Kokonut Pro
+through `src/styles/site-tokens.css`. The root calculator uses Floral light
+(purple on parchment), preserving its editorial typography. Shared colors come
+from the pinned `src/styles/shared/contract.css` and `themes.css` copies; their
+source comments record the upstream revision. Update from the same upstream
+revision together rather than editing these copies. Local aliases map onto
+`--color` and `--backgroundColor`; selected studies use a pale foreground tint
+and a visible Selected label rather than an inverted dark block. Do not add React islands or Kokonut Pro
 source. The Pro form controls duplicate the design-system's native input policy,
 and public source redistribution creates a license risk. The current noUiSlider
 runtime remains intentional because the duration control has one 0.05 step

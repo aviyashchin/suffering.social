@@ -1,21 +1,23 @@
+@import "./shared/contract.css";
+@import "./shared/themes.css";
+
 :root {
   color-scheme: light;
-  --paper: #f2f1ed;
-  --paper-raised: color-mix(in srgb, var(--paper) 96%, white);
-  --ink: #171715;
-  --ink-muted: #5f5c55;
+  --paper: var(--backgroundColor);
+  --paper-raised: color-mix(in srgb, var(--color) 3%, var(--backgroundColor));
+  --ink: var(--color);
+  --ink-muted: color-mix(in srgb, var(--color) 78%, var(--backgroundColor));
   --rule: color-mix(in srgb, var(--ink) 20%, var(--paper));
   --rule-strong: color-mix(in srgb, var(--ink) 52%, var(--paper));
-  --research-red: #c8102e;
+  --research-red: var(--red);
   --research-red-dark: color-mix(in srgb, var(--research-red) 75%, var(--ink));
-  --focus: #285b85;
-  --backgroundColor: var(--paper);
+  --focus: var(--color);
   --font-display: "Iowan Old Style", Baskerville, "Palatino Linotype", Palatino, serif;
   --font-body: "Avenir Next", Avenir, "Helvetica Neue", Helvetica, sans-serif;
   --font-mono: "SFMono-Regular", "Roboto Mono", Consolas, monospace;
   --font-data: var(--font-mono);
 
-  /* Public design-contract vocabulary, expressed in this site's paper theme. */
+  /* Local type and spacing adjustments; colors come from the shared contract. */
   --fw-light: 300;
   --fw-regular: 400;
   --fw-display: 650;
@@ -34,22 +36,17 @@
   --sp-8: 4rem;
 
   /* Compatibility aliases used by the preserved calculator engine styles. */
-  --color: var(--ink);
   --fg-2: var(--ink-muted);
   --bg-1: var(--paper);
   --bg-2: var(--paper-raised);
-  --bg-3: #e6e0d5;
-  --accent: var(--research-red);
-  --red: var(--research-red);
-  --chart-1: var(--research-red);
-  --chart-2: #566f62;
-  --chart-4: #70627c;
-  --c-mortality: var(--research-red);
-  --c-mental-health: #70627c;
-  --c-productivity: #566f62;
-  --surface-mortality: #f3e7e3;
-  --surface-mental-health: #ece8ef;
-  --surface-productivity: #e7ece8;
+  --bg-3: color-mix(in srgb, var(--color) 8%, var(--backgroundColor));
+  --accent: var(--color);
+  --c-mortality: var(--color);
+  --c-mental-health: var(--color);
+  --c-productivity: var(--color);
+  --surface-mortality: var(--bg-2);
+  --surface-mental-health: var(--bg-2);
+  --surface-productivity: var(--bg-2);
   --fs-h1: clamp(2.5rem, 7vw, 5.8rem);
   --fs-h2: clamp(1.8rem, 4vw, 3.2rem);
   --fs-body: 1rem;
