@@ -37,9 +37,9 @@ body {
 
 .animated-number-clip {
   position: relative;
-  display: inline-grid;
+  display: inline-block;
   height: 1em;
-  overflow-y: clip;
+  clip-path: inset(0);
   line-height: 1;
   vertical-align: baseline;
 }
