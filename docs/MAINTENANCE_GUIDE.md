@@ -45,7 +45,13 @@ add remote CSS, Tailwind Play CDN, a second design framework, or inline provider
 snippets.
 
 This public vanilla repository consumes the design-system contract vocabulary
-through `src/styles/site-tokens.css`. Do not add React islands or Kokonut Pro
+through `src/styles/site-tokens.css`. The root calculator uses Floral light
+(purple on parchment), preserving its editorial typography. Shared colors come
+from the pinned `src/styles/shared/contract.css` and `themes.css` copies; their
+source comments record the upstream revision. Update from the same upstream
+revision together rather than editing these copies. Local aliases map onto
+`--color` and `--backgroundColor`; selected studies use a pale foreground tint
+and a visible Selected label rather than an inverted dark block. Do not add React islands or Kokonut Pro
 source. The Pro form controls duplicate the design-system's native input policy,
 and public source redistribution creates a license risk. The current noUiSlider
 runtime remains intentional because the duration control has one 0.05 step
@@ -55,11 +61,15 @@ control while retaining the existing keyboard and 44px target behavior.
 
 The curves are illustrative range guides, not probability distributions. Their
 shape and marker must move with the slider. The header clock keeps mortality,
-mental-health, and economic components visible with their sum. It advances the
+mental-health, and economic components visible with their sum. Mortality shows
+the estimated life count first and its dollar valuation in parentheses; changing
+the public value of one life must not change that count. It advances the
 model display while the page is open, but does not publish a per-second rate.
 Keep the page's explicit statement that it is a model display, not a live
 measurement. Each assumption-group header stays below the masthead so its live
-formula remains visible while the user tests studies in that section.
+formula remains visible while the user tests studies in that section. On narrow
+screens the active curve stays below that header while its source rows scroll.
+Keep the curve total ranges synchronized when other assumptions change.
 
 Slider `update` events recalculate the model before release. Live numeric text
 uses the vanilla adapter in `src/animated-number-text.js`, which follows the
@@ -85,3 +95,13 @@ an unknown preview process; Playwright uses port 4174 and Lighthouse uses 4175.
 After merge, prove the exact deployed revision, canonical routes and redirects,
 browser journey, Lighthouse report, Sentry symbolication, and scheduled-smoke
 alert path. A green local build is not production proof.
+
+### Choice comparisons and human units
+
+The dashed curve preserves the previous value of that input; its caption reports
+the change in the total with other inputs held fixed. These remain illustrative
+range guides, not probability distributions. Exact preset matches determine the
+selected scenario; other inputs display Custom assumptions, with a reset nearby.
+Depression reports people times years first, with monetary valuation in parentheses.
+Mobile evidence receipts collapse behind a native details control; source choices
+and reported findings remain visible with 14px text.

@@ -1,17 +1,17 @@
 /* Final visual system: a precise public-research instrument, not a dashboard. */
 :root {
-  --instrument-paper: oklch(96.2% 0.009 83);
-  --instrument-paper-raised: oklch(98.4% 0.006 83);
-  --instrument-ink: oklch(20% 0.012 80);
-  --instrument-muted: oklch(47% 0.014 80);
-  --instrument-rule: oklch(78% 0.012 80);
-  --instrument-rule-soft: oklch(88% 0.009 80);
-  --category-lives: #b01835;
-  --category-health: #67518b;
-  --category-economic: #347054;
-  --instrument-red: var(--category-lives);
-  --instrument-red-bright: oklch(54% 0.21 22);
-  --instrument-focus: oklch(46% 0.12 245);
+  --instrument-paper: var(--paper);
+  --instrument-paper-raised: var(--paper-raised);
+  --instrument-ink: var(--ink);
+  --instrument-muted: var(--ink-muted);
+  --instrument-rule: var(--rule);
+  --instrument-rule-soft: color-mix(in srgb, var(--color) 12%, var(--backgroundColor));
+  --category-lives: var(--color);
+  --category-health: var(--color);
+  --category-economic: var(--color);
+  --instrument-red: var(--color);
+  --instrument-red-bright: var(--red);
+  --instrument-focus: var(--focus);
   --instrument-display: var(--font-display);
   --instrument-sans: var(--font-body);
   --instrument-data: var(--font-mono);
@@ -39,9 +39,9 @@ body {
   position: relative;
   display: inline-block;
   height: 1em;
-  overflow-y: clip;
+  clip-path: inset(0);
   line-height: 1;
-  vertical-align: bottom;
+  vertical-align: baseline;
 }
 
 .animated-number-clip::before {
@@ -192,6 +192,12 @@ body {
   font-size: var(--fs-meta);
   font-weight: 650;
   line-height: 1;
+}
+
+.cost-clock-valuation {
+  color: var(--category-lives);
+  font-size: var(--fs-meta);
+  line-height: 1.2;
 }
 
 .cost-clock-components [data-category='lives'] {
@@ -441,8 +447,8 @@ body {
 }
 
 .calculator-hero .scenario-btn[aria-pressed='true'] {
-  color: var(--instrument-paper-raised) !important;
-  background: var(--instrument-ink) !important;
+  color: var(--instrument-ink) !important;
+  background: color-mix(in srgb, var(--color) 14%, var(--backgroundColor)) !important;
 }
 
 .assumptions-section {
@@ -974,21 +980,26 @@ body {
 }
 
 
-.study-choice:hover,
+.study-choice:hover {
+  color: var(--instrument-ink);
+  background: color-mix(in srgb, var(--color) 7%, var(--backgroundColor));
+}
+
 .study-choice[aria-pressed='true'] {
-  color: var(--instrument-paper-raised);
-  background: var(--instrument-ink);
+  color: var(--instrument-ink);
+  background: color-mix(in srgb, var(--color) 14%, var(--backgroundColor));
+  box-shadow: inset 0 0 0 1px var(--instrument-ink);
 }
 
 .study-choice[data-selection-state='adjusted'] {
-  background: color-mix(in oklch, var(--instrument-ink) 90%, var(--group-color));
+  background: color-mix(in srgb, var(--color) 14%, var(--backgroundColor));
 }
 
 .study-choice:hover strong,
 .study-choice[aria-pressed='true'] strong,
 .study-choice:hover small,
 .study-choice[aria-pressed='true'] small {
-  color: var(--instrument-paper-raised) !important;
+  color: var(--instrument-ink) !important;
 }
 
 .study-choice:focus-visible,
@@ -1119,8 +1130,8 @@ body {
 }
 
 .result-reading .research-actions button:hover {
-  color: var(--instrument-paper-raised) !important;
-  background: var(--instrument-ink) !important;
+  color: var(--instrument-ink) !important;
+  background: color-mix(in srgb, var(--color) 14%, var(--backgroundColor)) !important;
 }
 
 .method-section,
@@ -1284,8 +1295,8 @@ body {
 }
 
 .method-actions button:hover {
-  color: var(--instrument-paper-raised) !important;
-  background: var(--instrument-ink) !important;
+  color: var(--instrument-ink) !important;
+  background: color-mix(in srgb, var(--color) 14%, var(--backgroundColor)) !important;
 }
 
 #calculator-experiment .open-research {
@@ -1345,7 +1356,7 @@ body {
 }
 
 .research-modal {
-  background: oklch(20% 0.012 80 / 0.34);
+  background: color-mix(in srgb, var(--color) 34%, transparent);
   backdrop-filter: blur(10px);
 }
 
@@ -1353,7 +1364,7 @@ body {
   border: 1px solid var(--instrument-rule);
   border-radius: 0.25rem;
   background: var(--instrument-paper-raised);
-  box-shadow: 0 3rem 8rem oklch(20% 0.012 80 / 0.25);
+  box-shadow: 0 3rem 8rem color-mix(in srgb, var(--color) 25%, transparent);
 }
 
 .research-footer {
@@ -1454,7 +1465,7 @@ body {
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 980px) {
   .research-masthead {
     grid-template-columns: 1fr auto;
     gap: 0.35rem 1rem;
@@ -1509,7 +1520,7 @@ body {
 
   .calculator-hero {
     min-height: auto;
-    padding-top: 4.5rem;
+    padding-top: 2rem;
   }
 
   .calculator-hero h1 {
@@ -1551,6 +1562,7 @@ body {
 
   .assumption-group > header {
     grid-template-columns: 1fr;
+    gap: 0.35rem;
     padding-block: 0.75rem;
   }
 
@@ -1570,7 +1582,7 @@ body {
   .assumption {
     grid-template-columns: 1fr auto;
     gap: 1rem;
-    padding-block: 2.5rem;
+    padding-block: 1.25rem;
   }
 
   .assumption-copy {
@@ -1622,8 +1634,82 @@ body {
     border-top: 1px solid var(--instrument-rule-soft);
   }
 
+  .assumptions-section {
+    padding-block: 2.5rem;
+  }
+
+  .assumption-group {
+    margin-bottom: 3rem;
+  }
+
+  .range-curve {
+    overflow: visible;
+  }
+
   .range-curve-plot {
-    height: 5.8rem;
+    position: sticky;
+    top: calc(var(--masthead-height, 8rem) + var(--group-header-height, 6rem));
+    z-index: 11;
+    height: 7rem;
+  }
+
+  .range-curve figcaption {
+    flex-wrap: wrap;
+    gap: 0.15rem 0.5rem;
+    letter-spacing: 0;
+  }
+
+  .range-curve figcaption .sensitivity-impact {
+    order: 1;
+    flex-basis: 100%;
+    text-align: center;
+  }
+
+  .range-curve-plot svg {
+    bottom: 2.4rem;
+    height: calc(100% - 3.9rem);
+  }
+
+  .range-curve-plot::before,
+  .study-point {
+    bottom: 2.4rem;
+  }
+
+  .range-curve-marker {
+    bottom: 2.4rem;
+  }
+
+  .evidence-receipt-heading,
+  .evidence-receipt dl > div {
+    gap: 0.25rem;
+    padding: 0.5rem 0.65rem;
+  }
+
+  .evidence-receipt-heading {
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+  }
+
+  .study-choice > span,
+  .study-choice > strong,
+  .study-choice > small,
+  .context-study > span,
+  .context-study > strong,
+  .context-study > small {
+    min-height: 0;
+    padding: 0.35rem 0.65rem;
+  }
+
+  .study-choice > span:first-child,
+  .study-choice > strong,
+  .context-study > span:first-child,
+  .context-study > strong {
+    min-height: 44px;
+  }
+
+  .study-choice > small {
+    gap: 0.5rem;
+    flex-wrap: wrap;
   }
 
   .study-choice-item {
@@ -1648,7 +1734,8 @@ body {
 
   .study-choice-item .research-source-trigger {
     grid-column: 2;
-    grid-row: 3;
+    grid-row: 2;
+    min-height: 44px;
   }
 
   .result-reading {
@@ -1679,4 +1766,43 @@ body {
     content: none !important;
     animation: none !important;
   }
+}
+
+
+/* Keep the comparison with the curve while reading source choices. */
+.range-curve-plot { overflow: visible; }
+.range-curve-previous {
+  fill: none;
+  stroke: var(--instrument-ink);
+  stroke-width: 2;
+  stroke-dasharray: 5 5;
+  opacity: 0.35;
+}
+.range-curve-change {
+  text-align: left;
+  display: block;
+  position: absolute;
+  inset: 100% -1px auto;
+  padding: 0.35rem 0.5rem;
+  background: var(--instrument-paper);
+  border: 1px solid var(--instrument-rule);
+  font: 0.75rem/1.4 var(--instrument-data);
+}
+.range-curve-change:empty { display: none; }
+.evidence-details { margin-top: 2.75rem; }
+.evidence-details summary {
+  cursor: pointer;
+  padding: 0.65rem;
+  font-size: 0.875rem;
+}
+.scenario-status { font-size: 0.875rem; }
+#reset-assumptions { text-decoration: underline; }
+#cost-clock-mental-value {
+  display: block;
+  font: 0.7rem/1.4 var(--instrument-data);
+  color: var(--instrument-muted);
+}
+@media (max-width: 980px) {
+  .study-choice-finding, .study-choice-item small { font-size: 0.875rem; }
+  .study-choice, .context-study { gap: 0.35rem; }
 }

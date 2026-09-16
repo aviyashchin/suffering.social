@@ -1,0 +1,79 @@
+/* Source: https://github.com/Subconscious-ai/design-system
+   Commit: e7ca4dec1de28d73293ea2b7db19f685ba4a7f65
+   Copied file: preview/themes.css. Keep the upstream content below unchanged. */
+/* ============================================================
+   themes.css · the 8-theme registry — johnny-5-rebuild + Subconscious.
+
+   Seven themes mirrored from ~/subconscious-ai/johnny-5-rebuild/src/lib/themes.ts;
+   one Subconscious-specific theme (`floral`) added from the New Age Floral
+   case-study deck — royal purple on warm parchment.
+   nine themes pruned for contrast risk or redundancy:
+     · default     — both colors achromatic grey
+     · h           — darkColor #414241 is grey
+     · moeller     — lightColor #a6a6a6 is grey
+     · arc         — lightColor #ff4f72 too close to signal red
+     · pettet      — darkColor #b137bd magenta clashes with --red in dark mode
+     · jacoviello  — lightColor #b50088 magenta-pink clashes with --red in light mode
+     · linear      — pure black/white visually redundant with stripe (deep navy / cool white)
+     · keenan      — lightColor #ff70c0 hot pink, same red-adjacent family as pettet/jacoviello
+     · indigo      — #1e1b4b / #6366f1 fail WCAG body-text contrast in BOTH modes (3.58:1, need 4.5)
+
+   The doctrine reserves muddy / red-adjacent palettes for the gap
+   signal alone; theme palettes must read clearly against the body
+   text and not collide with --red. Body-text contrast >= 4.5:1
+   (WCAG AA) is enforced by tests/theme-contrast.test.mjs.
+
+   THE CONTRACT
+   ────────────
+   Each theme is a (darkColor, lightColor) pair. data-mode controls which
+   becomes foreground vs. background:
+
+     [data-mode="light"]  →  background = lightColor, foreground = darkColor
+     [data-mode="dark"]   →  background = darkColor,  foreground = lightColor
+
+   derived.css derives every other color (--grey-300/500/700, --hair,
+   --hairline, --border, --fg-1..4, --bg-1..3) from var(--color) and
+   var(--backgroundColor) via color-mix().
+
+   KEYBOARD
+   ────────
+   Space   randomize theme + light/dark
+   M       toggle light/dark
+   click   theme picker panel (bottom-right toggle)
+
+   WHAT NEVER SWAPS
+   ────────────────
+   --red    #c8102e   the gap signal — preserved across every theme
+   ============================================================ */
+
+/* ---- kong — deep purple / pure white (SSR default) -------- */
+:root,
+[data-theme="kong"]       { --darkColor: #1b165b; --lightColor: #ffffff; }
+
+/* ---- zyg — purple / sage green ---------------------------- */
+[data-theme="zyg"]        { --darkColor: #813294; --lightColor: #c1d88b; }
+
+/* ---- bontu — near-black / cyan ---------------------------- */
+[data-theme="bontu"]      { --darkColor: #0d0403; --lightColor: #00ffff; }
+
+/* ---- jones — dark brown / orange -------------------------- */
+[data-theme="jones"]      { --darkColor: #150800; --lightColor: #eda557; }
+
+/* ---- peacock — deep teal / orange ------------------------- */
+[data-theme="peacock"]    { --darkColor: #0a2e1f; --lightColor: #f97316; }
+
+/* ---- figma — near-black / signal green -------------------- */
+[data-theme="figma"]      { --darkColor: #1e1e24; --lightColor: #0acf83; }
+
+/* ---- stripe — deep navy / cool white ---------------------- */
+[data-theme="stripe"]     { --darkColor: #0a2540; --lightColor: #f6f9fc; }
+
+/* ---- floral — royal purple / warm parchment --------------- */
+/* From the New Age Floral case-study deck. The PDF used a slightly
+   lighter purple (~#3a226e) but at that value the 50% sRGB grey-500
+   blend lands at 2.83:1 vs the cream bg, just under the AA-Large
+   floor; deepening to #2a1854 keeps the same visual intent and
+   pushes the matrix to 3.11/4.43. The deck's saffron-gold accent
+   and lilac card tints are decorative variants, not first-class
+   theme colors — they don't fit the (darkColor, lightColor) shape. */
+[data-theme="floral"]     { --darkColor: #2a1854; --lightColor: #f8f2dc; }

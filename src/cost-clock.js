@@ -2,7 +2,11 @@ import { setAnimatedNumberText } from './animated-number-text.js';
 
 const MODEL_START = Date.UTC(2009, 0, 1);
 
-export function averageCostPerSecond(total, start = MODEL_START, end = Date.now()) {
+export function averageCostPerSecond(
+  total,
+  start = MODEL_START,
+  end = Date.now()
+) {
   const elapsedSeconds = Math.max(1, (end - start) / 1000);
   return total / elapsedSeconds;
 }
@@ -28,6 +32,8 @@ export function startCostClock(calculator) {
   };
   if (!totalDisplay && !heroTotalDisplay) return () => {};
 
+  const mortalityValue = document.getElementById('cost-clock-mortality-value');
+  const mentalValue = document.getElementById('cost-clock-mental-value');
   const openedAt = Date.now();
   const render = (advanceClock = true) => {
     const results = calculator.calculateTotalEconomicImpact();
@@ -50,11 +56,34 @@ export function startCostClock(calculator) {
     if (heroTotalDisplay) {
       setAnimatedNumberText(heroTotalDisplay, formatClockTotal(tickingTotal));
     }
+    if (mortalityValue) {
+      setAnimatedNumberText(
+        mortalityValue,
+        `(${formatClockComponent(tickingComponents.mortality)})`
+      );
+    }
+    if (mentalValue) {
+      setAnimatedNumberText(
+        mentalValue,
+        `(${formatClockComponent(tickingComponents.mental)})`
+      );
+    }
     Object.entries(componentDisplays).forEach(([component, display]) => {
       if (display) {
         setAnimatedNumberText(
           display,
-          formatClockComponent(tickingComponents[component])
+          component === 'mortality'
+            ? `${Math.round(
+                (calculator.parameters.suicides *
+                  calculator.parameters.attribution) /
+                  100
+              ).toLocaleString('en-US')} lives`
+            : component === 'mental' && mentalValue
+            ? `${(
+                (calculator.parameters.depression * calculator.parameters.yld) /
+                1000000
+              ).toLocaleString('en-US', { maximumFractionDigits: 1 })}M years`
+            : formatClockComponent(tickingComponents[component])
         );
       }
     });

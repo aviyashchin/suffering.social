@@ -19,5 +19,18 @@ updateStickyOffset();
 if (masthead && 'ResizeObserver' in window) {
   new ResizeObserver(updateStickyOffset).observe(masthead);
 }
+if ('ResizeObserver' in window) {
+  const groupObserver = new ResizeObserver((entries) => {
+    for (const { target } of entries) {
+      target.parentElement.style.setProperty(
+        '--group-header-height',
+        `${target.getBoundingClientRect().height}px`
+      );
+    }
+  });
+  document.querySelectorAll('.assumption-group > header').forEach((header) => {
+    groupObserver.observe(header);
+  });
+}
 initializeRangeCurves(calculator);
 startCostClock(calculator);

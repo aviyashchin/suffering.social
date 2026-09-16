@@ -1,0 +1,175 @@
+/* Source: https://github.com/Subconscious-ai/design-system
+   Commit: e7ca4dec1de28d73293ea2b7db19f685ba4a7f65
+   Copied file: contract.css. Keep the upstream content below unchanged. */
+/* Subconscious Design System app contract.
+   Import this in apps that need only the root compatibility boundary.
+
+   What the contract carries:
+   · Color: --darkColor, --lightColor + light/dark mode swap
+   · Typography: font-family stacks, type scale, line heights, weights, tracking
+   · Spacing: 4pt scale, 8 steps
+
+   What the contract does NOT carry:
+   · Font-face declarations (consumer ships fonts privately)
+   · Other-stylesheet imports (no transitive imports)
+   · Element-level styling (no body, h1, p — consumers compose their own)
+   · Component classes (.btn, .card, etc — those live in preview/ as patterns)
+
+   Names mirror the extended canon in `derived.css`. Values are pinned
+   (no clamps) at the contract layer; consuming apps that need fluid
+   sizing override locally (the editorial preview garden does this in
+   `derived.css`). */
+
+:root {
+  color-scheme: light;
+
+  /* ---- Color ----------------------------------------------- */
+  --darkColor: #000000;
+  --lightColor: #ffffff;
+  --backgroundColor: var(--lightColor);
+  --color: var(--darkColor);
+
+  /* Signal + furniture — promoted from derived.css (issue #613): ADOPTING's
+     Option A recipes promise these, so a contract-only consumer must
+     resolve them. All theme-tracking; derived.css re-declares identically
+     (single source asserted by tests/adopting-truth.test.mjs). */
+  --red:      #c8102e;
+  /* TWO dark registers, on purpose (#841 correction — the first pass
+     unified them and put axe color-contrast violations on three garden
+     pages): --red-on-dark is the TEXT register — small red type on dark
+     panels (writing, components-nav/-table inline styles) needs the 4.5:1
+     body floor, which #f0475f does not clear. The dark-mode --red below is
+     the GRAPHIC register (#614, AA-Large 3.0:1). tests/adopting-truth
+     asserts the text register clears 4.5:1 on black. */
+  --red-on-dark: #f45169;
+  --grey-300: color-mix(in srgb, var(--color) 30%, var(--backgroundColor));
+  --grey-500: color-mix(in srgb, var(--color) 72%, var(--backgroundColor));
+  --grey-700: color-mix(in srgb, var(--color) 85%, var(--backgroundColor));
+  --hair:     color-mix(in srgb, var(--color) 12%, transparent);
+  --hairline: color-mix(in srgb, var(--color) 15%, transparent);
+
+  /* Furniture radii — promoted from derived.css (issue #841): DOCTRINE §3.1
+     names these as the only legal corners and shadcn.css maps onto the same
+     vocabulary, so a contract-only consumer must resolve them. derived.css
+     re-declares identically (single source asserted by
+     tests/adopting-truth.test.mjs). */
+  --radius-sharp: 0;
+  --radius-control: 2px;
+  --radius-dot: 999px;
+
+  /* ---- Typography · families ------------------------------- */
+  /* Public default stack — Inter Tight, IBM Plex Mono, Redaction (all SIL
+     OFL on Google Fonts). Internal builds may load Exposure / Söhne Mono
+     privately; the design-system contract does not redistribute them. */
+  --font-display: "Exposure", "Inter Tight", "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-body:    "Exposure", "Inter Tight", "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-mono:    "SohneMono", "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-italic:  "Redaction", "Cormorant Garamond", Georgia, serif;
+
+  /* ---- Typography · weights -------------------------------- */
+  --fw-thin:       100;
+  --fw-extralight: 200;
+  --fw-light:      300;
+  --fw-regular:    400;
+  --fw-display:    800;
+
+  /* ---- Typography · type scale (px, pinned) ----------------
+     Five sizes total. Consuming apps wrap with clamp() locally if
+     fluid sizing is needed. Keeping the contract pinned so app
+     builds are deterministic.
+
+     Why five, not eight: the doctrinal scale is "violently large /
+     uncomfortably small". A long mid-scale just blurs the gap. */
+  --fs-display: 64px;   /* hero / cover surfaces        */
+  --fs-h1:      40px;   /* primary page heading         */
+  --fs-h2:      28px;   /* section heading              */
+  --fs-body:    16px;   /* default running text         */
+  --fs-meta:    12px;   /* labels, mono captions, micro */
+
+  /* ---- Typography · line heights --------------------------- */
+  --lh-tight:   1.0;    /* display / hero        */
+  --lh-display: 1.05;   /* h1 / h2               */
+  --lh-body:    1.45;   /* default running text  */
+  --lh-loose:   1.6;    /* small / meta          */
+
+  /* ---- Typography · tracking (optical, per-size) -----------
+     Bringhurst's counterpoint principle: letter-spacing scales
+     inversely with type size. New code maps tracking to the type
+     scale 1:1; legacy aliases preserved for back-compat. */
+  --tracking-display: -0.065em;  /* ≥ 64px hero / cover           */
+  --tracking-h1:      -0.045em;  /* 36-44px primary headlines     */
+  --tracking-h2:      -0.025em;  /* 24-32px subheads              */
+  --tracking-body:    -0.015em;  /* 14-18px body                  */
+  --tracking-meta:    -0.005em;  /* 11-13px micro-body            */
+  --tracking-caps:     0.14em;   /* mono caps default             */
+  --tracking-caps-l:   0.18em;   /* mono caps when very small     */
+
+  /* Legacy aliases — preserved for back-compat. New code: prefer
+     the per-size tokens above. */
+  --tracking-tight:   -0.04em;
+  --tracking-normal:  -0.03em;
+  --tracking-loose:    0.12em;
+
+  /* ---- Spacing · 4pt scale, 8 steps ------------------------ */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+
+  /* ---- Chart palette · five categorical hues ---------------
+     Light-mode pinned here; the [data-mode="dark"] block below
+     swaps to a darker rotation that reads against dark backgrounds.
+     Mirrors the data-viz palette on www.subconscious.ai. Five hues
+     that sit clear of signal red and the body type stack.
+
+     Production consumers reach these by copying contract.css. The
+     preview garden and the kit consume them via the same contract
+     (PR #401 retired the duplicate declaration in `tokens.css`). */
+  --chart-1: #f05100;   /* orange  */
+  --chart-2: #00bb7f;   /* teal    */
+  --chart-3: #f99c00;   /* amber   */
+  --chart-4: #fcbb00;   /* gold    */
+  --chart-5: #ff2357;   /* pink-red — kept distinct from --red via hue */
+}
+
+:root[data-mode="light"],
+:root:not([data-mode]) {
+  color-scheme: light;
+  --backgroundColor: var(--lightColor, #ffffff);
+  --color: var(--darkColor, #000000);
+}
+
+/* Dark inversion fires on EITHER trigger:
+   - [data-mode="dark"] — the canonical contract attribute, and
+   - :root.dark — the class next-themes toggles on <html> by default.
+   The second lets shadcn/next-themes consumers (chatbot, Nextless Pro,
+   ai-chatbot) adopt with zero theme-provider reconfiguration. This block
+   follows the light default, so on a next-themes app with no data-mode
+   attribute the .dark match wins by source order. data-mode is still the
+   one canonical way; .dark is the compatibility alias. */
+:root[data-mode="dark"],
+:root.dark {
+  color-scheme: dark;
+  --backgroundColor: var(--darkColor, #000000);
+  --color: var(--lightColor, #ffffff);
+  /* Signal red, dark register (issue #614): #c8102e sits below the 3.0:1
+     AA-Large floor on most dark backgrounds (kong-dark 2.72, floral-dark
+     2.63). One mode-level lightening — not per-theme hues, so the signal
+     stays one signal. zyg-dark is allowlisted in tests/theme-contrast: no
+     red passes on a red-family background; the never-color-only mandate
+     (A11Y.md) carries the signal there. This is the GRAPHIC register
+     (AA-Large); --red-on-dark in the light root is the separate TEXT
+     register (4.5:1) — see the note there (#841). theme-contrast needs
+     the literal hex here. */
+  --red: #f0475f;
+  /* Chart palette · dark-mode rotation. */
+  --chart-1: #1447e6;   /* blue       */
+  --chart-2: #009588;   /* muted teal */
+  --chart-3: #104e64;   /* dark teal  */
+  --chart-4: #ac4bff;   /* purple     */
+  --chart-5: #f99c00;   /* amber      */
+}
