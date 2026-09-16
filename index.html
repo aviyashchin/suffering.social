@@ -119,7 +119,7 @@
             </div>
             <div class="cost-clock-components" aria-label="Parts of the total">
                 <span data-category="lives"><small>Lives lost</small><strong id="cost-clock-mortality">8,910 lives</strong><span id="cost-clock-mortality-value" class="cost-clock-valuation">($122.1B)</span></span>
-                <span data-category="health"><small>Depression</small><strong id="cost-clock-mental">$1.9T</strong></span>
+                <span data-category="health"><small>Depression</small><strong id="cost-clock-mental">30M years</strong><span id="cost-clock-mental-value">($1.9T)</span></span>
                 <span data-category="economic"><small>Economic loss</small><strong id="cost-clock-economic">$315.0B</strong></span>
             </div>
         </div>
@@ -151,6 +151,7 @@
                 </section>
             </div>
 
+            <p class="scenario-status"><span id="scenario-status" role="status">Research baseline</span> · <button type="button" id="reset-assumptions">Reset assumptions</button></p>
             <div id="hero-scenarios" class="scenario-set" role="group" aria-label="Assumption cases">
                 <button type="button" class="scenario-btn" data-scenario="reset" aria-label="Research baseline, load assumptions">Research baseline</button>
                 <button type="button" class="scenario-btn" data-scenario="optimistic" aria-label="Lower-bound assumption, load assumptions">Lower-bound assumption</button>
@@ -952,12 +953,21 @@
                         );
                     });
                 };
-                setPressed('reset');
+                const syncScenario = () => {
+                    const active = Object.keys(this.scenarios).find((name) =>
+                        Object.entries(this.scenarios[name]).every(([key, value]) =>
+                            Math.abs(this.parameters[key] - value) < 0.001
+                        )
+                    );
+                    setPressed(active);
+                    document.getElementById('scenario-status').textContent =
+                        buttons.find((button) => button.dataset.scenario === active)?.textContent || 'Custom assumptions';
+                };
+                document.addEventListener('calculator:updated', syncScenario);
+                syncScenario();
+                document.getElementById('reset-assumptions').addEventListener('click', () => this.loadScenario('reset'));
                 buttons.forEach((button) => {
-                    button.addEventListener('click', () => {
-                        setPressed(button.dataset.scenario);
-                        this.loadScenario(button.dataset.scenario);
-                    });
+                    button.addEventListener('click', () => this.loadScenario(button.dataset.scenario));
                 });
             }
 
@@ -1091,7 +1101,7 @@
                 );
                 this.setOutputText(
                     document.getElementById('mental-result'),
-                    `${(depression / 1000000).toFixed(1)}M × ${yld} years × ${qol}% × $${Math.round(vsl * 1000000 / 75 / 1000)}K = ${this.formatLargeNumber(results.mental)}`
+                    `${(depression / 1000000).toFixed(1)}M people × ${yld} years = ${(depression * yld / 1000000).toLocaleString('en-US')}M years lived with depression (${this.formatLargeNumber(results.mental)} at ${qol}% quality-of-life loss)`
                 );
                 this.setOutputText(
                     document.getElementById('healthcare-result'),

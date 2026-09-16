@@ -32,8 +32,10 @@ function createCurveGraphic() {
   fill.classList.add('range-curve-fill');
   const line = document.createElementNS(namespace, 'path');
   line.classList.add('range-curve-line');
-  svg.append(fill, line);
-  return { svg, fill, line };
+  const previous = document.createElementNS(namespace, 'path');
+  previous.classList.add('range-curve-previous');
+  svg.append(fill, previous, line);
+  return { svg, fill, line, previous };
 }
 
 const EVIDENCE_ROLES = {
@@ -171,11 +173,10 @@ function addStudyChoices(curve, plot, parameter, calculator, render) {
     study,
     studyIndex,
   }));
-  const mappedStudies = indexedStudies
-    .filter(
-      ({ study }) =>
-        study.mappingStatus === 'direct' && Number.isFinite(study.modelValue)
-    );
+  const mappedStudies = indexedStudies.filter(
+    ({ study }) =>
+      study.mappingStatus === 'direct' && Number.isFinite(study.modelValue)
+  );
   const contextualStudies = indexedStudies.filter(
     ({ study }) => study.mappingStatus !== 'direct'
   );
@@ -277,7 +278,13 @@ function addStudyChoices(curve, plot, parameter, calculator, render) {
     list.append(createContextStudyRow(study));
   });
 
-  choices.append(evidenceReceipt.receipt);
+  const details = document.createElement('details');
+  details.className = 'evidence-details';
+  details.open = !window.matchMedia?.('(max-width: 980px)').matches;
+  const summary = document.createElement('summary');
+  summary.textContent = 'How this source enters the estimate';
+  details.append(summary, evidenceReceipt.receipt);
+  choices.append(details);
   if (selectable.length > 1 || contextualStudies.length > 0) {
     const note = document.createElement('p');
     note.className = 'study-mapping-note';
@@ -310,10 +317,15 @@ export function initializeRangeCurves(calculator) {
     const plot = document.createElement('div');
     plot.className = 'range-curve-plot';
     [...curve.children].forEach((child) => plot.append(child));
-    const { svg, fill, line } = createCurveGraphic();
+    const { svg, fill, line, previous } = createCurveGraphic();
     plot.prepend(svg);
     curve.append(plot);
 
+    const change = document.createElement('output');
+    change.className = 'range-curve-change';
+    change.setAttribute('aria-live', 'polite');
+    plot.append(change);
+    let previousValue = Number(calculator.parameters[parameter]);
     let updateReceipt = () => {};
     if (
       impact &&
@@ -345,6 +357,26 @@ export function initializeRangeCurves(calculator) {
         config.range.max
       );
       const path = curvePath(percent);
+      if (
+        numericValue !== previousValue &&
+        typeof calculator.calculateTotalEconomicImpact === 'function'
+      ) {
+        previous.setAttribute('d', line.getAttribute('d') || path);
+        const delta =
+          totalWithParameter(calculator, parameter, numericValue) -
+          totalWithParameter(calculator, parameter, previousValue);
+        change.textContent = `Dashed: previous ${calculator.formatParameter(
+          parameter,
+          previousValue
+        )} · Total ${
+          delta === 0
+            ? 'unchanged'
+            : `${
+                delta > 0 ? 'increased' : 'decreased'
+              } by ${calculator.formatLargeNumber(Math.abs(delta))}`
+        }`;
+        previousValue = numericValue;
+      }
       marker.style.left = `${percent}%`;
       current.style.left = `${Math.min(92, Math.max(8, percent))}%`;
       current.textContent = calculator.formatParameter(parameter, numericValue);

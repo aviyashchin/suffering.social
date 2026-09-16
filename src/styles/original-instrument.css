@@ -1767,3 +1767,42 @@ body {
     animation: none !important;
   }
 }
+
+
+/* Keep the comparison with the curve while reading source choices. */
+.range-curve-plot { overflow: visible; }
+.range-curve-previous {
+  fill: none;
+  stroke: var(--instrument-ink);
+  stroke-width: 2;
+  stroke-dasharray: 5 5;
+  opacity: 0.35;
+}
+.range-curve-change {
+  text-align: left;
+  display: block;
+  position: absolute;
+  inset: 100% -1px auto;
+  padding: 0.35rem 0.5rem;
+  background: var(--instrument-paper);
+  border: 1px solid var(--instrument-rule);
+  font: 0.75rem/1.4 var(--instrument-data);
+}
+.range-curve-change:empty { display: none; }
+.evidence-details { margin-top: 2.75rem; }
+.evidence-details summary {
+  cursor: pointer;
+  padding: 0.65rem;
+  font-size: 0.875rem;
+}
+.scenario-status { font-size: 0.875rem; }
+#reset-assumptions { text-decoration: underline; }
+#cost-clock-mental-value {
+  display: block;
+  font: 0.7rem/1.4 var(--instrument-data);
+  color: var(--instrument-muted);
+}
+@media (max-width: 980px) {
+  .study-choice-finding, .study-choice-item small { font-size: 0.875rem; }
+  .study-choice, .context-study { gap: 0.35rem; }
+}

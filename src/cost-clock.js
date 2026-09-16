@@ -33,6 +33,7 @@ export function startCostClock(calculator) {
   if (!totalDisplay && !heroTotalDisplay) return () => {};
 
   const mortalityValue = document.getElementById('cost-clock-mortality-value');
+  const mentalValue = document.getElementById('cost-clock-mental-value');
   const openedAt = Date.now();
   const render = (advanceClock = true) => {
     const results = calculator.calculateTotalEconomicImpact();
@@ -61,6 +62,12 @@ export function startCostClock(calculator) {
         `(${formatClockComponent(tickingComponents.mortality)})`
       );
     }
+    if (mentalValue) {
+      setAnimatedNumberText(
+        mentalValue,
+        `(${formatClockComponent(tickingComponents.mental)})`
+      );
+    }
     Object.entries(componentDisplays).forEach(([component, display]) => {
       if (display) {
         setAnimatedNumberText(
@@ -71,6 +78,11 @@ export function startCostClock(calculator) {
                   calculator.parameters.attribution) /
                   100
               ).toLocaleString('en-US')} lives`
+            : component === 'mental' && mentalValue
+            ? `${(
+                (calculator.parameters.depression * calculator.parameters.yld) /
+                1000000
+              ).toLocaleString('en-US', { maximumFractionDigits: 1 })}M years`
             : formatClockComponent(tickingComponents[component])
         );
       }

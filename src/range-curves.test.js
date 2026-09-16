@@ -42,7 +42,7 @@ describe('research range curves', () => {
     );
     expect(document.querySelector('.range-curve-line')).not.toBeNull();
     expect(document.querySelector('.range-curve-fill')).not.toBeNull();
-    expect(document.querySelector('.study-choices details')).toBeNull();
+    expect(document.querySelector('.study-choice-list details')).toBeNull();
     expect(document.querySelector('.study-choices')).toHaveTextContent(
       'No study measures this input directly'
     );
@@ -117,7 +117,7 @@ describe('research range curves', () => {
       document.querySelectorAll('.study-choice-item [data-research-pack-url]')
     ).toHaveLength(1);
     expect(region.innerHTML).not.toContain('undefined');
-    expect(region.querySelector('details')).toBeNull();
+    expect(region.querySelector('.study-choice-list details')).toBeNull();
     expect(region).toHaveTextContent('Compare source values');
     expect(region).toHaveTextContent('Archived paper');
     expect(region).toHaveTextContent('Context only');

@@ -107,3 +107,61 @@ test('keeps mobile source rows compact and their changing curve in view', async 
   expect(geometry.plotTop).toBeGreaterThanOrEqual(geometry.headerBottom - 1);
   expect(geometry.overflow).toBe(false);
 });
+
+test('compares the previous choice, tracks custom inputs, and shows depression years', async ({
+  page,
+}) => {
+  const curve = page.locator('.range-curve[data-parameter="vsl"]');
+  const previous = await curve.locator('.range-curve-line').getAttribute('d');
+  await curve
+    .locator('.study-choice')
+    .filter({ hasText: 'EPA guidance' })
+    .click();
+  await expect(curve.locator('.range-curve-previous')).toHaveAttribute(
+    'd',
+    previous
+  );
+  await expect(curve.locator('.range-curve-change')).toContainText(
+    'Total decreased by $134.0B'
+  );
+  await expect(page.locator('#scenario-status')).toHaveText(
+    'Custom assumptions'
+  );
+  await expect(page.locator('.scenario-btn[aria-pressed="true"]')).toHaveCount(
+    0
+  );
+  await page.locator('#reset-assumptions').click();
+  await expect(page.locator('[data-scenario="reset"]')).toHaveAttribute(
+    'aria-pressed',
+    'true'
+  );
+  await page.evaluate(() =>
+    document.getElementById('yld-nouislider').noUiSlider.set(8)
+  );
+  await expect(page.locator('#scenario-status')).toHaveText(
+    'Custom assumptions'
+  );
+  await expect(page.locator('#cost-clock-mental')).toHaveText('40M years');
+  await expect(page.locator('#cost-clock-mental-value')).toHaveText(/\(\$.*\)/);
+  await expect(page.locator('#mental-result')).toContainText(
+    '40M years lived with depression ('
+  );
+});
+
+test('keeps secondary source details collapsible and mobile findings readable', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.reload();
+  const curve = page.locator('.range-curve[data-parameter="vsl"]');
+  const details = curve.locator('.evidence-details');
+  await expect(details).not.toHaveAttribute('open', '');
+  await details.locator('summary').click();
+  await expect(details.locator('[data-receipt-finding]')).toBeVisible();
+  expect(
+    await curve
+      .locator('.study-choice-finding')
+      .first()
+      .evaluate((el) => parseFloat(getComputedStyle(el).fontSize))
+  ).toBeGreaterThanOrEqual(14);
+});

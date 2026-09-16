@@ -95,3 +95,13 @@ an unknown preview process; Playwright uses port 4174 and Lighthouse uses 4175.
 After merge, prove the exact deployed revision, canonical routes and redirects,
 browser journey, Lighthouse report, Sentry symbolication, and scheduled-smoke
 alert path. A green local build is not production proof.
+
+### Choice comparisons and human units
+
+The dashed curve preserves the previous value of that input; its caption reports
+the change in the total with other inputs held fixed. These remain illustrative
+range guides, not probability distributions. Exact preset matches determine the
+selected scenario; other inputs display Custom assumptions, with a reset nearby.
+Depression reports people times years first, with monetary valuation in parentheses.
+Mobile evidence receipts collapse behind a native details control; source choices
+and reported findings remain visible with 14px text.

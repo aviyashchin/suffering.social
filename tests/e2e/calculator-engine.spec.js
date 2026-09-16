@@ -356,6 +356,10 @@ test('explains how the selected study becomes the live estimate', async ({
   await page.goto('/');
   await page.waitForFunction(() => Boolean(window.calculator));
 
+  const details = page.locator('.range-curve[data-parameter="vsl"] .evidence-details');
+  if (!(await details.evaluate((element) => element.open))) {
+    await details.locator('summary').click();
+  }
   const receipt = page.locator('.evidence-receipt[data-parameter="vsl"]');
   await expect(receipt).toBeVisible();
   await expect(receipt).toContainText('Evidence role');
