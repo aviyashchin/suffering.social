@@ -175,7 +175,7 @@ test('keeps the live estimate clickable and every sensitivity range usable', asy
     })
     .not.toBe(initialPosition);
   const vslRange = page.locator('.range-curve[data-parameter="vsl"]');
-  await expect(vslRange.getByText('Compare source values')).toBeVisible();
+  await expect(vslRange.getByText('Choose a value')).toBeVisible();
   const paperChoices = vslRange.locator(
     '.study-choice:not([data-study-index="-1"])'
   );
@@ -288,7 +288,7 @@ test('updates formulas during slider movement and keeps the selected research an
   await page.waitForFunction(() => Boolean(window.calculator));
 
   const curve = page.locator('.range-curve[data-parameter="vsl"]');
-  await expect(curve.getByText('Compare source values')).toBeVisible();
+  await expect(curve.getByText('Choose a value')).toBeVisible();
   const choices = curve.locator('.study-choice');
   const orderedValues = await choices.evaluateAll((items) =>
     items.map((item) => Number(item.dataset.modelValue))
@@ -362,9 +362,9 @@ test('explains how the selected study becomes the live estimate', async ({
   }
   const receipt = page.locator('.evidence-receipt[data-parameter="vsl"]');
   await expect(receipt).toBeVisible();
-  await expect(receipt).toContainText('Evidence role');
-  await expect(receipt).toContainText('Anchor says');
-  await expect(receipt).toContainText('Model uses');
+  await expect(receipt).toContainText('Source type');
+  await expect(receipt).toContainText('Reported finding');
+  await expect(receipt).toContainText('Source value');
   await expect(receipt).toContainText('DOT guidance');
   await expect(receipt).toContainText('$13.7M');
 
