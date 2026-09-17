@@ -105,3 +105,24 @@ selected scenario; other inputs display Custom assumptions, with a reset nearby.
 Depression reports people times years first, with monetary valuation in parentheses.
 Mobile evidence receipts collapse behind a native details control; source choices
 and reported findings remain visible with 14px text.
+
+
+### Appearance picker
+
+`src/theme-switcher.js` adapts the design-system's `preview/theme-switcher.js`
+at `e7ca4dec1de28d73293ea2b7db19f685ba4a7f65`:
+eight palette pairs, `sc-design-theme` storage and `themechange` events. It uses
+Floral/light by default. Local changes use a native popover, accessible pressed
+states, a visible Appearance label and omit the preview's global Space/M
+shortcuts so calculator keyboard navigation works normally. Color definitions
+remain in the pinned shared contract and themes CSS.
+
+Kokonut UI's React/shadcn components require a React host. This vanilla Vite
+calculator uses the shared vanilla picker and its existing sliders; adding a
+React runtime would not improve the requested controls. Keep licensed Kokonut
+Pro sources out of this public repository.
+
+Browser-forced darkening can override the site's light mode. Vivaldi's global
+Website Appearance setting and experimental force-dark flag are independent
+of the site's palette selection. Verify the actual browser before claiming a
+site-side color change corrects an external inversion setting.

@@ -62,21 +62,21 @@ function createEvidenceReceipt(curve, parameter, calculator, selectable) {
   const receipt = document.createElement('section');
   receipt.className = 'evidence-receipt';
   receipt.dataset.parameter = parameter;
-  receipt.setAttribute('aria-label', 'How this evidence enters the estimate');
+  receipt.setAttribute('aria-label', 'Selected source details');
 
   const heading = document.createElement('p');
   heading.className = 'evidence-receipt-heading';
   const headingLabel = document.createElement('span');
-  headingLabel.textContent = 'Current anchor';
+  headingLabel.textContent = 'Selected source';
   const headingValue = document.createElement('strong');
   headingValue.dataset.receiptStudy = '';
   heading.append(headingLabel, headingValue);
 
   const facts = document.createElement('dl');
   const fields = [
-    ['Evidence role', 'role'],
-    ['Anchor says', 'finding'],
-    ['Model uses', 'mapping'],
+    ['Source type', 'role'],
+    ['Reported finding', 'finding'],
+    ['Source value', 'mapping'],
   ];
   for (const [label, key] of fields) {
     const item = document.createElement('div');
@@ -148,7 +148,7 @@ function createContextStudyRow(study) {
   const name = document.createElement('span');
   name.textContent = study.shortLabel;
   const role = document.createElement('strong');
-  role.textContent = 'Context only';
+  role.textContent = 'Background';
   const finding = document.createElement('span');
   finding.className = 'study-choice-finding';
   finding.textContent = study.value;
@@ -161,7 +161,7 @@ function createContextStudyRow(study) {
     sourceButton.type = 'button';
     sourceButton.className = 'research-source-trigger';
     sourceButton.dataset.researchPackUrl = study.url;
-    sourceButton.textContent = 'Get source';
+    sourceButton.textContent = 'Read source';
     item.append(sourceButton);
   }
   return item;
@@ -209,7 +209,7 @@ function addStudyChoices(curve, plot, parameter, calculator, render) {
   list.className = 'study-choice-list';
   const heading = document.createElement('p');
   heading.className = 'study-choices-heading';
-  heading.textContent = 'Compare source values';
+  heading.textContent = 'Choose a value';
   const openingSelection = selectable.find(
     ({ study }) =>
       Math.abs(study.modelValue - calculator.parameters[parameter]) < 0.001
@@ -257,7 +257,7 @@ function addStudyChoices(curve, plot, parameter, calculator, render) {
       sourceButton.type = 'button';
       sourceButton.className = 'research-source-trigger';
       sourceButton.dataset.researchPackUrl = study.url;
-      sourceButton.textContent = 'Get source';
+      sourceButton.textContent = 'Read source';
       item.append(sourceButton);
     }
     list.append(item);
@@ -282,14 +282,14 @@ function addStudyChoices(curve, plot, parameter, calculator, render) {
   details.className = 'evidence-details';
   details.open = !window.matchMedia?.('(max-width: 980px)').matches;
   const summary = document.createElement('summary');
-  summary.textContent = 'How this source enters the estimate';
+  summary.textContent = 'Sources & values';
   details.append(summary, evidenceReceipt.receipt);
   choices.append(details);
   if (selectable.length > 1 || contextualStudies.length > 0) {
     const note = document.createElement('p');
     note.className = 'study-mapping-note';
     note.textContent =
-      'Selectable rows update the model. Context rows report related findings without setting this input.';
+      'Choose “Use” to apply a value. Background sources provide context.';
     choices.append(heading, list, note);
   } else {
     const note = document.createElement('p');
@@ -398,7 +398,7 @@ export function initializeRangeCurves(calculator) {
           state.textContent = isSelected
             ? isExact
               ? 'Selected'
-              : 'Selected, adjusted'
+              : 'Adjusted'
             : '';
         }
       });

@@ -85,9 +85,9 @@ describe('/ calculator product route contract', () => {
     const evidenceLedger = calculator.querySelector('#source-ledger');
 
     expect(readingKey).not.toBeNull();
-    expect(normalizedText(readingKey)).toMatch(/choose a study/i);
-    expect(normalizedText(readingKey)).toMatch(/adjust the value/i);
-    expect(normalizedText(readingKey)).toMatch(/watch the estimate/i);
+    expect(normalizedText(readingKey)).toMatch(/choose a source value/i);
+    expect(normalizedText(readingKey)).toMatch(/move a slider/i);
+    expect(normalizedText(readingKey)).toMatch(/total changes/i);
     expect(evidenceLedger).not.toBeNull();
     expect(
       evidenceLedger.querySelectorAll('[data-research-pack-url^="https://"]')
@@ -134,8 +134,8 @@ describe('/ calculator product route contract', () => {
     }
 
     expect(visibleText(calculator)).toMatch(/sensitivity range/i);
-    expect(visibleText(calculator)).toMatch(/normal curve/i);
-    expect(visibleText(calculator)).toMatch(/not.*probability/i);
+    expect(visibleText(calculator)).toMatch(/curve marks your selected value/i);
+    expect(visibleText(calculator)).toMatch(/shape is illustrative; likelihood is unknown/i);
   });
 
   test('defines the comparison and makes the total conditional on model assumptions', () => {

@@ -113,3 +113,38 @@ test('retains a visible slider handle under browser-forced darkening', async ({
     await browser.close();
   }
 });
+
+
+test('persists palette and mode without hijacking calculator keyboard controls', async ({ page }) => {
+  await page.goto('/');
+  const toggle = page.getByRole('button', { name: 'Open theme picker' });
+  await toggle.click();
+  await page.getByRole('button', { name: 'Stripe', exact: true }).click();
+  await page.getByRole('button', { name: 'Dark', exact: true }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-mode', 'dark');
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(10, 37, 64)');
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#__sc-theme-panel')).not.toBeVisible();
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'stripe');
+  await expect(page.locator('html')).toHaveAttribute('data-mode', 'dark');
+  await toggle.click();
+  await page.getByRole('button', { name: 'Light', exact: true }).click();
+  await page.keyboard.press('Escape');
+  await page.locator('body').click({ position: { x: 3, y: 200 } });
+  await page.keyboard.press('Space');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'stripe');
+  await expect(page.locator('html')).toHaveAttribute('data-mode', 'light');
+});
+
+test('keeps source details close to the curve and source rows compact', async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 900 });
+  await page.goto('/');
+  const curve = page.locator('.range-curve[data-parameter="vsl"]');
+  const details = curve.locator('.evidence-details');
+  await expect(details.locator('summary')).toHaveText('Sources & values');
+  const gap = await details.evaluate(el => el.getBoundingClientRect().top - el.closest('.range-curve').querySelector('.range-curve-plot').getBoundingClientRect().bottom);
+  expect(gap).toBeLessThanOrEqual(8);
+  const row = curve.locator('.study-choice-item').first();
+  expect((await row.boundingBox()).height).toBeLessThan(110);
+});

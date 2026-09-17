@@ -232,7 +232,7 @@ test.describe('public research journey', () => {
     const vslRange = page.locator('.range-curve[data-parameter="vsl"]');
     await expect(vslRange.getByText('Compare source values')).toBeVisible();
     const gatedSource = vslRange
-      .getByRole('button', { name: 'Get source' })
+      .getByRole('button', { name: 'Read source' })
       .first();
     await gatedSource.click();
     await expect(page.getByLabel('Email address')).toBeFocused();
@@ -533,7 +533,7 @@ test.describe('public research journey', () => {
     await page.keyboard.press('Shift+Tab');
     const lastPaperLink = page
       .locator('.range-curve[data-parameter="vsl"]')
-      .getByRole('button', { name: 'Get source' })
+      .getByRole('button', { name: 'Read source' })
       .last();
     await expectVisibleFocus(lastPaperLink);
     await page.keyboard.press('Tab');
