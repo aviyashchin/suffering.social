@@ -230,9 +230,9 @@ test.describe('public research journey', () => {
 
     await page.goto('/');
     const vslRange = page.locator('.range-curve[data-parameter="vsl"]');
-    await expect(vslRange.getByText('Compare source values')).toBeVisible();
+    await expect(vslRange.getByText('Choose a value')).toBeVisible();
     const gatedSource = vslRange
-      .getByRole('button', { name: 'Get source' })
+      .getByRole('button', { name: 'Read source' })
       .first();
     await gatedSource.click();
     await expect(page.getByLabel('Email address')).toBeFocused();
@@ -489,7 +489,7 @@ test.describe('public research journey', () => {
       .toBe(sliderValueAfter);
 
     const vslRange = page.locator('.range-curve[data-parameter="vsl"]');
-    await expect(vslRange.getByText('Compare source values')).toBeVisible();
+    await expect(vslRange.getByText('Choose a value')).toBeVisible();
     const baselinePaperChoice = vslRange
       .locator('.study-choice')
       .filter({ hasText: 'DOT guidance' });
@@ -533,7 +533,7 @@ test.describe('public research journey', () => {
     await page.keyboard.press('Shift+Tab');
     const lastPaperLink = page
       .locator('.range-curve[data-parameter="vsl"]')
-      .getByRole('button', { name: 'Get source' })
+      .getByRole('button', { name: 'Read source' })
       .last();
     await expectVisibleFocus(lastPaperLink);
     await page.keyboard.press('Tab');

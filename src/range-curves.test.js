@@ -118,9 +118,9 @@ describe('research range curves', () => {
     ).toHaveLength(1);
     expect(region.innerHTML).not.toContain('undefined');
     expect(region.querySelector('.study-choice-list details')).toBeNull();
-    expect(region).toHaveTextContent('Compare source values');
+    expect(region).toHaveTextContent('Choose a value');
     expect(region).toHaveTextContent('Archived paper');
-    expect(region).toHaveTextContent('Context only');
+    expect(region).toHaveTextContent('Background');
     expect(choices).toHaveLength(2);
     expect(choices.map((choice) => Number(choice.dataset.modelValue))).toEqual([
       10.5,
@@ -128,7 +128,7 @@ describe('research range curves', () => {
     ]);
     expect(choices[1]).toHaveAttribute('aria-pressed', 'true');
     expect(choices[1]).toHaveTextContent('Starting model value');
-    expect(region).toHaveTextContent('Selectable rows update the model');
+    expect(region).toHaveTextContent('Choose “Use” to apply a value');
     expect(region.querySelectorAll('.evidence-receipt dt')).toHaveLength(3);
 
     choices[0].click();

@@ -67,3 +67,5 @@ body h6 {
 }
 
 html[data-mode="light"] { color-scheme: only light; }
+
+html[data-mode="dark"] { color-scheme: dark; }
