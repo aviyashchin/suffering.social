@@ -58,3 +58,17 @@ Follow the repository's imperative Conventional Commit pattern, such as
 explain the user/research impact, link the issue, list exact validation, and
 include screenshots for visual changes. Do not claim production success until
 the deployed revision, browser journey, and Lighthouse checks are read back.
+
+## Agent skills
+
+### Issue tracker
+
+GitHub Issues. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Standard five-role vocabulary. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single root context, reusing existing domain documentation. See `docs/agents/domain.md`.
